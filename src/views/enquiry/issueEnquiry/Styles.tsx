@@ -8,7 +8,6 @@ const styles = StyleSheet.create({
       fontFamily:fonts.type.medium,
       fontSize: 14,
       alignSelf:'center',
-      color: Colors.sailBlue,
     },
     resolvedIssue:{
       fontFamily:fonts.type.medium,
@@ -17,8 +16,8 @@ const styles = StyleSheet.create({
     },
     line:{
       height: 3,
-      width: WindowWidth/2,
-      backgroundColor: "#233972",
+      width: WindowWidth/2.5,
+      backgroundColor: Colors.sailBlue,
       marginTop: 16,
     },
  issueContainer:{

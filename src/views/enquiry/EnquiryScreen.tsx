@@ -11,6 +11,7 @@ import {
   IuserEnquiryEnteredData,
 } from "models/interface/IEnquiry";
 import {
+  IButtonStatus,
   IIssueEnquiry,
   INearbyCustomer,
   UserEnquiryResponse,
@@ -31,6 +32,11 @@ interface IEnquiryScreen {
   setIssueSearchResult: Function;
   setsearchresult: Function;
   NearByCustomerList: INearbyCustomer[] | undefined;
+  handleIssueEnquiry:(type:string)=>void;
+  issueEnquiryType:string;
+  handleTextChangeofUserEnquiry:(text:string,id:number)=>void;
+        handleTextChangeofIssueEnquiry:(text:string,id:number)=>void;
+        btnStatus:IButtonStatus
 }
 
 const EnquiryScreen = ({
@@ -45,6 +51,12 @@ const EnquiryScreen = ({
   issueEnquiryEnteredDetail,
   setsearchresult,
   NearByCustomerList,
+  handleIssueEnquiry,
+  issueEnquiryType,
+  handleTextChangeofUserEnquiry,
+  handleTextChangeofIssueEnquiry,
+  btnStatus
+        
 }: IEnquiryScreen) => {
 
 const renderScreen=()=>{
@@ -57,6 +69,8 @@ const renderScreen=()=>{
         searchresult,
         onSearch,
         setsearchresult,
+        handleTextChangeofUserEnquiry,
+        btnStatus
       }}
     />
     case 2:
@@ -67,6 +81,10 @@ const renderScreen=()=>{
         issueEnquiryEnteredDetail,
         setIssueSearchResult,
         onSearch,
+        handleIssueEnquiry,
+        issueEnquiryType,
+        handleTextChangeofIssueEnquiry,
+        btnStatus
       }}
     />
     case 3:
