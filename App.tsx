@@ -47,7 +47,6 @@ const App = () => {
       </PersistGate>
     </Provider> 
 
-    // <FilterData/>
    
 
 

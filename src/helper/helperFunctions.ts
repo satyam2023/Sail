@@ -10,7 +10,7 @@ import { AccompRoot } from "models/ApiResponses/IdropDown";
 import { SignInResponse } from "models/ApiResponses/SignInResponse";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
 import { IdropDown } from "models/interface/ISetting";
-import { Platform } from "react-native";
+import { Alert, Platform } from "react-native";
 import RNFS from "react-native-fs";
 import Share from "react-native-share";
 import { launchImageLibrary } from "react-native-image-picker";
@@ -502,6 +502,18 @@ export const convertIdToIndex=(customerList:IViewCustomerBody[],id:number)=>{
      return null;
   });
   return selectedIndex[0];
+}
+
+export  const tacklePagination=(n:number,arr:[])=>{
+  let l=arr.length;
+  const end=(n-1)*15;
+  if(l>=0 && l<=end){
+    return true
+  }
+  else {
+    return false;
+  }
+
 }
 
 export const setUpcomingFieldData=(upcomingVisitList:any,selectedIndexValue:number)=>{

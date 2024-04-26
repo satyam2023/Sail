@@ -18,7 +18,6 @@ import {
 import IssueEnquiry from "./issueEnquiry/IssueEnquiry";
 import StatusBarComponent from "components/StatusBarComponent";
 import UserEnquiry from "./UserEnquiry Screen/UserEnquiry";
-import FilterData from "views/visit/component/Filterdata";
 
 interface IEnquiryScreen {
   currentScreen: number;
