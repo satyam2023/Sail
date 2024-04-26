@@ -1,0 +1,5 @@
+node_modules/**
+src/lib/device/utils/index.ts
+src/utils/index.ts
+src/lib/appLocalization/LocalizedStrings.d.ts
+src/lib/bounceable/RNBounceable.tsx

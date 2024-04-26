@@ -1,0 +1,65 @@
+{
+  "env": {
+    "prod": {
+      "plugins": ["transform-remove-console"]
+    }
+  },
+  "presets": ["module:metro-react-native-babel-preset"],
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "root": ["./src"],
+        "alias": [
+          {
+            "@shared-components": "./src/shared/components"
+          },
+          {
+            "@shared-constants": "./src/shared/constants"
+          },
+          {
+            "@font-size": "./src/shared/theme/font-size"
+          },
+          {
+            "@fonts": "./src/shared/theme/fonts"
+          },
+          {
+            "@colors": "./src/shared/theme/colors"
+          },
+          {
+            "@theme": "./src/shared/theme"
+          },
+          {
+            "@screens": "./src/screens"
+          },
+          {
+            "@utils": "./src/utils/"
+          },
+          {
+            "@assets": "./src/assets/"
+          },
+          {
+            "@lib": "./src/libs/index"
+          },
+          {
+            "@navigation": "./src/services/navigation/index"
+          },
+          {
+            "@controllers": "./src/controllers/index"
+          }
+        ],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    ],
+    [
+      "module:react-native-dotenv",
+      {
+        "moduleName": "@env",
+        "path": ".env",
+        "allowUndefined": true,
+        "verbose": false
+      }
+    ],
+    "react-native-reanimated/plugin"
+  ]
+}
