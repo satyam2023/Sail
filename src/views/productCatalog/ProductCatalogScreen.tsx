@@ -5,7 +5,6 @@ import {
   FlatList,
   Image,
   SafeAreaView,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { Header, InputTextField, TextWrapper } from "components";
@@ -37,11 +36,12 @@ const ProductCatalogScreen = (props: IProductScreen) => {
         >
           {StringConstants.DOWNLOAD_CATALOGUE}
         </TextWrapper>
-        <TouchableOpacity onPress={() => props.handleQrVisibility(item?.name)}>
-          <TextWrapper style={[styles.dwd, { marginTop: 0 }]}>
-            {StringConstants.SHOW_QR}
-          </TextWrapper>
-        </TouchableOpacity>
+        <TextWrapper
+          style={styles.dwd}
+          onPress={() => props.handleQrVisibility(item?.name)}
+        >
+          {StringConstants.SHOW_QR}
+        </TextWrapper>
       </View>
     );
   }
@@ -71,11 +71,7 @@ const ProductCatalogScreen = (props: IProductScreen) => {
               numColumns={2}
               showsVerticalScrollIndicator={false}
               columnWrapperStyle={{ justifyContent: "space-between" }}
-              style={{
-                marginBottom: 15,
-                flex: 1,
-                backgroundColor: Colors.transparent,
-              }}
+              style={styles.productList}
             />
           </View>
         ) : (

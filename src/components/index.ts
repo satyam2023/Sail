@@ -19,6 +19,10 @@ export {default as UploadDocumnet } from "./UploadDocument";
 export {default as CustomerDetails } from "./CustomerDetails";
 export {default as VisitCard } from "../views/visit/component/VisitCard";
 export {default as HorizontalScrollableList} from "./HorizontalScrollableList";
+export {default as GradientBackground} from './LinearGradient';
+export {default as CustomSwitch} from './CustomCheckBox';
+export {default as Datepicker} from './Calender';
+export {default as StatusBarComponent} from './StatusBarComponent';
 
 
 

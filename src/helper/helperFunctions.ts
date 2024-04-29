@@ -476,6 +476,17 @@ export const isDetailFilled= (fields: any) => {
   return false;
 };
 
+export const checkAllInputField=(fields:any)=>{
+  for (let i = 0; i<Object.keys(fields).length; i++) {
+    if(fields[Object.keys(fields)[i]].current.length==0){
+       return false;
+    }
+  }
+
+  return true;
+
+}
+
 
 
 export const isAllFieldTrue = (fields: any) => {
@@ -523,71 +534,74 @@ export  const tacklePagination=(n:number,arr:[])=>{
 
 }
 
-export const setUpcomingFieldData=(upcomingVisitList:any,selectedIndexValue:number)=>{
+export const setUpcomingFieldData=(upcomingVisitList:any,selectedIndexValue:number,searchResult:any)=>{
+  const tempData=searchResult.length>0?searchResult:upcomingVisitList;
   const ans =
   selectedIndexValue >= 0
     ? [
-        upcomingVisitList[selectedIndexValue]?.customer_data?.customer_code,
+        tempData[selectedIndexValue]?.customer_data?.customer_code,
         extractOnlyDate(
-          upcomingVisitList[selectedIndexValue]?.visit_date_time,
+          tempData[selectedIndexValue]?.visit_date_time,
         ),
-        upcomingVisitList[selectedIndexValue]?.visiting_executive
+        tempData[selectedIndexValue]?.visiting_executive
           ?.user_number,
-        upcomingVisitList[selectedIndexValue]?.reason?.name,
-        upcomingVisitList[selectedIndexValue]?.mode_of_contact?.name,
-        upcomingVisitList[selectedIndexValue]?.visiting_executive?.user_name,
-        upcomingVisitList[selectedIndexValue]?.visiting_executive
+        tempData[selectedIndexValue]?.reason?.name,
+        tempData[selectedIndexValue]?.mode_of_contact?.name,
+        tempData[selectedIndexValue]?.visiting_executive?.user_name,
+        tempData[selectedIndexValue]?.visiting_executive
           ?.user_location,
-        upcomingVisitList[selectedIndexValue]?.visiting_executive?.email,
-        upcomingVisitList[selectedIndexValue]?.addedy_by?.user_name,
+        tempData[selectedIndexValue]?.visiting_executive?.email,
+        tempData[selectedIndexValue]?.addedy_by?.user_name,
       ]
     : [];
 
     return ans;
 };
-export const setExecutedFieldData=(executedVisitList:any,selectedIndexValue:number)=>{
+export const setExecutedFieldData=(executedVisitList:any,selectedIndexValue:number,searchResult:any)=>{
+  const tempData=searchResult.length>0?searchResult:executedVisitList;
   const ans =
     selectedIndexValue >= 0
       ? [
-          executedVisitList[selectedIndexValue]?.customer_data?.customer_code,
-          executedVisitList[selectedIndexValue]?.customer_data?.type?.type_name,
-          executedVisitList[selectedIndexValue]?.customer_data?.status?.name,
-          executedVisitList[selectedIndexValue]?.visiting_executive?.user_name,
-          executedVisitList[selectedIndexValue]?.visiting_executive
+          tempData[selectedIndexValue]?.customer_data?.customer_code,
+          tempData[selectedIndexValue]?.customer_data?.type?.type_name,
+          tempData[selectedIndexValue]?.customer_data?.status?.name,
+          tempData[selectedIndexValue]?.visiting_executive?.user_name,
+          tempData[selectedIndexValue]?.visiting_executive
             ?.user_location,
-          executedVisitList[selectedIndexValue]?.visiting_executive
+          tempData[selectedIndexValue]?.visiting_executive
             ?.user_number,
-          executedVisitList[selectedIndexValue]?.visiting_executive?.email,
-          executedVisitList[selectedIndexValue]?.discussion_points,
-          `${executedVisitList[selectedIndexValue]?.visit_date_time}  ${executedVisitList[selectedIndexValue]?.visit_time}`,
-          executedVisitList[selectedIndexValue]?.reason?.name,
-          executedVisitList[selectedIndexValue]?.mode_of_contact?.name,
+          tempData[selectedIndexValue]?.visiting_executive?.email,
+          tempData[selectedIndexValue]?.discussion_points,
+          `${tempData[selectedIndexValue]?.visit_date_time}  ${tempData[selectedIndexValue]?.visit_time}`,
+          tempData[selectedIndexValue]?.reason?.name,
+          tempData[selectedIndexValue]?.mode_of_contact?.name,
           StringConstants.EMPTY,
-          executedVisitList[selectedIndexValue]?.addedy_by?.user_name,
+          tempData[selectedIndexValue]?.addedy_by?.user_name,
         ]
       : [];
 
       return ans;
 }
 
-export const setPlannedFieldData=(plannedVisitList:any,selectedIndexValue:number)=>{
+export const setPlannedFieldData=(plannedVisitList:any,selectedIndexValue:number,searchResult:any)=>{
+  const tempData=searchResult.length>0?searchResult:plannedVisitList;
   const ans =
   selectedIndexValue >= 0
     ? [
-        plannedVisitList[selectedIndexValue]?.customer_data?.customer_code,
+        tempData[selectedIndexValue]?.customer_data?.customer_code,
         extractOnlyDate(
-          plannedVisitList[selectedIndexValue]?.visit_date_time,
+          tempData[selectedIndexValue]?.visit_date_time,
         ),
-        plannedVisitList[selectedIndexValue]?.reason?.name,
-        plannedVisitList[selectedIndexValue]?.mode_of_contact?.name,
-        plannedVisitList[selectedIndexValue]?.remarks,
-        plannedVisitList[selectedIndexValue]?.visiting_executive?.user_name,
-        plannedVisitList[selectedIndexValue]?.visiting_executive
+        tempData[selectedIndexValue]?.reason?.name,
+        tempData[selectedIndexValue]?.mode_of_contact?.name,
+        tempData[selectedIndexValue]?.remarks,
+        tempData[selectedIndexValue]?.visiting_executive?.user_name,
+        tempData[selectedIndexValue]?.visiting_executive
           ?.user_location,
-        plannedVisitList[selectedIndexValue]?.visiting_executive
+        tempData[selectedIndexValue]?.visiting_executive
           ?.user_number,
-        plannedVisitList[selectedIndexValue]?.visiting_executive?.email,
-        plannedVisitList[selectedIndexValue]?.addedy_by?.user_name,
+        tempData[selectedIndexValue]?.visiting_executive?.email,
+        tempData[selectedIndexValue]?.addedy_by?.user_name,
       ]
     : [];
 
