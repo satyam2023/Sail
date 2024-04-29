@@ -19,7 +19,7 @@ interface ICustomSwitch {
 }
 
 const CustomCheckBox = (props: ICustomSwitch) => {
-  const [status, setStatus] = useState<boolean>(false);
+  const [status, setStatus] = useState<boolean>(props?.status);
   const handlePress = () => {
     setStatus(!status);
     props.onPress(status);
@@ -34,7 +34,6 @@ const CustomCheckBox = (props: ICustomSwitch) => {
         { borderRadius: props.isRectangular ? 3 : 10 },
       ]}
     >
-      <PressableButton onPress={handlePress}>
         {!props.isRectangular ? (
           <View
             style={
@@ -44,9 +43,10 @@ const CustomCheckBox = (props: ICustomSwitch) => {
             }
           />
         ) : (
-          <Image style={styles.img} source={!status ? Glyphs.Tick : null} />
+          status?
+          <Image style={styles.img} source={Glyphs.Tick} />
+          :null
         )}
-      </PressableButton>
     </PressableButton>
   );
 };

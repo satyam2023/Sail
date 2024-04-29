@@ -29,16 +29,12 @@ import {
   ISelectedImage,
   IsubType,
 } from "models/interface/ICreateCustomer";
-import Voice from "@react-native-voice/voice";
 import {
   IRepresentativeList,
   IUnplannedMeetingEnteredDetail,
-  IissueDetail,
 } from "models/interface/IMeeting";
 import StringConstants from "shared/localization";
 import { IProductCatalogue } from "models/ApiResponses/ProductCatalogue";
-import { IRepresentativeError } from "./ValidationRegex";
-import { VisitResponse } from "models/ApiResponses/VisitResponse";
 
 export function ExtarctTwoLetterName(name: string) {
   let ans = name[0];
@@ -470,6 +466,17 @@ export const setInputFieldToIntialValue = (fields: any) => {
     fields[Object.keys(fields)[i]].current = undefined;
   }
 };
+
+export const isDetailFilled= (fields: any) => { 
+  for (let i = 0; i<Object.keys(fields).length; i++) {
+    if(fields[Object.keys(fields)[i]].current.length>0){
+      return true;
+    }
+  }
+  return false;
+};
+
+
 
 export const isAllFieldTrue = (fields: any) => {
   for (let i = 0; i < Object.keys(fields).length; i++) {

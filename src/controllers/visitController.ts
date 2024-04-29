@@ -13,7 +13,7 @@ import {
   sendPatchRequest,
   sendPostRequest,
 } from "services/network/Network";
-export const getUpcomingVisits = async (id: number, page?: number) => {
+export const getUpcomingVisits = async (page?: number) => {
   try {
     const res: IApiResponse<IPagination<VisitResponse>> = await sendGetRequest<
       IPagination<VisitResponse>
@@ -26,7 +26,7 @@ export const getUpcomingVisits = async (id: number, page?: number) => {
   }
 };
 
-export const getExecutedVisits = async (id: number, page?: number) => {
+export const getExecutedVisits = async (page?: number) => {
   try {
     const res: IApiResponse<IPaginations<ExecutedResponse>> =
       await sendGetRequest<IPaginations<ExecutedResponse>>(
@@ -40,7 +40,7 @@ export const getExecutedVisits = async (id: number, page?: number) => {
   }
 };
 
-export const getPlannedVisits = async (id: number, page?: number) => {
+export const getPlannedVisits = async ( page?: number) => {
   try {
     const res: IApiResponse<IPaginations<VisitResponse>> | undefined =
       await sendGetRequest<IPaginations<VisitResponse>>(

@@ -52,8 +52,10 @@ const SignInViewModel = () => {
   };
 
   function handleOnTextChange(text:string,id:number){
+    if(id!=2)
     signInUser[Object.keys(signInUser)[id]].current=text;
-
+    else 
+    signInUser.rememberMe.current=Number(text);
   }
 
   return (

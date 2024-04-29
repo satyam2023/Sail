@@ -16,7 +16,7 @@ import commonStyles from "commonStyles/CommonStyle";
 import fonts from "@fonts";
 import { PressableButton } from "components";
 import { IdropDown } from "models/interface/ISetting";
-import { ScreenWidth } from "libs";
+import {ScreenWidth } from "libs";
 
 interface IDropDownStyle{
   dropContainer:ViewStyle;
