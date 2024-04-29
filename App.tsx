@@ -12,6 +12,7 @@ import { persistor, store } from "redux/store/Store";
 import { PersistGate } from "redux-persist/integration/react";
 import StatusCode from "core/StatusCode";
 import PleaseWaitLoader from "views/emptyState/PleaseWaitLoader";
+import FilterData from "views/visit/component/Filterdata";
 LogBox.ignoreAllLogs();
 
 if (__DEV__) {
@@ -46,10 +47,6 @@ const App = () => {
         <Navigation />
       </PersistGate>
     </Provider> 
-
-   
-
-
  
   );
 };

@@ -5,7 +5,7 @@ import StringConstants from "shared/localization";
 import Glyphs from "assets/Glyphs";
 import { FlatList } from "react-native-gesture-handler";
 import RectangularBox from "components/RectangularBox";
-import { ExecutedResponse} from "models/ApiResponses/VisitResponse";
+import { ExecutedResponse, VisitResponse} from "models/ApiResponses/VisitResponse";
 import { IFlatlistExecuted } from "models/interface/IVisit";
 import commonStyles from "commonStyles/CommonStyle";
 
@@ -19,6 +19,7 @@ interface IExecuted {
   handleUpcomingVisitBoxClick: (index: number) => void;
   callDownloadPDFApi:(id:number)=>void;
   setPaginationPage:()=>void;
+  searchResult: VisitResponse[];
 }
 
 const Executed = ({
@@ -31,8 +32,12 @@ const Executed = ({
   handleUpcomingVisitBoxClick,
   callDownloadPDFApi,
   setPaginationPage,
+  searchResult,
   
 }: IExecuted) => {
+
+  const isSearchResult: boolean = searchResult.length > 0 ? true : false;
+
   const renderExecutedVisit = ({item,index}:IFlatlistExecuted) => {
     return (
       <RectangularBox
@@ -48,7 +53,7 @@ const Executed = ({
     <View style={{ paddingHorizontal: 20,flex:1}} >
       {!customerDetails ? (
           <FlatList
-            data={executedVisitList}
+            data={isSearchResult ?searchResult:executedVisitList}
             renderItem={renderExecutedVisit}
             onMomentumScrollEnd={setPaginationPage}
             style={{flex:1}}
@@ -57,12 +62,13 @@ const Executed = ({
        
       ) : (
         <ExecutedCustomer
-       {...{   handleCustomerClick,
+       {...{handleCustomerClick,
           executedVisitFieldData,
           setSelectedIndexValue,
           executedVisitList,
           selectedIndexValue,
-          callDownloadPDFApi
+          callDownloadPDFApi,
+          searchResult,
       }}
         />
       )}

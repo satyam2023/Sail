@@ -19,9 +19,11 @@ interface IUpcomingScreen {
   handleCustomerClick: () => void;
   handleUpcomingVisitBoxClick: (index: number) => void;
   setPaginationPage:()=>void;
+  searchResult: VisitResponse[];
 }
 
 const UpcomingVisit = (props: IUpcomingScreen) => {
+  const isSearchResult: boolean = props?.searchResult.length > 0 ? true : false;
   const renderUpcomingVisit = (item: VisitResponse, index: number) => {
     return (
       <RectangularBox
@@ -39,7 +41,7 @@ const UpcomingVisit = (props: IUpcomingScreen) => {
       {!props?.customerDetails ? (
         <>
           <FlatList
-            data={props.upcomingVisitList}
+            data={isSearchResult?props.searchResult:props.upcomingVisitList}
             renderItem={({ item, index }) => renderUpcomingVisit(item, index)}
             extraData={Data}
             onMomentumScrollEnd={props?.setPaginationPage}
@@ -53,7 +55,7 @@ const UpcomingVisit = (props: IUpcomingScreen) => {
           CustomerData={props.upcomingFieldData}
           placeholderData={props.upcomingVisitDetails}
           companyName={
-            props?.upcomingVisitList[props?.selectedIndexValue].customer_data
+            (isSearchResult ? props?.searchResult : props?.upcomingVisitList)[props?.selectedIndexValue].customer_data
               ?.company_name
           }
         />

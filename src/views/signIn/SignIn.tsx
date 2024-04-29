@@ -4,18 +4,13 @@ import { Image, TouchableOpacity, View } from "react-native";
 import styles from "./Style/Style";
 import Glyphs from "assets/Glyphs";
 import { SCREENS } from "@shared-constants";
-import { white, darkgrey, grey, lightWhite } from "commonStyles/RNColor.style";
-import CustomButton from "components/CustomButton";
-import InputTextField from "components/InputTextField";
-import CustomSwitch from "components/CustomCheckBox";
-import TextWrapper from "components/TextWrapper";
 import StringConstants from "shared/localization";
 import commonStyles from "commonStyles/CommonStyle";
-import { PressableButton } from "components";
+import { CustomButton, CustomSwitch, GradientBackground, InputTextField, PressableButton, TextWrapper } from "components";
 import { navigate } from "@navigation";
 import { isAndroid } from "libs";
-import GradientBackground from "components/LinearGradient";
 import { ISignInUser } from "models/interface/ISignIn";
+import { Colors } from "commonStyles/RNColor.style";
 
 interface ISignInScreen {
   onSubmit: () => void;
@@ -51,20 +46,14 @@ const SignInScreen = ({
             onChangeText={(text: string) => handleOnTextChange(text, 1)}
             value={signInUser.password.current}
           />
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginBottom: 16,
-            }}
-          >
+          <View style={styles.switchAreaContainer}>
             <View style={{ flexDirection: "row" }}>
               <CustomSwitch
                 onPress={(status: boolean) =>
                   handleOnTextChange(status ? "1" : "0", 2)
                 }
                 isRectangular
-                status={true}
+                status={false}
               />
 
               <TextWrapper style={styles.forgot}>
@@ -80,18 +69,12 @@ const SignInScreen = ({
             </PressableButton>
           </View>
           <CustomButton
-            textStyle={{ color: darkgrey }}
-            buttonStyle={{ backgroundColor: lightWhite }}
+            textStyle={{ color: Colors.textGrey }}
+            buttonStyle={{ backgroundColor:Colors.white3}}
             onPress={() => onSubmit()}
             text={StringConstants.SIGN_IN}
           />
-          <View
-            style={{
-              marginTop: "3%",
-              alignSelf: "center",
-              flexDirection: "row",
-            }}
-          >
+          <View style={styles.dontAccount}>
             <TextWrapper style={commonStyles.font14MediumDarkGray}>
               {StringConstants.DONT_HAVE_ACCOUNT}
             </TextWrapper>
@@ -108,14 +91,10 @@ const SignInScreen = ({
           <Image source={Glyphs.OrLine} style={styles.orLine} />
         </View>
         {isAndroid ? null : (
-          <View style={{ flex: 0.3, justifyContent: "flex-end", padding: 20 }}>
+          <View style={styles.authBtnContainer}>
             <CustomButton
               textStyle={commonStyles.font14RegularBlack}
-              buttonStyle={{
-                backgroundColor: white,
-                borderColor: grey,
-                borderWidth: 1,
-              }}
+              buttonStyle={styles.btnStyle}
               onPress={() => {}}
               text={StringConstants.SIGNIN_FINGERPRINT}
               image={Glyphs.FaceScan}
@@ -123,11 +102,7 @@ const SignInScreen = ({
 
             <CustomButton
               textStyle={commonStyles.font14RegularBlack}
-              buttonStyle={{
-                backgroundColor: white,
-                borderColor: grey,
-                borderWidth: 1,
-              }}
+              buttonStyle={styles.btnStyle}
               onPress={() => {}}
               text={StringConstants.SIGNIN_FACE_RECOGNITION}
               image={Glyphs.FingerScan}

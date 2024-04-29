@@ -1,11 +1,14 @@
 import React from "react";
-import { FlatList,View } from "react-native";
+import { FlatList, View } from "react-native";
 import Data from "../UpComingVisit/mockData/DATA";
 import StringConstants from "shared/localization";
 import Glyphs from "assets/Glyphs";
 import { VisitResponse } from "models/ApiResponses/VisitResponse";
 import { CustomerDetails, RectangularBox } from "components";
-import { IPlannedVisitEdit } from "models/interface/IVisit";
+import {
+  IFlatListPlannedVisit,
+  IPlannedVisitEdit,
+} from "models/interface/IVisit";
 import { IdropDown } from "models/interface/ISetting";
 import commonStyles from "commonStyles/CommonStyle";
 
@@ -20,7 +23,8 @@ interface PlannedProps {
   handlePlannedVisitBoxClick: (index: number, id: number) => void;
   customerDetails: boolean;
   handleCustomerClick: () => void;
-  setPaginationPage:()=>void;
+  setPaginationPage: () => void;
+  searchResult: VisitResponse[];
 }
 
 const Planned = ({
@@ -34,8 +38,10 @@ const Planned = ({
   handleCustomerClick,
   customerDetails,
   setPaginationPage,
+  searchResult,
 }: PlannedProps) => {
-  const renderPlannedVisit = ({item,index}:{item: VisitResponse, index: number}) => {
+  const isSearchResult: boolean = searchResult.length > 0 ? true : false;
+  const renderPlannedVisit = ({ item, index }: IFlatListPlannedVisit) => {
     return (
       <RectangularBox
         onPress={() => handlePlannedVisitBoxClick(index, item.id)}
@@ -49,14 +55,16 @@ const Planned = ({
   };
 
   return (
-    <View style={{ paddingHorizontal: 20,flex:1}}>
+    <View style={{ paddingHorizontal: 20, flex: 1 }}>
       {!customerDetails ? (
-        <FlatList
-          data={plannedVisitList}
-          renderItem={renderPlannedVisit}
-          onMomentumScrollEnd={setPaginationPage}
-          showsVerticalScrollIndicator={false}
-        />
+        <>
+          <FlatList
+            data={isSearchResult?searchResult:plannedVisitList}
+            renderItem={renderPlannedVisit}
+            onMomentumScrollEnd={setPaginationPage}
+            showsVerticalScrollIndicator={false}
+          />
+        </>
       ) : (
         <CustomerDetails
           CustomerData={plannedVisitFieldData}
@@ -64,7 +72,9 @@ const Planned = ({
           placeholderData={Data}
           indexofSelectedVisit={selectedIndexValue}
           companyName={
-            plannedVisitList[selectedIndexValue]?.customer_data?.company_name
+            (isSearchResult ? searchResult : plannedVisitList)[
+              selectedIndexValue
+            ]?.customer_data?.company_name
           }
           plannedVisitEditDetails={
             isVisitEditable ? plannedVisitEditDetails : undefined
