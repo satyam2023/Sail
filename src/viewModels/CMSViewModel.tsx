@@ -36,16 +36,17 @@ const CMSViewModel = () => {
         break;
     }
   }
+
   useEffect(() => {
     const cmsPage = async () => {
       dispatch(setLoaderVisibility(true));
       try {
-     const res :IApiResponse<CMSPageResponse> |undefined= await getCMSPage();
-     
-   if(res?.isSuccess){
-    dispatch(saveCmsPages(res.data));
-   }
+        const res: IApiResponse<CMSPageResponse> | undefined =
+          await getCMSPage();
 
+        if (res?.isSuccess) {
+          dispatch(saveCmsPages(res.data));
+        }
       } catch (error) {
       } finally {
         dispatch(setLoaderVisibility(false));

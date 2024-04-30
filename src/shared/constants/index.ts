@@ -111,39 +111,24 @@ export const RepresentativeErrorMsgOfViewCustomer: string[] = [
   StringConstants.CONTACT_ERROR_MSG,
 ];
 
-// export const CustomerDetailInputField = [
-//   StringConstants.CUSTOMER_CODE,
-//   StringConstants.ENTER_COMPANY_NAME,
-//   StringConstants.CUSTOMER_SEG,
-//   StringConstants.CUSTOMER_SUB_SEG,
-//   StringConstants.CUSTOMER_TYPE,
-//   StringConstants.CUSTOMER_SUB_TYPE,
-//   StringConstants.CUSTOMER_STATUS,
-//   StringConstants.CUSTOMER_REGION,
-//   StringConstants.ENTER_PAN_CARD,
-//   StringConstants.ENTER_GST,
-//   StringConstants.WEBSITE_LINK,
-// ];
-
-export interface ICustomerDetailInputField{
-  placeholder:string,
-  maxlength?:number,
+export interface ICustomerDetailInputField {
+  placeholder: string;
+  maxlength?: number;
 }
 
-export const CustomerDetailInputField=[
-  {placeholder:StringConstants.CUSTOMER_CODE,
-  maxlength:10},
-  {placeholder: StringConstants.ENTER_COMPANY_NAME,maxlength:20},
-  {placeholder:  StringConstants.CUSTOMER_SEG,},
-  {placeholder: StringConstants.CUSTOMER_SUB_SEG,},
-  {placeholder:  StringConstants.CUSTOMER_TYPE},
-  {placeholder:StringConstants.CUSTOMER_SUB_TYPE},
-  {placeholder:StringConstants.CUSTOMER_STATUS},
-  {placeholder: StringConstants.CUSTOMER_REGION,},
-  {placeholder:  StringConstants.ENTER_PAN_CARD,maxlength:10},
-  {placeholder: StringConstants.ENTER_GST,maxlength:15},
-  {placeholder: StringConstants.WEBSITE_LINK,maxlength:20},
-]
+export const CustomerDetailInputField = [
+  { placeholder: StringConstants.CUSTOMER_CODE, maxlength: 10 },
+  { placeholder: StringConstants.ENTER_COMPANY_NAME, maxlength: 20 },
+  { placeholder: StringConstants.CUSTOMER_SEG },
+  { placeholder: StringConstants.CUSTOMER_SUB_SEG },
+  { placeholder: StringConstants.CUSTOMER_TYPE },
+  { placeholder: StringConstants.CUSTOMER_SUB_TYPE },
+  { placeholder: StringConstants.CUSTOMER_STATUS },
+  { placeholder: StringConstants.CUSTOMER_REGION },
+  { placeholder: StringConstants.ENTER_PAN_CARD, maxlength: 10 },
+  { placeholder: StringConstants.ENTER_GST, maxlength: 15 },
+  { placeholder: StringConstants.WEBSITE_LINK, maxlength: 20 },
+];
 
 export const ErrorMsgOfCustomerInput = [
   StringConstants.INVALID_CUST_CODE,
@@ -272,13 +257,13 @@ export const UnplannedMeetingInputField = [
   },
 ];
 
-export interface ICreateVisitPlaneField{
-  placeholder:string;
-  maxlength?:number;
-  inputMode?:string;
+export interface ICreateVisitPlaneField {
+  placeholder: string;
+  maxlength?: number;
+  inputMode?: string;
 }
 
-export const CreateVisitPlanField:ICreateVisitPlaneField[]= [
+export const CreateVisitPlanField: ICreateVisitPlaneField[] = [
   {
     placeholder: StringConstants.ENTER_CUSTOMER,
     maxlength: 10,
@@ -453,7 +438,7 @@ export const upcomingVisitDetails = [
     imagepath: Glyphs.blueLocation,
   },
   {
-    heading:StringConstants.EMAIL_ID,
+    heading: StringConstants.EMAIL_ID,
     imagepath: Glyphs.BlueEmail,
   },
   {
