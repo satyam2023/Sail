@@ -1,8 +1,12 @@
 import {
   ICompetitor,
+  IProcuredProduct,
   IRepresentative,
+  ISupplier,
 } from "models/ApiResponses/CreateCustomer";
 import { MutableRefObject } from "react";
+import { IFlatlistIndex } from "./IMessage";
+import { ICustomerDetailInputField } from "@shared-constants";
 
 export interface IExample {
   [key: string | number]: MutableRefObject<string | number|undefined>;
@@ -61,8 +65,8 @@ export interface IsubType {
 }
 
 export interface IselecteddropDown {
-  selectedProcuredProduct: string[];
-  selectedSupplier: string[];
+  selectedProcuredProduct: IProcuredProduct[];
+  selectedSupplier:ISupplier[];
 }
 
 export interface ISelectedImage {
@@ -107,3 +111,13 @@ export interface ICustomerTypeProject {
   supplier: MutableRefObject<number[]>,
   project_details: MutableRefObject<string>,
 };
+
+export interface IFlatListCustomerField extends IFlatlistIndex{
+    item: ICustomerDetailInputField;
+}
+
+export interface IRenderSelectedSupplierAndProcured{
+  item: string,
+  index: number,
+  type: string,
+}

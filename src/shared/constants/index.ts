@@ -111,19 +111,39 @@ export const RepresentativeErrorMsgOfViewCustomer: string[] = [
   StringConstants.CONTACT_ERROR_MSG,
 ];
 
-export const CustomerDetailInputField = [
-  StringConstants.CUSTOMER_CODE,
-  StringConstants.ENTER_COMPANY_NAME,
-  StringConstants.CUSTOMER_SEG,
-  StringConstants.CUSTOMER_SUB_SEG,
-  StringConstants.CUSTOMER_TYPE,
-  StringConstants.CUSTOMER_SUB_TYPE,
-  StringConstants.CUSTOMER_STATUS,
-  StringConstants.CUSTOMER_REGION,
-  StringConstants.ENTER_PAN_CARD,
-  StringConstants.ENTER_GST,
-  StringConstants.WEBSITE_LINK,
-];
+// export const CustomerDetailInputField = [
+//   StringConstants.CUSTOMER_CODE,
+//   StringConstants.ENTER_COMPANY_NAME,
+//   StringConstants.CUSTOMER_SEG,
+//   StringConstants.CUSTOMER_SUB_SEG,
+//   StringConstants.CUSTOMER_TYPE,
+//   StringConstants.CUSTOMER_SUB_TYPE,
+//   StringConstants.CUSTOMER_STATUS,
+//   StringConstants.CUSTOMER_REGION,
+//   StringConstants.ENTER_PAN_CARD,
+//   StringConstants.ENTER_GST,
+//   StringConstants.WEBSITE_LINK,
+// ];
+
+export interface ICustomerDetailInputField{
+  placeholder:string,
+  maxlength?:number,
+}
+
+export const CustomerDetailInputField=[
+  {placeholder:StringConstants.CUSTOMER_CODE,
+  maxlength:10},
+  {placeholder: StringConstants.ENTER_COMPANY_NAME,maxlength:20},
+  {placeholder:  StringConstants.CUSTOMER_SEG,},
+  {placeholder: StringConstants.CUSTOMER_SUB_SEG,},
+  {placeholder:  StringConstants.CUSTOMER_TYPE},
+  {placeholder:StringConstants.CUSTOMER_SUB_TYPE},
+  {placeholder:StringConstants.CUSTOMER_STATUS},
+  {placeholder: StringConstants.CUSTOMER_REGION,},
+  {placeholder:  StringConstants.ENTER_PAN_CARD,maxlength:10},
+  {placeholder: StringConstants.ENTER_GST,maxlength:15},
+  {placeholder: StringConstants.WEBSITE_LINK,maxlength:20},
+]
 
 export const ErrorMsgOfCustomerInput = [
   StringConstants.INVALID_CUST_CODE,
@@ -251,17 +271,6 @@ export const UnplannedMeetingInputField = [
     placeholder: StringConstants.ADD_ACCOMPANYING_EXECUTIVES,
   },
 ];
-
-// export const CreateVisitPlanField = [
-//   StringConstants.ENTER_CUSTOMER,
-//   StringConstants.ENTER_NAME,
-//   StringConstants.ENTER_NICK_NAME,
-//   StringConstants.CUSTOMER_REGION,
-//   StringConstants.SELECT_VISITING_EXECUTIVE,
-//   StringConstants.VISIT_DATE,
-//   StringConstants.SELECT_REASON,
-//   StringConstants.SELECT_MODE_OF_CONTACT,
-// ];
 
 export interface ICreateVisitPlaneField{
   placeholder:string;
@@ -416,39 +425,39 @@ export interface IupcomingVisitField {
 
 export const upcomingVisitDetails = [
   {
-    heading: "Customer Code",
+    heading: StringConstants.CUSTOMER_CODE,
     imagepath: Glyphs.Code,
   },
   {
-    heading: "Visit Date",
+    heading: StringConstants.VISIT_DATE,
     imagepath: Glyphs.VisitDate,
   },
   {
-    heading: "Contact Number",
+    heading: StringConstants.CONTACT_NUMBER,
     imagepath: Glyphs.BluePhone,
   },
   {
-    heading: "Reason of Visit",
+    heading: StringConstants.REASON,
     imagepath: Glyphs.VisitDateIcon,
   },
   {
-    heading: "Mode of Meeting",
+    heading: StringConstants.MODE_OF_MEETING,
     imagepath: Glyphs.Note,
   },
   {
-    heading: "Visiting Executive",
+    heading: StringConstants.VISITING_EXE,
     imagepath: Glyphs.SignleUser,
   },
   {
-    heading: "Location",
+    heading: StringConstants.LOCATION,
     imagepath: Glyphs.blueLocation,
   },
   {
-    heading: "Email ID",
+    heading:StringConstants.EMAIL_ID,
     imagepath: Glyphs.BlueEmail,
   },
   {
-    heading: "Planned by",
+    heading: StringConstants.PLANNED_BY,
     imagepath: Glyphs.SignleUser,
   },
 ];
@@ -600,10 +609,10 @@ export const CustomerTypeProjectField = [
 ];
 
 export const TextFieldData = [
-  "Unique Personal Number",
-  "Name",
-  "Contact Name",
-  "Email Id",
+  StringConstants.YOUR_UNIQUE,
+  StringConstants.NAME,
+  StringConstants.CONTACT_NUMBER,
+  StringConstants.EMAIL,
 ];
 
 export const filterDropDownData: IdropDown[] = [

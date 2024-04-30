@@ -66,6 +66,7 @@ const APIConstants = {
   SAP_VALIDATION: "get-sapuser-check",
   SEARCH_CUSTOMER: "search-customer-profile",
   APPLY_FILTER: "search-visit",
+  CUS_DETAIL_EXISTING: "customer-details-existing",
 };
 
 export default APIConstants;

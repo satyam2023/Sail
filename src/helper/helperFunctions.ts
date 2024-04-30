@@ -2,6 +2,7 @@ import {
   ICustomerSegment,
   ICustomerType,
   IProcuredProduct,
+  IRootCustomerCreate,
   ISubSegment,
   ISubType,
   ISupplier,
@@ -10,7 +11,7 @@ import { AccompRoot } from "models/ApiResponses/IdropDown";
 import { SignInResponse } from "models/ApiResponses/SignInResponse";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
 import { IdropDown } from "models/interface/ISetting";
-import { Alert, Platform } from "react-native";
+import { Platform } from "react-native";
 import RNFS from "react-native-fs";
 import Share from "react-native-share";
 import { launchImageLibrary } from "react-native-image-picker";
@@ -24,7 +25,6 @@ import {
 import {
   IEnteredCompetitorDetail,
   IEnteredCustomerDetails,
-  IExample,
   IRepresentativeEnteredDetail,
   ISelectedImage,
   IsubType,
@@ -467,27 +467,36 @@ export const setInputFieldToIntialValue = (fields: any) => {
   }
 };
 
-export const isDetailFilled= (fields: any) => { 
-  for (let i = 0; i<Object.keys(fields).length; i++) {
-    if(fields[Object.keys(fields)[i]].current.length>0){
+// export const setErrorToIntialValue = (fields: any) => {
+//   for (let i = 0; i < Object.keys(fields).length; i++) {
+//     fields[Object.keys(fields)[i]].current = undefined;
+//   }
+// };
+
+export const setInputToIntialStringvalue=(fields: any) => {
+  for (let i = 0; i < Object.keys(fields).length; i++) {
+    fields[Object.keys(fields)[i]].current = "";
+  }
+};
+
+export const isDetailFilled = (fields: any) => {
+  for (let i = 0; i < Object.keys(fields).length; i++) {
+    if (fields[Object.keys(fields)[i]].current.length > 0) {
       return true;
     }
   }
   return false;
 };
 
-export const checkAllInputField=(fields:any)=>{
-  for (let i = 0; i<Object.keys(fields).length; i++) {
-    if(fields[Object.keys(fields)[i]].current.length==0){
-       return false;
+export const checkAllInputField = (fields: any) => {
+  for (let i = 0; i < Object.keys(fields).length; i++) {
+    if (fields[Object.keys(fields)[i]].current.length == 0) {
+      return false;
     }
   }
 
   return true;
-
-}
-
-
+};
 
 export const isAllFieldTrue = (fields: any) => {
   for (let i = 0; i < Object.keys(fields).length; i++) {
@@ -504,61 +513,62 @@ export const isAllFieldTrue = (fields: any) => {
 
 export const getRoleId = (detail: IdropDown[], value: string) => {
   const id = detail.filter((item) => {
-    if(item.name == value)
-     return item.id;
+    if (item.name == value) return item.id;
     else return null;
   });
   return Number(id[0].id);
 };
 
-export const convertIdToIndex=(customerList:IViewCustomerBody[],id:number)=>{
-  
-  const selectedIndex=customerList.filter((item,index)=>{
-    if(item.id==id)
-      return index;
-    else 
-     return null;
+export const convertIdToIndex = (
+  customerList: IViewCustomerBody[],
+  id: number,
+) => {
+  const selectedIndex = customerList.filter((item, index) => {
+    if (item.id == id) return index;
+    else return null;
   });
   return selectedIndex[0];
-}
+};
 
-export  const tacklePagination=(n:number,arr:[])=>{
-  let l=arr.length;
-  const end=(n-1)*15;
-  if(l>=0 && l<=end){
-    return true
-  }
-  else {
+export const tacklePagination = (n: number, arr: []) => {
+  let l = arr.length;
+  const end = (n - 1) * 15;
+  if (l >= 0 && l <= end) {
+    return true;
+  } else {
     return false;
   }
-
-}
-
-export const setUpcomingFieldData=(upcomingVisitList:any,selectedIndexValue:number,searchResult:any)=>{
-  const tempData=searchResult.length>0?searchResult:upcomingVisitList;
-  const ans =
-  selectedIndexValue >= 0
-    ? [
-        tempData[selectedIndexValue]?.customer_data?.customer_code,
-        extractOnlyDate(
-          tempData[selectedIndexValue]?.visit_date_time,
-        ),
-        tempData[selectedIndexValue]?.visiting_executive
-          ?.user_number,
-        tempData[selectedIndexValue]?.reason?.name,
-        tempData[selectedIndexValue]?.mode_of_contact?.name,
-        tempData[selectedIndexValue]?.visiting_executive?.user_name,
-        tempData[selectedIndexValue]?.visiting_executive
-          ?.user_location,
-        tempData[selectedIndexValue]?.visiting_executive?.email,
-        tempData[selectedIndexValue]?.addedy_by?.user_name,
-      ]
-    : [];
-
-    return ans;
 };
-export const setExecutedFieldData=(executedVisitList:any,selectedIndexValue:number,searchResult:any)=>{
-  const tempData=searchResult.length>0?searchResult:executedVisitList;
+
+export const setUpcomingFieldData = (
+  upcomingVisitList: any,
+  selectedIndexValue: number,
+  searchResult: any,
+) => {
+  const tempData = searchResult.length > 0 ? searchResult : upcomingVisitList;
+  const ans =
+    selectedIndexValue >= 0
+      ? [
+          tempData[selectedIndexValue]?.customer_data?.customer_code,
+          extractOnlyDate(tempData[selectedIndexValue]?.visit_date_time),
+          tempData[selectedIndexValue]?.visiting_executive?.user_number,
+          tempData[selectedIndexValue]?.reason?.name,
+          tempData[selectedIndexValue]?.mode_of_contact?.name,
+          tempData[selectedIndexValue]?.visiting_executive?.user_name,
+          tempData[selectedIndexValue]?.visiting_executive?.user_location,
+          tempData[selectedIndexValue]?.visiting_executive?.email,
+          tempData[selectedIndexValue]?.addedy_by?.user_name,
+        ]
+      : [];
+
+  return ans;
+};
+export const setExecutedFieldData = (
+  executedVisitList: any,
+  selectedIndexValue: number,
+  searchResult: any,
+) => {
+  const tempData = searchResult.length > 0 ? searchResult : executedVisitList;
   const ans =
     selectedIndexValue >= 0
       ? [
@@ -566,10 +576,8 @@ export const setExecutedFieldData=(executedVisitList:any,selectedIndexValue:numb
           tempData[selectedIndexValue]?.customer_data?.type?.type_name,
           tempData[selectedIndexValue]?.customer_data?.status?.name,
           tempData[selectedIndexValue]?.visiting_executive?.user_name,
-          tempData[selectedIndexValue]?.visiting_executive
-            ?.user_location,
-          tempData[selectedIndexValue]?.visiting_executive
-            ?.user_number,
+          tempData[selectedIndexValue]?.visiting_executive?.user_location,
+          tempData[selectedIndexValue]?.visiting_executive?.user_number,
           tempData[selectedIndexValue]?.visiting_executive?.email,
           tempData[selectedIndexValue]?.discussion_points,
           `${tempData[selectedIndexValue]?.visit_date_time}  ${tempData[selectedIndexValue]?.visit_time}`,
@@ -580,33 +588,33 @@ export const setExecutedFieldData=(executedVisitList:any,selectedIndexValue:numb
         ]
       : [];
 
-      return ans;
-}
+  return ans;
+};
 
-export const setPlannedFieldData=(plannedVisitList:any,selectedIndexValue:number,searchResult:any)=>{
-  const tempData=searchResult.length>0?searchResult:plannedVisitList;
+export const setPlannedFieldData = (
+  plannedVisitList: any,
+  selectedIndexValue: number,
+  searchResult: any,
+) => {
+  const tempData = searchResult.length > 0 ? searchResult : plannedVisitList;
   const ans =
-  selectedIndexValue >= 0
-    ? [
-        tempData[selectedIndexValue]?.customer_data?.customer_code,
-        extractOnlyDate(
-          tempData[selectedIndexValue]?.visit_date_time,
-        ),
-        tempData[selectedIndexValue]?.reason?.name,
-        tempData[selectedIndexValue]?.mode_of_contact?.name,
-        tempData[selectedIndexValue]?.remarks,
-        tempData[selectedIndexValue]?.visiting_executive?.user_name,
-        tempData[selectedIndexValue]?.visiting_executive
-          ?.user_location,
-        tempData[selectedIndexValue]?.visiting_executive
-          ?.user_number,
-        tempData[selectedIndexValue]?.visiting_executive?.email,
-        tempData[selectedIndexValue]?.addedy_by?.user_name,
-      ]
-    : [];
+    selectedIndexValue >= 0
+      ? [
+          tempData[selectedIndexValue]?.customer_data?.customer_code,
+          extractOnlyDate(tempData[selectedIndexValue]?.visit_date_time),
+          tempData[selectedIndexValue]?.reason?.name,
+          tempData[selectedIndexValue]?.mode_of_contact?.name,
+          tempData[selectedIndexValue]?.remarks,
+          tempData[selectedIndexValue]?.visiting_executive?.user_name,
+          tempData[selectedIndexValue]?.visiting_executive?.user_location,
+          tempData[selectedIndexValue]?.visiting_executive?.user_number,
+          tempData[selectedIndexValue]?.visiting_executive?.email,
+          tempData[selectedIndexValue]?.addedy_by?.user_name,
+        ]
+      : [];
 
-    return ans;
-}
+  return ans;
+};
 
 export const updateCustomerBody = (
   customerList: IViewCustomerBody[],
@@ -780,4 +788,56 @@ export const getDropDownData = (
   ];
 
   return data;
+};
+
+export const addRepresentativeOfCreateCustomer = (
+  selectRepresentativeImage: ISelectedImage | undefined,
+  enteredRepresentativeDetails: IRepresentativeEnteredDetail,
+) => {
+  const representativeData = {
+    file_name: selectRepresentativeImage?.fileName,
+    name: enteredRepresentativeDetails.name.current,
+    designation: enteredRepresentativeDetails.designation.current,
+    department: enteredRepresentativeDetails.dept.current,
+    address: enteredRepresentativeDetails.address.current,
+    email: enteredRepresentativeDetails.email.current,
+    contact_number: enteredRepresentativeDetails.contact.current,
+    whatsapp_number: enteredRepresentativeDetails.whatsApp.current,
+  };
+
+  return representativeData;
+};
+
+export const dropDownListOfCreateCustomer = (
+  getDropDownListData: IRootCustomerCreate,
+  indexofSubtype: IsubType,
+  getRegionData: IdropDown[],
+) => {
+  const ans = [
+    convertSegemntToDropData(getDropDownListData?.segmentData),
+    indexofSubtype.customerSegmentIndex >= 0
+      ? convertSubSegemntToDropData(
+          getDropDownListData?.segmentData[indexofSubtype.customerSegmentIndex]
+            ?.sub_segment,
+        )
+      : undefined,
+    convertCustomerToDropData(getDropDownListData?.customerType),
+    indexofSubtype.customerSubTypeIndex >= 0
+      ? convertSubCustomerToDropData(
+          getDropDownListData?.customerType[indexofSubtype.customerSegmentIndex]
+            ?.sub_type,
+        )
+      : undefined,
+    getDropDownListData?.customerStatus,
+    getRegionData,
+    getDropDownListData?.clusterData,
+    StringConstants.EMPTY,
+    StringConstants.EMPTY,
+    StringConstants.EMPTY,
+    getDropDownListData?.procuredData,
+    StringConstants.EMPTY,
+    getDropDownListData?.supplierData,
+  ];
+
+  return ans;
 };

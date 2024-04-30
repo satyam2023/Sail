@@ -205,21 +205,19 @@ export const checkGST = (text: string) => {
 };
 
 export const checkCustomerDetails = (
-  code: string,
-  pan: string,
-  gst: string,
+  detail:IEnteredCustomerDetails,
   setError: Function,
 ) => {
   setError((prev: Ierror) => ({
     ...prev,
-    cust_code: checkCustomerCode(code),
-    pan: checkPAN(pan),
-    gst: checkGST(gst),
+    cust_code: checkCustomerCode(detail?.code?.current),
+    pan: checkPAN(detail?.pan?.current),
+    gst: checkGST(detail?.gst?.current),
   }));
 };
 
 export const checkRepresentativeDetail = (
-  details: any,
+  details: IRepresentativeEnteredDetail,
   setRepresentativeError: Function,
 ) => {
   setRepresentativeError((prev: IrepresentativeError) => ({

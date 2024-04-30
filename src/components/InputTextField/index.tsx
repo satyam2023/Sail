@@ -53,6 +53,7 @@ export interface ITextField {
   ref?: any;
   leftIconActive?: boolean;
   value?:string|undefined;
+  placeholderColor?:string
 }
 
 const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
@@ -116,7 +117,7 @@ const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
             onChangeText={(text: string) => {
               props.onChangeText(text);
             }}
-            placeholderTextColor={Colors.darkGrey}
+            placeholderTextColor={ props?.placeholderColor?props?.placeholderColor:Colors.darkGrey}
             onFocus={() => {
               setTextFocusStatus(true);
             }}

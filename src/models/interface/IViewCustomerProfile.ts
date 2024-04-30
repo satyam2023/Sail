@@ -1,5 +1,4 @@
 import {
-  ICompetitor,
   IProcuredProduct,
   IRepresentative,
   ISupplier,

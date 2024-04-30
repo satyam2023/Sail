@@ -20,6 +20,7 @@ interface ICustomFooter {
   style?: ViewStyle;
   rightButtonStyle?: ViewStyle;
   leftButtonStyle?: ViewStyle;
+  leftButtonTextStyle?:TextStyle;
 }
 
 interface IFooterStyle {
@@ -46,7 +47,6 @@ const CustomFooter = (props: ICustomFooter) => {
           />
         </View>
       )}
-
       <View style={styles.footer}>
         <CustomButton
           text={props.leftButtonText}
@@ -64,6 +64,7 @@ const CustomFooter = (props: ICustomFooter) => {
                 ? Colors.darkGrey
                 : Colors.sailBlue,
             },
+            props?.leftButtonTextStyle
           ]}
           onPress={props.leftButtonPress}
         />

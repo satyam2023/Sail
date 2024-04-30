@@ -8,6 +8,7 @@ import {
   InputTextField,
   LocateMe,
   PressableButton,
+  TextWrapper,
   UploadDocumnet,
 } from "components";
 import {
@@ -19,6 +20,7 @@ import {
   ICustomerTypeProject,
   ICustomertypeTrader,
   IEnteredCustomerDetails,
+  IFlatListCustomerField,
   IFlatListExtraItem,
   ISelectedImage,
   IselecteddropDown,
@@ -27,8 +29,9 @@ import {
 import { IdropDown } from "models/interface/ISetting";
 import { customerTypeTraderDealerField } from "@shared-constants";
 import Glyphs from "assets/Glyphs";
-import { ICreateCustomerError,} from "helper/ValidationRegex";
+import { ICreateCustomerError } from "helper/ValidationRegex";
 import styles from "./Style";
+import commonStyles from "commonStyles/CommonStyle";
 
 interface ICust {
   enteredCustomerDetails: IEnteredCustomerDetails;
@@ -37,64 +40,73 @@ interface ICust {
   setSubTypes: Function;
   isAllFieldHaveData: () => void;
   handleLocateMe: () => void;
-  chooseImageVideo: () => void;
+  handleSelectImageVideo: () => void;
   error: ICreateCustomerError;
   customerTypeTraderDealer: ICustomertypeTrader;
   indexofSubtype: IsubType;
   selectedDropdownItemList: IselecteddropDown;
   extraListDropDownset: Function;
-  removeSelecteddropDownItem: () => void;
+  removeSelectedItem: (index: number, type: string) => void;
   cutomerTypeProjectEnteredData: ICustomerTypeProject;
   customerDetailSelectedImage: ISelectedImage[];
+  handleTextOnTextChangeCustomer: (text: string | number, id: number) => void;
+  sapUserExist: boolean;
+  removeSelectedImage: (item: ISelectedImage) => void;
 }
 
 const CreateCustomerDetails = (props: ICust) => {
-  const renderCustomerInputField = ({item,index}:{item: string, index: number}) => {
+  const renderCustomerInputField = ({
+    item,
+    index,
+  }: IFlatListCustomerField) => {
     return (
       <>
         {index < 2 || index > 7 ? (
-          <InputTextField
-            onChangeText={(text: string) => {
-              props.enteredCustomerDetails[
-                Object.keys(props?.enteredCustomerDetails)[index]
-              ].current = text;
-              props?.isAllFieldHaveData();
-            }}
-            placeholder={item}
-            containerStyle={{ backgroundColor: Colors.white }}
-            error={
-              index == 0 || index == 8 || index == 9
-                ? props?.error[Object.keys(props?.error)[index]] == false
-                  ? ErrorMsgOfCustomerInput[index]
+          <>
+            <InputTextField
+              onChangeText={(text: string) =>
+                props?.handleTextOnTextChangeCustomer(text, index)
+              }
+              placeholder={item.placeholder}
+              maxlength={item?.maxlength}
+              containerStyle={{ backgroundColor: Colors.white }}
+              error={
+                index == 0 || index == 8 || index == 9
+                  ? props?.error[Object.keys(props?.error)[index]] == false
+                    ? ErrorMsgOfCustomerInput[index]
+                    : undefined
                   : undefined
-                : undefined
-            }
-          />
+              }
+            />
+            {index == 0 && props.sapUserExist && (
+              <TextWrapper style={commonStyles.errorText}>
+                {StringConstants.CUSTOMER_ALREADY_EXISTS}
+              </TextWrapper>
+            )}
+          </>
         ) : (
           <CustomDropDown
             ArrayOfData={props?.dropdownDataList[index - 2]}
-            topheading={item}
-            onPress={(item: IdropDown) => {
-              props?.setSubTypes(item, index, props?.enteredCustomerDetails);
-              props?.isAllFieldHaveData();
-            }}
+            topheading={item.placeholder}
+            onPress={(item: IdropDown) =>
+              props?.setSubTypes(item, index, props?.enteredCustomerDetails)
+            }
           />
         )}
       </>
     );
   };
 
-  const renderSelectedItemList = (item: string, _: number) => {
+  const renderSelectedItemList = (item: IdropDown, _: number, type: string) => {
     return (
-      <CustomDropDown
-        ArrayOfData={undefined}
-        topheading={StringConstants.SELECT_CUSTOMER_CONTACT_DETAILS}
-        defaultValue={item}
-        isRightDropDownVisible
+      <InputTextField
+        onChangeText={() => {}}
+        placeholder={item.name}
         rightIcon={Glyphs.Close}
-        onRightIconPress={() => {
-          props?.removeSelecteddropDownItem();
-        }}
+        containerStyle={{ backgroundColor: Colors.white }}
+        isEditable={false}
+        placeholderColor={Colors.blackPeral}
+        onRighIconPress={() => props?.removeSelectedItem(item.id, type)}
       />
     );
   };
@@ -126,25 +138,26 @@ const CreateCustomerDetails = (props: ICust) => {
                     StringConstants.CUSTOMER_TYPE_PROJECT,
                   );
                 }}
+                isSelectedItemNotVisible={true}
               />
-              {index == 2 && (
-                <FlatList
-                  data={props?.selectedDropdownItemList?.selectedSupplier}
-                  renderItem={({ item, index }) =>
-                    renderSelectedItemList(item, index)
-                  }
-                />
-              )}
-              {index == 0 && (
-                <FlatList
-                  data={
-                    props?.selectedDropdownItemList?.selectedProcuredProduct
-                  }
-                  renderItem={({ item, index }) =>
-                    renderSelectedItemList(item, index)
-                  }
-                />
-              )}
+              {index == 2 &&
+                props?.selectedDropdownItemList?.selectedSupplier.map(
+                  (item, index) =>
+                    renderSelectedItemList(
+                      item,
+                      index,
+                      StringConstants.SUPPLIER,
+                    ),
+                )}
+              {index == 0 &&
+                props?.selectedDropdownItemList?.selectedProcuredProduct.map(
+                  (item, index) =>
+                    renderSelectedItemList(
+                      item,
+                      index,
+                      StringConstants.PROCURED_PRODUCT,
+                    ),
+                )}
             </>
           )
         )}
@@ -178,23 +191,22 @@ const CreateCustomerDetails = (props: ICust) => {
                   StringConstants.CUSTOMER_TYPE_TRADER_DEFENCE,
                 );
               }}
+              isSelectedItemNotVisible={index == 6 || index == 4 ? true : false}
             />
-            {index == 6 && (
-              <FlatList
-                data={props?.selectedDropdownItemList?.selectedSupplier}
-                renderItem={({ item, index }) =>
-                  renderSelectedItemList(item, index)
-                }
-              />
-            )}
-            {index == 4 && (
-              <FlatList
-                data={props?.selectedDropdownItemList?.selectedProcuredProduct}
-                renderItem={({ item, index }) =>
-                  renderSelectedItemList(item, index)
-                }
-              />
-            )}
+            {index == 6 &&
+              props?.selectedDropdownItemList?.selectedSupplier.map(
+                (item, index) =>
+                  renderSelectedItemList(item, index, StringConstants.SUPPLIER),
+              )}
+            {index == 4 &&
+              props?.selectedDropdownItemList?.selectedProcuredProduct.map(
+                (item, index) =>
+                  renderSelectedItemList(
+                    item,
+                    index,
+                    StringConstants.PROCURED_PRODUCT,
+                  ),
+              )}
           </>
         )}
       </>
@@ -202,7 +214,7 @@ const CreateCustomerDetails = (props: ICust) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, marginBottom: 130 }}>
+    <SafeAreaView style={{ flex: 1, marginBottom: 20 }}>
       <CustomerDetailHeader
         heading={StringConstants.ENTER_CUSTOMER_DETAILS}
         CurrentScreen={1}
@@ -211,7 +223,7 @@ const CreateCustomerDetails = (props: ICust) => {
       <View style={{ paddingHorizontal: 20 }}>
         <FlatList
           data={CustomerDetailInputField}
-          renderItem={ renderCustomerInputField }
+          renderItem={renderCustomerInputField}
           scrollEnabled={false}
         />
         {(props?.indexofSubtype.customerSubTypeIndex == 2 ||
@@ -227,17 +239,10 @@ const CreateCustomerDetails = (props: ICust) => {
             renderItem={renderProjectFields}
           />
         )}
-
-        <LocateMe
-          onPress={() => {
-            props?.handleLocateMe();
-          }}
-        />
+        <LocateMe onPress={props?.handleLocateMe} />
         <InputTextField
           onChangeText={(text: string) =>
-            (props.enteredCustomerDetails[
-              Object.keys(props?.enteredCustomerDetails)[11]
-            ].current = text)
+            props?.handleTextOnTextChangeCustomer(text, 11)
           }
           placeholder={StringConstants.ADD_TAG_LOCATION}
           containerStyle={{ backgroundColor: Colors.white }}
@@ -246,9 +251,7 @@ const CreateCustomerDetails = (props: ICust) => {
         <UploadDocumnet
           uploadType={StringConstants.UPLOAD_VIDEO_IMAGE}
           mediaType={StringConstants.PNG_MP4}
-          onPress={() => {
-            props?.chooseImageVideo();
-          }}
+          onPress={props?.handleSelectImageVideo}
         />
         <View style={styles.imgContainer}>
           {props?.customerDetailSelectedImage &&
@@ -257,16 +260,12 @@ const CreateCustomerDetails = (props: ICust) => {
                 return (
                   <View style={{ marginRight: 10 }}>
                     <PressableButton>
-                      <Image
-                        source={item}
-                        style={styles.selectedImage}
-                      />
+                      <Image source={item} style={styles.selectedImage} />
                     </PressableButton>
-                    <PressableButton>
-                      <Image
-                        source={Glyphs.Close}
-                        style={styles.removeImage}
-                      />
+                    <PressableButton
+                      onPress={() => props?.removeSelectedImage(item)}
+                    >
+                      <Image source={Glyphs.Close} style={styles.removeImage} />
                     </PressableButton>
                   </View>
                 );

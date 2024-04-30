@@ -1,6 +1,7 @@
 import Geolocation from "@react-native-community/geolocation";
 import { useFocusEffect } from "@react-navigation/native";
 import {
+  checkSAPCustomer,
   getClusterAPI,
   getCreateCustomerProfile,
   getCustomerSegmenList,
@@ -10,16 +11,26 @@ import {
   getSupplierAPI,
 } from "controllers/createCustomerController";
 import {
+  addRepresentativeOfCreateCustomer,
+  checkAllInputField,
+  chooseImageVideo,
   convertCustomerToDropData,
   convertSegemntToDropData,
   convertSubCustomerToDropData,
   convertSubSegemntToDropData,
+  isAllFieldTrue,
   logger,
+  removeSelectedCustomerImage,
+  removeSelectedDropDownItem,
 } from "helper/helperFunctions";
-import { ICreateCustomerBody,IRootCustomerCreate } from "models/ApiResponses/CreateCustomer";
+import {
+  ICreateCustomerBody,
+  IRootCustomerCreate,
+} from "models/ApiResponses/CreateCustomer";
 import {
   ICustomerTypeProject,
   ICustomertypeTrader,
+  IEnteredCompetitorDetail,
   IEnteredCustomerDetails,
   IExample,
   IRepresentativeEnteredDetail,
@@ -30,7 +41,6 @@ import {
 } from "models/interface/ICreateCustomer";
 import { IdropDown } from "models/interface/ISetting";
 import React, { useEffect, useRef, useState } from "react";
-import { launchImageLibrary } from "react-native-image-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { BottomTabVisibility } from "redux/actions/UIAction";
 import { RootState, store } from "redux/store/Store";
@@ -42,33 +52,33 @@ import {
 } from "helper/ValidationRegex";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
 
-
 const CreateCustomerViewModel = () => {
   const [CurrentScreen, setCurrentScreen] = useState<number>(1);
   const [addDetailStatus, setAddDetailsStatus] = useState<boolean>(false);
-  const getDropDownListData: IRootCustomerCreate = useSelector(
-    (state: RootState) => state?.createCustomer,
-  );
-  useEffect(() => {
-    if (CurrentScreen == 2 || CurrentScreen == 3) setAddDetailsStatus(true);
-  }, [CurrentScreen]);
+  const [sapUserExist, setSapUserExist] = useState<boolean>(false);
+  const [customerDetailSelectedImage, setCustomerSelectedImage] = useState<
+    ISelectedImage[]
+  >([]);
+  const [selectRepresentativeImage, setRepresentativeImage] = useState<
+    ISelectedImage | undefined
+  >();
   const [error, setError] = useState({
     cust_code: null,
-    company: null,
-    cust_seg: null,
-    cust_sub_seg: null,
-    cust_type: null,
-    cust_sub_type: null,
-    cust_status: null,
-    cust_region: null,
+    company: true,
+    cust_seg: true,
+    cust_sub_seg: true,
+    cust_type: true,
+    cust_sub_type: true,
+    cust_status: true,
+    cust_region: true,
     pan: null,
     gst: null,
   });
   const [representativeError, setRepresentativeError] = useState({
-    name: null,
-    designation: null,
-    departement: null,
-    address: null,
+    name: true,
+    designation: true,
+    departement: true,
+    address: true,
     email: null,
     contact: null,
     whatsApp: null,
@@ -88,6 +98,13 @@ const CreateCustomerViewModel = () => {
       selectedProcuredProduct: [],
       selectedSupplier: [],
     });
+  const getDropDownListData: IRootCustomerCreate = useSelector(
+    (state: RootState) => state?.createCustomer,
+  );
+  useEffect(() => {
+    if (CurrentScreen == 2 || CurrentScreen == 3) setAddDetailsStatus(true);
+    setIsAllDetailField(false);
+  }, [CurrentScreen]);
   const getRegionData = store?.getState()?.home?.data?.data?.CustomerRegion;
   const dispatch = useDispatch();
   useFocusEffect(() => {
@@ -105,41 +122,21 @@ const CreateCustomerViewModel = () => {
       getSupplierAPI(dispatch);
   }, []);
 
-  function handleScreenChange(direction: string) {
-   if(CurrentScreen==1)
-    checkCustomerDetails(
-      enteredCustomerDetails?.code?.current,
-      enteredCustomerDetails?.pan?.current,
-      enteredCustomerDetails?.gst?.current,
-      setError,
-    );
-    else if(CurrentScreen==2)
-    checkRepresentativeDetail(
-      enteredRepresentativeDetails,
-      setRepresentativeError,
-    );
-
-
+  const authCustomerScreen = () => {
+    if (isAllFieldTrue(error) && isAllDetailsFilled) setCurrentScreen(2);
+  };
+  async function handleScreenChange(direction: string) {
     switch (direction) {
       case StringConstants.FORWARD:
         {
-          if (
-            CurrentScreen == 1 &&
-            error.cust_code == true &&
-            error.pan == true &&
-            error.gst == true
-          ) {
-            setCurrentScreen(2);
-          } else if (
-            CurrentScreen == 2 
-            // representativeError?.email == true &&
-            // representativeError?.contact == true &&
-            // representativeError?.whatsApp == true
-          ) {
+          if (CurrentScreen == 1) {
+            checkCustomerDetails(enteredCustomerDetails, setError);
+            authCustomerScreen();
+          } else if (CurrentScreen == 2) {
             setCurrentScreen(3);
-          } else if (CurrentScreen == 3) 
-          { setCurrentScreen(4);
-          createCustomer();
+          } else if (CurrentScreen == 3) {
+            setCurrentScreen(4);
+            createCustomer();
           }
         }
         break;
@@ -148,16 +145,15 @@ const CreateCustomerViewModel = () => {
           setCurrentScreen(CurrentScreen - 1);
         break;
     }
-
-    setIsAllDetailField(false);
   }
+
   let representativeList = additionalList.representativeList;
   let competitorList = additionalList.competitorList;
   const addDetails = (param: boolean) => {
     setAddDetailsStatus(param);
   };
 
-  const dropdownDataList = [
+  const dropdownDataList: IdropDown[][] = [
     convertSegemntToDropData(getDropDownListData?.segmentData),
     indexofSubtype.customerSegmentIndex >= 0
       ? convertSubSegemntToDropData(
@@ -183,7 +179,7 @@ const CreateCustomerViewModel = () => {
     getDropDownListData?.supplierData,
   ];
 
-  const enteredRepresentativeDetails:IRepresentativeEnteredDetail = {
+  const enteredRepresentativeDetails: IRepresentativeEnteredDetail = {
     name: useRef(""),
     designation: useRef(""),
     dept: useRef(""),
@@ -193,22 +189,20 @@ const CreateCustomerViewModel = () => {
     whatsApp: useRef(""),
   };
 
-  const [selectRepresentativeImage,setRepresentativeImage]=useState<ISelectedImage|undefined>();
-
-  const enteredCompetitorDetail = {
+  const enteredCompetitorDetail: IEnteredCompetitorDetail = {
     company: useRef(""),
     address: useRef(""),
     comment: useRef(""),
   };
 
-  const cutomerTypeProjectEnteredData :ICustomerTypeProject= {
+  const cutomerTypeProjectEnteredData: ICustomerTypeProject = {
     procured_products: useRef<number[]>([]),
     tentative_quality_procured: useRef<string>(""),
     supplier: useRef<number[]>([]),
     project_details: useRef<string>(""),
   };
 
-  const customerTypeTraderDealer:ICustomertypeTrader = {
+  const customerTypeTraderDealer: ICustomertypeTrader = {
     cluster: useRef<number>(-1),
     contact_number: useRef<string>(""),
     day_wise_stock: useRef<string>(""),
@@ -218,7 +212,7 @@ const CreateCustomerViewModel = () => {
     supplier: useRef<number[]>([]),
   };
 
-  const enteredCustomerDetails:IEnteredCustomerDetails = {
+  const enteredCustomerDetails: IEnteredCustomerDetails = {
     code: useRef(""),
     company: useRef(""),
     cust_seg: useRef<number>(-1),
@@ -235,47 +229,24 @@ const CreateCustomerViewModel = () => {
     longitude: useRef(""),
   };
 
-  const [customerDetailSelectedImage,setCustomerSelectedImage]=useState<ISelectedImage[]>([]);
-
-  async function chooseImageVideo() {
-    const response: { assets?: any; errorMessage?: any; didCancel?: boolean } =
-      await launchImageLibrary(
-        {
-          mediaType: "photo" || "video",
-          quality: 0,
-          videoQuality: "low",
-        },
-        () => {},
-      );
-
-    if (response.didCancel) {
-    } else if (response.errorMessage) {
-      logger("ImagePicker Error: ", response.errorMessage);
-    } else {
-      const selectedAsset = response.assets[0];
-      const fileExtension = selectedAsset.uri
-        .substring(selectedAsset.uri.lastIndexOf(".") + 1)
-        .toLowerCase();
-
-      const allowedExtensions = ["jpg", "jpeg", "png", "pdf", "doc", "docx"];
-      if (allowedExtensions.includes(fileExtension)) {
-        isAllFieldHaveData();
-        if (CurrentScreen == 1)
-        setCustomerSelectedImage([...customerDetailSelectedImage ,selectedAsset]);  // enteredCustomerDetails.image.current = selectedAsset;
-        else if (CurrentScreen == 2)
-         setRepresentativeImage(selectedAsset);
-      }
-    }
+  async function handleSelectImageVideo(){
+   const selectedAsset= await chooseImageVideo();
+        if (CurrentScreen == 1){
+          setCustomerSelectedImage([
+            ...customerDetailSelectedImage,
+            selectedAsset,
+          ]);
+          isAllFieldHaveData();
+        }
+        else if (CurrentScreen == 2) setRepresentativeImage(selectedAsset);
   }
 
-
   function isAllFieldHaveData() {
-    for (const key in enteredCustomerDetails) {
-      if (!enteredCustomerDetails[key]?.current) {
-        return;
-      }
+    if (checkAllInputField(enteredCustomerDetails)) {
+      if (!isAllDetailsFilled) setIsAllDetailField(true);
+    } else {
+      if (isAllDetailsFilled) setIsAllDetailField(false);
     }
-    setIsAllDetailField(true);
   }
 
   function extraListDropDownset(item: IdropDown, index: number, type: string) {
@@ -288,7 +259,7 @@ const CreateCustomerViewModel = () => {
           ...prev,
           selectedProcuredProduct: [
             ...selectedDropdownItemList.selectedProcuredProduct,
-            item.name,
+            item,
           ],
         }));
       } else if (index == 6) {
@@ -297,7 +268,7 @@ const CreateCustomerViewModel = () => {
           ...prev,
           selectedSupplier: [
             ...selectedDropdownItemList.selectedSupplier,
-            item.name,
+            item,
           ],
         }));
       }
@@ -308,7 +279,7 @@ const CreateCustomerViewModel = () => {
           ...prev,
           selectedProcuredProduct: [
             ...selectedDropdownItemList.selectedProcuredProduct,
-            item.name,
+            item,
           ],
         }));
       } else if (index == 2) {
@@ -317,14 +288,40 @@ const CreateCustomerViewModel = () => {
           ...prev,
           selectedSupplier: [
             ...selectedDropdownItemList.selectedSupplier,
-            item.name,
+            item,
           ],
         }));
       }
     }
   }
 
-  function removeSelecteddropDownItem() {}
+  function removeSelectedItem(index: number, type: string) {
+    if (type == StringConstants.PROCURED_PRODUCT)
+      setSelectedDropDownItemList((prev: IselecteddropDown) => ({
+        ...prev,
+        selectedProcuredProduct: removeSelectedDropDownItem(
+          index,
+          selectedDropdownItemList?.selectedProcuredProduct,
+        ),
+      }));
+    else if (type == StringConstants.SUPPLIER)
+      setSelectedDropDownItemList((prev: IselecteddropDown) => ({
+        ...prev,
+        selectedSupplier: removeSelectedDropDownItem(
+          index,
+          selectedDropdownItemList?.selectedSupplier,
+        ),
+      }));
+  }
+
+  function removeSelectedImage(item: ISelectedImage) {
+    setCustomerSelectedImage([
+      ...removeSelectedCustomerImage(
+        item.fileName,
+        customerDetailSelectedImage,
+      ),
+    ]);
+  }
 
   function setSubTypes(
     item: IdropDown,
@@ -332,19 +329,19 @@ const CreateCustomerViewModel = () => {
     enteredCustomerDetails: IExample,
   ) {
     if (index == 2) {
-      setIndexofSubType((prev: any) => ({
+      setIndexofSubType((prev: IsubType) => ({
         ...prev,
-        customerSegmentIndex: index,
+        customerSegmentIndex: item.id,
       }));
     } else if (index == 4) {
-      setIndexofSubType((prev: any) => ({
+      setIndexofSubType((prev: IsubType) => ({
         ...prev,
         customerSubTypeIndex: item.id,
       }));
     }
-
     enteredCustomerDetails[Object.keys(enteredCustomerDetails)[index]].current =
       index != 7 ? item.id : item.name;
+    isAllFieldHaveData();
   }
 
   const handleLocateMe = () => {
@@ -352,6 +349,7 @@ const CreateCustomerViewModel = () => {
       async (pos: any) => {
         enteredCustomerDetails.latitude.current = pos.coords.latitude;
         enteredCustomerDetails.longitude.current = pos.coords.longitude;
+        isAllFieldHaveData();
       },
       (error: any) => logger(error, "getCurrentPosition", "error"),
       {
@@ -371,16 +369,18 @@ const CreateCustomerViewModel = () => {
         name: selectRepresentativeImage?.fileName,
       };
 
-      const custImageVideoData = customerDetailSelectedImage?.map((item:ISelectedImage,index:number) => {
-        appendFormData.append(`Cust${index+1}`, {
-          uri: item?.uri,
-          type: item?.type,
-          name: item?.fileName,
-        });
-        return `Cust1${index+1}`;
-      });
+      const custImageVideoData = customerDetailSelectedImage?.map(
+        (item: ISelectedImage, index: number) => {
+          appendFormData.append(`Cust${index + 1}`, {
+            uri: item?.uri,
+            type: item?.type,
+            name: item?.fileName,
+          });
+          return `Cust1${index + 1}`;
+        },
+      );
       appendFormData.append(`repre1`, repVideoData);
-      let body :ICreateCustomerBody= {
+      let body: ICreateCustomerBody = {
         user_id: userID,
         custFile: custImageVideoData,
         customer_code: enteredCustomerDetails?.code?.current,
@@ -399,14 +399,12 @@ const CreateCustomerViewModel = () => {
         address: enteredCustomerDetails?.location?.current,
         representative: representativeList,
         competitor: competitorList,
-        
       };
-
       if (
         indexofSubtype.customerSubTypeIndex == 2 ||
         indexofSubtype.customerSubTypeIndex == 7
       ) {
-        body  = {
+        body = {
           ...body,
           cluster: customerTypeTraderDealer?.cluster?.current,
           contact_number: customerTypeTraderDealer.contact_number.current,
@@ -419,15 +417,16 @@ const CreateCustomerViewModel = () => {
           supplier: customerTypeTraderDealer.supplier.current,
         };
       } else if (indexofSubtype.customerSubTypeIndex == 6) {
-
         body = {
           ...body,
-          procured_products: cutomerTypeProjectEnteredData?.procured_products?.current,
-          tentative_quality_procured: cutomerTypeProjectEnteredData?.tentative_quality_procured?.current,
-          supplier:cutomerTypeProjectEnteredData?.supplier?.current,
-          project_details: cutomerTypeProjectEnteredData?.project_details?.current,
+          procured_products:
+            cutomerTypeProjectEnteredData?.procured_products?.current,
+          tentative_quality_procured:
+            cutomerTypeProjectEnteredData?.tentative_quality_procured?.current,
+          supplier: cutomerTypeProjectEnteredData?.supplier?.current,
+          project_details:
+            cutomerTypeProjectEnteredData?.project_details?.current,
         };
-        
       }
 
       appendFormData.append("data", JSON.stringify(body));
@@ -441,37 +440,105 @@ const CreateCustomerViewModel = () => {
     dispatch(setLoaderVisibility(false));
   };
 
-  function addRepresentativeCompetitor() {
-    if (CurrentScreen == 2) {
-      const representativeData = {
-        file_name: selectRepresentativeImage?.fileName,
-        name: enteredRepresentativeDetails.name.current,
-        designation: enteredRepresentativeDetails.designation.current,
-        department: enteredRepresentativeDetails.dept.current,
-        address: enteredRepresentativeDetails.address.current,
-        email: enteredRepresentativeDetails.email.current,
-        contact_number: enteredRepresentativeDetails.contact.current,
-        whatsapp_number: enteredRepresentativeDetails.whatsApp.current,
-      };
-
-      setAdditionalList((prev: any) => ({
+  const addRepresentative = () => {
+    if (isAllFieldTrue(representativeError) && isAllDetailsFilled) {
+      const representativeData = addRepresentativeOfCreateCustomer(
+        selectRepresentativeImage,
+        enteredRepresentativeDetails,
+      );
+      setAdditionalList((prev: IadditionalList) => ({
         ...prev,
         representativeList: [
           ...additionalList.representativeList,
           representativeData,
         ],
       }));
-    } else if (CurrentScreen == 3) {
-      const compeData = {
-        company_name: enteredCompetitorDetail.company.current,
-        address: enteredCompetitorDetail.address.current,
-        comment: enteredCompetitorDetail.comment.current,
-      };
-      setAdditionalList((prev: any) => ({
-        ...prev,
-        competitorList: [...additionalList.competitorList, compeData],
-      }));
+      setAddDetailsStatus(false);
+    } else {
     }
+  };
+
+  const checkSapCustomerExistAPI = async (code: string) => {
+    const body = { customer_code: code };
+    try {
+      dispatch(setLoaderVisibility(true));
+      const res = await checkSAPCustomer(body);
+      if (res?.isSuccess) {
+        if (res?.data?.data?.company_name) {
+          setSapUserExist(true);
+        } else {
+          if (sapUserExist) setSapUserExist(false);
+        }
+      }
+    } catch (e) {
+    } finally {
+      dispatch(setLoaderVisibility(false));
+    }
+  };
+
+  const addCompetitor = () => {
+    if(isAllDetailsFilled){
+    const compeData = {
+      company_name: enteredCompetitorDetail.company.current,
+      address: enteredCompetitorDetail.address.current,
+      comment: enteredCompetitorDetail.comment.current,
+    };
+    setAdditionalList((prev: IadditionalList) => ({
+      ...prev,
+      competitorList: [...additionalList.competitorList, compeData],
+    }));
+    setAddDetailsStatus(false);
+  }
+  };
+
+  function addRepresentativeCompetitor() {
+    if (CurrentScreen == 2) {
+      checkRepresentativeDetail(
+        enteredRepresentativeDetails,
+        setRepresentativeError,
+      );
+      addRepresentative();
+    } else if (CurrentScreen == 3) {
+      addCompetitor();
+    }
+  }
+
+  function handleTextOnTextChangeCustomer(text: string | number, id: number) {
+    enteredCustomerDetails[Object.keys(enteredCustomerDetails)[id]].current =
+      text;
+    isAllFieldHaveData();
+    if (enteredCustomerDetails.code.current.length == 10 && id == 0) {
+      checkSapCustomerExistAPI(enteredCustomerDetails.code.current);
+    }
+  }
+
+  const checkAllRepresentativeFieldHaveData = () => {
+    if (checkAllInputField(enteredRepresentativeDetails)) {
+      if (!isAllDetailsFilled) setIsAllDetailField(true);
+    } else {
+      if (isAllDetailsFilled) setIsAllDetailField(false);
+    }
+  };
+
+  const checkAllCompetitorFieldHaveData = () => {
+    if (checkAllInputField(enteredCompetitorDetail)) {
+      if (!isAllDetailsFilled) setIsAllDetailField(true);
+    } else {
+      if (isAllDetailsFilled) setIsAllDetailField(false);
+    }
+  };
+
+  function handleTextChangeOfRepresentative(text: string, id: number) {
+    enteredRepresentativeDetails[
+      Object.keys(enteredRepresentativeDetails)[id]
+    ].current = text;
+    checkAllRepresentativeFieldHaveData();
+  }
+
+  function handleTextChangeOfCompetitor(text: string, id: number) {
+    enteredCompetitorDetail[Object.keys(enteredCompetitorDetail)[id]].current =
+      text;
+    checkAllCompetitorFieldHaveData();
   }
 
   return (
@@ -487,7 +554,7 @@ const CreateCustomerViewModel = () => {
         setSubTypes,
         isAllFieldHaveData,
         handleLocateMe,
-        chooseImageVideo,
+        handleSelectImageVideo,
         error,
         enteredRepresentativeDetails,
         addRepresentativeCompetitor,
@@ -499,11 +566,16 @@ const CreateCustomerViewModel = () => {
         indexofSubtype,
         selectedDropdownItemList,
         extraListDropDownset,
-        removeSelecteddropDownItem,
+        removeSelectedItem,
         cutomerTypeProjectEnteredData,
         representativeError,
         customerDetailSelectedImage,
-        selectRepresentativeImage
+        selectRepresentativeImage,
+        handleTextOnTextChangeCustomer,
+        sapUserExist,
+        removeSelectedImage,
+        handleTextChangeOfRepresentative,
+        handleTextChangeOfCompetitor,
       }}
     />
   );
