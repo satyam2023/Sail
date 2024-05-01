@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { IApiResponse } from "models/ApiResponses/IApiResponse";
 import { CMSPageResponse } from "models/ApiResponses/CMSPageResponse";
 import { getCMSPage } from "controllers/cmsController";
+import { logger } from "helper/helperFunctions";
 
 const CMSViewModel = () => {
   const [pages, setpages] = useState<string>(StringConstants.CMS);
@@ -48,6 +49,7 @@ const CMSViewModel = () => {
           dispatch(saveCmsPages(res.data));
         }
       } catch (error) {
+        logger(error,"Error in fetching cms page data")
       } finally {
         dispatch(setLoaderVisibility(false));
       }

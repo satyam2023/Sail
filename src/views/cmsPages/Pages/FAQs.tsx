@@ -2,8 +2,6 @@ import React from "react";
 import {ScrollView } from "react-native";
 import Header from "components/AppHeader";
 import StringConstants from "shared/localization";
-import CustomToggleBox from "components/CustomToggleBox";
-import {IFaqData } from "@shared-constants";
 import { CMSPageResponse } from "models/ApiResponses/CMSPageResponse";
 import RenderHTML from "react-native-render-html";
 
