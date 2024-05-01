@@ -81,7 +81,7 @@ const Planned = ({
           }
           modeOfContactDropData={modeOfContactDropData}
           cancelledStatus={
-            plannedVisitList[selectedIndexValue]?.visit_status == "0"
+            (isSearchResult ? searchResult : plannedVisitList)[selectedIndexValue]?.visit_status == "0"
               ? false
               : true
           }

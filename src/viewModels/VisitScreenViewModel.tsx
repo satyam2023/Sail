@@ -247,7 +247,8 @@ const VisitScreenViewModel = () => {
     };
     const res = await cancelVisitAPI(data);
     if (res?.isSuccess) {
-      callPlannedVisitApi(pageNumber.planned.current);
+      setSearchResult([]);
+      callPlannedVisitApi(1);
     }
   };
 

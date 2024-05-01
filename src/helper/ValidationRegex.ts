@@ -61,6 +61,13 @@ export interface IRepresentativeError {
   whatsApp: boolean | null;
 }
 
+export interface IMeetingRepresentativeError{
+  [key: string|number]: boolean | null;
+  email: boolean | null;
+  contact: boolean | null;
+  whatsApp: boolean | null;
+}
+
 interface IUserDetails {
   Upn: MutableRefObject<string>;
   Contact: MutableRefObject<string>;
@@ -116,7 +123,7 @@ const validateName = (name: string) => {
 };
 
 const validateEmail = (email: string) => {
-  if (email.length == 0) {
+  if (email?.length == 0) {
     return false;
   } else {
     return Regex.EMAIL.test(email);
@@ -280,5 +287,18 @@ export const checkCreateVisit = (
     reason: validateDropDown(visitPlanDetail.reason.current),
     mode: validateDropDown(visitPlanDetail.modeOfContact.current),
     remarks: Regex.NAME.test(visitPlanDetail.remarks.current),
+  }));
+};
+
+
+export const checkMeetingRepresentativeDetail = (
+  details: IRepresentativeEnteredDetail,
+  setRepresentativeError: Function,
+) => {
+  setRepresentativeError((prev: IrepresentativeError) => ({
+    ...prev,
+    email: Regex.EMAIL.test(details?.email?.current),
+    contact: Regex.CONTACT.test(details?.contact?.current),
+    whatsApp: Regex.CONTACT.test(details?.whatsApp?.current),
   }));
 };

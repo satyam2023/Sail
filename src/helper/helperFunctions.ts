@@ -35,6 +35,7 @@ import {
 } from "models/interface/IMeeting";
 import StringConstants from "shared/localization";
 import { IProductCatalogue } from "models/ApiResponses/ProductCatalogue";
+import { MutableRefObject } from "react";
 
 export function ExtarctTwoLetterName(name: string) {
   let ans = name[0];
@@ -388,7 +389,9 @@ export const unplannedVisitMeeting = (
   enteredRepresentativeDetails: IRepresentativeEnteredDetail,
   representativeList: IRepresentativeList,
   selectedIssueArr: any[],
+  selectedRepresentativeIndex: MutableRefObject<number>,
 ) => {
+  
   const body = {
     customer_code: unPlannedVisitDetail?.code?.current || null,
     company_name: unPlannedVisitDetail?.name?.current || null,
@@ -409,32 +412,32 @@ export const unplannedVisitMeeting = (
     visit_issues: selectedIssueArr.length > 0 ? selectedIssueArr : null,
     representative_name:
       representativeList.representativeListDetail[
-        enteredRepresentativeDetails.id.current as number
-      ]?.name?.current || null,
+        selectedRepresentativeIndex.current
+      ]?.name || null,
     representative_designation:
       representativeList.representativeListDetail[
-        enteredRepresentativeDetails.id.current as number
-      ]?.designation?.current || null,
+        selectedRepresentativeIndex.current
+      ]?.designation || null,
     representative_department:
       representativeList.representativeListDetail[
-        enteredRepresentativeDetails.id.current as number
-      ]?.dept?.current || null,
+        selectedRepresentativeIndex.current
+      ]?.dept || null,
     representative_address:
       representativeList.representativeListDetail[
-        enteredRepresentativeDetails.id.current as number
-      ]?.address?.current || null,
+        selectedRepresentativeIndex.current
+      ]?.address || null,
     representative_email:
       representativeList.representativeListDetail[
-        enteredRepresentativeDetails.id.current as number
-      ]?.email?.current || null,
+        selectedRepresentativeIndex.current
+      ]?.email || null,
     representative_contact_number:
       representativeList.representativeListDetail[
-        enteredRepresentativeDetails.id.current as number
-      ]?.contact?.current || null,
+        selectedRepresentativeIndex.current
+      ]?.contact|| null,
     representative_whatsapp_number:
       representativeList.representativeListDetail[
-        enteredRepresentativeDetails.id.current as number
-      ]?.whatsApp?.current || null,
+        selectedRepresentativeIndex.current
+      ]?.whatsApp || null,
   };
 
   return body;
@@ -467,16 +470,17 @@ export const setInputFieldToIntialValue = (fields: any) => {
   }
 };
 
-// export const setErrorToIntialValue = (fields: any) => {
-//   for (let i = 0; i < Object.keys(fields).length; i++) {
-//     fields[Object.keys(fields)[i]].current = undefined;
-//   }
-// };
+export const setErrorToIntialValue = <T>(fields: T) => {
+  Object.keys(fields as Record<string, boolean | null>).forEach(
+    (key) => ((fields as Record<string, boolean | null>)[key] = null),
+  );
+};
 
-export const setInputToIntialStringvalue=(fields: any) => {
-  for (let i = 0; i < Object.keys(fields).length; i++) {
-    fields[Object.keys(fields)[i]].current = "";
-  }
+export const setInputToIntialStringvalue = <T>(fields: T) => {
+  Object.keys(fields as Record<string, MutableRefObject<string>>).forEach(
+    (key) =>
+      ((fields as Record<string, MutableRefObject<string>>)[key].current = ""),
+  );
 };
 
 export const isDetailFilled = (fields: any) => {
@@ -490,7 +494,22 @@ export const isDetailFilled = (fields: any) => {
 
 export const checkAllInputField = (fields: any) => {
   for (let i = 0; i < Object.keys(fields).length; i++) {
-    if (fields[Object.keys(fields)[i]].current.length == 0) {
+    if (
+      fields[Object.keys(fields)[i]].current?.length == 0 ||
+      fields[Object.keys(fields)[i]].current == undefined
+    ) {
+      return false;
+    }
+  }
+  return true;
+};
+
+export const checkAllInputFieldOfRepresentative = (fields: any) => {
+  for (let i = 0; i < 7; i++) {
+    if (
+      fields[Object.keys(fields)[i]].current?.length == 0 ||
+      fields[Object.keys(fields)[i]].current == undefined
+    ) {
       return false;
     }
   }

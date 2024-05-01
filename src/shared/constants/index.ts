@@ -1,7 +1,7 @@
 import Glyphs from "assets/Glyphs";
 import { Colors } from "commonStyles/RNColor.style";
 import { IdropDown } from "models/interface/ISetting";
-import { ImageURISource } from "react-native";
+import { ImageURISource, InputModeOptions } from "react-native";
 
 import StringConstants from "shared/localization";
 
@@ -91,6 +91,44 @@ export const RepresentativeDetailInputFieldData = [
   StringConstants.ENETR_WHATSAPP_NO,
 ];
 
+
+export interface IMeetingRepresentativeDetailInputField{
+  placeholder:string,
+    maxlength:number,
+    inputMode:InputModeOptions,
+}
+export const MeetingRepresentativeDetailInputField:IMeetingRepresentativeDetailInputField[]=[
+  {placeholder:StringConstants.ENTER_NAME,
+    maxlength:20,
+    inputMode:'text',
+  },
+  {placeholder:StringConstants.ENTER_DESIGNATION,
+    maxlength:20,
+    inputMode:'text',
+  },
+  {placeholder:StringConstants.ENTER_DEPARTMENT,
+    maxlength:20,
+    inputMode:'text',
+  },
+  {placeholder:StringConstants.ADDRESS,
+    maxlength:30,
+    inputMode:'text',
+  },
+  {placeholder:StringConstants.ENTER_EMAIL_ADDRESS,
+    maxlength:20,
+    inputMode:'email',
+  },
+  {placeholder:StringConstants.ENETR_CONTACTNO,
+    maxlength:10,
+    inputMode:'numeric',
+  },
+  {placeholder:StringConstants.ENETR_WHATSAPP_NO,
+    maxlength:10,
+    inputMode:'numeric',
+  },
+  
+]
+
 export const RepresentativeDetailData = [
   StringConstants.NAME,
   StringConstants.DESIGNATION,
@@ -158,23 +196,31 @@ export const MeetingHeaderData = [
     heading: StringConstants.FOR_PLANNED_VISIT,
     backgroundColor: {
       focus: Colors.sailBlue,
-      notfocus: Colors.aquaHaze,
+      notfocus: Colors.white,
     },
     textColor: {
       focus: Colors.white,
       notfocus: Colors.sailBlue,
     },
+    borderColor:{
+      focus:Colors.white3,
+      notfocus: Colors.sailBlue,
+    }
   },
   {
     heading: StringConstants.FOR_UNPLANNED_VISIT,
     backgroundColor: {
       focus: Colors.sailBlue,
-      notfocus: Colors.aquaHaze,
+      notfocus: Colors.white,
     },
     textColor: {
       focus: Colors.white,
       notfocus: Colors.sailBlue,
     },
+    borderColor:{
+      focus:Colors.white3,
+      notfocus: Colors.sailBlue,
+    }
   },
 ];
 

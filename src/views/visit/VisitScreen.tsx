@@ -207,7 +207,7 @@ const VisitScreen = ({
         {currentVisit == 2 &&
           FooterVisibility &&
           customerDetails &&
-          plannedVisitList[selectedIndexValue]?.visit_status == "0" && (
+          (searchResult.length>0 ? searchResult : plannedVisitList)[selectedIndexValue]?.visit_status == "0" && (
             <CustomFooter
               leftButtonText={StringConstants.CANCEL_VISIT}
               rightButtonText={StringConstants.EDIT_VISIT}
