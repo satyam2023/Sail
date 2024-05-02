@@ -42,7 +42,7 @@ export const getExecutedVisits = async (page?: number) => {
 
 export const getPlannedVisits = async ( page?: number) => {
   try {
-    const res: IApiResponse<IPaginations<VisitResponse>> | undefined =
+    const res: IApiResponse<IPaginations<VisitResponse>> =
       await sendGetRequest<IPaginations<VisitResponse>>(
         `${APIConstants.PLANNED_VISITS}?page=${page ?? 1}`,
       );

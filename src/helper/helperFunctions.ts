@@ -549,7 +549,7 @@ export const convertIdToIndex = (
   return selectedIndex[0];
 };
 
-export const tacklePagination = (n: number, arr: []) => {
+export const tacklePagination = (n: number, arr:any[]) => {
   let l = arr.length;
   const end = (n - 1) * 15;
   if (l >= 0 && l <= end) {

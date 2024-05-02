@@ -25,10 +25,11 @@ interface PlannedProps {
   handleCustomerClick: () => void;
   setPaginationPage: () => void;
   searchResult: VisitResponse[];
+  plannedVisit:VisitResponse[];
 }
 
 const Planned = ({
-  plannedVisitList,
+  // plannedVisitList,
   plannedVisitFieldData,
   selectedIndexValue,
   plannedVisitEditDetails,
@@ -39,7 +40,10 @@ const Planned = ({
   customerDetails,
   setPaginationPage,
   searchResult,
+  plannedVisit
 }: PlannedProps) => {
+
+  console.log("Planned List :::::",plannedVisit);
   const isSearchResult: boolean = searchResult.length > 0 ? true : false;
   const renderPlannedVisit = ({ item, index }: IFlatListPlannedVisit) => {
     return (
@@ -59,7 +63,7 @@ const Planned = ({
       {!customerDetails ? (
         <>
           <FlatList
-            data={isSearchResult?searchResult:plannedVisitList}
+            data={isSearchResult?searchResult: plannedVisit}
             renderItem={renderPlannedVisit}
             onMomentumScrollEnd={setPaginationPage}
             showsVerticalScrollIndicator={false}
@@ -72,7 +76,7 @@ const Planned = ({
           placeholderData={Data}
           indexofSelectedVisit={selectedIndexValue}
           companyName={
-            (isSearchResult ? searchResult : plannedVisitList)[
+            (isSearchResult ? searchResult :  plannedVisit)[
               selectedIndexValue
             ]?.customer_data?.company_name
           }
@@ -81,7 +85,7 @@ const Planned = ({
           }
           modeOfContactDropData={modeOfContactDropData}
           cancelledStatus={
-            (isSearchResult ? searchResult : plannedVisitList)[selectedIndexValue]?.visit_status == "0"
+            (isSearchResult ? searchResult :  plannedVisit)[selectedIndexValue]?.visit_status == "0"
               ? false
               : true
           }
