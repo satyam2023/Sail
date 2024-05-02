@@ -5,6 +5,8 @@ import commonStyles from "commonStyles/CommonStyle";
 import { INearbyCustomer } from "models/ApiResponses/IEnquiryResponses";
 import Glyphs from "assets/Glyphs";
 import MapComponent from "components/CustomMap";
+import { Colors } from "commonStyles/RNColor.style";
+import styles from "./Style";
 
 interface Iuser {
   item: INearbyCustomer;
@@ -18,13 +20,14 @@ interface INearby {
 const NearbyCustomer = (props: INearby) => {
   function renderitem({ item, index }: Iuser) {
     return (
-      <View style={[commonStyles.rectangularBoxRadius,{marginBottom:16}]}>
+      <View style={styles.mapCOnatiner}>
         <RectangularBox
           heading={item?.company_name}
           subHeading={item?.address}
-          leftIcon={Glyphs.blueLocation}
+          leftIcon={Glyphs.Customer}
           isRightNotIconRequired
-          style={{marginBottom:0}}
+          style={{marginBottom:0,paddingHorizontal:0}}
+          leftIconStyle={styles.leftIconStyle}
         />
         <MapComponent
           latitude={item?.location_lat}

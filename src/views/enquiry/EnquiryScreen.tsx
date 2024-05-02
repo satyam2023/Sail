@@ -32,11 +32,11 @@ interface IEnquiryScreen {
   setIssueSearchResult: Function;
   setsearchresult: Function;
   NearByCustomerList: INearbyCustomer[] | undefined;
-  handleIssueEnquiry:(type:string)=>void;
-  issueEnquiryType:string;
-  handleTextChangeofUserEnquiry:(text:string,id:number)=>void;
-        handleTextChangeofIssueEnquiry:(text:string,id:number)=>void;
-        btnStatus:IButtonStatus
+  handleIssueEnquiry: (type: string) => void;
+  issueEnquiryType: string;
+  handleTextChangeofUserEnquiry: (text: string, id: number) => void;
+  handleTextChangeofIssueEnquiry: (text: string, id: number) => void;
+  btnStatus: IButtonStatus;
 }
 
 const EnquiryScreen = ({
@@ -55,63 +55,66 @@ const EnquiryScreen = ({
   issueEnquiryType,
   handleTextChangeofUserEnquiry,
   handleTextChangeofIssueEnquiry,
-  btnStatus
-        
+  btnStatus,
 }: IEnquiryScreen) => {
-
-const renderScreen=()=>{
-  switch (currentScreen){
-    case 1:
-      return <UserEnquiry
-      {...{
-        roleLocationDropDownList,
-        userEnquiryEnteredDetail,
-        searchresult,
-        onSearch,
-        setsearchresult,
-        handleTextChangeofUserEnquiry,
-        btnStatus
-      }}
-    />
-    case 2:
-      return  <IssueEnquiry
-      {...{
-        roleLocationDropDownList,
-        issueSearchresult,
-        issueEnquiryEnteredDetail,
-        setIssueSearchResult,
-        onSearch,
-        handleIssueEnquiry,
-        issueEnquiryType,
-        handleTextChangeofIssueEnquiry,
-        btnStatus
-      }}
-    />
-    case 3:
-      return  <NearbyCustomer
-      {...{
-        NearByCustomerList,
-      }}
-    />
-    default:
-    return null;
-  }
-}
+  const renderScreen = () => {
+    switch (currentScreen) {
+      case 1:
+        return (
+          <UserEnquiry
+            {...{
+              roleLocationDropDownList,
+              userEnquiryEnteredDetail,
+              searchresult,
+              onSearch,
+              setsearchresult,
+              handleTextChangeofUserEnquiry,
+              btnStatus,
+            }}
+          />
+        );
+      case 2:
+        return (
+          <IssueEnquiry
+            {...{
+              roleLocationDropDownList,
+              issueSearchresult,
+              issueEnquiryEnteredDetail,
+              setIssueSearchResult,
+              onSearch,
+              handleIssueEnquiry,
+              issueEnquiryType,
+              handleTextChangeofIssueEnquiry,
+              btnStatus,
+            }}
+          />
+        );
+      case 3:
+        return (
+          <NearbyCustomer
+            {...{
+              NearByCustomerList,
+            }}
+          />
+        );
+      default:
+        return null;
+    }
+  };
   return (
     <>
       <StatusBarComponent
         backgroundColor={Colors.sailBlue}
         conentType={"dark-content"}
       />
-      <SafeAreaContainer style={{paddingHorizontal:0}}>
+      <SafeAreaContainer style={{ paddingHorizontal: 0 }}>
         <Header topheading={StringConstants.ENQUIRY} />
-        <ScrollView>
-        
-          <HorizontalSlider
-            sliderData={EnquiryHeaderData}
-            currentScreen={currentScreen}
-            selectedTab={(index: number) => setCurrentScreen(index)}
-          />
+        <HorizontalSlider
+          sliderData={EnquiryHeaderData}
+          currentScreen={currentScreen}
+          selectedTab={(index: number) => setCurrentScreen(index)}
+        />
+        <ScrollView showsVerticalScrollIndicator={false}>
           {renderScreen()}
         </ScrollView>
       </SafeAreaContainer>

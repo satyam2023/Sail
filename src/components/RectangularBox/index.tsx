@@ -30,6 +30,7 @@ interface IRectangularBox {
   isClosable?: boolean;
   isRightNotIconRequired?: boolean;
   cancelled?: boolean;
+  leftIconStyle?:ImageStyle;
 }
 
 const RectangularBox = (props: IRectangularBox) => {
@@ -50,7 +51,7 @@ const RectangularBox = (props: IRectangularBox) => {
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         {props.leftIcon && (
-          <Image source={props.leftIcon} style={commonStyles.leftIcon} />
+          <Image source={props.leftIcon} style={[commonStyles.leftIcon,props?.leftIconStyle]} />
         )}
         <View>
           <View style={{ flexDirection: "row" }}>

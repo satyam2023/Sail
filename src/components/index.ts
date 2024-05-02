@@ -8,7 +8,6 @@ export {default as CustomFooter } from "./CustomFooter";
 export {default as CustomToggleBox } from "./CustomToggleBox";
 export {default as PressableButton } from "./DeBouncePressable";
 export {default as DescriptionCard } from "./DescriptionCard";
-export {default as EnquiryButton } from "../views/enquiry/component/EnquiryButton/EnquiryButton";
 export {default as HorizontalSlider } from "./HorizontalSliderTab";
 export {default as InputTextField } from "./InputTextField";
 export {default as LocateMe } from "./LocateMe";

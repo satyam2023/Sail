@@ -1,17 +1,24 @@
 import React from "react";
 import { View } from "react-native";
 import styles from "./Styles";
-import DetailsCard from "./component/DetailsCard";
-import { Colors, darkgrey, lightgrey } from "commonStyles/RNColor.style";
+import DetailsCard from "./DetailsCard";
+import { Colors } from "commonStyles/RNColor.style";
 import StringConstants from "shared/localization";
 import { MasterDataResponse } from "models/ApiResponses/MasterDataResponse";
-import { IButtonStatus, IIssueEnquiry } from "models/ApiResponses/IEnquiryResponses";
-import { IissueEnquiryEnteredData } from "models/interface/IEnquiry";
+import {
+  IButtonStatus,
+  IIssueEnquiry,
+} from "models/ApiResponses/IEnquiryResponses";
+import {
+  IFlatlistRenderIssueEnquiry,
+  IissueEnquiryEnteredData,
+} from "models/interface/IEnquiry";
 import { IdropDown } from "models/interface/ISetting";
 import {
   CustomButton,
   CustomDropDown,
   InputTextField,
+  PressableButton,
   TextWrapper,
 } from "components";
 import { extractOnlyDate } from "helper/helperFunctions";
@@ -28,7 +35,7 @@ interface IissueEnquiry {
   handleIssueEnquiry: (type: string) => void;
   issueEnquiryType: string;
   handleTextChangeofIssueEnquiry: (text: string, id: number) => void;
-  btnStatus:IButtonStatus
+  btnStatus: IButtonStatus;
 }
 
 const IssueEnquiry = ({
@@ -40,14 +47,14 @@ const IssueEnquiry = ({
   handleIssueEnquiry,
   issueEnquiryType,
   handleTextChangeofIssueEnquiry,
-  btnStatus
+  btnStatus,
 }: IissueEnquiry) => {
   const isOpenissue: boolean = issueEnquiryType == StringConstants.OPEN_ISSUES;
-  const renderSearchResult = (item: IIssueEnquiry, _: number) => {
+  const renderSearchResult = ({ item }: IFlatlistRenderIssueEnquiry) => {
     return (
       <DetailsCard
         issue={item?.visit_data?.allissues[0]?.comment}
-        pending={""}
+        pending={StringConstants.EMPTY}
         date={extractOnlyDate(item?.visit_data?.visit_date_time)}
         issueType={item?.visit_data?.allissues[0]?.issue_name?.name}
         customer={item?.customer_data?.company_name}
@@ -57,25 +64,31 @@ const IssueEnquiry = ({
 
   return (
     <View style={styles.issueContainer}>
-      <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-        <TextWrapper
-          style={[
-            styles.openIssue,
-            { color: isOpenissue ? Colors.sailBlue : Colors.jetGray },
-          ]}
+      <View style={styles.issueType}>
+        <PressableButton
           onPress={() => handleIssueEnquiry(StringConstants.OPEN_ISSUES)}
         >
-          {StringConstants.OPEN_ISSUES}
-        </TextWrapper>
-        <TextWrapper
-          style={[
-            styles.openIssue,
-            { color: !isOpenissue ? Colors.sailBlue : Colors.jetGray },
-          ]}
+          <TextWrapper
+            style={[
+              styles.openIssue,
+              { color: isOpenissue ? Colors.sailBlue : Colors.jetGray },
+            ]}
+          >
+            {StringConstants.OPEN_ISSUES}
+          </TextWrapper>
+        </PressableButton>
+        <PressableButton
           onPress={() => handleIssueEnquiry(StringConstants.RESOLVED_ISSUES)}
         >
-          {StringConstants.RESOLVED_ISSUES}
-        </TextWrapper>
+          <TextWrapper
+            style={[
+              styles.openIssue,
+              { color: !isOpenissue ? Colors.sailBlue : Colors.jetGray },
+            ]}
+          >
+            {StringConstants.RESOLVED_ISSUES}
+          </TextWrapper>
+        </PressableButton>
       </View>
       <View
         style={{
@@ -122,28 +135,23 @@ const IssueEnquiry = ({
       />
       {!issueSearchresult ? (
         <CustomButton
-          onPress={() => {
-            onSearch();
-          }}
+          onPress={onSearch}
           text={StringConstants.SEARCH}
           buttonStyle={
             btnStatus.issueBtn
-               ? commonStyles.searchButtonStyle
-               : { backgroundColor:Colors.lightGray }
-           }
-           textStyle={
+              ? commonStyles.searchButtonStyle
+              : { backgroundColor: Colors.lightGray }
+          }
+          textStyle={
             btnStatus.issueBtn
-               ? commonStyles.seachButtonTextStyle
-               : { color: Colors.darkGrey}
-           }
+              ? commonStyles.seachButtonTextStyle
+              : { color: Colors.darkGrey }
+          }
         />
       ) : issueSearchresult.length == 0 ? (
         <TextWrapper>{StringConstants.NO_RECORDS_FOUND}</TextWrapper>
       ) : (
-        <FlatList
-          data={issueSearchresult}
-          renderItem={({ item, index }) => renderSearchResult(item, index)}
-        />
+        <FlatList data={issueSearchresult} renderItem={renderSearchResult} />
       )}
     </View>
   );

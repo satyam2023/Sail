@@ -38,10 +38,11 @@ interface AddProps {
   btnStatus: IBtnStatus;
   selectIssuesDropDown: IdropDown[][];
   handleIssueDetailChange: (text: string | number, id: number) => void;
-  unPlannedVisitDetail: IUnplannedMeetingEnteredDetail 
+  unPlannedVisitDetail: IUnplannedMeetingEnteredDetail;
+  recordVoice:()=>void;
 }
 function AddUnplannedVisit({
-  addIssue, issueList, unplannedDropDownList, handleAddRepresentative, handleUnplannedVisitDetail, representativeList, issueDetail, handleRepresentativeOnTextChange, handleSubmitButtonClick, btnStatus, selectIssuesDropDown, handleIssueDetailChange, unPlannedVisitDetail,
+  addIssue, issueList, unplannedDropDownList, handleAddRepresentative, handleUnplannedVisitDetail, representativeList, issueDetail,recordVoice, handleRepresentativeOnTextChange, handleSubmitButtonClick, btnStatus, selectIssuesDropDown, handleIssueDetailChange, unPlannedVisitDetail,
 }: AddProps) {
   const renderUnplannedMeetingField = ({
     item, index,
@@ -54,6 +55,7 @@ function AddUnplannedVisit({
             placeholder={item.placeholder}
             leftIcon={item?.leftIcon}
             rightIcon={item?.rightIcon}
+            onRighIconPress={recordVoice}
             maxlength={item?.length}
             containerStyle={{ backgroundColor: Colors.white }}
             value={unPlannedVisitDetail[Object.keys(unPlannedVisitDetail)[index]].current as string} />

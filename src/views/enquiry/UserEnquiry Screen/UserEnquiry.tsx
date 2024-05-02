@@ -19,7 +19,7 @@ import {
 import { FlatList } from "react-native-gesture-handler";
 import Glyphs from "assets/Glyphs";
 import { View } from "react-native";
-import SearchResult from "./component/Searchresult";
+import SearchResult from "./Searchresult";
 
 interface IEnquiryScreen {
   roleLocationDropDownList: MasterDataResponse;
