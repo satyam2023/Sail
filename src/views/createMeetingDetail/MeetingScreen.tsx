@@ -53,7 +53,8 @@ interface IMeetingScreen {
   plannedrepresentativeList:IRepresentativeList;
   selectIssuesDropDown:IdropDown[][];
   handleIssueDetailChange:(text:string|number,id:number)=>void;
-  unPlannedVisitDetail: IUnplannedMeetingEnteredDetail 
+  unPlannedVisitDetail: IUnplannedMeetingEnteredDetail;
+  recordVoice:()=>void;
 }
 
 const MeetingScreen = ({
@@ -83,6 +84,7 @@ const MeetingScreen = ({
   selectIssuesDropDown,
   handleIssueDetailChange,
   unPlannedVisitDetail,
+  recordVoice
 }: IMeetingScreen) => {
   const renderRectangularBox = ({ item, index }: IFlatlistRectangularBox) => {
     return (
@@ -166,6 +168,7 @@ const MeetingScreen = ({
                     selectIssuesDropDown,
                     handleIssueDetailChange,
                     unPlannedVisitDetail,
+                    recordVoice
                   }}
                 />
               )}

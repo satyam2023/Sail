@@ -31,6 +31,7 @@ interface IRectangularBox {
   isRightNotIconRequired?: boolean;
   cancelled?: boolean;
   leftIconStyle?:ImageStyle;
+  rightIconStyle?:ImageStyle;
 }
 
 const RectangularBox = (props: IRectangularBox) => {
@@ -89,6 +90,7 @@ const RectangularBox = (props: IRectangularBox) => {
                     : { transform: [{ rotate: "0deg" }] },
                   commonStyles.icon,
                   { bottom: props.isClosable ? 10 : 0 },
+                  props?.rightIconStyle
                 ]}
               />
             </PressableButton>

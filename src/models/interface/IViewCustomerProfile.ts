@@ -7,6 +7,7 @@ import { IFlatlistIndex } from "./IMessage";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
 import { ICustomertypeTrader, ISelectedImage } from "./ICreateCustomer";
 import { MutableRefObject } from "react";
+import { IMeetingRepresentativeDetailInputField } from "@shared-constants";
 
 export interface IFlatListCustomerList extends IFlatlistIndex {
   item: IViewCustomerBody;
@@ -18,6 +19,12 @@ export interface IFlatListRepresentativeList extends IFlatlistIndex {
 
 export interface IFlatListInputField extends IFlatlistIndex {
   item: string;
+}
+
+
+
+export interface IFlatListRepresentative extends IFlatlistIndex {
+  item: IMeetingRepresentativeDetailInputField
 }
 
 export interface IFlatListCompetitor extends IFlatlistIndex {

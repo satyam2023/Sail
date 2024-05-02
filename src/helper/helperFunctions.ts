@@ -391,7 +391,6 @@ export const unplannedVisitMeeting = (
   selectedIssueArr: any[],
   selectedRepresentativeIndex: MutableRefObject<number>,
 ) => {
-  
   const body = {
     customer_code: unPlannedVisitDetail?.code?.current || null,
     company_name: unPlannedVisitDetail?.name?.current || null,
@@ -433,7 +432,7 @@ export const unplannedVisitMeeting = (
     representative_contact_number:
       representativeList.representativeListDetail[
         selectedRepresentativeIndex.current
-      ]?.contact|| null,
+      ]?.contact || null,
     representative_whatsapp_number:
       representativeList.representativeListDetail[
         selectedRepresentativeIndex.current
@@ -549,7 +548,7 @@ export const convertIdToIndex = (
   return selectedIndex[0];
 };
 
-export const tacklePagination = (n: number, arr:any[]) => {
+export const tacklePagination = (n: number, arr: any[]) => {
   let l = arr.length;
   const end = (n - 1) * 15;
   if (l >= 0 && l <= end) {
@@ -646,28 +645,66 @@ export const updateCustomerBody = (
   const body = {
     customer_id: customerList[selectedIndexValue]?.id,
     custFile: custImageVideoData || [],
-    customer_region: enteredCustomerDetails?.cust_region?.current || null,
-    segment: enteredCustomerDetails?.cust_seg?.current || null,
-    sub_segment: enteredCustomerDetails?.cust_sub_seg?.current || null,
-    type: customerList[selectedIndexValue]?.type?.id || null,
-    sub_type: enteredCustomerDetails?.cust_sub_type?.current || null,
-    status: enteredCustomerDetails?.cust_status?.current || null,
-    panCard: enteredCustomerDetails?.pan?.current || null,
-    gst_details: enteredCustomerDetails?.gst?.current || null,
-    website_link: enteredCustomerDetails?.website?.current || null,
-    latitude: enteredCustomerDetails?.latitude?.current || null,
-    longitude: enteredCustomerDetails?.longitude?.current || null,
-    address: enteredCustomerDetails?.location?.current || null,
-    cluster: customerTypeTraderDealer?.cluster?.current || null,
-    contact_number: customerTypeTraderDealer?.contact_number?.current || null,
-    day_wise_stock: customerTypeTraderDealer?.day_wise_stock?.current || null,
-    price_feedback_competitor:
-      customerTypeTraderDealer?.price_feedback_competitor?.current || null,
-    procured_products: returnOnlyIndex(customer?.procuredProduct) || null,
-    tentative_quality_procured:
-      customerTypeTraderDealer?.tentative_quality_procured?.current || null,
-    supplier: returnOnlyIndex(customer?.supplier) || null,
-    project_details: customerTypeTraderDealer?.projectDetail?.current || null,
+    customer_region: customerList[selectedIndexValue]?.customer_region
+      ? customerList[selectedIndexValue]?.customer_region
+      : enteredCustomerDetails?.cust_region?.current || null,
+    segment: customerList[selectedIndexValue]?.segment?.id
+      ? customerList[selectedIndexValue]?.segment?.id
+      : enteredCustomerDetails?.cust_seg?.current || null,
+    sub_segment: customerList[selectedIndexValue]?.sub_segment?.id
+      ? customerList[selectedIndexValue]?.sub_segment?.id
+      : enteredCustomerDetails?.cust_sub_seg?.current || null,
+    type:customerList[selectedIndexValue]?.type?.id || null,
+    sub_type: customerList[selectedIndexValue]?.sub_type?.id
+      ? customerList[selectedIndexValue]?.sub_type?.id
+      : enteredCustomerDetails?.cust_sub_type?.current || null,
+    status: customerList[selectedIndexValue]?.status?.id
+      ? customerList[selectedIndexValue]?.status?.id
+      : enteredCustomerDetails?.cust_status?.current || null,
+    panCard: customerList[selectedIndexValue]?.pan_number
+      ? customerList[selectedIndexValue]?.pan_number
+      : enteredCustomerDetails?.pan?.current || null,
+    gst_details: customerList[selectedIndexValue]?.gst_details
+      ? customerList[selectedIndexValue]?.gst_details
+      : enteredCustomerDetails?.gst?.current || null,
+    website_link: customerList[selectedIndexValue]?.website_link
+      ? customerList[selectedIndexValue]?.website_link
+      : enteredCustomerDetails?.website?.current || null,
+    latitude: customerList[selectedIndexValue]?.latitude
+      ? customerList[selectedIndexValue]?.latitude
+      : enteredCustomerDetails?.latitude?.current || null,
+    longitude: customerList[selectedIndexValue]?.longitude
+      ? customerList[selectedIndexValue]?.longitude
+      : enteredCustomerDetails?.longitude?.current || null,
+    address: customerList[selectedIndexValue]?.address
+      ? customerList[selectedIndexValue]?.address
+      : enteredCustomerDetails?.location?.current || null,
+    cluster: customerList[selectedIndexValue]?.cluster?.id
+      ? customerList[selectedIndexValue]?.cluster?.id
+      : customerTypeTraderDealer?.cluster?.current || null,
+    contact_number: customerList[selectedIndexValue]?.contact_number
+      ? customerList[selectedIndexValue]?.contact_number
+      : customerTypeTraderDealer?.contact_number?.current || null,
+    day_wise_stock: customerList[selectedIndexValue]?.day_wise_stock
+      ? customerList[selectedIndexValue]?.day_wise_stock
+      : customerTypeTraderDealer?.day_wise_stock?.current || null,
+    price_feedback_competitor: customerList[selectedIndexValue]
+      ?.price_feedback_competitor
+      ? customerList[selectedIndexValue]?.price_feedback_competitor
+      : customerTypeTraderDealer?.price_feedback_competitor?.current || null,
+    procured_products: customerList[selectedIndexValue]?.procured_products?.id
+      ? customerList[selectedIndexValue]?.procured_products?.id
+      : returnOnlyIndex(customer?.procuredProduct) || null,
+    tentative_quality_procured: customerList[selectedIndexValue]
+      ?.tentative_quality_procured
+      ? customerList[selectedIndexValue]?.tentative_quality_procured
+      : customerTypeTraderDealer?.tentative_quality_procured?.current || null,
+    supplier: customerList[selectedIndexValue]?.supplier?.id
+      ? customerList[selectedIndexValue]?.supplier?.id
+      : returnOnlyIndex(customer?.supplier) || null,
+    project_details: customerList[selectedIndexValue]?.project_details
+      ? customerList[selectedIndexValue]?.project_details
+      : customerTypeTraderDealer?.projectDetail?.current || null,
   };
 
   return body;
@@ -760,7 +797,7 @@ export const traderDealerselectedCustomerDetail = (
   selectedIndexValue: number,
 ) => {
   const data =
-    customerList[selectedIndexValue].type.id == (2 || 4)
+    customerList[selectedIndexValue]?.type?.id == (2 || 4)
       ? [
           customerList[selectedIndexValue]?.cluster?.name,
           customerList[selectedIndexValue]?.contact_number,

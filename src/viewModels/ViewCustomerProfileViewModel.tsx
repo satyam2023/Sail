@@ -64,6 +64,7 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
   const dispatch = useDispatch();
   useFocusEffect(() => {
     dispatch(BottomTabVisibility(false));
+   
   });
   const customerListdata: IViewCustomerBody[] = useSelector(
     (state: RootState) => state?.viewCustomerProfile?.customerListData,
@@ -79,22 +80,21 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
 
   const detailToBeSearch = useRef<string>("");
   const customerCodeToBeUpdated = useRef<string>("");
-  const selectedCustomer = customerList[selectedIndexValue];
   const enteredCustomerDetails: IEnteredCustomerDetails = {
-    code: useRef<string>(selectedCustomer?.customer_code),
-    company: useRef<string>(selectedCustomer?.company_name),
-    cust_seg: useRef<number>(selectedCustomer?.segment?.id),
-    cust_sub_seg: useRef<number>(selectedCustomer?.sub_segment?.id),
-    cust_type: useRef<number>(selectedCustomer?.type?.id),
-    cust_sub_type: useRef<number>(selectedCustomer?.sub_type?.id),
-    cust_status: useRef<number>(selectedCustomer?.status?.id),
-    cust_region: useRef<string>(selectedCustomer?.customer_region),
-    pan: useRef<string>(selectedCustomer?.pan_number),
-    gst: useRef<string>(selectedCustomer?.gst_details),
-    website: useRef<string>(selectedCustomer?.website_link),
-    location: useRef<string>(selectedCustomer?.address),
-    latitude: useRef<string>(selectedCustomer?.latitude),
-    longitude: useRef<string>(selectedCustomer?.longitude),
+    code: useRef<string>(""),
+    company: useRef<string>(""),
+    cust_seg: useRef<number>(-1),
+    cust_sub_seg: useRef<number>(-1),
+    cust_type: useRef<number>(-1),
+    cust_sub_type: useRef<number>(-1),
+    cust_status: useRef<number>(-1),
+    cust_region: useRef<string>(""),
+    pan: useRef<string>(""),
+    gst: useRef<string>(""),
+    website: useRef<string>(""),
+    location: useRef<string>(""),
+    latitude: useRef<string>(""),
+    longitude: useRef<string>(""),
   };
   const customerTypeTraderDealer: IUpdateTrader_Project_Dealer_Type = {
     cluster: useRef<number>(null),
@@ -108,7 +108,7 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
   };
 
   useEffect(() => {
-    getCustomerSegmenList(dispatch),
+      getCustomerSegmenList(dispatch),
       getCustomerType(dispatch),
       getCustomerStatus(dispatch),
       getClusterAPI(dispatch),
@@ -228,6 +228,7 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
       dispatch(setLoaderVisibility(false));
     }
   };
+
   const updateCustomerAPI = async () => {
     dispatch(setLoaderVisibility(true));
     const appendFormData = new FormData();

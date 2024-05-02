@@ -11,10 +11,15 @@ import {
   checkCustomerViewRepresentativeDetail,
 } from "helper/ValidationRegex";
 import {
+  checkAllInputField,
+  checkAllInputFieldOfRepresentative,
   chooseImageVideo,
   isAllFieldTrue,
+  isDetailFilled,
   logger,
   representativeDetailsofViewCustomerProfile,
+  setErrorToIntialValue,
+  setInputToIntialStringvalue,
   setUpdateRepresentativeBody,
 } from "helper/helperFunctions";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
@@ -35,6 +40,7 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
   const [selectRepresentativeImage, setRepresentativeImage] = useState<
     ISelectedImage | undefined
   >();
+  const [btnStatus, setBtnStatus] = useState<boolean>(false);
   const [addDetailStatus, setAddDetailsStatus] = useState<boolean>(false);
   const customerList = route.params?.customerList;
   const selectedIndexValue = route.params?.selectedIndexValue;
@@ -49,7 +55,8 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
     whatsApp: useRef(""),
     id: useRef(-1),
   };
-  const [representativeError, setRepresentativeError] =
+
+  let [representativeError, setRepresentativeError] =
     useState<IRepresentativeError>({
       name: null,
       designation: null,
@@ -59,6 +66,11 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
       contact: null,
       whatsApp: null,
     });
+
+  // useEffect(()=>{checkCustomerViewRepresentativeDetail(
+  //   enteredRepresentativeDetails,
+  //   setRepresentativeError,
+  // )},[representativeError]);
 
   const customerListdata: IViewCustomerBody[] = useSelector(
     (state: RootState) => state?.viewCustomerProfile?.customerListData,
@@ -73,7 +85,6 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
 
   useFocusEffect(() => {
     dispatch(BottomTabVisibility(false));
-   
   });
 
   const [representative, setRepresentativeDetail] =
@@ -87,10 +98,20 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
     const res: ISelectedImage = await chooseImageVideo();
     setRepresentativeImage(res);
   }
+
   async function handleTextChangeOfRepresentative(text: string, id: number) {
     enteredRepresentativeDetails[
       Object.keys(enteredRepresentativeDetails)[id]
     ].current = text;
+    handleIsAllInputFieldHaveData();
+  }
+
+  function handleIsAllInputFieldHaveData() {
+    if (checkAllInputFieldOfRepresentative(enteredRepresentativeDetails)) {
+      if (!btnStatus) setBtnStatus(true);
+    } else {
+      if (btnStatus) setBtnStatus(false);
+    }
   }
 
   async function handleAddStatus() {
@@ -161,7 +182,7 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
   };
 
   async function add_edit_Representative() {
-    if (representative.editDetails) {
+    if (representative.editDetails && btnStatus) {
       await updateRepresentativeAPI("Active");
       setRepresentativeDetail((prev: IViewCustomerRepresentative) => ({
         ...prev,
@@ -174,9 +195,14 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
         enteredRepresentativeDetails,
         setRepresentativeError,
       );
-      if (isAllFieldTrue(representativeError)) {
+      if (isAllFieldTrue(representativeError) && btnStatus) {
         addRepresentativeAPICaliing();
         setAddDetailsStatus(!addDetailStatus);
+        setBtnStatus(false);
+        setInputToIntialStringvalue<IRepresentativeEnteredDetail>(
+          enteredRepresentativeDetails,
+        );
+        setErrorToIntialValue<IRepresentativeError>(representativeError);
       }
     }
   }
@@ -224,6 +250,7 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
         setEditing,
         handleFooterButtonClick,
         representativeError,
+        btnStatus,
       }}
     />
   );

@@ -58,6 +58,7 @@ const ViewCustomerCompetitorViewModel = ({ route, navigation }: any) => {
   const customerListdata: IViewCustomerBody[] = useSelector(
     (state: RootState) => state?.viewCustomerProfile?.customerListData,
   );
+
   useEffect(() => {
     navigation.setParams({
       customerList: customerListdata,
@@ -99,7 +100,7 @@ const ViewCustomerCompetitorViewModel = ({ route, navigation }: any) => {
       };
       const res = await addCustomerCompetitorAPIHandler(body);
       if (res?.isSuccess) {
-        await getcustomerlist(dispatch, 1);
+        await route.params.fetchCustomerList();
       }
     } catch {
     } finally {

@@ -9,6 +9,7 @@ import {
 import { IdropDown } from "models/interface/ISetting";
 import {
   CustomerDetailInputField,
+  ICustomerDetailInputField,
   customerTypeTraderDealerField,
 } from "@shared-constants";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
@@ -55,7 +56,7 @@ interface IFirst {
 const First = (props: IFirst) => {
   const customerType = props?.customerList[props?.selectedIndexValue].type?.id;
   const isEditing = props?.customer?.editDetails;
-  const renderCustomerInputField = ({ item, index }: IFlatListInputField) => {
+  const renderCustomerInputField = ({ item, index }: {item:ICustomerDetailInputField,index:number}) => {
     const notEditable: boolean = index == 0 || index == 1 || index == 4;
     return (
       <>
@@ -64,7 +65,8 @@ const First = (props: IFirst) => {
             onChangeText={(text: string) =>
               props?.handleCustomerDetailChange(text, index)
             }
-            placeholder={item}
+            placeholder={item?.placeholder}
+            maxlength={item?.maxlength}
             containerStyle={{
               backgroundColor:
                 !isEditing || notEditable ? Colors.disabledGrey : Colors.white,
@@ -79,7 +81,7 @@ const First = (props: IFirst) => {
                 ? undefined
                 : props?.dropdownDataList[index - 2]
             }
-            topheading={item}
+            topheading={item?.placeholder}
             onPress={(item: IdropDown) => {
               props?.setSubTypes(item, index, props?.enteredCustomerDetails);
               props?.handleCustomerDetailChange(

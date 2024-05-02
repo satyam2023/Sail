@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Header, InputTextField, TextWrapper } from "components";
 import { IProductCatalogue } from "models/ApiResponses/ProductCatalogue";
-import styles from "./style/style";
+import styles from "./style";
 import { IFlatlistProduct } from "models/interface/IProductCatalog";
 import StatusBarComponent from "components/StatusBarComponent";
 import commonStyles from "commonStyles/CommonStyle";
@@ -25,7 +25,7 @@ interface IProductScreen {
 }
 
 const ProductCatalogScreen = (props: IProductScreen) => {
-  function renderProductList({ item, index }: IFlatlistProduct) {
+  function renderProductList({ item}: IFlatlistProduct) {
     return (
       <View style={styles.card}>
         <Image source={{ uri: item.img_url }} style={styles.productImage} />

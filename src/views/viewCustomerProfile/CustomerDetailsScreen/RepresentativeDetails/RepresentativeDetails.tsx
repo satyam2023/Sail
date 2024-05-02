@@ -2,15 +2,20 @@ import React from "react";
 import { Image, SafeAreaView, ScrollView, View } from "react-native";
 import UploadDocumnet from "components/UploadDocument";
 import StringConstants from "shared/localization";
-import { Colors } from "commonStyles/RNColor.style";
+import { Colors, darkgrey } from "commonStyles/RNColor.style";
 import InputTextField from "components/InputTextField";
 import { FlatList } from "react-native";
-import { RepresentativeDetailInputFieldData, RepresentativeErrorMsgOfViewCustomer } from "@shared-constants";
+import {
+  MeetingRepresentativeDetailInputField,
+  RepresentativeDetailInputFieldData,
+  RepresentativeErrorMsgOfViewCustomer,
+} from "@shared-constants";
 import { CustomFooter, PressableButton, TextWrapper } from "components";
 import { WindowWidth } from "libs";
 import { ISelectedImage } from "models/interface/ICreateCustomer";
 import {
   IFlatListInputField,
+  IFlatListRepresentative,
   IViewCustomerRepresentative,
 } from "models/interface/IViewCustomerProfile";
 import styles from "./Style";
@@ -24,20 +29,24 @@ interface IRepresentative {
   representative: IViewCustomerRepresentative;
   representativeDetail: any;
   representativeError: IRepresentativeError;
+  btnStatus:boolean;
 }
 
 const RepresentativeDetails = (props: IRepresentative) => {
+
   const renderCustomerRepresentativeInputField = ({
     item,
     index,
-  }: IFlatListInputField) => {
+  }: IFlatListRepresentative) => {
     const isEditTrue: boolean = props?.representative?.editDetails;
     return (
       <InputTextField
         onChangeText={(text: string) =>
           props?.handleTextChangeOfRepresentative(text, index)
         }
-        placeholder={item}
+        placeholder={item?.placeholder}
+        maxlength={item?.maxlength}
+        inputMode={item?.inputMode}
         containerStyle={{
           backgroundColor:
             isEditTrue && index == 0 ? Colors.disabledGrey : Colors.white,
@@ -48,17 +57,16 @@ const RepresentativeDetails = (props: IRepresentative) => {
         isEditable={isEditTrue && index == 0 ? false : true}
         error={
           props?.representativeError[
-                Object.keys(props?.representativeError)[index]
-              ]==false 
-              ? RepresentativeErrorMsgOfViewCustomer[index]
-              : undefined
-            
+            Object.keys(props?.representativeError)[index]
+          ] == false
+            ? RepresentativeErrorMsgOfViewCustomer[index]
+            : undefined
         }
       />
     );
   };
   return (
-    <SafeAreaView style={{flex:1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={{ paddingHorizontal: 20 }}>
         {props?.representative?.editDetails ? (
           <TextWrapper>
@@ -86,7 +94,7 @@ const RepresentativeDetails = (props: IRepresentative) => {
           </>
         )}
         <FlatList
-          data={RepresentativeDetailInputFieldData}
+          data={MeetingRepresentativeDetailInputField}
           renderItem={renderCustomerRepresentativeInputField}
           scrollEnabled={false}
           style={{ marginTop: 16 }}
@@ -100,7 +108,8 @@ const RepresentativeDetails = (props: IRepresentative) => {
         }
         leftButtonPress={props?.handleAddStatus}
         singleButtonOnFooter
-        leftButtonStyle={{ backgroundColor: Colors.sailBlue }}
+        leftButtonStyle={{ backgroundColor: props?.btnStatus?Colors.sailBlue:Colors.disabledGrey }}
+        leftButtonTextStyle={{ color: props?.btnStatus?Colors.white:Colors.darkGrey }}
       />
     </SafeAreaView>
   );
