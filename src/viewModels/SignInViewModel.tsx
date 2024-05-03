@@ -1,6 +1,7 @@
 import { navigate } from "@navigation";
 import { SCREENS } from "@shared-constants";
 import { userSignIn } from "controllers/accountController";
+import { logger } from "helper/helperFunctions";
 import { IApiResponse } from "models/ApiResponses/IApiResponse";
 import { ISignInUserData, SignInResponse } from "models/ApiResponses/SignInResponse";
 import { ISignInUser } from "models/interface/ISignIn";
@@ -34,6 +35,7 @@ const SignInViewModel = () => {
 
       }
     } catch (error) {
+      logger(error,"Error in Login Api Calling")
 
     }
     finally{
@@ -41,7 +43,7 @@ const SignInViewModel = () => {
   }
   };
 
-console.log("::::::::::::::::::::::::::");
+
 
   const onSubmit = () => {
     

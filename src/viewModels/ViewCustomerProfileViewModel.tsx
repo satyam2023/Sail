@@ -12,7 +12,6 @@ import {
   updateCustomerDetailAPIHandler,
 } from "controllers/viewCustomerController";
 import {
-  convertIdToIndex,
   customerDetailOfViewModel,
   extarctSupplierData,
   extractProcuredProductData,
@@ -64,7 +63,7 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
   const dispatch = useDispatch();
   useFocusEffect(() => {
     dispatch(BottomTabVisibility(false));
-   
+    return ()=> dispatch(BottomTabVisibility(true));
   });
   const customerListdata: IViewCustomerBody[] = useSelector(
     (state: RootState) => state?.viewCustomerProfile?.customerListData,
@@ -349,6 +348,7 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
         handleSearchTextChange,
         removeDropDownItem,
         removeSelectedImage,
+        
       }}
     />
   );

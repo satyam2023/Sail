@@ -9,6 +9,7 @@ import { checkCreateVisit } from "helper/ValidationRegex";
 import {
   checkAllInputField,
   convertAccomToDropData,
+  isAllFieldTrue,
 } from "helper/helperFunctions";
 import {
   CreateVisitRequest,
@@ -18,7 +19,7 @@ import {
   ICreateVisitError,
   IvisitPlanDetail,
 } from "models/interface/ICreateVisit";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
 import { BottomTabVisibility } from "redux/actions/UIAction";
@@ -31,11 +32,11 @@ const CreateVisitPlanViewModel = () => {
     useState<boolean>(false);
   const [nickNameResult, setNickNameResult] = useState<NickNameResponse>();
   const [isAllFieldHaveData, setAllFieldData] = useState<boolean>(false);
+  const [showError, setError] = useState<boolean>(false);
   const dropData = store?.getState()?.dropdown;
   const regionDropdownList =
     store?.getState()?.home?.data?.data?.CustomerRegion;
   const dispatch = useDispatch();
-
 
   const [visitPlanError, setVisitPlanError] = useState<ICreateVisitError>({
     code: null,
@@ -53,7 +54,6 @@ const CreateVisitPlanViewModel = () => {
     return () => dispatch(BottomTabVisibility(true));
   });
 
- 
   const dropDownData = [
     regionDropdownList,
     convertAccomToDropData(dropData?.accompyingData?.data),
@@ -61,7 +61,6 @@ const CreateVisitPlanViewModel = () => {
     dropData?.reasonContactData?.data?.ModeofContact,
   ];
 
- 
   const visitPlanDetail: IvisitPlanDetail = {
     customerCode: useRef(nickNameResult?.customer_code || ""),
     name: useRef(nickNameResult?.company_name || ""),
@@ -73,7 +72,6 @@ const CreateVisitPlanViewModel = () => {
     modeOfContact: useRef(""),
     remarks: useRef(""),
   };
-
 
   async function nicknameApicalling() {
     try {
@@ -89,26 +87,24 @@ const CreateVisitPlanViewModel = () => {
     }
   }
 
-
- 
   function footerButtonPress(button: string) {
     if (button == StringConstants.RIGHT) {
-      checkCreateVisit(visitPlanDetail, setVisitPlanError);
-      if (checkAllInputField(visitPlanDetail)) handleAddVisitPlan();
+      if (isAllFieldHaveData) handleAddVisitPlan();
     } else if (button == StringConstants.LEFT) {
       navigate(SCREENS.MAIN);
     }
   }
 
-
-
   const handleAddVisitPlan = () => {
-    if (isAllFieldHaveData) {
-      createVisitApiCalling();
-    }
+    checkCreateVisit(visitPlanDetail, setVisitPlanError);
+    setError(true);
   };
 
-
+  useEffect(() => {
+    if (isAllFieldTrue(visitPlanError)) {
+      createVisitApiCalling();
+    }
+  }, [visitPlanError]);
 
   async function createVisitApiCalling() {
     const body: CreateVisitRequest = {
@@ -136,7 +132,6 @@ const CreateVisitPlanViewModel = () => {
     }
   }
 
- 
   const isAllDataFilled = () => {
     if (checkAllInputField(visitPlanDetail)) {
       if (!isAllFieldHaveData) setAllFieldData(true);
@@ -148,6 +143,7 @@ const CreateVisitPlanViewModel = () => {
   const handleTextChange = (text: string | number, index: number) => {
     visitPlanDetail[Object.keys(visitPlanDetail)[index]].current = text;
     isAllDataFilled();
+    if (showError) setError(false);
   };
 
   return (
@@ -162,6 +158,7 @@ const CreateVisitPlanViewModel = () => {
         isAllFieldHaveData,
         visitPlanError,
         handleTextChange,
+        showError,
       }}
     />
   );

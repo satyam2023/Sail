@@ -484,7 +484,7 @@ export const setInputToIntialStringvalue = <T>(fields: T) => {
 
 export const isDetailFilled = (fields: any) => {
   for (let i = 0; i < Object.keys(fields).length; i++) {
-    if (fields[Object.keys(fields)[i]].current.length > 0) {
+    if (fields[Object?.keys(fields)[i]]?.current?.length > 0) {
       return true;
     }
   }
@@ -528,6 +528,45 @@ export const isAllFieldTrue = (fields: any) => {
 
   return true;
 };
+
+export const checkIsAllTrue= (fields: any) => {
+  for (let i = 0; i < Object.keys(fields).length; i++) {
+    if (
+      fields[Object.keys(fields)[i]].current == false ||
+      fields[Object.keys(fields)[i]].current == null
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+export const setToIntialValue= (fields: any) => {
+  for (let i = 0; i < Object.keys(fields).length; i++) {
+    if (
+      fields[Object.keys(fields)[i]].current == null
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+export const setIntialValue= (fields: any) => {
+  for (let i = 0; i < Object.keys(fields).length; i++) {
+    if (
+      fields[Object.keys(fields)[i]].current == null
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+
 
 export const getRoleId = (detail: IdropDown[], value: string) => {
   const id = detail.filter((item) => {

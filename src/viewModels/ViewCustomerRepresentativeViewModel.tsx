@@ -11,11 +11,9 @@ import {
   checkCustomerViewRepresentativeDetail,
 } from "helper/ValidationRegex";
 import {
-  checkAllInputField,
   checkAllInputFieldOfRepresentative,
   chooseImageVideo,
   isAllFieldTrue,
-  isDetailFilled,
   logger,
   representativeDetailsofViewCustomerProfile,
   setErrorToIntialValue,
@@ -45,6 +43,7 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
   const customerList = route.params?.customerList;
   const selectedIndexValue = route.params?.selectedIndexValue;
   const dispatch = useDispatch();
+  const [showError, setShowError] = useState<boolean>(false);
   const enteredRepresentativeDetails: IRepresentativeEnteredDetail = {
     name: useRef(""),
     designation: useRef(""),
@@ -66,11 +65,6 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
       contact: null,
       whatsApp: null,
     });
-
-  // useEffect(()=>{checkCustomerViewRepresentativeDetail(
-  //   enteredRepresentativeDetails,
-  //   setRepresentativeError,
-  // )},[representativeError]);
 
   const customerListdata: IViewCustomerBody[] = useSelector(
     (state: RootState) => state?.viewCustomerProfile?.customerListData,
@@ -104,6 +98,7 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
       Object.keys(enteredRepresentativeDetails)[id]
     ].current = text;
     handleIsAllInputFieldHaveData();
+    if (showError) setShowError(false);
   }
 
   function handleIsAllInputFieldHaveData() {
@@ -114,9 +109,10 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
     }
   }
 
-  async function handleAddStatus() {
-    if (addDetailStatus) await add_edit_Representative();
-    else if (!addDetailStatus) setAddDetailsStatus(!addDetailStatus);
+  function handleAddStatus() {
+    addDetailStatus
+      ? add_edit_Representative()
+      : setAddDetailsStatus(!addDetailStatus);
   }
 
   const representativeDetail: string[] = [
@@ -181,6 +177,19 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
     }
   };
 
+  useEffect(() => {
+    if (isAllFieldTrue(representativeError)) {
+      addRepresentativeAPICaliing();
+      setAddDetailsStatus(!addDetailStatus);
+      setBtnStatus(false);
+      setInputToIntialStringvalue<IRepresentativeEnteredDetail>(
+        enteredRepresentativeDetails,
+      );
+      setShowError(false);
+      setErrorToIntialValue<IRepresentativeError>(representativeError);
+    }
+  }, [representativeError]);
+
   async function add_edit_Representative() {
     if (representative.editDetails && btnStatus) {
       await updateRepresentativeAPI("Active");
@@ -191,21 +200,16 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
       }));
       setAddDetailsStatus(!addDetailStatus);
     } else {
-      checkCustomerViewRepresentativeDetail(
-        enteredRepresentativeDetails,
-        setRepresentativeError,
-      );
-      if (isAllFieldTrue(representativeError) && btnStatus) {
-        addRepresentativeAPICaliing();
-        setAddDetailsStatus(!addDetailStatus);
-        setBtnStatus(false);
-        setInputToIntialStringvalue<IRepresentativeEnteredDetail>(
+      if (btnStatus) {
+        checkCustomerViewRepresentativeDetail(
           enteredRepresentativeDetails,
+          setRepresentativeError,
         );
-        setErrorToIntialValue<IRepresentativeError>(representativeError);
+        setShowError(true);
       }
     }
   }
+
   function handleRepresetativeSelected(id: number) {
     setRepresentativeDetail((prev: IViewCustomerRepresentative) => ({
       ...prev,
@@ -215,14 +219,13 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
   }
 
   function handleFooterButtonClick(type: string) {
-    if (type == StringConstants.BACKWARD) goBack();
-    else if (type == StringConstants.FORWARD) {
-      navigate(SCREENS.SHOW_VIEW_CUSTOMER_COMPETITOR, {
-        customerList: route.params.customerList,
-        selectedIndexValue: route.params.selectedIndexValue,
-        fetchCustomerList: route.params.fetchCustomerList,
-      });
-    }
+    type == StringConstants.BACKWARD
+      ? goBack()
+      : navigate(SCREENS.SHOW_VIEW_CUSTOMER_COMPETITOR, {
+          customerList: route.params.customerList,
+          selectedIndexValue: route.params.selectedIndexValue,
+          fetchCustomerList: route.params.fetchCustomerList,
+        });
   }
 
   function setEditing(id: number) {
@@ -251,6 +254,7 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
         handleFooterButtonClick,
         representativeError,
         btnStatus,
+        showError,
       }}
     />
   );

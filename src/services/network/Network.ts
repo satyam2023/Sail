@@ -5,6 +5,7 @@ import { IApiResponse } from "models/ApiResponses/IApiResponse";
 import APIConstants from "core/ApiConstants";
 import { store } from "redux/store/Store";
 import StatusCode from "core/StatusCode";
+import { useEffect } from "react";
 
 const token = () => {
 
@@ -184,6 +185,8 @@ export function sendPostMultipartRequest<T>(
       //   dispatch(toggleLoader());
     });
 }
+
+
 
 
 export function sendMultipleGetRequests<T>(urls: string[]): any {

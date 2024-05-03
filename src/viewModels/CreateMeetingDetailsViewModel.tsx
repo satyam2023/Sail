@@ -45,7 +45,10 @@ import MeetingScreen from "views/createMeetingDetail/MeetingScreen";
 import {
   IMeetingRepresentativeError,
   checkMeetingRepresentativeDetail,
+  checkRepresentativeDetail,
 } from "helper/ValidationRegex";
+import Voice from '@react-native-voice/voice'
+import { Alert } from "react-native";
 
 const CreateMetingDetailsViewModel = () => {
   const [currentScreen, setCurrentScreen] = useState<number>(1);
@@ -95,6 +98,7 @@ const CreateMetingDetailsViewModel = () => {
       getReasonContact(dispatch),
       getAccompanying(dispatch);
   }, []);
+
 
   useEffect(() => {
     setInputFieldToIntialValue(issueDetail);
@@ -163,6 +167,18 @@ const CreateMetingDetailsViewModel = () => {
     if (plannedMeetingList.data.length == 0)
       fetchPlannedVisitData(paginationPage.current);
   }, []);
+  
+
+  const recordVoice= async ()=>{
+    try{
+      Alert.alert("");
+   const recorderAudio= await Voice.start('en-US');
+   console.log("REcoderd Voice:::::",recorderAudio);;
+    }
+    catch(e){
+       logger(e,'Error in Voice Recognization')
+    }
+  }
 
   const fetchPlannedVisitData = async (pagenumber: number) => {
     try {
@@ -205,7 +221,6 @@ const CreateMetingDetailsViewModel = () => {
       selectedRepresentativeIndex,
     );
 
-    console.log("Body+++++++++++++++", body);
     try {
       const res = await getUnplannedVisitExecution(body);
       if (res?.isSuccess) {
@@ -300,10 +315,6 @@ const CreateMetingDetailsViewModel = () => {
   }
 
   function storeDetailsOfUnplannedRepresentative() {
-    console.log(
-      "Represenatative detail to push store:::",
-      enteredRepresentativeDetails,
-    );
     if (isAllFieldTrue(representativeError)) {
       representativeList.representativeListDetail.push({
         address: enteredRepresentativeDetails?.address?.current,
@@ -323,18 +334,9 @@ const CreateMetingDetailsViewModel = () => {
       setInputToIntialStringvalue<IRepresentativeEnteredDetail>(
         enteredRepresentativeDetails,
       );
-      console.log(
-        "Represenatative  list detail to push store:::",
-        representativeList.representativeListDetail,
-      );
       setErrorToIntialValue<IMeetingRepresentativeError>(representativeError);
     }
   }
-
-  console.log(
-    "Selected Representative Index:::::::",
-    selectedRepresentativeIndex.current,
-  );
 
   function handleRepresentativeOnTextChange(text: string | number, id: number) {
     if (id != 7) {
@@ -348,9 +350,12 @@ const CreateMetingDetailsViewModel = () => {
     handleRepresentativeButtonStatus();
   }
 
+
+
   function handleUnplannedVisitDetail(text: string | number, id: number) {
     unPlannedVisitDetail[Object.keys(unPlannedVisitDetail)[id]].current = text;
     handleSubmitButtonStatus();
+  
   }
 
   function handleSubmitButtonStatus() {
@@ -394,13 +399,10 @@ const CreateMetingDetailsViewModel = () => {
   }
 
   function handleSubmitButtonClick() {
-    console.log(
-      "RepresenstativeList::::::::",
-      representativeList.representativeListDetail,
-    );
+   
     if (btnStatus.submitBtn) {
       callunplannedVisitExecution();
-      // setSuccessStatus(true);
+      setSuccessStatus(true);
     }
   }
 
@@ -437,6 +439,7 @@ const CreateMetingDetailsViewModel = () => {
         selectIssuesDropDown,
         handleIssueDetailChange,
         unPlannedVisitDetail,
+        recordVoice,
       }}
     />
   );

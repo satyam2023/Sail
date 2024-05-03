@@ -1,4 +1,4 @@
-import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import {useIsFocused } from "@react-navigation/native";
 import {
   downloadFile,
   logger,

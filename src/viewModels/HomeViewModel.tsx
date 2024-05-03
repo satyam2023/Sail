@@ -19,6 +19,7 @@ import { navigate } from "@navigation";
 import { SCREENS } from "@shared-constants";
 import { EnquiryType, setCustomerInformationTab } from "redux/actions/UIAction";
 
+
 const HomeScreenViewModel = () => {
   const dispatch = useDispatch();
   const userData = useSelector(

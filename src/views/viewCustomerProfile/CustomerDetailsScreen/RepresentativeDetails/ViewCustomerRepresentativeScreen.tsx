@@ -38,6 +38,7 @@ interface SecondProps {
   handleFooterButtonClick: (type: string) => void;
   representativeError:IRepresentativeError;
   btnStatus:boolean;
+  showError:boolean;
 }
 const ViewCustomerRepresentative = ({
   customerList,
@@ -53,7 +54,8 @@ const ViewCustomerRepresentative = ({
   setEditing,
   handleFooterButtonClick,
   representativeError,
-  btnStatus
+  btnStatus,
+  showError
 }: SecondProps) => {
   const renderRepresentativeList = ({
     item,
@@ -142,7 +144,8 @@ const ViewCustomerRepresentative = ({
             representative,
             representativeDetail,
             representativeError,
-            btnStatus
+            btnStatus,
+            showError
           }}
         />
       )}

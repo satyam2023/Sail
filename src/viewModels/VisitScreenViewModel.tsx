@@ -166,7 +166,10 @@ const VisitScreenViewModel = () => {
             setPlannedVisit([...plannedVisit,...tempData]);
           }
         }
-      } catch {}
+      } catch (e){
+        logger(e,"Error in Planned Visit");
+
+      }
     };
     setPlannedVisits(page);
   }
@@ -241,9 +244,10 @@ const VisitScreenViewModel = () => {
     const res = await cancelVisitAPI(data);
     if (res?.isSuccess) {
       setSearchResult([]);
+      setPlannedVisit([]);
       callPlannedVisitApi(1);
       setCustomerDetails(false);
-      pageNumber.planned.current = 1
+      pageNumber.planned.current = 1;
     }
   };
 

@@ -29,6 +29,8 @@ const ProductCatalogScreen = (props: IProductScreen) => {
     return (
       <View style={styles.card}>
         <Image source={{ uri: item.img_url }} style={styles.productImage} />
+        <View style={styles.productDescriptionLine}/>
+        <View style={{paddingHorizontal:17}}>
         <TextWrapper style={styles.txt}>{item.name}</TextWrapper>
         <TextWrapper
           style={styles.dwd}
@@ -42,6 +44,7 @@ const ProductCatalogScreen = (props: IProductScreen) => {
         >
           {StringConstants.SHOW_QR}
         </TextWrapper>
+        </View>
       </View>
     );
   }

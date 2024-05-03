@@ -114,7 +114,7 @@ const CreateCustomerViewModel = () => {
   const userID = store?.getState()?.userAccount?.data?.data?.user?.id;
 
   useEffect(() => {
-    getCustomerSegmenList(dispatch),
+      getCustomerSegmenList(dispatch),
       getCustomerType(dispatch),
       getCustomerStatus(dispatch),
       getClusterAPI(dispatch),

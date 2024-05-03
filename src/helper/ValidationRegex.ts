@@ -250,9 +250,9 @@ export const checkCustomerViewRepresentativeDetail = (
   setRepresentativeError: Function,
 ) => {
   setRepresentativeError( ({
-    name: Regex.NAME.test(details?.name.current),
-    designation: Regex.NAME.test(details?.designation.current),
-    departement: Regex.NAME.test(details?.dept.current),
+    name: Regex.NAME.test(details?.name?.current),
+    designation: Regex.NAME.test(details?.designation?.current),
+    departement: Regex.NAME.test(details?.dept?.current),
     address: Regex.NAME.test(details?.address.current),
     email: Regex.EMAIL.test(details?.email?.current),
     contact: Regex.CONTACT.test(details?.contact?.current),

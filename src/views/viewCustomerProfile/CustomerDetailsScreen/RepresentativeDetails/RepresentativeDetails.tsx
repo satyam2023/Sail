@@ -2,19 +2,17 @@ import React from "react";
 import { Image, SafeAreaView, ScrollView, View } from "react-native";
 import UploadDocumnet from "components/UploadDocument";
 import StringConstants from "shared/localization";
-import { Colors, darkgrey } from "commonStyles/RNColor.style";
+import { Colors} from "commonStyles/RNColor.style";
 import InputTextField from "components/InputTextField";
 import { FlatList } from "react-native";
 import {
   MeetingRepresentativeDetailInputField,
-  RepresentativeDetailInputFieldData,
   RepresentativeErrorMsgOfViewCustomer,
 } from "@shared-constants";
 import { CustomFooter, PressableButton, TextWrapper } from "components";
 import { WindowWidth } from "libs";
 import { ISelectedImage } from "models/interface/ICreateCustomer";
 import {
-  IFlatListInputField,
   IFlatListRepresentative,
   IViewCustomerRepresentative,
 } from "models/interface/IViewCustomerProfile";
@@ -30,6 +28,7 @@ interface IRepresentative {
   representativeDetail: any;
   representativeError: IRepresentativeError;
   btnStatus:boolean;
+  showError:boolean;
 }
 
 const RepresentativeDetails = (props: IRepresentative) => {
@@ -58,7 +57,7 @@ const RepresentativeDetails = (props: IRepresentative) => {
         error={
           props?.representativeError[
             Object.keys(props?.representativeError)[index]
-          ] == false
+          ] == false && props?.showError
             ? RepresentativeErrorMsgOfViewCustomer[index]
             : undefined
         }

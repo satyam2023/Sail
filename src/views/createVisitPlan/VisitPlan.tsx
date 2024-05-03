@@ -33,6 +33,7 @@ interface ICreateVisitPlanScreen {
   isAllFieldHaveData: boolean;
   visitPlanError: ICreateVisitError;
   handleTextChange: (text: string | number, id: number) => void;
+  showError:boolean;
 }
 
 const CreateVisitPlanScreen = ({
@@ -45,6 +46,7 @@ const CreateVisitPlanScreen = ({
   isAllFieldHaveData,
   visitPlanError,
   handleTextChange,
+  showError
 }: ICreateVisitPlanScreen) => {
   const renderCreateVisitPlanField = ({item,index}:ICreateVisitFieldFlatlist) => {
     return (
@@ -67,7 +69,7 @@ const CreateVisitPlanScreen = ({
                 : Colors.white,
             }}
             error={
-              visitPlanError[Object.keys(visitPlanError)[index]] == false
+              visitPlanError[Object.keys(visitPlanError)[index]] == false && showError
                 ? createVisitErrorMsg[index]
                 : StringConstants.EMPTY
             }
@@ -94,7 +96,7 @@ const CreateVisitPlanScreen = ({
                 : undefined
             }
             error={
-              visitPlanError[Object.keys(visitPlanError)[index]] == false
+              visitPlanError[Object.keys(visitPlanError)[index]] == false && showError==true
                 ? createVisitErrorMsg[index]
                 : StringConstants.EMPTY
             }

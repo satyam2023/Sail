@@ -6,7 +6,14 @@ import Glyphs from "assets/Glyphs";
 import { SCREENS } from "@shared-constants";
 import StringConstants from "shared/localization";
 import commonStyles from "commonStyles/CommonStyle";
-import { CustomButton, CustomSwitch, GradientBackground, InputTextField, PressableButton, TextWrapper } from "components";
+import {
+  CustomButton,
+  CustomSwitch,
+  GradientBackground,
+  InputTextField,
+  PressableButton,
+  TextWrapper,
+} from "components";
 import { navigate } from "@navigation";
 import { isAndroid } from "libs";
 import { ISignInUser } from "models/interface/ISignIn";
@@ -69,9 +76,9 @@ const SignInScreen = ({
             </PressableButton>
           </View>
           <CustomButton
-            textStyle={{ color: Colors.textGrey }}
-            buttonStyle={{ backgroundColor:Colors.white3}}
-            onPress={() => onSubmit()}
+            textStyle={{ color: Colors.white }}
+            buttonStyle={{ backgroundColor: Colors.sailBlue }}
+            onPress={onSubmit}
             text={StringConstants.SIGN_IN}
           />
           <View style={styles.dontAccount}>
