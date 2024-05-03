@@ -529,7 +529,7 @@ export const isAllFieldTrue = (fields: any) => {
   return true;
 };
 
-export const checkIsAllTrue= (fields: any) => {
+export const checkIsAllTrue = (fields: any) => {
   for (let i = 0; i < Object.keys(fields).length; i++) {
     if (
       fields[Object.keys(fields)[i]].current == false ||
@@ -542,11 +542,9 @@ export const checkIsAllTrue= (fields: any) => {
   return true;
 };
 
-export const setToIntialValue= (fields: any) => {
+export const setToIntialValue = (fields: any) => {
   for (let i = 0; i < Object.keys(fields).length; i++) {
-    if (
-      fields[Object.keys(fields)[i]].current == null
-    ) {
+    if (fields[Object.keys(fields)[i]].current == null) {
       return false;
     }
   }
@@ -554,19 +552,15 @@ export const setToIntialValue= (fields: any) => {
   return true;
 };
 
-export const setIntialValue= (fields: any) => {
+export const setIntialValue = (fields: any) => {
   for (let i = 0; i < Object.keys(fields).length; i++) {
-    if (
-      fields[Object.keys(fields)[i]].current == null
-    ) {
+    if (fields[Object.keys(fields)[i]].current == null) {
       return false;
     }
   }
 
   return true;
 };
-
-
 
 export const getRoleId = (detail: IdropDown[], value: string) => {
   const id = detail.filter((item) => {
@@ -693,7 +687,7 @@ export const updateCustomerBody = (
     sub_segment: customerList[selectedIndexValue]?.sub_segment?.id
       ? customerList[selectedIndexValue]?.sub_segment?.id
       : enteredCustomerDetails?.cust_sub_seg?.current || null,
-    type:customerList[selectedIndexValue]?.type?.id || null,
+    type: customerList[selectedIndexValue]?.type?.id || null,
     sub_type: customerList[selectedIndexValue]?.sub_type?.id
       ? customerList[selectedIndexValue]?.sub_type?.id
       : enteredCustomerDetails?.cust_sub_type?.current || null,
@@ -935,4 +929,9 @@ export const dropDownListOfCreateCustomer = (
   ];
 
   return ans;
+};
+
+export const getEscalatedId = (data: any, value: string|undefined) => {
+  const ans = data.Filter((item: any) => item?.user_name == value);
+  return ans[0];
 };

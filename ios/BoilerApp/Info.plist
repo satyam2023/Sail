@@ -43,9 +43,12 @@
 	<string>The location permission is required for using the app normally for only latitute and longitude.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
-	<key>UIRequiredDeviceCapabilities</key>
+	
 	<key>NSMicrophoneUsageDescription</key>
+	<string>Your microphone is required to search product with voice search</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Speech recognition is required to enable voice search for products</string>
+	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
 	</array>
@@ -75,24 +78,15 @@
 		<string>Octicons.ttf</string>
 		<string>Zocial.ttf</string>
 		<string>Fontisto.ttf</string>
-		<string>Montserrat-Black.ttf</string>
-		<string>Montserrat-BlackItalic.ttf</string>
-		<string>Montserrat-Bold.ttf</string>
-		<string>Montserrat-BoldItalic.ttf</string>
-		<string>Montserrat-ExtraBold.ttf</string>
-		<string>Montserrat-ExtraBoldItalic.ttf</string>
-		<string>Montserrat-ExtraLight.ttf</string>
-		<string>Montserrat-ExtraLightItalic.ttf</string>
-		<string>Montserrat-Italic.ttf</string>
-		<string>Montserrat-Light.ttf</string>
-		<string>Montserrat-LightItalic.ttf</string>
-		<string>Montserrat-Medium.ttf</string>
-		<string>Montserrat-MediumItalic.ttf</string>
-		<string>Montserrat-Regular.ttf</string>
-		<string>Montserrat-SemiBold.ttf</string>
-		<string>Montserrat-SemiBoldItalic.ttf</string>
-		<string>Montserrat-Thin.ttf</string>
-		<string>Montserrat-ThinItalic.ttf</string>
+	   <string>Poppins-Black.ttf</string>
+		<string>Poppins-Bold.ttf</string>
+		<string>Poppins-ExtraBold.ttf</string>
+		<string>Poppins-ExtraLight.ttf</string>
+		<string>Poppins-Light.ttf</string>
+		<string>Poppins-Medium.ttf</string>
+		<string>Poppins-Regular.ttf</string>
+		<string>Poppins-SemiBold.ttf</string>
+		<string>Poppins-Thin.ttf</string>
 	</array>
 </dict>
 </plist>

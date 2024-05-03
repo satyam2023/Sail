@@ -67,6 +67,8 @@ const APIConstants = {
   SEARCH_CUSTOMER: "search-customer-profile",
   APPLY_FILTER: "search-visit",
   CUS_DETAIL_EXISTING: "customer-details-existing",
+  ESCALATED_TO: "escalate-to-dropdown-list",
+  
 };
 
 export default APIConstants;

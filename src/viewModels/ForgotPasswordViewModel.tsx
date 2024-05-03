@@ -11,6 +11,7 @@ import ForgotPasswordScreen from "views/forgotpassword/ForgotPasswordScreen";
 
 const ForgotPasswordViewModel = () => {
   const [currentScreen, setCurrentScreen] = useState<number>(1);
+
   const dispatch = useDispatch();
   const buttonText = [
     StringConstants.GET_OTP,

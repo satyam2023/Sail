@@ -4,7 +4,6 @@ import { IApiResponse } from "models/ApiResponses/IApiResponse";
 import {
   AccompRoot,
   Reason_ContactRoot,
-  SelectIssueResponse,
   SelectIssueRoot,
 } from "models/ApiResponses/IdropDown";
 import { Dispatch } from "react";
