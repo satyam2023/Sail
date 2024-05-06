@@ -56,11 +56,12 @@ const SignInScreen = ({
           <View style={styles.switchAreaContainer}>
             <View style={{ flexDirection: "row" }}>
               <CustomSwitch
-                onPress={(status: boolean) =>
-                  handleOnTextChange(status ? "1" : "0", 2)
+                onPress={(status: boolean) =>{
+                  handleOnTextChange(status==true ? "1" : "0", 2)
+                }
                 }
                 isRectangular
-                status={false}
+                status={true}
               />
 
               <TextWrapper style={styles.forgot}>
@@ -86,9 +87,9 @@ const SignInScreen = ({
               {StringConstants.DONT_HAVE_ACCOUNT}
             </TextWrapper>
             <TouchableOpacity
-              onPress={() => {
-                navigate(SCREENS.SIGNUP);
-              }}
+              onPress={() => 
+                navigate(SCREENS.SIGNUP)
+             }
             >
               <TextWrapper style={styles.signupText}>
                 {StringConstants.SIGN_UP}

@@ -7,9 +7,7 @@ import {
 } from "models/ApiResponses/VisitResponse";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  BottomTabVisibility,
-} from "redux/actions/UIAction";
+import { BottomTabVisibility } from "redux/actions/UIAction";
 import VisitScreen from "views/visit/VisitScreen";
 import { upcomingVisitDetails } from "@shared-constants";
 import {
@@ -84,12 +82,11 @@ const VisitScreenViewModel = () => {
   useFocusEffect(() => {
     dispatch(BottomTabVisibility(false));
     return () => dispatch(BottomTabVisibility(true));
-  })
+  });
   useEffect(() => {
     callUpcomingVisit(pageNumber.upcoming.current);
     callPlannedVisitApi(pageNumber.planned.current);
     callExecutedVisit(pageNumber.executed.current);
-
   }, []);
   useEffect(() => {
     setCurrentVisit(visitType);
@@ -136,13 +133,14 @@ const VisitScreenViewModel = () => {
   function callUpcomingVisit(page: number) {
     const setUpcomingVisits = async (page: number) => {
       try {
-        const res: IApiResponse<IPagination<VisitResponse>> =
-          await getUpcomingVisits(page);
-        if (res?.isSuccess) {
-          lastPages.executedLastPage.current = res?.data?.data
-            ? res?.data?.data?.last_page
-            : 1;
-          if (tacklePagination(page, upcomingVisitList)) {
+        if (tacklePagination(page, upcomingVisitList)) {
+          const res: IApiResponse<IPagination<VisitResponse>> =
+            await getUpcomingVisits(page);
+          if (res?.isSuccess) {
+            lastPages.executedLastPage.current = res?.data?.data
+              ? res?.data?.data?.last_page
+              : 1;
+
             dispatch(saveUpcomingVisits(res?.data?.data?.data));
           }
         }
@@ -155,6 +153,7 @@ const VisitScreenViewModel = () => {
   function callPlannedVisitApi(page: number) {
     const setPlannedVisits = async (page: number) => {
       try {
+        dispatch(setLoaderVisibility(true));
         const res: IApiResponse<IPagination<VisitResponse>> =
           await getPlannedVisits(page);
         if (res?.isSuccess) {
@@ -162,13 +161,14 @@ const VisitScreenViewModel = () => {
             ? res?.data?.data?.last_page
             : 1;
           if (tacklePagination(page, plannedVisit)) {
-            const tempData=res?.data?.data?.data ? res?.data?.data?.data : [];
-            setPlannedVisit([...plannedVisit,...tempData]);
+            const tempData = res?.data?.data?.data ? res?.data?.data?.data : [];
+            setPlannedVisit([...plannedVisit, ...tempData]);
           }
         }
-      } catch (e){
-        logger(e,"Error in Planned Visit");
-
+      } catch (e) {
+        logger(e, "Error in Planned Visit");
+      } finally {
+        dispatch(setLoaderVisibility(false));
       }
     };
     setPlannedVisits(page);
@@ -178,14 +178,13 @@ const VisitScreenViewModel = () => {
     const setExecutedVisits = async (page: number) => {
       try {
         dispatch(setLoaderVisibility(true));
-
-        const res: IApiResponse<IPagination<ExecutedResponse>> =
-          await getExecutedVisits(page);
-        if (res?.isSuccess) {
-          lastPages.executedLastPage.current = res?.data?.data
-            ? res?.data?.data?.last_page
-            : 1;
-          if (tacklePagination(page, executedVisitList)) {
+        if (tacklePagination(page, executedVisitList)) {
+          const res: IApiResponse<IPagination<ExecutedResponse>> =
+            await getExecutedVisits(page);
+          if (res?.isSuccess) {
+            lastPages.executedLastPage.current = res?.data?.data
+              ? res?.data?.data?.last_page
+              : 1;
             dispatch(saveExecutedVisits(res?.data?.data?.data));
           }
         }
@@ -389,7 +388,7 @@ const VisitScreenViewModel = () => {
         handleCustomerCodeNameEntered,
         searchResult,
         handleClearSearchResult,
-        plannedVisit
+        plannedVisit,
       }}
     />
   );

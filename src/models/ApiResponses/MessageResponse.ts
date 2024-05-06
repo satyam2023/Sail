@@ -108,9 +108,9 @@ export interface EscalatedToOtherApiResponse {
 }
 
 export interface EscalatedToOtherBody{
-  escalation_id: number,
-  vissit_issue_id:number,
-  escalated_to: number,
+  escalation_id: number|undefined,
+  vissit_issue_id:number|undefined,
+  escalated_to: number|undefined,
   escalation_comment:string|undefined,
   resolving_comment: string|null,
 }

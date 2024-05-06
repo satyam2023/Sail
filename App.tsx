@@ -12,7 +12,9 @@ import { persistor, store } from "redux/store/Store";
 import { PersistGate } from "redux-persist/integration/react";
 import StatusCode from "core/StatusCode";
 import PleaseWaitLoader from "views/emptyState/PleaseWaitLoader";
-import FilterData from "views/visit/component/Filterdata";
+import { getRememberMe } from "shared/constants/accountService";
+import { SCREENS } from "@shared-constants";
+import { navigate } from "@navigation";
 LogBox.ignoreAllLogs();
 
 if (__DEV__) {
@@ -36,14 +38,20 @@ const App = () => {
   console.log(netInfo);
 
   React.useEffect(() => {
-    setTimeout(() => {
+    setTimeout(async () => {
       SplashScreen.hide();
+      const isRemember = getRememberMe();
+      if (isRemember=='1') {
+        navigate(SCREENS.TAB);
+      } else {
+        navigate(SCREENS.ONBOARDING);
+      }
     }, 2000);
   }, [scheme, isDarkMode]); 
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <PleaseWaitLoader />
+        <PleaseWaitLoader/>
         <Navigation />
       </PersistGate>
     </Provider> 
