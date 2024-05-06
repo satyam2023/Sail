@@ -1,12 +1,14 @@
 import React from "react";
-import { FlatList, SafeAreaView, ScrollView, View } from "react-native";
+import {
+  FlatList,
+  SafeAreaView,
+  ScrollView,
+  View,
+} from "react-native";
 import PlanCompleted from "./PlanCompleted";
 import StringConstants from "shared/localization";
 import { Colors } from "commonStyles/RNColor.style";
-import {
-  CreateVisitPlanField,
-  createVisitErrorMsg,
-} from "@shared-constants";
+import { CreateVisitPlanField, createVisitErrorMsg } from "@shared-constants";
 
 import Glyphs from "assets/Glyphs";
 import {
@@ -15,14 +17,17 @@ import {
   Datepicker,
   Header,
   InputTextField,
+  KeyboardAvoidingWrapper,
   StatusBarComponent,
 } from "components";
 import { createVisitData } from "helper/helperFunctions";
 import { IdropDown } from "models/interface/ISetting";
 import { NickNameResponse } from "models/ApiResponses/CreateVisitResponse";
-import { ICreateVisitError, ICreateVisitFieldFlatlist } from "models/interface/ICreateVisit";
+import {
+  ICreateVisitError,
+  ICreateVisitFieldFlatlist,
+} from "models/interface/ICreateVisit";
 import styles from "./Style";
-
 interface ICreateVisitPlanScreen {
   isVisitDetailFilled: boolean;
   dropDownData: IdropDown[][];
@@ -33,7 +38,7 @@ interface ICreateVisitPlanScreen {
   isAllFieldHaveData: boolean;
   visitPlanError: ICreateVisitError;
   handleTextChange: (text: string | number, id: number) => void;
-  showError:boolean;
+  showError: boolean;
 }
 
 const CreateVisitPlanScreen = ({
@@ -46,9 +51,12 @@ const CreateVisitPlanScreen = ({
   isAllFieldHaveData,
   visitPlanError,
   handleTextChange,
-  showError
+  showError,
 }: ICreateVisitPlanScreen) => {
-  const renderCreateVisitPlanField = ({item,index}:ICreateVisitFieldFlatlist) => {
+  const renderCreateVisitPlanField = ({
+    item,
+    index,
+  }: ICreateVisitFieldFlatlist) => {
     return (
       <>
         {index < 3 ? (
@@ -61,6 +69,7 @@ const CreateVisitPlanScreen = ({
             maxlength={item?.maxlength}
             rightIcon={index == 2 ? Glyphs.Search : undefined}
             onRighIconPress={nicknameApicalling}
+            inputMode={item?.inputMode}
             containerStyle={{
               backgroundColor: !nickNameResult
                 ? Colors.white
@@ -69,7 +78,8 @@ const CreateVisitPlanScreen = ({
                 : Colors.white,
             }}
             error={
-              visitPlanError[Object.keys(visitPlanError)[index]] == false && showError
+              visitPlanError[Object.keys(visitPlanError)[index]] == false &&
+              showError
                 ? createVisitErrorMsg[index]
                 : StringConstants.EMPTY
             }
@@ -96,7 +106,8 @@ const CreateVisitPlanScreen = ({
                 : undefined
             }
             error={
-              visitPlanError[Object.keys(visitPlanError)[index]] == false && showError==true
+              visitPlanError[Object.keys(visitPlanError)[index]] == false &&
+              showError == true
                 ? createVisitErrorMsg[index]
                 : StringConstants.EMPTY
             }
@@ -131,30 +142,39 @@ const CreateVisitPlanScreen = ({
       <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }}>
         {!isVisitDetailFilled ? (
           <>
-            <Header topheading={StringConstants.CREATE_VISIT_PLAN} />
-            <ScrollView
-              style={{ flex: 1 }}
-              showsVerticalScrollIndicator={false}
-              nestedScrollEnabled
+            
+            <KeyboardAvoidingWrapper  
             >
-              <FlatList
-                data={CreateVisitPlanField}
-                renderItem={renderCreateVisitPlanField}
-                style={styles.inputFieldFlatList}
-              />
-              <View style={{ paddingHorizontal: 20, flex: 1 }}>
-                <InputTextField
-                  onChangeText={(text: string) => handleTextChange(text, 8)}
-                  placeholder={StringConstants.ENTER_REMARKS}
-                  containerStyle={{ backgroundColor: Colors.white, height: 90 }}
-                  error={
-                    visitPlanError[Object.keys(visitPlanError)[8]] == false
-                      ? createVisitErrorMsg[8]
-                      : StringConstants.EMPTY
-                  }
+              <Header topheading={StringConstants.CREATE_VISIT_PLAN} />
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                nestedScrollEnabled
+                style={{flex:1}}
+              >
+                <FlatList
+                  data={CreateVisitPlanField}
+                  renderItem={renderCreateVisitPlanField}
+                  style={styles.inputFieldFlatList}
+                  scrollEnabled={false}
                 />
-              </View>
-            </ScrollView>
+                <View style={{ paddingHorizontal: 20, flex: 1}}>
+                  <InputTextField
+                    onChangeText={(text: string) => handleTextChange(text, 8)}
+                    placeholder={StringConstants.ENTER_REMARKS}
+                    containerStyle={{
+                      backgroundColor: Colors.white,
+                      height: 90,
+                    }}
+                    error={
+                      visitPlanError[Object.keys(visitPlanError)[8]] == false
+                        ? createVisitErrorMsg[8]
+                        : StringConstants.EMPTY
+                    }
+                    inputMode='text'
+                  />
+                </View>
+              </ScrollView>
+            </KeyboardAvoidingWrapper>
             <CustomFooter
               leftButtonText={StringConstants.CANCEL}
               rightButtonText={StringConstants.SUBMIT}

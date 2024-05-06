@@ -18,6 +18,7 @@ import { navigate } from "@navigation";
 import { isAndroid } from "libs";
 import { ISignInUser } from "models/interface/ISignIn";
 import { Colors } from "commonStyles/RNColor.style";
+import { KeyboardAvoidingView } from "react-native";
 
 interface ISignInScreen {
   onSubmit: () => void;
@@ -40,6 +41,7 @@ const SignInScreen = ({
           <TextWrapper style={styles.pleaseText}>
             {StringConstants.PLEASE_ENTER_INFORMATION}
           </TextWrapper>
+          <KeyboardAvoidingView behavior={isAndroid?'height':'padding'}>
           <InputTextField
             leftIcon={Glyphs.Contact}
             placeholder={StringConstants.YOUR_UNIQUE}
@@ -53,6 +55,7 @@ const SignInScreen = ({
             onChangeText={(text: string) => handleOnTextChange(text, 1)}
             value={signInUser.password.current}
           />
+          </KeyboardAvoidingView>
           <View style={styles.switchAreaContainer}>
             <View style={{ flexDirection: "row" }}>
               <CustomSwitch

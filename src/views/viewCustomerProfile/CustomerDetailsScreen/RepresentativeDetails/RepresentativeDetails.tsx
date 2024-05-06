@@ -9,7 +9,7 @@ import {
   MeetingRepresentativeDetailInputField,
   RepresentativeErrorMsgOfViewCustomer,
 } from "@shared-constants";
-import { CustomFooter, PressableButton, TextWrapper } from "components";
+import { CustomFooter, KeyboardAvoidingWrapper, PressableButton, TextWrapper } from "components";
 import { WindowWidth } from "libs";
 import { ISelectedImage } from "models/interface/ICreateCustomer";
 import {
@@ -65,7 +65,9 @@ const RepresentativeDetails = (props: IRepresentative) => {
     );
   };
   return (
+
     <SafeAreaView style={{ flex: 1 }}>
+      <KeyboardAvoidingWrapper>
       <ScrollView style={{ paddingHorizontal: 20 }}>
         {props?.representative?.editDetails ? (
           <TextWrapper>
@@ -99,6 +101,7 @@ const RepresentativeDetails = (props: IRepresentative) => {
           style={{ marginTop: 16 }}
         />
       </ScrollView>
+      </KeyboardAvoidingWrapper>
       <CustomFooter
         leftButtonText={
           props?.representative?.editDetails

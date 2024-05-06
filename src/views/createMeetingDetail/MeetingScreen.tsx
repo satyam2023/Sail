@@ -1,5 +1,5 @@
 import React from "react";
-import { SafeAreaView, View } from "react-native";
+import { KeyboardAvoidingView, SafeAreaView, View } from "react-native";
 import Header from "components/AppHeader";
 import AddUnplannedVisit from "./addUnplannedVisit/AddUnplannedVisit";
 import MeetingCompleted from "./MeetingSuccess/MeetingCreatedSuccessfully";
@@ -26,6 +26,9 @@ import { IRepresentativeEnteredDetail } from "models/interface/ICreateCustomer";
 import Representative from "./addUnplannedVisit/AddRepresentative";
 import { IMeetingRepresentativeError} from "helper/ValidationRegex";
 import { IdropDown } from "models/interface/ISetting";
+import { isAndroid } from "libs";
+import KeyboardAvoidingWrapper from "components/KeyBoard";
+
 
 interface IMeetingScreen {
   currentScreen: number;
@@ -115,6 +118,7 @@ const MeetingScreen = ({
                 }}
                 isBorder={true}
               />
+         
               {currentScreen == 1 ? (
                 selectedIndexValue >= 0 ? (
                   <PlannedMeeting
@@ -171,7 +175,9 @@ const MeetingScreen = ({
                     recordVoice
                   }}
                 />
+                
               )}
+
             </SafeAreaView>
           ) : (
             <MeetingCompleted />

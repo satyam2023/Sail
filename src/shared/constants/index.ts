@@ -306,24 +306,24 @@ export const UnplannedMeetingInputField = [
 export interface ICreateVisitPlaneField {
   placeholder: string;
   maxlength?: number;
-  inputMode?: string;
+  inputMode?: InputModeOptions;
 }
 
 export const CreateVisitPlanField: ICreateVisitPlaneField[] = [
   {
     placeholder: StringConstants.ENTER_CUSTOMER,
     maxlength: 10,
-    inputMode: "numberic",
+    inputMode:'numeric',
   },
   {
     placeholder: StringConstants.ENTER_NAME,
     maxlength: 20,
-    inputMode: "default",
+    inputMode: 'text',
   },
   {
     placeholder: StringConstants.ENTER_NICK_NAME,
     maxlength: 20,
-    inputMode: "default",
+    inputMode: 'text',
   },
   { placeholder: StringConstants.CUSTOMER_REGION },
   { placeholder: StringConstants.SELECT_VISITING_EXECUTIVE },

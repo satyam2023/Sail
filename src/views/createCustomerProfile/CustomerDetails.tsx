@@ -1,5 +1,11 @@
 import React from "react";
-import { FlatList, Image, SafeAreaView, View } from "react-native";
+import {
+  FlatList,
+  Image,
+  KeyboardAvoidingView,
+  SafeAreaView,
+  View,
+} from "react-native";
 import CustomerDetailHeader from "./CustomerDetailHeader";
 import StringConstants from "shared/localization";
 import { Colors } from "commonStyles/RNColor.style";
@@ -32,6 +38,7 @@ import Glyphs from "assets/Glyphs";
 import { ICreateCustomerError } from "helper/ValidationRegex";
 import styles from "./Style";
 import commonStyles from "commonStyles/CommonStyle";
+import { isAndroid } from "libs";
 
 interface ICust {
   enteredCustomerDetails: IEnteredCustomerDetails;
@@ -156,7 +163,7 @@ const CreateCustomerDetails = (props: ICust) => {
                       item,
                       index,
                       StringConstants.PROCURED_PRODUCT,
-                    ),
+                    )
                 )}
             </>
           )
@@ -214,13 +221,13 @@ const CreateCustomerDetails = (props: ICust) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, marginBottom: 20 }}>
+    <>
       <CustomerDetailHeader
         heading={StringConstants.ENTER_CUSTOMER_DETAILS}
         CurrentScreen={1}
         topheading={StringConstants.CREATE_CUSTOMER_PROFILE}
       />
-      <View style={{ paddingHorizontal: 20 }}>
+      <View style={{ paddingHorizontal: 20,marginBottom:16}}>
         <FlatList
           data={CustomerDetailInputField}
           renderItem={renderCustomerInputField}
@@ -273,7 +280,7 @@ const CreateCustomerDetails = (props: ICust) => {
             )}
         </View>
       </View>
-    </SafeAreaView>
+    </>
   );
 };
 export default CreateCustomerDetails;

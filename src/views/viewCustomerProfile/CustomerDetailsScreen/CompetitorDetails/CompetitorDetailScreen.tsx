@@ -1,12 +1,12 @@
 import React from "react";
-import { SafeAreaView } from "react-native";
+import {SafeAreaView } from "react-native";
 import { Colors } from "commonStyles/RNColor.style";
 import { ICompetitorError, IViewCustomerCompetitor } from "models/interface/IViewCustomerProfile";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
 import StatusBarComponent from "components/StatusBarComponent";
 
 import ShowCompetitorListing from "./ShowCompetitorListing";
-import { CustomFooter } from "components";
+import { CustomFooter, KeyboardAvoidingWrapper } from "components";
 import StringConstants from "shared/localization";
 import LastScreen from "../LastScreen";
 import AddUpdateCompetitor from "./AddUpdateCompetitor";
@@ -80,10 +80,12 @@ const CompetitorDetailScreenOfViewCustomer = ({
         backgroundColor={Colors.sailBlue}
         conentType={"dark-content"}
       />
-      <SafeAreaView style={{ flex: 1, paddingHorizontal: 20 }}>
+      <SafeAreaView style={{ flex: 1}}>
         {!submitSuccess ? (
           <>
+          <KeyboardAvoidingWrapper>
             {renderScreen()}
+            </KeyboardAvoidingWrapper>
             {!addDetailStatus ? (
               <>
                 {!competitor?.showcompetitorDetail ? (

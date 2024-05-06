@@ -134,6 +134,7 @@ const ViewCustomerRepresentative = ({
           )}
         </SafeAreaView>
       ) : (
+        
         <RepresentativeDetails
           {...{
             handleUploadDocument,

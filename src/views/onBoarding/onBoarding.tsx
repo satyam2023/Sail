@@ -11,11 +11,14 @@ import TextWrapper from "components/TextWrapper";
 import StringConstants from "shared/localization";
 import commonStyles from "commonStyles/CommonStyle";
 import GradientBackground from "components/LinearGradient";
+import { StatusBarComponent } from "components";
+import { isAndroid } from "libs";
 
 
 const OnboardingScreen = () => {
   return (
     <GradientBackground>
+     
     <SafeAreaContainer >
       <View style={[{ flex: 0.4 },commonStyles.center]}>
         <Image source={Glyphs.Sail} style={styles.imgsail} />

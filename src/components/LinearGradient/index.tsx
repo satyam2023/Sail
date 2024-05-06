@@ -23,7 +23,7 @@ const GradientBackground = ({ children }: any) => {
 
 export default GradientBackground;
 
-const styles = StyleSheet.create<{linearGradient:ViewStyle}>({
+const styles = StyleSheet.create<{ linearGradient: ViewStyle }>({
   linearGradient: {
     flex: 1,
   },

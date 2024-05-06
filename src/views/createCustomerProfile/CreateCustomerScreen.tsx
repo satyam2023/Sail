@@ -1,12 +1,16 @@
 import React from "react";
 import CustomerDetails from "./CustomerDetails";
-import { ScrollView } from "react-native";
+import { KeyboardAvoidingView, SafeAreaView, ScrollView } from "react-native";
 import CustomerRepresentative from "./CustomerRepresentative/CustomerRepresentative";
 import RegistrationCompleted from "./RegistrationCompleted/RegistrationCompleted";
 import StringConstants from "shared/localization";
 import Competitor from "./Competitor/Competitor";
 import { Colors } from "commonStyles/RNColor.style";
-import { CustomFooter, SafeAreaContainer } from "components";
+import {
+  CustomFooter,
+  KeyboardAvoidingWrapper,
+  SafeAreaContainer,
+} from "components";
 import {
   ICustomerTypeProject,
   ICustomertypeTrader,
@@ -27,6 +31,7 @@ import {
   IRepresentative,
 } from "models/ApiResponses/CreateCustomer";
 import StatusBarComponent from "components/StatusBarComponent";
+import { isAndroid } from "libs";
 
 interface ICreateCustomer {
   CurrentScreen: number;
@@ -88,12 +93,14 @@ const CreateCustomerScreen = (props: ICreateCustomer) => {
     <>
       <StatusBarComponent
         backgroundColor={Colors.sailBlue}
-        conentType={"dark-content"}
+        conentType={'light-content'}
       />
-      <SafeAreaContainer backgroundColor={Colors.background2}>
+      <SafeAreaView style={{flex:1}} >
+        <KeyboardAvoidingWrapper>
         <ScrollView style={{ backgroundColor: Colors.background, flex: 1 }}>
           {renderScreen()}
         </ScrollView>
+        </KeyboardAvoidingWrapper>
         {props?.CurrentScreen <= 3 && (
           <>
             {!props.addDetailStatus ? (
@@ -132,7 +139,7 @@ const CreateCustomerScreen = (props: ICreateCustomer) => {
             )}
           </>
         )}
-      </SafeAreaContainer>
+      </SafeAreaView>
     </>
   );
 };

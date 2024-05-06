@@ -86,7 +86,7 @@ const HomeScreenViewModel = () => {
   }
 
   return (
-    <SafeAreaView style={{ backgroundColor: Colors.sailBlue, flex: 1 }}>
+ 
       <HomeScreen
         {...{
           userData,
@@ -96,7 +96,7 @@ const HomeScreenViewModel = () => {
           onClickEventOnUpperTextOfHorizontalList,
         }}
       />
-    </SafeAreaView>
+
   );
 };
 
