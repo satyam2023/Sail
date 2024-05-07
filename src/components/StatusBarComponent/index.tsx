@@ -12,6 +12,7 @@ const StatusBarComponent = (props: IStatuBar) => {
       style={{ height: barheight, backgroundColor: props?.backgroundColor,flex:0}}
     >
       <StatusBar
+        translucent
         barStyle={props?.conentType}
         backgroundColor={props?.backgroundColor}
       />

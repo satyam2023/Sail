@@ -1,5 +1,5 @@
 import React from "react";
-import { SafeAreaView, View } from "react-native";
+import { KeyboardAvoidingView, SafeAreaView, View } from "react-native";
 import Header from "components/AppHeader";
 import AddUnplannedVisit from "./addUnplannedVisit/AddUnplannedVisit";
 import MeetingCompleted from "./MeetingSuccess/MeetingCreatedSuccessfully";
@@ -8,7 +8,7 @@ import { Colors } from "commonStyles/RNColor.style";
 import StringConstants from "shared/localization";
 import InputTextField from "components/InputTextField";
 import HorizontalSlider from "components/HorizontalSliderTab";
-import { RectangularBox } from "components";
+import { RectangularBox, StatusBarComponent } from "components";
 import { FlatList } from "react-native-gesture-handler";
 import { MeetingHeaderData } from "@shared-constants";
 import {
@@ -18,13 +18,17 @@ import {
   IPlannedMeetingData,
   IRepresentativeList,
   IUnplannedDropDownList,
+  IUnplannedMeetingEnteredDetail,
   IissueDetail,
 } from "models/interface/IMeeting";
 import PlannedMeeting from "./PlannedMeeting";
 import { IRepresentativeEnteredDetail } from "models/interface/ICreateCustomer";
 import Representative from "./addUnplannedVisit/AddRepresentative";
-import { IRepresentativeError } from "helper/ValidationRegex";
+import { IMeetingRepresentativeError} from "helper/ValidationRegex";
 import { IdropDown } from "models/interface/ISetting";
+import { isAndroid } from "libs";
+import KeyboardAvoidingWrapper from "components/KeyBoard";
+
 
 interface IMeetingScreen {
   currentScreen: number;
@@ -42,16 +46,18 @@ interface IMeetingScreen {
   handleAddRepresentative: () => void;
   enteredRepresentativeDetails: IRepresentativeEnteredDetail;
   addUnPlannedRepresentative: boolean;
-  representativeError: IRepresentativeError;
+  representativeError: IMeetingRepresentativeError;
   handleRepresentativeOnTextChange: (text: string | number, id: number) => void;
   handleUnplannedVisitDetail: (text: string | number, id: number) => void;
   issueDetail: IissueDetail;
   handleSubmitButtonClick: () => void;
   btnStatus: IBtnStatus;
   plannedissueList:IIisueList,
-        plannedrepresentativeList:IRepresentativeList;
-        selectIssuesDropDown:IdropDown[][];
-        handleIssueDetailChange:(text:string|number,id:number)=>void;
+  plannedrepresentativeList:IRepresentativeList;
+  selectIssuesDropDown:IdropDown[][];
+  handleIssueDetailChange:(text:string|number,id:number)=>void;
+  unPlannedVisitDetail: IUnplannedMeetingEnteredDetail;
+  recordVoice:()=>void;
 }
 
 const MeetingScreen = ({
@@ -79,7 +85,9 @@ const MeetingScreen = ({
   plannedissueList,
   plannedrepresentativeList,
   selectIssuesDropDown,
-  handleIssueDetailChange
+  handleIssueDetailChange,
+  unPlannedVisitDetail,
+  recordVoice
 }: IMeetingScreen) => {
   const renderRectangularBox = ({ item, index }: IFlatlistRectangularBox) => {
     return (
@@ -94,6 +102,7 @@ const MeetingScreen = ({
 
   return (
     <>
+    <StatusBarComponent backgroundColor={Colors.sailBlue} conentType={'light-content'} />
       {!addUnPlannedRepresentative ? (
         <>
           {!successStatus ? (
@@ -107,7 +116,9 @@ const MeetingScreen = ({
                 selectedTab={(index: number) => {
                   setCurrentScreen(index);
                 }}
+                isBorder={true}
               />
+         
               {currentScreen == 1 ? (
                 selectedIndexValue >= 0 ? (
                   <PlannedMeeting
@@ -159,10 +170,14 @@ const MeetingScreen = ({
                     handleSubmitButtonClick,
                     btnStatus,
                     selectIssuesDropDown,
-                    handleIssueDetailChange
+                    handleIssueDetailChange,
+                    unPlannedVisitDetail,
+                    recordVoice
                   }}
                 />
+                
               )}
+
             </SafeAreaView>
           ) : (
             <MeetingCompleted />

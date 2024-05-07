@@ -12,16 +12,34 @@ const styles = StyleSheet.create({
   },
   markAsResolvedText: {
     fontFamily: fonts.type.extraBold,
-    fontSize:14,
+    fontSize: 14,
     color: Colors.blackPeral,
-    marginBottom:16
+    marginBottom: 16,
   },
-  addDetailText:{
+  addDetailText: {
     color: Colors.sailBlue,
     fontSize: 16,
     fontFamily: fonts.type.regular,
     textAlign: "center",
-    marginVertical:16
-  }
+    marginVertical: 16,
+  },
+  text: {
+    marginBottom: 26,
+    textAlign: "center",
+    color: Colors.sailBlue,
+  },
+  selectIssueContainer: {
+    borderWidth: 1,
+    borderColor: Colors.lightGray,
+    paddingHorizontal: 16,
+    borderTopWidth: 0,
+    backgroundColor: Colors.background,
+    borderEndRadius: 5,
+  },
+  addRepresentativeContainer: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 10,
+  },
 });
 export default styles;

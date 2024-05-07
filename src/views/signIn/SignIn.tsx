@@ -6,11 +6,19 @@ import Glyphs from "assets/Glyphs";
 import { SCREENS } from "@shared-constants";
 import StringConstants from "shared/localization";
 import commonStyles from "commonStyles/CommonStyle";
-import { CustomButton, CustomSwitch, GradientBackground, InputTextField, PressableButton, TextWrapper } from "components";
+import {
+  CustomButton,
+  CustomSwitch,
+  GradientBackground,
+  InputTextField,
+  PressableButton,
+  TextWrapper,
+} from "components";
 import { navigate } from "@navigation";
 import { isAndroid } from "libs";
 import { ISignInUser } from "models/interface/ISignIn";
 import { Colors } from "commonStyles/RNColor.style";
+import { KeyboardAvoidingView } from "react-native";
 
 interface ISignInScreen {
   onSubmit: () => void;
@@ -33,6 +41,7 @@ const SignInScreen = ({
           <TextWrapper style={styles.pleaseText}>
             {StringConstants.PLEASE_ENTER_INFORMATION}
           </TextWrapper>
+          <KeyboardAvoidingView behavior={isAndroid?'height':'padding'}>
           <InputTextField
             leftIcon={Glyphs.Contact}
             placeholder={StringConstants.YOUR_UNIQUE}
@@ -46,14 +55,16 @@ const SignInScreen = ({
             onChangeText={(text: string) => handleOnTextChange(text, 1)}
             value={signInUser.password.current}
           />
+          </KeyboardAvoidingView>
           <View style={styles.switchAreaContainer}>
             <View style={{ flexDirection: "row" }}>
               <CustomSwitch
-                onPress={(status: boolean) =>
-                  handleOnTextChange(status ? "1" : "0", 2)
+                onPress={(status: boolean) =>{
+                  handleOnTextChange(status==true ? "1" : "0", 2)
+                }
                 }
                 isRectangular
-                status={false}
+                status={true}
               />
 
               <TextWrapper style={styles.forgot}>
@@ -69,9 +80,9 @@ const SignInScreen = ({
             </PressableButton>
           </View>
           <CustomButton
-            textStyle={{ color: Colors.textGrey }}
-            buttonStyle={{ backgroundColor:Colors.white3}}
-            onPress={() => onSubmit()}
+            textStyle={{ color: Colors.white }}
+            buttonStyle={{ backgroundColor: Colors.sailBlue }}
+            onPress={onSubmit}
             text={StringConstants.SIGN_IN}
           />
           <View style={styles.dontAccount}>
@@ -79,9 +90,9 @@ const SignInScreen = ({
               {StringConstants.DONT_HAVE_ACCOUNT}
             </TextWrapper>
             <TouchableOpacity
-              onPress={() => {
-                navigate(SCREENS.SIGNUP);
-              }}
+              onPress={() => 
+                navigate(SCREENS.SIGNUP)
+             }
             >
               <TextWrapper style={styles.signupText}>
                 {StringConstants.SIGN_UP}

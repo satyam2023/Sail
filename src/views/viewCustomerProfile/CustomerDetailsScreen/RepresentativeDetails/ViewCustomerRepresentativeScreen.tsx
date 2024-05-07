@@ -36,7 +36,9 @@ interface SecondProps {
   representative: IViewCustomerRepresentative;
   setEditing: (id: number) => void;
   handleFooterButtonClick: (type: string) => void;
-  representativeError:IRepresentativeError
+  representativeError:IRepresentativeError;
+  btnStatus:boolean;
+  showError:boolean;
 }
 const ViewCustomerRepresentative = ({
   customerList,
@@ -51,7 +53,9 @@ const ViewCustomerRepresentative = ({
   representative,
   setEditing,
   handleFooterButtonClick,
-  representativeError
+  representativeError,
+  btnStatus,
+  showError
 }: SecondProps) => {
   const renderRepresentativeList = ({
     item,
@@ -130,6 +134,7 @@ const ViewCustomerRepresentative = ({
           )}
         </SafeAreaView>
       ) : (
+        
         <RepresentativeDetails
           {...{
             handleUploadDocument,
@@ -139,7 +144,9 @@ const ViewCustomerRepresentative = ({
             handleAddStatus,
             representative,
             representativeDetail,
-            representativeError
+            representativeError,
+            btnStatus,
+            showError
           }}
         />
       )}

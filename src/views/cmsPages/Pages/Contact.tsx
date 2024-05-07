@@ -2,23 +2,22 @@ import React from "react";
 import {
  View,
 } from "react-native";
-
 import Header from "components/AppHeader";
 import StringConstants from "shared/localization";
-import { FilterContent } from "helper/DataFilteration";
 import { ICmsProps } from "./FAQs";
-import { TextWrapper } from "components";
+import RenderHTML from "react-native-render-html";
 
 
 const Contact = ({ cmsPageData,pagesRenderingController }: ICmsProps) => {
-  const filterData=FilterContent(cmsPageData as [],4);
+  const source={
+    html:cmsPageData[1].content
+  }
   return (
-    
       <View>
         <Header topheading={StringConstants.CONTACT_US} onPress={()=>{pagesRenderingController(StringConstants.CMS)}}/>
-        <TextWrapper>
-          {filterData}
-        </TextWrapper>
+        <View style={{paddingHorizontal:20}}>
+        <RenderHTML source={source}/>
+        </View>
       </View>
  
   );

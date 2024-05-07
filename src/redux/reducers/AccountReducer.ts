@@ -1,6 +1,5 @@
 
 import { SET_USER_DATA, UPDATE_USER_DATA } from "../actionConstants";
-import { IBaseReducerInterface } from "./IBaseReducerInterface";
 
 
 const INITIAL_STATE = {

@@ -1,9 +1,9 @@
 import Glyphs from "assets/Glyphs";
 import React from "react";
-import { View, Image, StyleSheet } from "react-native";
+import { View, Image} from "react-native";
 import TextWrapper from "components/TextWrapper";
 import commonStyles from "commonStyles/CommonStyle";
-import { Colors } from "commonStyles/RNColor.style";
+import styles from "./Style";
 
 interface ISearchResult {
   name: string;
@@ -30,23 +30,3 @@ const SearchResult = ({ name, place, phone }: ISearchResult) => {
 
 export default SearchResult;
 
-const styles=StyleSheet.create({
-  searchContainer:{
-      height: 92,
-      width: '100%',
-      borderRadius: 10,
-      backgroundColor: Colors.white,
-      flexDirection: "row",
-      justifyContent:'space-between',
-      paddingHorizontal:20,
-      alignItems:'center',
-      marginTop: 24,
-    },
-    img:{
-      height:32,
-      width:32,
-      resizeMode:'contain',
-
-    }
-
-});

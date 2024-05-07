@@ -22,6 +22,11 @@ interface ITabArray {
     notfocus: string;
     focus: string;
   };
+  borderColor?:{
+    focus:string,
+    notfocus:string,
+  }
+  
 }
 
 interface IHorizontalSliderStyle{
@@ -37,7 +42,8 @@ interface IHorizontalSlider {
   selectedTab: (index: number) => void;
   onlyTwoColor?:boolean;
   countArray?:string[];
-  style?:ViewStyle
+  style?:ViewStyle;
+  isBorder?:boolean;
 }
 
 const HorizontalSlider = (props: IHorizontalSlider) => {
@@ -47,7 +53,7 @@ const HorizontalSlider = (props: IHorizontalSlider) => {
     selectedTab: Function,
   ) => {
     
-   const isMatched=index+1==props.currentScreen;
+   const isMatched=index+1==props?.currentScreen;
     return (
       <PressableButton
         style={[
@@ -56,6 +62,8 @@ const HorizontalSlider = (props: IHorizontalSlider) => {
             backgroundColor:
               isMatched  ? item.backgroundColor?.focus
                 : item.backgroundColor?.notfocus,
+            borderWidth:props?.isBorder?1.25:0,
+            borderColor:props?.isBorder?isMatched?item?.borderColor?.focus:item?.borderColor?.notfocus:undefined
           },
         ]}
         onPress={() => selectedTab(index + 1)}
@@ -125,6 +133,7 @@ const styles = (visitNumber?: number) => {
     horizontalContainer: {
       paddingHorizontal:20,
       marginBottom:10,
+      
     },
     clickableContainer: {
       marginTop: 16,

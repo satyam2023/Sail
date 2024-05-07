@@ -1,4 +1,4 @@
-import { SET_MESSAGE_DATA } from "../actionConstants";
+import { SET_ESCALATED_DATA, SET_MESSAGE_DATA } from "../actionConstants";
 
 const INITIAL_STATE = {
   inbox: [],
@@ -13,7 +13,12 @@ const messageReducer = (state = INITIAL_STATE, action: any) => {
         inbox: action.payload,
       };
     }
-
+    case SET_ESCALATED_DATA: {
+      return {
+        ...state,
+        EscaletedDropDownData: action.payload,
+      };
+    }
     default:
       return state;
   }

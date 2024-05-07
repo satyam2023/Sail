@@ -19,9 +19,10 @@ import { IRepresentativeError } from "helper/ValidationRegex";
 
 interface IRepresentative {
   enteredRepresentativeDetails: IRepresentativeEnteredDetail;
-  chooseImageVideo: () => void;
+  handleSelectImageVideo: () => void;
   representativeError: IRepresentativeError;
-  selectRepresentativeImage: ISelectedImage|undefined;
+  selectRepresentativeImage: ISelectedImage | undefined;
+  handleTextChangeOfRepresentative: (text: string, id: number) => void;
 }
 
 const RepresentativeDetails = (props: IRepresentative) => {
@@ -32,9 +33,7 @@ const RepresentativeDetails = (props: IRepresentative) => {
     return (
       <InputTextField
         onChangeText={(text: string) =>
-          (props.enteredRepresentativeDetails[
-            Object.keys(props?.enteredRepresentativeDetails)[index + 1]
-          ].current = text)
+          props?.handleTextChangeOfRepresentative(text, index)
         }
         placeholder={item}
         containerStyle={{ backgroundColor: Colors.white }}
@@ -50,8 +49,7 @@ const RepresentativeDetails = (props: IRepresentative) => {
   };
   return (
     <ScrollView style={{ flex: 1, paddingHorizontal: 20, paddingTop: 10 }}>
-     
-     {props?.selectRepresentativeImage && (
+      {props?.selectRepresentativeImage && (
         <View style={{ width: WindowWidth / 4 }}>
           <PressableButton>
             <Image
@@ -64,9 +62,7 @@ const RepresentativeDetails = (props: IRepresentative) => {
       <UploadDocumnet
         uploadType={StringConstants.UPLOAD_VISITING_CARD}
         style={{ backgroundColor: Colors.dashed }}
-        onPress={() => {
-          props?.chooseImageVideo();
-        }}
+        onPress={props?.handleSelectImageVideo}
       />
       <View style={{ marginTop: 16 }}>
         <FlatList

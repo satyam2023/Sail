@@ -18,10 +18,9 @@ export interface Root {
   visit_data: VisitData;
 }
 
-export interface IMessageDetail{
+export interface IMessageDetail {
   allEscalations: AllEscalation[];
   customer_data: CustomerData;
-
 }
 
 export interface AllEscalation {
@@ -91,4 +90,27 @@ export interface VisitData {
 export interface Reason {
   id: number;
   name: string;
+}
+
+export interface EscalatedResponse {
+  status: number;
+  data: EscalatedData[];
+}
+
+export interface EscalatedData {
+  id: number;
+  user_name: string;
+  user_upn: string;
+}
+
+export interface EscalatedToOtherApiResponse {
+  message: string;
+}
+
+export interface EscalatedToOtherBody{
+  escalation_id: number|undefined,
+  vissit_issue_id:number|undefined,
+  escalated_to: number|undefined,
+  escalation_comment:string|undefined,
+  resolving_comment: string|null,
 }

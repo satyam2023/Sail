@@ -1,8 +1,39 @@
-import { StyleSheet } from "react-native";
+import { ImageStyle, StyleSheet, TextStyle, ViewStyle } from "react-native";
 import { Colors } from "./RNColor.style";
 import fonts from "@fonts";
 
-const commonStyles = StyleSheet.create({
+interface ICommonStyle{
+  mainContainer:ViewStyle;
+  spaceBetween:ViewStyle;
+  font14RegularBlack:TextStyle;
+  font14RegularGray:TextStyle;
+  font14RegularDarkGray:TextStyle;
+  font14MediumDarkGray:TextStyle;
+  font14MediumBlack:TextStyle;
+  font16MediumBlackpearl:TextStyle;
+  font14BoldBlue:TextStyle;
+  font14MediumBlackpearl:TextStyle;
+  font12RegularGrey:TextStyle;
+  font10RegularGrey:TextStyle;
+  deActivatedButton:ViewStyle;
+  activatedButton:ViewStyle;
+  deactivatedButtonText:TextStyle;
+  activatedButtontext:TextStyle;
+  errorText:TextStyle;
+  mediumText:TextStyle;
+  leftIcon:ImageStyle;
+  center:ViewStyle;
+  icon:ImageStyle;
+  searchButtonStyle:ViewStyle;
+  seachButtonTextStyle:TextStyle;
+  rightIcon:ImageStyle;
+  rectangularBoxRadius:ViewStyle;
+
+}
+
+
+
+const commonStyles = StyleSheet.create<ICommonStyle>({
   mainContainer: {
     flex: 1,
     backgroundColor: Colors.background,
@@ -35,6 +66,11 @@ const commonStyles = StyleSheet.create({
     fontSize: 14,
     fontFamily:fonts.type.medium, 
     color: Colors.black,
+  },
+  font14BoldBlue: {
+    fontSize: 14,
+    fontFamily:fonts.type.bold, 
+    color: Colors.sailBlue,
   },
   font14MediumBlackpearl:{
     fontSize: 14,
@@ -112,11 +148,9 @@ const commonStyles = StyleSheet.create({
     position:'absolute',
     right:16
   },
-
   rectangularBoxRadius:{
     borderRadius:10,
-  }
-
+  },
   
 });
 

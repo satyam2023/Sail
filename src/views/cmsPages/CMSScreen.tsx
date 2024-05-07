@@ -28,56 +28,58 @@ const CMSPagesScreen = ({
   cmsPageData,
 }: ICmsPageScreen) => {
   function renderItem(item: CMSRoot, _: number) {
-    
     return (
       <View style={styles.container}>
         <TextWrapper style={commonStyles.font14MediumBlackpearl}>
           {item.page}
         </TextWrapper>
-        <PressableButton
-          onPress={() => pagesRenderingController(item.page)}
-        >
+        <PressableButton onPress={() => pagesRenderingController(item.page)}>
           <Image source={Glyphs.Arrow} style={commonStyles.icon} />
         </PressableButton>
       </View>
     );
   }
+
+  function renderScreen() {
+    switch (pages) {
+      case StringConstants.ABOUT_US:
+        return <About {...{ pagesRenderingController, cmsPageData }} />;
+      case StringConstants.FAQS:
+        return <FAQs {...{ pagesRenderingController, cmsPageData }} />;
+      case StringConstants.PRIVACY:
+        return <Privacy {...{ pagesRenderingController, cmsPageData }} />;
+      case StringConstants.TERMS_AND_CONDITIONS:
+        return <Terms {...{ pagesRenderingController, cmsPageData }} />;
+      case StringConstants.CONTACT_US:
+        return <Contact {...{ pagesRenderingController, cmsPageData }} />;
+      default:
+        return null;
+    }
+  }
   return (
     <>
-     <StatusBarComponent
+      <StatusBarComponent
         backgroundColor={Colors.sailBlue}
         conentType={"dark-content"}
       />
-    <SafeAreaView style={{ backgroundColor: Colors.background2, flex: 1 }}>
-      <>
-        {pages == StringConstants.CMS && (
-          <>
-            <Header topheading={StringConstants.CMS_PAGES} />
-            <FlatList
-              data={cmsPageData}
-              renderItem={({ item, index }) => renderItem(item, index)}
-              showsVerticalScrollIndicator={false}
-              style={{ paddingHorizontal: 20, marginTop: 20 }}
-            />
-          </>
-        )}
-        {pages == StringConstants.ABOUT_US && (
-          <About {...{ pagesRenderingController, cmsPageData }} />
-        )}
-        {pages == StringConstants.FAQS && (
-          <FAQs {...{ pagesRenderingController, cmsPageData }} />
-        )}
-        {pages == StringConstants.PRIVACY && (
-          <Privacy {...{ pagesRenderingController, cmsPageData }} />
-        )}
-        {pages == StringConstants.TERMS_AND_CONDITIONS && (
-          <Terms {...{ pagesRenderingController, cmsPageData }} />
-        )}
-        {pages == StringConstants.CONTACT_US && (
-          <Contact {...{ pagesRenderingController, cmsPageData }} />
-        )}
-      </>
-    </SafeAreaView>
+      <SafeAreaView style={{ backgroundColor: Colors.background2, flex: 1 }}>
+        <>
+          {pages == StringConstants.CMS && (
+            <>
+              <Header topheading={StringConstants.CMS_PAGES} />
+              <FlatList
+                data={cmsPageData}
+                renderItem={({ item, index }) => renderItem(item, index)}
+                showsVerticalScrollIndicator={false}
+                style={{ paddingHorizontal: 20, marginTop: 20 }}
+              />
+            </>
+          )}
+         {
+          renderScreen()
+         }
+        </>
+      </SafeAreaView>
     </>
   );
 };

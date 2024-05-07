@@ -1,19 +1,12 @@
 import { Colors } from "commonStyles/RNColor.style";
-import { StyleSheet } from "react-native";
-const styles = StyleSheet.create({
-
-  floatingTextInput: {
-    width: '100%',
-    height: 53,
-    borderRadius: 15,
-    backgroundColor: Colors.white,
-    flexDirection: "row",
-    zIndex: 4,
-    bottom: 26.5,
-    justifyContent:'space-between',
-    alignItems:'center',
-    paddingHorizontal:16,
-  },
+import { ImageStyle, StyleSheet, ViewStyle } from "react-native";
+interface IViewCustomerProfileStyle{
+  searcchBox:ViewStyle;
+  removeImage:ImageStyle;
+  selectedImage:ImageStyle;
+  imgContainer:ViewStyle;
+}
+const styles = StyleSheet.create<IViewCustomerProfileStyle>({
   searcchBox: {
     backgroundColor: Colors.lightGrey,
     height: 56,

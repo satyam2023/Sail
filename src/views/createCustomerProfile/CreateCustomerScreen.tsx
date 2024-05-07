@@ -1,12 +1,16 @@
 import React from "react";
 import CustomerDetails from "./CustomerDetails";
-import { ScrollView } from "react-native";
+import { KeyboardAvoidingView, SafeAreaView, ScrollView } from "react-native";
 import CustomerRepresentative from "./CustomerRepresentative/CustomerRepresentative";
 import RegistrationCompleted from "./RegistrationCompleted/RegistrationCompleted";
 import StringConstants from "shared/localization";
 import Competitor from "./Competitor/Competitor";
 import { Colors } from "commonStyles/RNColor.style";
-import { CustomFooter, SafeAreaContainer } from "components";
+import {
+  CustomFooter,
+  KeyboardAvoidingWrapper,
+  SafeAreaContainer,
+} from "components";
 import {
   ICustomerTypeProject,
   ICustomertypeTrader,
@@ -18,9 +22,16 @@ import {
   IsubType,
 } from "models/interface/ICreateCustomer";
 import { IdropDown } from "models/interface/ISetting";
-import { ICreateCustomerError, IRepresentativeError } from "helper/ValidationRegex";
-import { ICompetitor, IRepresentative } from "models/ApiResponses/CreateCustomer";
+import {
+  ICreateCustomerError,
+  IRepresentativeError,
+} from "helper/ValidationRegex";
+import {
+  ICompetitor,
+  IRepresentative,
+} from "models/ApiResponses/CreateCustomer";
 import StatusBarComponent from "components/StatusBarComponent";
+import { isAndroid } from "libs";
 
 interface ICreateCustomer {
   CurrentScreen: number;
@@ -33,7 +44,7 @@ interface ICreateCustomer {
   setSubTypes: Function;
   isAllFieldHaveData: () => void;
   handleLocateMe: () => void;
-  chooseImageVideo: () => void;
+  handleSelectImageVideo: () => void;
   error: ICreateCustomerError;
   enteredRepresentativeDetails: IRepresentativeEnteredDetail;
   addRepresentativeCompetitor: () => void;
@@ -45,11 +56,16 @@ interface ICreateCustomer {
   indexofSubtype: IsubType;
   selectedDropdownItemList: IselecteddropDown;
   extraListDropDownset: Function;
-  removeSelecteddropDownItem: () => void;
+  removeSelectedItem: (index: number, type: string) => void;
   cutomerTypeProjectEnteredData: ICustomerTypeProject;
   representativeError: IRepresentativeError;
-  customerDetailSelectedImage:ISelectedImage[];
-  selectRepresentativeImage:ISelectedImage|undefined;
+  customerDetailSelectedImage: ISelectedImage[];
+  selectRepresentativeImage: ISelectedImage | undefined;
+  handleTextOnTextChangeCustomer: (text: string | number, id: number) => void;
+  sapUserExist: boolean;
+  removeSelectedImage: (item: ISelectedImage) => void;
+  handleTextChangeOfRepresentative: (text: string, id: number) => void;
+  handleTextChangeOfCompetitor: (text: string, id: number) => void;
 }
 
 const CreateCustomerScreen = (props: ICreateCustomer) => {
@@ -75,51 +91,55 @@ const CreateCustomerScreen = (props: ICreateCustomer) => {
 
   return (
     <>
-     <StatusBarComponent
+      <StatusBarComponent
         backgroundColor={Colors.sailBlue}
-        conentType={"dark-content"}
+        conentType={'light-content'}
       />
-    <SafeAreaContainer backgroundColor={Colors.background2}>
-      <ScrollView style={{ backgroundColor: Colors.background, flex: 1 }}>
-        {renderScreen()}
-      </ScrollView>
-      {props?.CurrentScreen <= 3 && (
-        <>
-          {!props.addDetailStatus ? (
-            <CustomFooter
-              leftButtonText={StringConstants.CANCEL}
-              rightButtonText={StringConstants.SAVE_PROCEED}
-              leftButtonPress={() =>
-                props?.handleScreenChange(StringConstants.BACKWARD)
-              }
-              rightButtonPress={() =>
-                props?.handleScreenChange(StringConstants.FORWARD)
-              }
-              isTracker={`${props?.CurrentScreen * 34}%`}
-              rightButtonStyle={
-                props?.isAllDetailsFilled
-                  ? { backgroundColor: Colors.sailBlue }
-                  : {}
-              }
-            />
-          ) : (
-            <CustomFooter
-              leftButtonText={
-                props.CurrentScreen == 2
-                  ? StringConstants.ADD_CUSTOMER_REP
-                  : StringConstants.ADD_COMPETITOR
-              }
-              leftButtonPress={() => {
-                props?.addDetails(false);
-                props?.addRepresentativeCompetitor();
-              }}
-              leftButtonStyle={props?.isAllDetailsFilled ? {} : {}}
-              singleButtonOnFooter
-            />
-          )}
-        </>
-      )}
-    </SafeAreaContainer>
+      <SafeAreaView style={{flex:1}} >
+        <KeyboardAvoidingWrapper>
+        <ScrollView style={{ backgroundColor: Colors.background, flex: 1 }}>
+          {renderScreen()}
+        </ScrollView>
+        </KeyboardAvoidingWrapper>
+        {props?.CurrentScreen <= 3 && (
+          <>
+            {!props.addDetailStatus ? (
+              <CustomFooter
+                leftButtonText={StringConstants.CANCEL}
+                rightButtonText={StringConstants.SAVE_PROCEED}
+                leftButtonPress={() =>
+                  props?.handleScreenChange(StringConstants.BACKWARD)
+                }
+                rightButtonPress={() =>
+                  props?.handleScreenChange(StringConstants.FORWARD)
+                }
+                isTracker={`${props?.CurrentScreen * 34}%`}
+                isMovable={props?.isAllDetailsFilled}
+              />
+            ) : (
+              <CustomFooter
+                leftButtonText={
+                  props.CurrentScreen == 2
+                    ? StringConstants.ADD_CUSTOMER_REP
+                    : StringConstants.ADD_COMPETITOR
+                }
+                leftButtonPress={props?.addRepresentativeCompetitor}
+                leftButtonStyle={{
+                  backgroundColor: props?.isAllDetailsFilled
+                    ? Colors.sailBlue
+                    : Colors.disabledGrey,
+                }}
+                leftButtonTextStyle={{
+                  color: props?.isAllDetailsFilled
+                    ? Colors.white
+                    : Colors.darkGrey,
+                }}
+                singleButtonOnFooter
+              />
+            )}
+          </>
+        )}
+      </SafeAreaView>
     </>
   );
 };

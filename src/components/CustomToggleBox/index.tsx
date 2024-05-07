@@ -14,6 +14,12 @@ import { Image } from "react-native";
 import Glyphs from "assets/Glyphs";
 import { PressableButton } from "components";
 
+interface CustomToggleStyle {
+  toggleContainer: ViewStyle;
+  img: ImageStyle;
+  leftIcon: ImageStyle;
+}
+
 interface ICustomToggleBox {
   heading: string;
   leftIcon?: ImageURISource;
@@ -34,8 +40,16 @@ const CustomToggleBox = (props: ICustomToggleBox) => {
         style={[
           styles.toggleContainer,
           props?.style,
-          { borderBottomEndRadius: isToggleContentVisible ? 0 : props?.style?.borderRadius },
-          { borderwidth: isToggleContentVisible ? 0 : props?.style?.borderWidth },
+          {
+            borderRadius: isToggleContentVisible
+              ? 0
+              : props?.style?.borderRadius,
+          },
+          {
+            borderBottomWidth: isToggleContentVisible
+              ? 0
+              : props?.style?.borderWidth,
+          },
         ]}
         onPress={() => {
           setIsToggleCOntentVisible(!isToggleContentVisible);
@@ -94,7 +108,7 @@ const CustomToggleBox = (props: ICustomToggleBox) => {
 
 export default CustomToggleBox;
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create<CustomToggleStyle>({
   toggleContainer: {
     width: "100%",
     backgroundColor: Colors.white,

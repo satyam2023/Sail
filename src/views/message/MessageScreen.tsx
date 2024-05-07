@@ -1,31 +1,34 @@
 import React from "react";
-import Header from "components/AppHeader";
 import MsgDetails from "./MsgDetails";
 import { Colors } from "commonStyles/RNColor.style";
 import StringConstants from "shared/localization";
-import { RectangularBox } from "components";
+import { Header, RectangularBox, StatusBarComponent } from "components";
 import { FlatList, SafeAreaView, View } from "react-native";
 import { MessageResponse } from "models/ApiResponses/MessageResponse";
 import { IFlatlistMessageBox } from "models/interface/IMessage";
-import StatusBarComponent from "components/StatusBarComponent";
 import commonStyles from "commonStyles/CommonStyle";
+import { IdropDown } from "models/interface/ISetting";
 
 interface IMessageScreen {
   msgOpenStatus: boolean;
-
   messagedata: MessageResponse;
   selectedMsgIndex: number;
-
+  handleTextChange: (text: string, id: number) => void;
   handleMessageBoxClick: (msgStatus: boolean, index: number) => void;
+  escalatedDropDown: IdropDown[];
+  escalalteToAnotherApiCalling: () => void;
 }
 
 const MessageScreen = ({
   msgOpenStatus,
   messagedata,
   selectedMsgIndex,
-
+  handleTextChange,
+  escalatedDropDown,
   handleMessageBoxClick,
+  escalalteToAnotherApiCalling,
 }: IMessageScreen) => {
+  const msgData = messagedata?.[selectedMsgIndex];
   const renderMessageBox = ({ item, index }: IFlatlistMessageBox) => {
     return (
       <RectangularBox
@@ -33,33 +36,39 @@ const MessageScreen = ({
         subHeading={item?.customer_data?.company_name}
         onPress={() => handleMessageBoxClick(true, index)}
         style={commonStyles.rectangularBoxRadius}
+        rightIconStyle={{ transform: [{ rotate: "270deg" }] }}
       />
     );
   };
   return (
     <>
-        <StatusBarComponent
+      <StatusBarComponent
         backgroundColor={Colors.sailBlue}
-        conentType={"dark-content"}
+        conentType={"light-content"}
       />
-    <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
-  
-      {!msgOpenStatus ? (
-        <View>
-          <Header topheading={StringConstants.INBOX} />
-
-          <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
-            <FlatList
-              data={messagedata}
-              renderItem={renderMessageBox}
-              showsVerticalScrollIndicator={false}
-            />
+      <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
+        {!msgOpenStatus ? (
+          <View>
+            <Header topheading={StringConstants.INBOX} />
+              <FlatList
+                data={messagedata}
+                renderItem={renderMessageBox}
+                showsVerticalScrollIndicator={false}
+                style={{ paddingHorizontal: 20, marginVertical:30}}
+              />
+      
           </View>
-        </View>
-      ) : selectedMsgIndex >= 0 ? (
-        <MsgDetails msgData={messagedata[selectedMsgIndex]} />
-      ) : null}
-    </SafeAreaView>
+        ) : selectedMsgIndex >= 0 ? (
+          <MsgDetails
+            {...{
+              msgData,
+              handleTextChange,
+              escalatedDropDown,
+              escalalteToAnotherApiCalling,
+            }}
+          />
+        ) : null}
+      </SafeAreaView>
     </>
   );
 };

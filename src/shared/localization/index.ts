@@ -477,7 +477,13 @@ const StringConstants = {
   SEVEN_DAYS:'7 Days',
   FIFTEEN_DAYS:'15 Days',
   THIRTY_DAYS:'30 Days',
-
+  ENTER_10_DIGIT_CUST_CODE:'Enter 10 digits customer code',
+  PLEASE_SELECT_CUSTOMER_REGION:'Please Select Customer Region',
+  PLEASE_SELECT_VISITING_EXECUTIVE:"Please Select Visiting Executive",
+  PLEASE_SELECT_VISIT_DATE:'Please Select Visit date',
+  PLS_REASON:'Please Select Visit Reason',
+  PLS_MOC:'Please Select Mode of Contact',
+  PLS_REMARKS:'Please Enter Remarks',
   
 
 

@@ -53,6 +53,7 @@ export interface ITextField {
   ref?: any;
   leftIconActive?: boolean;
   value?:string|undefined;
+  placeholderColor?:string
 }
 
 const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
@@ -64,7 +65,7 @@ const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
   useEffect(() => {
     if(textFocusStatus)
       Animated.timing(translateY, {
-        toValue: Platform.OS == "ios" ? -5 : -10, 
+        toValue: Platform.OS == "ios" ? -5 : 10, 
         duration: 100, 
         useNativeDriver: true,
       }).start();
@@ -116,7 +117,7 @@ const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
             onChangeText={(text: string) => {
               props.onChangeText(text);
             }}
-            placeholderTextColor={Colors.darkGrey}
+            placeholderTextColor={ props?.placeholderColor?props?.placeholderColor:Colors.darkGrey}
             onFocus={() => {
               setTextFocusStatus(true);
             }}

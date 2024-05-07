@@ -1,13 +1,14 @@
 import React from "react";
-import { ScrollView, View } from "react-native";
+import { KeyboardAvoidingView, ScrollView, View } from "react-native";
 import StringConstants from "shared/localization";
-import {UnplannedMeetingInputField } from "@shared-constants";
+import { UnplannedMeetingInputField } from "@shared-constants";
 import { Colors } from "commonStyles/RNColor.style";
 import {
   CustomDropDown,
   CustomFooter,
   CustomToggleBox,
   InputTextField,
+  KeyboardAvoidingWrapper,
   TextWrapper,
 } from "components";
 import { FlatList } from "react-native-gesture-handler";
@@ -20,6 +21,7 @@ import {
   IIisueList,
   IRepresentativeList,
   IUnplannedDropDownList,
+  IUnplannedMeetingEnteredDetail,
   IUnplannedMeetingField,
   IissueDetail,
 } from "models/interface/IMeeting";
@@ -35,10 +37,12 @@ interface AddProps {
   handleRepresentativeOnTextChange: (text: string | number, id: number) => void;
   handleSubmitButtonClick: () => void;
   btnStatus: IBtnStatus;
-  selectIssuesDropDown:IdropDown[][];
-  handleIssueDetailChange:(text:string|number,id:number)=>void;
+  selectIssuesDropDown: IdropDown[][];
+  handleIssueDetailChange: (text: string | number, id: number) => void;
+  unPlannedVisitDetail: IUnplannedMeetingEnteredDetail;
+  recordVoice: () => void;
 }
-const AddUnplannedVisit = ({
+function AddUnplannedVisit({
   addIssue,
   issueList,
   unplannedDropDownList,
@@ -46,12 +50,14 @@ const AddUnplannedVisit = ({
   handleUnplannedVisitDetail,
   representativeList,
   issueDetail,
+  recordVoice,
   handleRepresentativeOnTextChange,
   handleSubmitButtonClick,
   btnStatus,
   selectIssuesDropDown,
-  handleIssueDetailChange
-}: AddProps) => {
+  handleIssueDetailChange,
+  unPlannedVisitDetail,
+}: AddProps) {
   const renderUnplannedMeetingField = ({
     item,
     index,
@@ -66,7 +72,13 @@ const AddUnplannedVisit = ({
             placeholder={item.placeholder}
             leftIcon={item?.leftIcon}
             rightIcon={item?.rightIcon}
+            onRighIconPress={recordVoice}
+            maxlength={item?.length}
             containerStyle={{ backgroundColor: Colors.white }}
+            value={
+              unPlannedVisitDetail[Object.keys(unPlannedVisitDetail)[index]]
+                .current as string
+            }
           />
         ) : (
           <>
@@ -106,10 +118,13 @@ const AddUnplannedVisit = ({
     return (
       <CustomToggleBox
         heading={`${StringConstants.SELECT_ISSUE} ${index + 1}`}
-        toggleContent={<IssueDetail
-          selectIssuesDropDown={selectIssuesDropDown}
-          handleIssueDetailChange={handleIssueDetailChange}
-        />}
+        toggleContent={
+          <IssueDetail
+            selectIssuesDropDown={selectIssuesDropDown}
+            handleIssueDetailChange={handleIssueDetailChange}
+            issueDetail={issueDetail}
+          />
+        }
         style={styles.issueToggleBox}
         toggleContentStyle={{ padding: 0 }}
       />
@@ -118,8 +133,9 @@ const AddUnplannedVisit = ({
 
   return (
     <>
+    <KeyboardAvoidingWrapper>
       <ScrollView
-        style={{ padding: 20, flex: 1 }}
+        style={{ padding: 20, flex: 1}}
         showsVerticalScrollIndicator={false}
       >
         <FlatList
@@ -128,11 +144,8 @@ const AddUnplannedVisit = ({
           scrollEnabled={false}
         />
         <FlatList data={issueList?.issueList} renderItem={renderIssueList} />
-
-        <TextWrapper
-          onPress={addIssue}
-          style={{ marginVertical: 20, textAlign: "center" }}
-        >
+        
+        <TextWrapper onPress={addIssue} style={styles.text}>
           {StringConstants.ADD_ANOTHER}
         </TextWrapper>
         <View>
@@ -147,14 +160,12 @@ const AddUnplannedVisit = ({
               handleRepresentativeOnTextChange(item.id, 7)
             }
           />
-          <TextWrapper
-            style={{ marginBottom: 20, textAlign: "center" }}
-            onPress={handleAddRepresentative}
-          >
+          <TextWrapper style={styles.text} onPress={handleAddRepresentative}>
             {StringConstants.PLUS__CUSTOMER_REP}
           </TextWrapper>
         </View>
       </ScrollView>
+      </KeyboardAvoidingWrapper>
       <CustomFooter
         leftButtonText={StringConstants.CANCEL}
         rightButtonText={StringConstants.SUBMIT}
@@ -164,5 +175,5 @@ const AddUnplannedVisit = ({
       />
     </>
   );
-};
+}
 export default AddUnplannedVisit;

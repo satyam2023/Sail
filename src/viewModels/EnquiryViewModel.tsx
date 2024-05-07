@@ -66,7 +66,7 @@ const EnquiryViewModel = () => {
     setsearchresult(userRes);
     }
     catch(e){
-
+     logger(e,"Error in User Enquiry API Calling")
     }
     finally{
 
@@ -96,7 +96,9 @@ const EnquiryViewModel = () => {
       if (res?.isSuccess) {
         setIssueSearchResult(res?.data?.data[0]?.message?[]:res?.data?.data);
       }
-    } catch (error) {}
+    } catch (error) {
+      logger(error,"Error in Issue Enquiry API Calling")
+    }
     dispatch(setLoaderVisibility(false));
   };
 
@@ -129,8 +131,9 @@ const EnquiryViewModel = () => {
   };
 
   useEffect(() => {
+    if(currentScreen==3)
     nearbyCustomer();
-  }, []);
+  }, [currentScreen]);
 
   async function onSearch() {
     if (currentScreen == 1 && btnStatus.enquiryBtn) {

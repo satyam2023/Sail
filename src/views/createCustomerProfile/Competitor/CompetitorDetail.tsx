@@ -9,16 +9,21 @@ import { IEnteredCompetitorDetail } from "models/interface/ICreateCustomer";
 
 interface ICompetitorDetail {
   enteredCompetitorDetail: IEnteredCompetitorDetail;
+  handleTextChangeOfCompetitor: (text: string, id: number) => void;
 }
 
 const CompetitorDetail = (props: ICompetitorDetail) => {
-  const renderCompettorInputField = (item: string, index: number) => {
+  const renderCompettorInputField = ({
+    item,
+    index,
+  }: {
+    item: string;
+    index: number;
+  }) => {
     return (
       <InputTextField
         onChangeText={(text: string) =>
-          (props.enteredCompetitorDetail[
-            Object.keys(props?.enteredCompetitorDetail)[index]
-          ].current = text)
+          props?.handleTextChangeOfCompetitor(text,index)
         }
         placeholder={item}
         containerStyle={{ backgroundColor: Colors.white }}
@@ -35,9 +40,7 @@ const CompetitorDetail = (props: ICompetitorDetail) => {
       <View style={{ paddingHorizontal: 20 }}>
         <FlatList
           data={CompetitorDetailData}
-          renderItem={({ item, index }) =>
-            renderCompettorInputField(item, index)
-          }
+          renderItem={renderCompettorInputField}
         />
       </View>
     </SafeAreaView>

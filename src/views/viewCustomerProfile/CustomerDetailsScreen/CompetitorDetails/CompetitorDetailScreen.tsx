@@ -1,12 +1,12 @@
 import React from "react";
-import { SafeAreaView } from "react-native";
+import {SafeAreaView } from "react-native";
 import { Colors } from "commonStyles/RNColor.style";
 import { ICompetitorError, IViewCustomerCompetitor } from "models/interface/IViewCustomerProfile";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
 import StatusBarComponent from "components/StatusBarComponent";
 
 import ShowCompetitorListing from "./ShowCompetitorListing";
-import { CustomFooter } from "components";
+import { CustomFooter, KeyboardAvoidingWrapper } from "components";
 import StringConstants from "shared/localization";
 import LastScreen from "../LastScreen";
 import AddUpdateCompetitor from "./AddUpdateCompetitor";
@@ -23,7 +23,9 @@ interface ThirdProps {
   handleCompetiotorTextChange: (text: string, id: number) => void;
   handleFooterButtonClick: (text: string) => void;
   submitSuccess: boolean;
-  competitorError:ICompetitorError
+  competitorError:ICompetitorError;
+  addCompetitorBtnStatus:boolean;
+  showError:boolean;
 }
 const CompetitorDetailScreenOfViewCustomer = ({
   competitor,
@@ -37,7 +39,9 @@ const CompetitorDetailScreenOfViewCustomer = ({
   handleCompetiotorTextChange,
   handleFooterButtonClick,
   submitSuccess,
-  competitorError
+  competitorError,
+  addCompetitorBtnStatus,
+  showError,
 }: ThirdProps) => {
   const renderScreen = () => {
     if (!addDetailStatus) {
@@ -51,6 +55,7 @@ const CompetitorDetailScreenOfViewCustomer = ({
             selectedCompetitorDetail,
             setEditing,
             handleCompetitorSelected,
+            showError,
           }}
         />
       );
@@ -61,7 +66,8 @@ const CompetitorDetailScreenOfViewCustomer = ({
             competitor,
             selectedCompetitorDetail,
             handleCompetiotorTextChange,
-            competitorError
+            competitorError,
+            showError,
           }}
         />
       );
@@ -74,10 +80,12 @@ const CompetitorDetailScreenOfViewCustomer = ({
         backgroundColor={Colors.sailBlue}
         conentType={"dark-content"}
       />
-      <SafeAreaView style={{ flex: 1, paddingHorizontal: 20 }}>
+      <SafeAreaView style={{ flex: 1}}>
         {!submitSuccess ? (
           <>
+          <KeyboardAvoidingWrapper>
             {renderScreen()}
+            </KeyboardAvoidingWrapper>
             {!addDetailStatus ? (
               <>
                 {!competitor?.showcompetitorDetail ? (
@@ -104,7 +112,8 @@ const CompetitorDetailScreenOfViewCustomer = ({
                 }
                 leftButtonPress={handleAddStatus}
                 singleButtonOnFooter
-                leftButtonStyle={{ backgroundColor: Colors.sailBlue }}
+                leftButtonStyle={{backgroundColor:addCompetitorBtnStatus?Colors.sailBlue:Colors.disabledGrey}}
+                leftButtonTextStyle={{color:addCompetitorBtnStatus?Colors.white:Colors.darkGrey}}
               />
             )}
           </>

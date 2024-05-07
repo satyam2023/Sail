@@ -20,6 +20,7 @@ import {
   Header,
   HorizontalSlider,
   InputTextField,
+  KeyboardAvoidingWrapper,
   PressableButton,
   TextWrapper,
 } from "components";
@@ -58,6 +59,7 @@ interface IVisitScreen {
   handleCustomerCodeNameEntered: (text: string) => void;
   searchResult: VisitResponse[];
   handleClearSearchResult: () => void;
+  plannedVisit: VisitResponse[];
 }
 
 const VisitScreen = ({
@@ -91,6 +93,7 @@ const VisitScreen = ({
   handleCustomerCodeNameEntered,
   searchResult,
   handleClearSearchResult,
+  plannedVisit,
 }: IVisitScreen) => {
   return (
     <>
@@ -99,7 +102,6 @@ const VisitScreen = ({
         conentType={"dark-content"}
       />
       <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }}>
-
         <Header topheading={StringConstants.VISITS} />
         <View style={{ flex: 1, flexGrow: 1 }}>
           <HorizontalSlider
@@ -131,20 +133,23 @@ const VisitScreen = ({
             >
               <Image source={Glyphs.Filter} style={styles.imgContainer} />
             </TouchableOpacity>
-           {applyFilterSearch &&
-            <FilterData
-              isVisible={true}
-              onPress={(data: IFilterDataDetails) => callApplyFilter(data)}
-            />
-           }
+            {applyFilterSearch && (
+              <FilterData
+                isVisible={true}
+                onPress={(data: IFilterDataDetails) => callApplyFilter(data)}
+              />
+            )}
           </View>
-        
+
           {searchResult.length > 0 && (
             <View style={styles.searchResultText}>
               <TextWrapper
                 style={commonStyles.font14BoldBlue}
               >{`${searchResult.length} Results`}</TextWrapper>
-              <PressableButton style={{ flexDirection: "row" }} onPress={handleClearSearchResult}>
+              <PressableButton
+                style={{ flexDirection: "row" }}
+                onPress={handleClearSearchResult}
+              >
                 <TextWrapper style={commonStyles.font14BoldBlue}>
                   {StringConstants.CLEAR}
                 </TextWrapper>
@@ -184,6 +189,7 @@ const VisitScreen = ({
                 handleCustomerClick,
                 setPaginationPage,
                 searchResult,
+                plannedVisit,
               }}
             />
           )}
@@ -199,7 +205,7 @@ const VisitScreen = ({
                 handleUpcomingVisitBoxClick,
                 callDownloadPDFApi,
                 setPaginationPage,
-                searchResult
+                searchResult,
               }}
             />
           )}
@@ -207,7 +213,9 @@ const VisitScreen = ({
         {currentVisit == 2 &&
           FooterVisibility &&
           customerDetails &&
-          plannedVisitList[selectedIndexValue]?.visit_status == "0" && (
+          (searchResult.length > 0 ? searchResult : plannedVisit)[
+            selectedIndexValue
+          ]?.visit_status == "0" && (
             <CustomFooter
               leftButtonText={StringConstants.CANCEL_VISIT}
               rightButtonText={StringConstants.EDIT_VISIT}
