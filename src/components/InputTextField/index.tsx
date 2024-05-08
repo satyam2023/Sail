@@ -1,10 +1,5 @@
 import { Colors } from "commonStyles/RNColor.style";
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Animated,
   Image,
@@ -25,6 +20,8 @@ import commonStyles from "commonStyles/CommonStyle";
 import PressableButton from "components/DeBouncePressable";
 import StringConstants from "shared/localization";
 import { Platform } from "react-native";
+import TextWrapper from "components/TextWrapper";
+import { ValidationError } from "core/UseForm";
 
 interface ITextInputStyle {
   inputContainer: ViewStyle;
@@ -57,16 +54,18 @@ export interface ITextField {
   textStyle?: StyleProp<TextStyle>;
   multiline?: boolean;
   ref?: any;
+  errors?: ValidationError[];
   leftIconActive?: boolean;
   value?: string | undefined;
   placeholderColor?: string;
+  inputBoxId?: string;
 }
 
 const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
   const [secureText, setSecuretext] = useState<boolean>(false);
   const [textFocusStatus, setTextFocusStatus] = useState<boolean>(false);
   const enteredValue = useRef<string>(StringConstants.EMPTY);
-  const inputRef =useRef<TextInput>(null);
+  const inputRef = useRef<TextInput>(null);
   const translateY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -186,6 +185,14 @@ const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
           </PressableButton>
         )}
       </View>
+      {props?.errors?.map(
+        (error) =>
+          error?.field == props?.inputBoxId && (
+            <TextWrapper style={[commonStyles.errorText, { bottom: 12 }]}>
+              {error?.message}
+            </TextWrapper>
+          )
+      )}
       {props.error && (
         <View style={{ bottom: 12 }}>
           <Text style={styles.errorMsg}>{props.error}</Text>

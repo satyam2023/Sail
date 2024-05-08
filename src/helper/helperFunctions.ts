@@ -36,6 +36,7 @@ import {
 import StringConstants from "shared/localization";
 import { IProductCatalogue } from "models/ApiResponses/ProductCatalogue";
 import { MutableRefObject } from "react";
+import { FormValues } from "core/UseForm";
 
 export function ExtarctTwoLetterName(name: string) {
   let ans = name[0];
@@ -500,6 +501,19 @@ export const checkAllInputField = (fields: any) => {
       return false;
     }
   }
+  return true;
+};
+
+export const isAllInputFieldHaveData = (fields:any) => {
+  for (let i = 0; i < Object.keys(fields.current).length; i++) {
+    if (
+     fields.current[Object.keys(fields.current)[i]].length == 0
+    ) {
+      console.log("Returned Value is False:::::::");
+      return false;
+    }
+  }
+  console.log("Returned Value is true:::::::");
   return true;
 };
 

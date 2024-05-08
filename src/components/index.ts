@@ -23,6 +23,7 @@ export {default as CustomSwitch} from './CustomCheckBox';
 export {default as Datepicker} from './Calender';
 export {default as StatusBarComponent} from './StatusBarComponent';
 export {default as KeyboardAvoidingWrapper} from "./KeyBoard";
+export {default as ShimmerPlaceholder} from "./Shimmer";
 
 
 

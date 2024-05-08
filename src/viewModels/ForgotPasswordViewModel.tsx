@@ -24,6 +24,8 @@ const ForgotPasswordViewModel = () => {
     contact: useRef<string>(""),
   };
 
+  
+
   const getOTP = async () => {
     try {
       dispatch(setLoaderVisibility(true));

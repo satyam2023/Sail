@@ -56,6 +56,7 @@ const CreateCustomerViewModel = () => {
   const [CurrentScreen, setCurrentScreen] = useState<number>(1);
   const [addDetailStatus, setAddDetailsStatus] = useState<boolean>(false);
   const [sapUserExist, setSapUserExist] = useState<boolean>(false);
+  const [showError,setErrorStatus]=useState<boolean>(false);
   const [customerDetailSelectedImage, setCustomerSelectedImage] = useState<
     ISelectedImage[]
   >([]);
@@ -510,6 +511,10 @@ const CreateCustomerViewModel = () => {
     if (enteredCustomerDetails.code.current.length == 10 && id == 0) {
       checkSapCustomerExistAPI(enteredCustomerDetails.code.current);
     }
+
+    if(showError){
+      setErrorStatus(false);
+    }
   }
 
   const checkAllRepresentativeFieldHaveData = () => {
@@ -576,6 +581,7 @@ const CreateCustomerViewModel = () => {
         removeSelectedImage,
         handleTextChangeOfRepresentative,
         handleTextChangeOfCompetitor,
+        showError,
       }}
     />
   );

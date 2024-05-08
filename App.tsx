@@ -67,6 +67,7 @@ const App = () => {
       }
     }, 2000);
   }, [scheme, isDarkMode]);
+  
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>

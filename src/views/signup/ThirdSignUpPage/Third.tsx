@@ -1,18 +1,21 @@
-import React, { forwardRef } from "react";
+import React, { MutableRefObject} from "react";
 import CustomHeader from "../Component/CustomHeader/CustomHeader";
 import Glyphs from "assets/Glyphs";
-import InputTextField from "components/InputTextField";
-import SafeAreaContainer from "components/SafeAreaContainer";
 import StringConstants from "shared/localization";
-import { Ierror } from "helper/ValidationRegex";
+import { ValidationError } from "core/UseForm";
+import { InputTextField, SafeAreaContainer } from "components";
 
 interface ThirdProps {
-  error: Ierror;
   handleOnTextChange: (text: string, id: number) => void;
-  buttonStatus:boolean
+  buttonStatus: boolean;
+  passwordErrors: MutableRefObject<ValidationError[]>;
 }
 
-const Third = forwardRef(({ error, handleOnTextChange,buttonStatus }: ThirdProps, _) => {
+const Third = ({
+  handleOnTextChange,
+  buttonStatus,
+  passwordErrors,
+}: ThirdProps) => {
   return (
     <SafeAreaContainer>
       <CustomHeader details={StringConstants.CHOOSE_PASSWORD} />
@@ -22,8 +25,9 @@ const Third = forwardRef(({ error, handleOnTextChange,buttonStatus }: ThirdProps
         placeholder={StringConstants.CREATE_PASSWORD}
         onChangeText={(text: string) => handleOnTextChange(text, 6)}
         maxlength={20}
-        error={error.Password ? StringConstants.ERROR_MESSAGE : undefined}
         leftIconActive={buttonStatus}
+        errors={passwordErrors.current}
+        inputBoxId="Password"
       />
       <InputTextField
         eyeIcon={Glyphs.Eye}
@@ -31,13 +35,12 @@ const Third = forwardRef(({ error, handleOnTextChange,buttonStatus }: ThirdProps
         placeholder={StringConstants.CONFIRM_PASSWORD}
         onChangeText={(text: string) => handleOnTextChange(text, 7)}
         maxlength={20}
-        error={
-          error.Confirm_Password ? StringConstants.ERROR_MESSAGE : undefined
-        }
         leftIconActive={buttonStatus}
+        errors={passwordErrors.current}
+        inputBoxId="Confirm_Password"
       />
     </SafeAreaContainer>
   );
-});
+};
 
 export default Third;

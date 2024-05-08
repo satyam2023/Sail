@@ -13,6 +13,7 @@ import {
   ICustomerDetailError,
 } from "models/interface/IViewCustomerProfile";
 import { MutableRefObject } from "react";
+import StringConstants from "shared/localization";
 
 export interface Ierror {
   [key: string | number]: boolean | null;
@@ -179,6 +180,94 @@ export const validateNameEmailLocation = (
     ...prev,
     Role: !validateDropDown(userDetail.Role.current),
   }));
+};
+
+export const personalValidationRules = {
+  Upn: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+    {
+      regex: Regex.UPN,
+      message: StringConstants.INVALID,
+    },
+  ],
+  Contact:[
+   { regex:Regex.CONTACT,
+     message:StringConstants.INVALID_CONTACT
+   }
+  ]
+};
+
+export const passwordValidationRules = {
+  Password: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    {
+      regex: Regex.PASSWORD,
+      message: StringConstants.ERROR_MESSAGE,
+    },
+  ],
+  Confirm_Password: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    {
+      regex: Regex.PASSWORD,
+      message:StringConstants.ERROR_MESSAGE,
+    },
+  ],
+};
+
+export const roleValidationRules = {
+  Name: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    {
+      regex: Regex.NAME,
+      message: StringConstants.INVALID_NAME,
+    },
+  ],
+  Email: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    {
+      regex: Regex.EMAIL,
+      message: StringConstants.INVALID_EMAIL,
+    },
+  ],
+};
+
+export const signInValidationRules = {
+  upn: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    {
+      regex: Regex.UPN,
+      message: StringConstants.INVALID_UPN,
+    },
+  ],
+
+  password: [
+    {
+      regex: Regex.REQUIRED,
+      message:StringConstants.REQUIRED,
+    },
+    {
+      regex: Regex.PASSWORD,
+      message:StringConstants.ERROR_MESSAGE,
+    },
+  ],
 };
 
 export const validatePasswordAndCpassword = (
