@@ -1,5 +1,10 @@
 import { Colors } from "commonStyles/RNColor.style";
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   Animated,
   Image,
@@ -30,13 +35,14 @@ interface ITextInputStyle {
   eyeIcon: ImageStyle;
   lable: TextStyle;
   errorBox: ViewStyle;
+  text: TextStyle;
 }
 
 export interface ITextField {
   onChangeText: (text: string) => void;
   leftIcon?: ImageURISource;
-  leftIconTintColor?:string,
-  rightIconTintColor?:string,
+  leftIconTintColor?: string;
+  rightIconTintColor?: string;
   rightIcon?: ImageURISource | undefined;
   placeholder: string;
   error?: string;
@@ -52,32 +58,41 @@ export interface ITextField {
   multiline?: boolean;
   ref?: any;
   leftIconActive?: boolean;
-  value?:string|undefined;
-  placeholderColor?:string
+  value?: string | undefined;
+  placeholderColor?: string;
 }
 
 const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
   const [secureText, setSecuretext] = useState<boolean>(false);
   const [textFocusStatus, setTextFocusStatus] = useState<boolean>(false);
-  const inputRef = useRef<TextInput>(null);
+  const enteredValue = useRef<string>(StringConstants.EMPTY);
+  const inputRef =useRef<TextInput>(null);
   const translateY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    if(textFocusStatus)
+    if (textFocusStatus)
       Animated.timing(translateY, {
-        toValue: Platform.OS == "ios" ? -5 : 10, 
-        duration: 100, 
+        toValue: Platform.OS == "ios" ? -5 : 10,
+        duration: 100,
         useNativeDriver: true,
       }).start();
-      else
+    else
       Animated.timing(translateY, {
-        toValue:  0 ,
-        duration: 100, 
+        toValue: 0,
+        duration: 100,
         useNativeDriver: true,
       }).start();
-
   }, [textFocusStatus]);
 
+  const textFocus = useCallback(() => {
+    setTextFocusStatus(true);
+  }, []);
+
+  const textBlur = () => {
+    if (enteredValue.current.length == 0) {
+      setTextFocusStatus(false);
+    }
+  };
 
   useEffect(() => {
     if (props.defaultValue) setTextFocusStatus(true);
@@ -106,7 +121,11 @@ const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
 
         <PressableButton>
           {(textFocusStatus || props.defaultValue) && (
-            <Animated.Text style={[styles.lable,{transform:[{translateY}]}]}>{props.placeholder}</Animated.Text>
+            <Animated.Text
+              style={[styles.lable, { transform: [{ translateY }] }]}
+            >
+              {props.placeholder}
+            </Animated.Text>
           )}
           <TextInput
             ref={inputRef}
@@ -116,23 +135,24 @@ const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
             }
             onChangeText={(text: string) => {
               props.onChangeText(text);
+              enteredValue.current = text;
             }}
-            placeholderTextColor={ props?.placeholderColor?props?.placeholderColor:Colors.darkGrey}
-            onFocus={() => {
-              setTextFocusStatus(true);
-            }}
-            onBlur={() => {  
-              // setTextFocusStatus(false);
-            }}
+            placeholderTextColor={
+              props?.placeholderColor
+                ? props?.placeholderColor
+                : Colors.darkGrey
+            }
+            onFocus={textFocus}
+            onBlur={textBlur}
             inputMode={props.inputMode}
             maxLength={maxlength}
             secureTextEntry={secureText}
             defaultValue={props?.defaultValue}
-            style={props.textStyle}
+            style={[props.textStyle, styles.text]}
             multiline={props.multiline}
             contextMenuHidden={true}
             removeClippedSubviews={true}
-            value={props?.value ? props?.value:undefined}
+            value={props?.value ? props?.value : undefined}
           />
         </PressableButton>
         {props.eyeIcon && (
@@ -158,7 +178,11 @@ const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
             style={styles.rightIconContainer}
             onPress={props.onRighIconPress}
           >
-            <Image source={props.rightIcon} style={styles.rightIcon}  tintColor={props?.rightIconTintColor} />
+            <Image
+              source={props.rightIcon}
+              style={styles.rightIcon}
+              tintColor={props?.rightIconTintColor}
+            />
           </PressableButton>
         )}
       </View>
@@ -215,5 +239,8 @@ const styles = StyleSheet.create<ITextInputStyle>({
   errorBox: {
     borderWidth: 1,
     borderColor: Colors.red,
+  },
+  text: {
+    color: Colors.black,
   },
 });

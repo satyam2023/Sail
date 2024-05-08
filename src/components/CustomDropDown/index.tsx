@@ -16,7 +16,7 @@ import commonStyles from "commonStyles/CommonStyle";
 import fonts from "@fonts";
 import { PressableButton } from "components";
 import { IdropDown } from "models/interface/ISetting";
-import { ScreenWidth } from "libs";
+import { ScreenHeight, ScreenWidth } from "libs";
 import StringConstants from "shared/localization";
 
 interface IDropDownStyle {
@@ -28,6 +28,8 @@ interface IDropDownStyle {
   rightIcon: ImageStyle;
   rightIconContainer: ViewStyle;
   itemSeparator: ViewStyle;
+  dropList:ViewStyle;
+  optionContainer:ViewStyle;
 }
 
 interface ICustomDropDown {
@@ -57,7 +59,7 @@ const CustomDropDown = (props: ICustomDropDown) => {
     setSelectedListItem(isSelectedNotVisible ? StringConstants.EMPTY : data);
   };
 
-  const renderItem = (item: IdropDown, _: number) => {
+  const renderItem = ({item}:{item: IdropDown}) => {
     return (
       <PressableButton
         style={styles.listContainer}
@@ -143,11 +145,12 @@ const CustomDropDown = (props: ICustomDropDown) => {
       {isListVisible && (
         <FlatList
           data={props.ArrayOfData}
-          renderItem={({ item, index }) => renderItem(item, index)}
-          style={{ marginBottom: props?.ArrayOfData ? 10 : undefined }}
+          renderItem={renderItem}
+          style={[{ marginBottom: props?.ArrayOfData ? 10 : undefined}]}
           showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
         />
+ 
       )}
     </>
   );
@@ -203,5 +206,28 @@ const styles = StyleSheet.create<IDropDownStyle>({
   rightIconContainer: {
     position: "absolute",
     right: 16,
+  },
+  dropList:{
+    height:168,
+    backgroundColor: Colors.white,
+    borderRadius: 2,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
+    zIndex: 100,
+  },
+  optionContainer: {
+    position: "absolute",
+    width: "100%",
+    alignSelf: "center",
+    elevation: 2,
+    zIndex: 100,
+    bottom:0,
+    // top:ScreenHeight/2
   },
 });

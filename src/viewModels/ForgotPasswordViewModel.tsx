@@ -3,7 +3,7 @@ import { logger } from "helper/helperFunctions";
 import { IApiResponse } from "models/ApiResponses/IApiResponse";
 import { RequestOtpResponse } from "models/ApiResponses/IForgotPassword";
 import { IForgotPasswordEnteredDetail } from "models/interface/IForgotPassword";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
 import StringConstants from "shared/localization";
@@ -11,18 +11,13 @@ import ForgotPasswordScreen from "views/forgotpassword/ForgotPasswordScreen";
 
 const ForgotPasswordViewModel = () => {
   const [currentScreen, setCurrentScreen] = useState<number>(1);
-
+  const [timerEnd, setTimerstatus] = useState<boolean>(false);
   const dispatch = useDispatch();
   const buttonText = [
     StringConstants.GET_OTP,
     StringConstants.CONTINUE,
     StringConstants.RESET_PASSWORD,
   ];
-  useEffect(() => {
-    if (currentScreen == 2) {
-
-    }
-  }, [currentScreen]);
 
   const forgotPasswordEnteredDetail: IForgotPasswordEnteredDetail = {
     upn: useRef<string>(""),
@@ -30,16 +25,15 @@ const ForgotPasswordViewModel = () => {
   };
 
   const getOTP = async () => {
-    dispatch(setLoaderVisibility(true));
     try {
+      dispatch(setLoaderVisibility(true));
       const body = {
         user_upn: forgotPasswordEnteredDetail?.upn?.current,
         user_number: forgotPasswordEnteredDetail?.contact?.current,
       };
       const res: IApiResponse<RequestOtpResponse> = await requestOTP(body);
-      dispatch(setLoaderVisibility(false));
     } catch (error) {
-      logger(error, "ForgotPasswordViewModel: requestOTPFun", "error");
+      logger(error, "Error in GetOTP");
     } finally {
       dispatch(setLoaderVisibility(false));
     }
@@ -58,6 +52,15 @@ const ForgotPasswordViewModel = () => {
     }
   }
 
+  function handleResendOTP() {
+    setTimerstatus(false);
+    getOTP();
+  }
+
+  function handleTimer() {
+    setTimerstatus(true);
+  }
+
   return (
     <ForgotPasswordScreen
       {...{
@@ -65,6 +68,9 @@ const ForgotPasswordViewModel = () => {
         buttonText,
         handleUpnContactEntered,
         handleButtonClicked,
+        handleTimer,
+        timerEnd,
+        handleResendOTP,
       }}
     />
   );

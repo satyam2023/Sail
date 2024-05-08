@@ -153,14 +153,16 @@ const RenderTabNavigation = () => {
                 source={Glyphs.BottomTabBar}
                 style={{
                   width: "100%",
-                  resizeMode: "contain",
+                  resizeMode: 'cover',
                   bottom: 47,
                   tintColor: Colors.white,
+                  backgroundColor:Colors.transparent
                 }}
               />
             );
           },
           tabBarStyle: {
+            backgroundColor:Colors.transparent,
             height: 0,
             paddingBottom: 40,
             display: isTabVisible ? "flex" : "none",

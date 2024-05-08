@@ -59,6 +59,7 @@ interface ICust {
   handleTextOnTextChangeCustomer: (text: string | number, id: number) => void;
   sapUserExist: boolean;
   removeSelectedImage: (item: ISelectedImage) => void;
+  showError:boolean;
 }
 
 const CreateCustomerDetails = (props: ICust) => {
@@ -79,7 +80,7 @@ const CreateCustomerDetails = (props: ICust) => {
               containerStyle={{ backgroundColor: Colors.white }}
               error={
                 index == 0 || index == 8 || index == 9
-                  ? props?.error[Object.keys(props?.error)[index]] == false
+                  ? props?.error[Object.keys(props?.error)[index]] == false && props?.showError
                     ? ErrorMsgOfCustomerInput[index]
                     : undefined
                   : undefined

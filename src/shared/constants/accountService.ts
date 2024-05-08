@@ -12,3 +12,11 @@ export const removeRememberMe = () =>
 
 export const getRememberMe = () =>
   Storage.getString(StringConstants.IS_REMEMBER);
+
+  export const setFingerPrint= async (key: string) => {
+    Storage.set(StringConstants.FINGER_PRINT_KEY, JSON.stringify(key));
+  };
+
+  
+  export const getFingerPrint = () =>
+  Storage.getString(StringConstants.FINGER_PRINT_KEY);

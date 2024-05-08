@@ -68,15 +68,15 @@ export const getCurrentDate1 = () => {
   const date = new Date().getDate();
   const month = new Date().getMonth() + 1;
   const year = new Date().getFullYear();
-  return year + "-" + month + "-" + date; //format: d-m-y;
+  return year + "-" + month + "-" + date;
 };
 
 export const convertAccomToDropData = (data: AccompRoot) => {
   let ans: IdropDown[] = [];
-  for (let i = 0; i < data.length; i++) {
-    let temp = { name: "", id: -1 };
-    temp.name = data[i].user_name;
-    temp.id = data[i].id;
+  for (let i = 0; i < data?.length; i++) {
+    let temp = { name:StringConstants.EMPTY, id: -1 };
+    temp.name = data[i]?.user_name;
+    temp.id = data[i]?.id;
     ans.push(temp);
   }
   return ans;
@@ -84,7 +84,7 @@ export const convertAccomToDropData = (data: AccompRoot) => {
 
 export const convertCustomerToDropData = (data: ICustomerType[]) => {
   let ans: IdropDown[] = [];
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 0; i < data?.length; i++) {
     let temp = { name: "", id: -1 };
     temp.name = data[i].type_name;
     temp.id = data[i].id;
@@ -95,7 +95,7 @@ export const convertCustomerToDropData = (data: ICustomerType[]) => {
 
 export const convertSegemntToDropData = (data: ICustomerSegment[]) => {
   let ans: IdropDown[] = [];
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 0; i < data?.length; i++) {
     let temp = { name: "", id: -1 };
     temp.name = data[i].segment_name;
     temp.id = data[i].id;

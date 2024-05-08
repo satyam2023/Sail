@@ -16,7 +16,7 @@ import {
 } from "components";
 import { navigate } from "@navigation";
 import { isAndroid } from "libs";
-import { ISignInUser } from "models/interface/ISignIn";
+import { IBiometricStatus, ISignInUser } from "models/interface/ISignIn";
 import { Colors } from "commonStyles/RNColor.style";
 import { KeyboardAvoidingView } from "react-native";
 
@@ -24,12 +24,16 @@ interface ISignInScreen {
   onSubmit: () => void;
   handleOnTextChange: (text: string, id: number) => void;
   signInUser: ISignInUser;
+  biometricAuthentication: () => void;
+  isBiometricsAvl: IBiometricStatus;
 }
 
 const SignInScreen = ({
   onSubmit,
   handleOnTextChange,
   signInUser,
+  biometricAuthentication,
+  isBiometricsAvl,
 }: ISignInScreen) => {
   return (
     <GradientBackground>
@@ -41,28 +45,27 @@ const SignInScreen = ({
           <TextWrapper style={styles.pleaseText}>
             {StringConstants.PLEASE_ENTER_INFORMATION}
           </TextWrapper>
-          <KeyboardAvoidingView behavior={isAndroid?'height':'padding'}>
-          <InputTextField
-            leftIcon={Glyphs.Contact}
-            placeholder={StringConstants.YOUR_UNIQUE}
-            onChangeText={(text: string) => handleOnTextChange(text, 0)}
-            value={signInUser.upn.current}
-          />
-          <InputTextField
-            eyeIcon={Glyphs.Eye}
-            leftIcon={Glyphs.Key}
-            placeholder={StringConstants.YOUR_PASSWOD}
-            onChangeText={(text: string) => handleOnTextChange(text, 1)}
-            value={signInUser.password.current}
-          />
+          <KeyboardAvoidingView behavior={isAndroid ? "height" : "padding"}>
+            <InputTextField
+              leftIcon={Glyphs.Contact}
+              placeholder={StringConstants.YOUR_UNIQUE}
+              onChangeText={(text: string) => handleOnTextChange(text, 0)}
+              value={signInUser?.upn?.current}
+            />
+            <InputTextField
+              eyeIcon={Glyphs.Eye}
+              leftIcon={Glyphs.Key}
+              placeholder={StringConstants.YOUR_PASSWOD}
+              onChangeText={(text: string) => handleOnTextChange(text, 1)}
+              value={signInUser?.password?.current}
+            />
           </KeyboardAvoidingView>
           <View style={styles.switchAreaContainer}>
             <View style={{ flexDirection: "row" }}>
               <CustomSwitch
-                onPress={(status: boolean) =>{
-                  handleOnTextChange(status==true ? "1" : "0", 2)
-                }
-                }
+                onPress={(status: boolean) => {
+                  handleOnTextChange(status == true ? "1" : "0", 2);
+                }}
                 isRectangular
                 status={true}
               />
@@ -89,11 +92,7 @@ const SignInScreen = ({
             <TextWrapper style={commonStyles.font14MediumDarkGray}>
               {StringConstants.DONT_HAVE_ACCOUNT}
             </TextWrapper>
-            <TouchableOpacity
-              onPress={() => 
-                navigate(SCREENS.SIGNUP)
-             }
-            >
+            <TouchableOpacity onPress={() => navigate(SCREENS.SIGNUP)}>
               <TextWrapper style={styles.signupText}>
                 {StringConstants.SIGN_UP}
               </TextWrapper>
@@ -101,25 +100,26 @@ const SignInScreen = ({
           </View>
           <Image source={Glyphs.OrLine} style={styles.orLine} />
         </View>
-        {isAndroid ? null : (
-          <View style={styles.authBtnContainer}>
+        <View style={styles.authBtnContainer}>
+          {isBiometricsAvl.fingerId && (
             <CustomButton
               textStyle={commonStyles.font14RegularBlack}
               buttonStyle={styles.btnStyle}
-              onPress={() => {}}
+              onPress={biometricAuthentication}
               text={StringConstants.SIGNIN_FINGERPRINT}
               image={Glyphs.FaceScan}
             />
-
+          )}
+          {isBiometricsAvl.faceId && (
             <CustomButton
               textStyle={commonStyles.font14RegularBlack}
               buttonStyle={styles.btnStyle}
-              onPress={() => {}}
+              onPress={biometricAuthentication}
               text={StringConstants.SIGNIN_FACE_RECOGNITION}
               image={Glyphs.FingerScan}
             />
-          </View>
-        )}
+          )}
+        </View>
       </SafeAreaView>
     </GradientBackground>
   );

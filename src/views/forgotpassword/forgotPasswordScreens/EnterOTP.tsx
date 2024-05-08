@@ -1,11 +1,8 @@
-import { InputTextField, TextWrapper } from "components";
+import { TextWrapper } from "components";
 import { TextInput, View } from "react-native";
 import styles from "../Style";
 import StringConstants from "shared/localization";
 import { FlatList } from "react-native-gesture-handler";
-import { numberFormat } from "libs";
-import { Colors } from "commonStyles/RNColor.style";
-import fonts from "@fonts";
 
 const EnterOTP = () => {
   const renderOtpField = (item: any, index: number) => {
@@ -15,22 +12,13 @@ const EnterOTP = () => {
         textAlign="center"
         maxLength={1}
         placeholder={StringConstants.EMPTY}
-        style={{
-          width: "15%",
-          height: 56,
-          backgroundColor: Colors.background,
-          borderRadius: 33,
-          alignSelf: "center",
-          color:Colors.blackPeral,
-          fontFamily:fonts.type.regular,
-          fontSize:24
-        }}
+        style={styles.conatiner}
       />
     );
   };
 
   return (
-    <View style={{marginVertical:20}}>
+    <View style={{ marginVertical: 20 }}>
       <TextWrapper style={styles.infoText}>
         {StringConstants.ENTER_OTP}
       </TextWrapper>

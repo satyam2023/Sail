@@ -48,6 +48,8 @@
 	<string>Your microphone is required to search product with voice search</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Speech recognition is required to enable voice search for products</string>
+	<key>NSFaceIDUsageDescription</key>
+<string>$(App_Name) requires FaceID access to allows you quick and secure access.</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

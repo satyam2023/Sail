@@ -5,7 +5,7 @@ import {
   ExecutedResponse,
   VisitResponse,
 } from "models/ApiResponses/VisitResponse";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BottomTabVisibility } from "redux/actions/UIAction";
 import VisitScreen from "views/visit/VisitScreen";
@@ -28,7 +28,7 @@ import {
   tacklePagination,
 } from "helper/helperFunctions";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
-import { Platform } from "react-native";
+import {Platform } from "react-native";
 import {
   IFilterDataDetails,
   IVisitScreenPagination,
@@ -55,7 +55,7 @@ const VisitScreenViewModel = () => {
 
   const lastPages = {
     upcomingLastPage: useRef<number>(1),
-    plannedLastPage: useRef<number>(1),
+    plannedLastPage: useRef<number>(-1),
     executedLastPage: useRef<number>(1),
   };
   const modeOfContactDropData =
@@ -85,12 +85,11 @@ const VisitScreenViewModel = () => {
   });
   useEffect(() => {
     callUpcomingVisit(pageNumber.upcoming.current);
-    callPlannedVisitApi(pageNumber.planned.current);
+    callPlannedVisitApi(1);
     callExecutedVisit(pageNumber.executed.current);
-  }, []);
-  useEffect(() => {
     setCurrentVisit(visitType);
-  }, [visitType]);
+  }, []);
+  
 
   useEffect(() => {
     setSearchResult([]);
@@ -130,6 +129,16 @@ const VisitScreenViewModel = () => {
     id: useRef(-1),
   };
 
+
+
+  useEffect(useCallback(() => {
+    if(plannedVisit.length==0 && lastPages.plannedLastPage.current!=-1){
+     callPlannedVisitApi(1)
+    }
+  },[plannedVisit.length==0]
+  )
+  ,[plannedVisit])
+
   function callUpcomingVisit(page: number) {
     const setUpcomingVisits = async (page: number) => {
       try {
@@ -144,7 +153,9 @@ const VisitScreenViewModel = () => {
             dispatch(saveUpcomingVisits(res?.data?.data?.data));
           }
         }
-      } catch {}
+      } catch(e) {
+        logger(e,"Error in Upcoming Visit Api Calling")
+      }
     };
 
     setUpcomingVisits(page);
@@ -153,6 +164,7 @@ const VisitScreenViewModel = () => {
   function callPlannedVisitApi(page: number) {
     const setPlannedVisits = async (page: number) => {
       try {
+        if (tacklePagination(page, plannedVisit)) {
         dispatch(setLoaderVisibility(true));
         const res: IApiResponse<IPagination<VisitResponse>> =
           await getPlannedVisits(page);
@@ -160,11 +172,10 @@ const VisitScreenViewModel = () => {
           lastPages.plannedLastPage.current = res?.data?.data
             ? res?.data?.data?.last_page
             : 1;
-          if (tacklePagination(page, plannedVisit)) {
-            const tempData = res?.data?.data?.data ? res?.data?.data?.data : [];
-            setPlannedVisit([...plannedVisit, ...tempData]);
-          }
+          const tempData = res?.data?.data?.data ? res?.data?.data?.data : [];
+          setPlannedVisit([...plannedVisit, ...tempData]);
         }
+      }
       } catch (e) {
         logger(e, "Error in Planned Visit");
       } finally {
@@ -188,12 +199,13 @@ const VisitScreenViewModel = () => {
             dispatch(saveExecutedVisits(res?.data?.data?.data));
           }
         }
-      } catch {
+      } catch (e){
+        logger(e,"Error in Executed Visit")
+
       } finally {
         dispatch(setLoaderVisibility(false));
       }
     };
-
     setExecutedVisits(page);
   }
 
@@ -240,15 +252,29 @@ const VisitScreenViewModel = () => {
     const data = {
       visit_id: plannedVisitEditDetails?.id?.current || null,
     };
+    try{
+      handleCleanAfterCancelVisit();
     const res = await cancelVisitAPI(data);
     if (res?.isSuccess) {
-      setSearchResult([]);
-      setPlannedVisit([]);
-      callPlannedVisitApi(1);
-      setCustomerDetails(false);
-      pageNumber.planned.current = 1;
+     handleCleanAfterCancelVisit()
     }
+  }
+  catch(e){
+    logger(e,"Error in cancelling the Planned Visit")
+  }
   };
+
+  function handleCleanAfterCancelVisit(){
+    let emptyArray:[]=[];
+    if(searchResult.length>0)
+    setSearchResult(()=>[]);
+   else if(plannedVisit.length>0)
+    setPlannedVisit(emptyArray)
+    setCustomerDetails(false);
+    pageNumber.planned.current = 1;
+     callPlannedVisitApi(1);
+  }
+
 
   const returnVisitType = () => {
     if (currentVisit == 1 || currentVisit == 2) return 0;
@@ -287,6 +313,7 @@ const VisitScreenViewModel = () => {
         setSearchResult(res?.data?.data?.data);
       }
     } catch (e) {
+      logger(e,"Error in Apply Filter API")
     } finally {
       dispatch(setLoaderVisibility(false));
     }
