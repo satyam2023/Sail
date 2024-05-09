@@ -1,11 +1,14 @@
 import React from "react";
-import { FlatList, ScrollView, View } from "react-native";
+import {
+  FlatList,
+  ScrollView,
+  View,
+} from "react-native";
 import ForwardCard from "./component/ForwarnCard";
 import styles from "views/message/Style/Style";
 import StringConstants from "shared/localization";
 import {
   CustomButton,
-  CustomDropDown,
   Header,
   InputTextField,
   RectangularBox,
@@ -13,21 +16,27 @@ import {
 } from "components";
 import { MessageDetailField } from "@shared-constants";
 import {
+  EscalatedList,
+  IEscalatedToAndComment,
   IFlatlistEscalationCard,
   IFlatlistMessageDetail,
 } from "models/interface/IMessage";
 import { Root } from "models/ApiResponses/MessageResponse";
-import { Colors } from "commonStyles/RNColor.style";
-import { IdropDown } from "models/interface/ISetting";
+import { Colors } from "commonStyles/RNColor.style";;
+import Glyphs from "assets/Glyphs";
 
 interface IMsg {
   msgData: Root;
   handleTextChange: (text: string, id: number) => void;
-  escalatedDropDown: IdropDown[];
-  escalalteToAnotherApiCalling:()=>void;
+  escalatedCustomerList: EscalatedList[];
+  escalalteToAnotherApiCalling: () => void;
+  handleSelecteEscalatedTo: () => void;
+  escalatedRemarks: IEscalatedToAndComment;
 }
 
 const MsgDetails = (props: IMsg) => {
+
+  console.log("Default value:::::",props?.escalatedRemarks?.escalated_to?.current);
   const renderMessageDetail = ({ item, index }: IFlatlistMessageDetail) => {
     return (
       <RectangularBox
@@ -57,6 +66,7 @@ const MsgDetails = (props: IMsg) => {
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={styles.container}
+          nestedScrollEnabled
         >
           <FlatList
             data={[
@@ -79,18 +89,15 @@ const MsgDetails = (props: IMsg) => {
           />
           {props?.msgData?.escalated_to != null ? (
             <View style={styles.escalaltedInputContainer}>
-              <CustomDropDown
-                ArrayOfData={
-                  props?.escalatedDropDown.length > 0
-                    ? props?.escalatedDropDown
-                    : undefined
-                }
-                topheading={StringConstants.ESCALATED_TO}
-                style={{ backgroundColor: Colors.inputBG }}
-                onPress={(item: IdropDown) =>
-                  props?.handleTextChange(item.name, 0)
-                }
-              />
+
+                <InputTextField
+                  onChangeText={() => {}}
+                  placeholder={StringConstants.ESCALATED_TO}
+                  defaultValue={props?.escalatedRemarks?.escalated_to?.current}
+                  rightIcon={Glyphs.Downward}
+                  onRighIconPress={props?.handleSelecteEscalatedTo}
+                  isEditable={false}
+                />
               <InputTextField
                 onChangeText={(text: string) =>
                   props?.handleTextChange(text, 1)

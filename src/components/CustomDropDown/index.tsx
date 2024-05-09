@@ -4,6 +4,7 @@ import {
   Image,
   ImageStyle,
   ImageURISource,
+  ScrollView,
   StyleSheet,
   TextStyle,
   View,
@@ -28,12 +29,12 @@ interface IDropDownStyle {
   rightIcon: ImageStyle;
   rightIconContainer: ViewStyle;
   itemSeparator: ViewStyle;
-  dropList:ViewStyle;
-  optionContainer:ViewStyle;
+  dropList: ViewStyle;
+  optionContainer: ViewStyle;
 }
 
 interface ICustomDropDown {
-  ArrayOfData: Array<IdropDown> | IdropDown[] | undefined;
+  ArrayOfData?: Array<IdropDown> | IdropDown[] | undefined;
   leftIcon?: ImageURISource;
   getData?: (value: string) => void;
   topheading: string;
@@ -59,7 +60,11 @@ const CustomDropDown = (props: ICustomDropDown) => {
     setSelectedListItem(isSelectedNotVisible ? StringConstants.EMPTY : data);
   };
 
-  const renderItem = ({item}:{item: IdropDown}) => {
+  const makeListVisible = () => {
+    setIsListVisible(!isListVisible);
+  };
+
+  const renderItem = ({ item }: { item: IdropDown }) => {
     return (
       <PressableButton
         style={styles.listContainer}
@@ -71,7 +76,7 @@ const CustomDropDown = (props: ICustomDropDown) => {
         }}
       >
         <TextWrapper style={commonStyles.font14RegularBlack}>
-          {item.name}
+          {item?.name}
         </TextWrapper>
       </PressableButton>
     );
@@ -85,9 +90,7 @@ const CustomDropDown = (props: ICustomDropDown) => {
           props?.style,
           props?.error ? styles.errorBox : null,
         ]}
-        onPress={() => {
-          setIsListVisible(!isListVisible);
-        }}
+        onPress={makeListVisible}
       >
         <View style={{ flexDirection: "row" }}>
           {props?.leftIcon && (
@@ -143,14 +146,22 @@ const CustomDropDown = (props: ICustomDropDown) => {
         </View>
       )}
       {isListVisible && (
-        <FlatList
-          data={props.ArrayOfData}
-          renderItem={renderItem}
-          style={[{ marginBottom: props?.ArrayOfData ? 10 : undefined}]}
+        <ScrollView
+          style={styles.optionContainer}
+          nestedScrollEnabled
           showsVerticalScrollIndicator={false}
-          ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
-        />
- 
+          bounces={false}
+        >
+          <FlatList
+            data={props.ArrayOfData}
+            renderItem={renderItem}
+            style={[{ marginBottom: props?.ArrayOfData ? 10 : undefined }]}
+            keyExtractor={(_, index) => index.toString()}
+            showsVerticalScrollIndicator={false}
+            ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
+            scrollEnabled={false}
+          />
+        </ScrollView>
       )}
     </>
   );
@@ -207,8 +218,8 @@ const styles = StyleSheet.create<IDropDownStyle>({
     position: "absolute",
     right: 16,
   },
-  dropList:{
-    height:168,
+  dropList: {
+    height: 168,
     backgroundColor: Colors.white,
     borderRadius: 2,
     shadowColor: "#000",
@@ -222,12 +233,11 @@ const styles = StyleSheet.create<IDropDownStyle>({
     zIndex: 100,
   },
   optionContainer: {
-    position: "absolute",
-    width: "100%",
-    alignSelf: "center",
+    position: "relative",
+    bottom: 10,
     elevation: 2,
-    zIndex: 100,
-    bottom:0,
-    // top:ScreenHeight/2
+    zIndex: 200,
+    flex: 1,
+    height: ScreenHeight / 6,
   },
 });

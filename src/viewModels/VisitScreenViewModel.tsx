@@ -209,10 +209,10 @@ const VisitScreenViewModel = () => {
   };
 
   function plannedVisitEdit() {
-    if (isVisitEditable) editVisitAPIHandler();
-    else {
-      setVisitEditable(true);
-    }
+    // if (isVisitEditable) editVisitAPIHandler();
+    // else {
+    //   setVisitEditable(true);
+    // }
   }
 
   const callDownloadPDFApi = async (id: number) => {

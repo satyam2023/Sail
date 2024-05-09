@@ -200,6 +200,7 @@ export const personalValidationRules = {
   ]
 };
 
+
 export const passwordValidationRules = {
   Password: [
     {
@@ -246,6 +247,19 @@ export const roleValidationRules = {
   ],
 };
 
+export const detailUpdatevalidationRules = {
+  email: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    {
+      regex: Regex.EMAIL,
+      message: StringConstants.INVALID_EMAIL,
+    },
+  ],
+};
+
 export const signInValidationRules = {
   upn: [
     {
@@ -268,6 +282,32 @@ export const signInValidationRules = {
       message:StringConstants.ERROR_MESSAGE,
     },
   ],
+};
+
+export const createVisitValidation= {
+  customerCode: [
+    {
+      regex: Regex.ONLY_NUMBER,
+      message: `${StringConstants.INVALID} ${StringConstants.CUS_CODE}`,
+    },
+    {
+      regex: Regex.NUMBER_MAX,
+      message: StringConstants.ENTER_TEN_DIGIT,
+    },
+  ],
+  name: [
+    {
+      regex: Regex.SLASHNAME,
+      message: StringConstants.INVALID_NAME,
+    },
+  ],
+  nickName: [
+    {
+      regex: Regex.NAME,
+      message: `${StringConstants.INVALID} ${StringConstants.NICK_NAME}`,
+    },
+  ],
+ 
 };
 
 export const validatePasswordAndCpassword = (

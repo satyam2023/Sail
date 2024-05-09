@@ -1,9 +1,9 @@
-import React, { useDebugValue } from "react";
+import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { SCREENS } from "@shared-constants";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import SignInViewModel from "viewModels/SignInViewModel";
 import { isReadyRef, navigationRef } from "@navigation";
 import SignUpScreenViewMOdel from "viewModels/SignUpViewModel";
@@ -23,7 +23,7 @@ import BottomDrawer from "views/moreOptions/BottomDrawer";
 import CreateVisitPlanViewModel from "viewModels/CreateVisitPlanModel";
 import CreateMetingDetailsViewModel from "viewModels/CreateMeetingDetailsViewModel";
 import ViewCustomerProfileViewModel from "viewModels/ViewCustomerProfileViewModel";
-import { Image, Keyboard, View } from "react-native";
+import { Image, View } from "react-native";
 import OnBoardingScreenViewModel from "../viewModels/OnBoardingScreenViewModel";
 import HomeScreenViewModel from "viewModels/HomeViewModel";
 import ForgotPasswordViewModel from "viewModels/ForgotPasswordViewModel";
@@ -32,7 +32,7 @@ import ViewCustomerListViewModel from "viewModels/CustomerProfileListViewModel";
 import ViewCustomerRepressentativeViewModel from "viewModels/ViewCustomerRepresentativeViewModel";
 import ViewCustomerCompetitorViewModel from "viewModels/ViewCustomerCompetitorViewModel";
 import CreateCustomerViewModel from "viewModels/CreateCustomerViewModel";
-import { BottomTabVisibility } from "redux/actions/UIAction";
+
 
 
 const Tab = createBottomTabNavigator();
@@ -132,7 +132,6 @@ const HomeStackNavigator = () => {
 };
 
 const RenderTabNavigation = () => {
-  const dispatch=useDispatch();
   const isModalVisible: boolean = useSelector(
     (state: any) => state.UIReducer.modalVisibility,
   );

@@ -7,8 +7,8 @@ import {
 import { getEscalatedId, logger } from "helper/helperFunctions";
 import { IApiResponse } from "models/ApiResponses/IApiResponse";
 import { EscalatedToOtherApiResponse, EscalatedToOtherBody } from "models/ApiResponses/MessageResponse";
-import { IEscalatedToAndComment } from "models/interface/IMessage";
-import React, { useEffect, useRef, useState } from "react";
+import { EscalatedList, IEscalatedToAndComment } from "models/interface/IMessage";
+import React, {useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
 import { BottomTabVisibility } from "redux/actions/UIAction";
@@ -18,17 +18,17 @@ const MessageScreenViewModel = () => {
   const dispatch = useDispatch();
   const [msgOpenStatus, setmsgOpenStatus] = useState<boolean>(false);
   const [selectedMsgIndex, setSelectedMessageIndex] = useState<number>(-1);
+  const [escalatedPersonStatus,setEscalatedPersonStatus]=useState<boolean>(false);
   const userID = store?.getState()?.userAccount?.data?.data?.user?.id;
   useFocusEffect(() => {
     dispatch(BottomTabVisibility(false));
     return () => dispatch(BottomTabVisibility(true));
   });
-
   const escalatedRemarks: IEscalatedToAndComment = {
     escalated_to: useRef<string>(""),
     comment: useRef<string>(""),
   };
-
+  
   useEffect(() => {
     getInboxData(dispatch);
     getEscaltedDropdownData(dispatch);
@@ -37,7 +37,7 @@ const MessageScreenViewModel = () => {
   const messagedata = useSelector(
     (state: RootState) => state?.message?.inbox?.data,
   );
-  const escalatedDropDown = useSelector(
+  const escalatedCustomerList:EscalatedList[]= useSelector(
     (state: RootState) => state?.message?.EscaletedDropDownData?.data,
   );
 
@@ -48,7 +48,12 @@ const MessageScreenViewModel = () => {
 
   function handleTextChange(text: string, id: number) {
     escalatedRemarks[Object.keys(escalatedRemarks)[id]].current = text;
+    if(id==0){
+      handleSelecteEscalatedTo();
+    }
   }
+
+
 
   const getEscalationId = () => {
     const escalationData = messagedata[selectedMsgIndex]?.allEscalations;
@@ -58,6 +63,11 @@ const MessageScreenViewModel = () => {
     return data?.id;
   };
 
+  const handleSelecteEscalatedTo=()=>{
+    setEscalatedPersonStatus(!escalatedPersonStatus)
+  }
+  
+
   async function escalalteToAnotherApiCalling() {
     try {
       dispatch(setLoaderVisibility(true));
@@ -65,7 +75,7 @@ const MessageScreenViewModel = () => {
         escalation_id: getEscalationId(),
         vissit_issue_id: messagedata[selectedMsgIndex]?.id,
         escalated_to: getEscalatedId(
-          escalatedDropDown,
+          escalatedCustomerList,
           escalatedRemarks?.escalated_to?.current,
         ),
         escalation_comment: escalatedRemarks?.comment?.current,
@@ -74,7 +84,10 @@ const MessageScreenViewModel = () => {
       const res:IApiResponse<EscalatedToOtherApiResponse> =
         await escalateToAnotherAPI(body);
       if (res?.isSuccess) {
-        setSelectedMessageIndex(-1);
+         getInboxData(dispatch);
+         escalatedRemarks.escalated_to.current="";
+         setSelectedMessageIndex(-1);
+         setmsgOpenStatus(false);
       }
     } catch (e) {
       logger(e, "Error in Escalalted To another Api calling");
@@ -91,8 +104,11 @@ const MessageScreenViewModel = () => {
         selectedMsgIndex,
         handleMessageBoxClick,
         handleTextChange,
-        escalatedDropDown,
+        escalatedCustomerList,
         escalalteToAnotherApiCalling,
+        escalatedPersonStatus,
+        handleSelecteEscalatedTo,
+        escalatedRemarks
       }}
     />
   );

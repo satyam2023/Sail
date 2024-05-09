@@ -1,14 +1,13 @@
 import React from "react";
-import { SafeAreaView, ScrollView } from "react-native";
+import { FlatList, SafeAreaView, ScrollView } from "react-native";
 import { Colors } from "commonStyles/RNColor.style";
 import Glyphs from "assets/Glyphs";
 import NotificationToggleBoxContent from "./component/NotificationToggleBoxContent";
 import StringConstants from "shared/localization";
-import { FlatList } from "react-native-gesture-handler";
-import { CustomToggleBox, Header } from "components";
+import { CustomToggleBox, Header, StatusBarComponent } from "components";
 import { NotificationResponse } from "models/ApiResponses/NotificationResponse";
 import { extractOnlyDate } from "helper/helperFunctions";
-import StatusBarComponent from "components/StatusBarComponent";
+
 
 interface INotificationScreen{
   notificationData:NotificationResponse;
@@ -19,7 +18,7 @@ const NotificationScreen = (props:INotificationScreen) => {
     <>   
      <StatusBarComponent
         backgroundColor={Colors.sailBlue}
-        conentType={"dark-content"}
+        conentType={'light-content'}
       />
      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background2 }}>
       <Header topheading={StringConstants.NOTIFICATIONS} />

@@ -307,6 +307,7 @@ export interface ICreateVisitPlaneField {
   placeholder: string;
   maxlength?: number;
   inputMode?: InputModeOptions;
+  key?:string;
 }
 
 export const CreateVisitPlanField: ICreateVisitPlaneField[] = [
@@ -314,21 +315,24 @@ export const CreateVisitPlanField: ICreateVisitPlaneField[] = [
     placeholder: StringConstants.ENTER_CUSTOMER,
     maxlength: 10,
     inputMode:'numeric',
+    key:'customerCode'
   },
   {
     placeholder: StringConstants.ENTER_NAME,
     maxlength: 20,
     inputMode: 'text',
+    key:'name'
   },
   {
     placeholder: StringConstants.ENTER_NICK_NAME,
     maxlength: 20,
     inputMode: 'text',
+    key:'nickName'
   },
   { placeholder: StringConstants.CUSTOMER_REGION },
   { placeholder: StringConstants.SELECT_VISITING_EXECUTIVE },
   { placeholder: StringConstants.VISIT_DATE },
-  { placeholder: StringConstants.SELECT_REASON },
+  { placeholder: StringConstants.SELECT_REASON},
   {
     placeholder: StringConstants.SELECT_MODE_OF_CONTACT,
   },
@@ -639,12 +643,36 @@ export const CustomerTypeProjectField = [
   StringConstants.PROJECT_DETAILS,
 ];
 
-export const TextFieldData = [
-  StringConstants.YOUR_UNIQUE,
-  StringConstants.NAME,
-  StringConstants.CONTACT_NUMBER,
-  StringConstants.EMAIL,
-];
+// export const TextFieldData = [
+//   StringConstants.YOUR_UNIQUE,
+//   StringConstants.NAME,
+//   StringConstants.CONTACT_NUMBER,
+//   StringConstants.EMAIL,
+// ];
+
+export interface ITextField{
+  placeholder:string;
+  key:string
+}
+
+export const TextFieldData=[
+  {
+    placeholder:StringConstants.YOUR_UNIQUE,
+    key:'upn'
+  },
+  {
+    placeholder:StringConstants.NAME,
+    key:'name'
+  },
+  {
+    placeholder:StringConstants.CONTACT_NUMBER,
+    key:'upn'
+  },
+  {
+    placeholder:StringConstants.EMAIL,
+    key:'email'
+  }
+]
 
 export const filterDropDownData: IdropDown[] = [
   { id: 1, name: StringConstants.DURATION },

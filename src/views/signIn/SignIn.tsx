@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import { SafeAreaView } from "react-native";
 import { Image, TouchableOpacity, View } from "react-native";
 import styles from "./Style/Style";
@@ -16,24 +16,25 @@ import {
 } from "components";
 import { navigate } from "@navigation";
 import { isAndroid } from "libs";
-import { IBiometricStatus, ISignInUser } from "models/interface/ISignIn";
+import { IBiometricStatus } from "models/interface/ISignIn";
 import { Colors } from "commonStyles/RNColor.style";
 import { KeyboardAvoidingView } from "react-native";
+import { ValidationError } from "core/UseForm";
 
 interface ISignInScreen {
   onSubmit: () => void;
   handleOnTextChange: (text: string, id: number) => void;
-  signInUser: ISignInUser;
   biometricAuthentication: () => void;
   isBiometricsAvl: IBiometricStatus;
+  signinError:MutableRefObject<ValidationError[]>;
 }
 
 const SignInScreen = ({
   onSubmit,
   handleOnTextChange,
-  signInUser,
   biometricAuthentication,
   isBiometricsAvl,
+  signinError
 }: ISignInScreen) => {
   return (
     <GradientBackground>
@@ -50,14 +51,16 @@ const SignInScreen = ({
               leftIcon={Glyphs.Contact}
               placeholder={StringConstants.YOUR_UNIQUE}
               onChangeText={(text: string) => handleOnTextChange(text, 0)}
-              value={signInUser?.upn?.current}
+              errors={ signinError.current}
+              inputBoxId="upn"
             />
             <InputTextField
               eyeIcon={Glyphs.Eye}
               leftIcon={Glyphs.Key}
               placeholder={StringConstants.YOUR_PASSWOD}
               onChangeText={(text: string) => handleOnTextChange(text, 1)}
-              value={signInUser?.password?.current}
+              errors={ signinError.current}
+              inputBoxId='password'
             />
           </KeyboardAvoidingView>
           <View style={styles.switchAreaContainer}>

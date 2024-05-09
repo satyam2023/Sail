@@ -28,6 +28,7 @@ interface ICommonStyle{
   seachButtonTextStyle:TextStyle;
   rightIcon:ImageStyle;
   rectangularBoxRadius:ViewStyle;
+  font14RegularTextGray:TextStyle;
 
 }
 
@@ -60,6 +61,11 @@ const commonStyles = StyleSheet.create<ICommonStyle>({
     fontSize: 14,
     fontFamily:fonts.type.medium, 
     color: Colors.darkGrey,
+  },
+  font14RegularTextGray:{
+    fontSize: 14,
+    fontFamily:fonts.type.regular, 
+    color: Colors.textGrey,
   },
 
   font14MediumBlack: {

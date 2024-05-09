@@ -36,7 +36,7 @@ import {
 import StringConstants from "shared/localization";
 import { IProductCatalogue } from "models/ApiResponses/ProductCatalogue";
 import { MutableRefObject } from "react";
-import { FormValues } from "core/UseForm";
+import { EscalatedList } from "models/interface/IMessage";
 
 export function ExtarctTwoLetterName(name: string) {
   let ans = name[0];
@@ -61,8 +61,42 @@ export const convertToArray = (userData: SignInResponse) => {
   return arr;
 };
 
+const returnMonth = (a: string) => {
+  switch (a) {
+    case "01":
+      return "January";
+    case "02":
+      return "February";
+    case "03":
+      return "March";
+    case "04":
+      return "April";
+    case "05":
+      return "May";
+    case "06":
+      return "June";
+    case "07":
+      return "July";
+    case "08":
+      return "August";
+    case "09":
+      return "September";
+    case "10":
+      return "October";
+    case "11":
+      return "November";
+    case "12":
+      return "December";
+    default:
+      return null;
+  }
+};
+
 export const extractOnlyDate = (data: string) => {
-  return data ? data.slice(0, 10) : "";
+  const wholeDate=data ? data.slice(0, 10) : "";
+  const month=returnMonth(wholeDate.slice(5,7))
+  const date=wholeDate.slice(8,10);
+  return date +" "+month;
 };
 
 export const getCurrentDate1 = () => {
@@ -75,7 +109,7 @@ export const getCurrentDate1 = () => {
 export const convertAccomToDropData = (data: AccompRoot) => {
   let ans: IdropDown[] = [];
   for (let i = 0; i < data?.length; i++) {
-    let temp = { name:StringConstants.EMPTY, id: -1 };
+    let temp = { name: StringConstants.EMPTY, id: -1 };
     temp.name = data[i]?.user_name;
     temp.id = data[i]?.id;
     ans.push(temp);
@@ -504,11 +538,9 @@ export const checkAllInputField = (fields: any) => {
   return true;
 };
 
-export const isAllInputFieldHaveData = (fields:any) => {
+export const isAllInputFieldHaveData = (fields: any) => {
   for (let i = 0; i < Object.keys(fields.current).length; i++) {
-    if (
-     fields.current[Object.keys(fields.current)[i]].length == 0
-    ) {
+    if (fields.current[Object.keys(fields.current)[i]].length == 0) {
       console.log("Returned Value is False:::::::");
       return false;
     }
@@ -945,7 +977,10 @@ export const dropDownListOfCreateCustomer = (
   return ans;
 };
 
-export const getEscalatedId = (data: any, value: string|undefined) => {
-  const ans = data.Filter((item: any) => item?.user_name == value);
-  return ans[0];
+export const getEscalatedId = (
+  data: EscalatedList[],
+  value: string | undefined,
+) => {
+  const ans = data.filter((item: EscalatedList) => item?.user_name == value);
+  return Number(ans[0]?.id);
 };
