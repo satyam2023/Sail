@@ -1,9 +1,7 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import {
   FlatList,
   Image,
-  KeyboardAvoidingView,
-  SafeAreaView,
   View,
 } from "react-native";
 import CustomerDetailHeader from "./CustomerDetailHeader";
@@ -20,7 +18,6 @@ import {
 import {
   CustomerDetailInputField,
   CustomerTypeProjectField,
-  ErrorMsgOfCustomerInput,
 } from "@shared-constants";
 import {
   ICustomerTypeProject,
@@ -35,20 +32,17 @@ import {
 import { IdropDown } from "models/interface/ISetting";
 import { customerTypeTraderDealerField } from "@shared-constants";
 import Glyphs from "assets/Glyphs";
-import { ICreateCustomerError } from "helper/ValidationRegex";
 import styles from "./Style";
 import commonStyles from "commonStyles/CommonStyle";
-import { isAndroid } from "libs";
+import { ValidationError } from "core/UseForm";
 
 interface ICust {
-  enteredCustomerDetails: IEnteredCustomerDetails;
   dropdownDataList: IdropDown[][];
   setIndexofSubType: Function;
   setSubTypes: Function;
   isAllFieldHaveData: () => void;
   handleLocateMe: () => void;
   handleSelectImageVideo: () => void;
-  error: ICreateCustomerError;
   customerTypeTraderDealer: ICustomertypeTrader;
   indexofSubtype: IsubType;
   selectedDropdownItemList: IselecteddropDown;
@@ -60,6 +54,7 @@ interface ICust {
   sapUserExist: boolean;
   removeSelectedImage: (item: ISelectedImage) => void;
   showError:boolean;
+  customerErrors:MutableRefObject<ValidationError[]>;
 }
 
 const CreateCustomerDetails = (props: ICust) => {
@@ -78,13 +73,8 @@ const CreateCustomerDetails = (props: ICust) => {
               placeholder={item.placeholder}
               maxlength={item?.maxlength}
               containerStyle={{ backgroundColor: Colors.white }}
-              error={
-                index == 0 || index == 8 || index == 9
-                  ? props?.error[Object.keys(props?.error)[index]] == false && props?.showError
-                    ? ErrorMsgOfCustomerInput[index]
-                    : undefined
-                  : undefined
-              }
+              errors={props?.customerErrors?.current}
+              inputBoxId={item?.key}
             />
             {index == 0 && props.sapUserExist && (
               <TextWrapper style={commonStyles.errorText}>
@@ -97,7 +87,7 @@ const CreateCustomerDetails = (props: ICust) => {
             ArrayOfData={props?.dropdownDataList[index - 2]}
             topheading={item.placeholder}
             onPress={(item: IdropDown) =>
-              props?.setSubTypes(item, index, props?.enteredCustomerDetails)
+              props?.setSubTypes(item, index)
             }
           />
         )}
@@ -233,6 +223,7 @@ const CreateCustomerDetails = (props: ICust) => {
           data={CustomerDetailInputField}
           renderItem={renderCustomerInputField}
           scrollEnabled={false}
+          keyExtractor={(_,index)=>index.toString()}
         />
         {(props?.indexofSubtype.customerSubTypeIndex == 2 ||
           props?.indexofSubtype.customerSubTypeIndex == 7) && (
@@ -253,9 +244,10 @@ const CreateCustomerDetails = (props: ICust) => {
             props?.handleTextOnTextChangeCustomer(text, 11)
           }
           placeholder={StringConstants.ADD_TAG_LOCATION}
+          errors={props?.customerErrors?.current}
+          inputBoxId="location"
           containerStyle={{ backgroundColor: Colors.white }}
         />
-
         <UploadDocumnet
           uploadType={StringConstants.UPLOAD_VIDEO_IMAGE}
           mediaType={StringConstants.PNG_MP4}

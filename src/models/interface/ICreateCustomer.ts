@@ -30,6 +30,24 @@ export interface IEnteredCustomerDetails {
   longitude: MutableRefObject<string>;
 }
 
+export interface CustomerDetails{
+  [key: string]: string;
+  code: string;
+  company: string;
+  cust_seg: string;
+  cust_sub_seg: string;
+  cust_type: string;
+  cust_sub_type: string;
+  cust_status: string;
+  cust_region: string;
+  pan: string;
+  gst: string;
+  website: string;
+  location: string;
+  latitude: string;
+  longitude: string;
+}
+
 export interface IrepresentativeData {
   file_name: string;
   name: string;
@@ -52,11 +70,29 @@ export interface IRepresentativeEnteredDetail {
   whatsApp: MutableRefObject<string>;
 }
 
+export interface RepresentativeDetails{
+  [key: string | number]:string;
+  name:string;
+  designation:string;
+  dept:string;
+  address:string;
+  email:string;
+  contact:string;
+  whatsApp:string;
+}
+
 export interface IEnteredCompetitorDetail {
   [key: string]: MutableRefObject<string>;
   company: MutableRefObject<string>;
   address: MutableRefObject<string>;
   comment: MutableRefObject<string>;
+}
+
+export interface CompetitorDetail{
+  [key: string]: string;
+  company: string;
+  address: string;
+  comment: string;
 }
 
 export interface IsubType {

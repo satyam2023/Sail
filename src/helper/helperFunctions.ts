@@ -37,6 +37,7 @@ import StringConstants from "shared/localization";
 import { IProductCatalogue } from "models/ApiResponses/ProductCatalogue";
 import { MutableRefObject } from "react";
 import { EscalatedList } from "models/interface/IMessage";
+import { FormValues } from "core/UseForm";
 
 export function ExtarctTwoLetterName(name: string) {
   let ans = name[0];
@@ -420,57 +421,56 @@ export const setUpdateCompetitorBody = (
 };
 
 export const unplannedVisitMeeting = (
-  unPlannedVisitDetail: IUnplannedMeetingEnteredDetail,
-  enteredRepresentativeDetails: IRepresentativeEnteredDetail,
+  unplannedVisitValue: any,
   representativeList: IRepresentativeList,
   selectedIssueArr: any[],
-  selectedRepresentativeIndex: MutableRefObject<number>,
 ) => {
+ const selectedIndex= Number(unplannedVisitValue?.current?.selectedRepresentative);
   const body = {
-    customer_code: unPlannedVisitDetail?.code?.current || null,
-    company_name: unPlannedVisitDetail?.name?.current || null,
-    customer_status: unPlannedVisitDetail?.customer_status?.current || null,
-    customer_type: unPlannedVisitDetail?.customer_type?.current || null,
-    customer_region: unPlannedVisitDetail?.customer_region?.current || null,
+    customer_code: unplannedVisitValue?.current?.code || null,
+    company_name: unplannedVisitValue?.current?.name || null,
+    customer_status: Number(unplannedVisitValue?.current?.customer_status) || null,
+    customer_type: Number(unplannedVisitValue?.current?.customer_type) || null,
+    customer_region: unplannedVisitValue?.current?.customer_region || null,
     visit_mode_of_contact:
-      unPlannedVisitDetail?.mode_of_meeting?.current || null,
-    visit_date: unPlannedVisitDetail?.visit_date?.current || null,
-    visit_time: unPlannedVisitDetail?.visit_time?.current || null,
-    visit_reason: unPlannedVisitDetail?.visit_reason?.current || null,
-    visit_other_reason: unPlannedVisitDetail?.other_issue?.current || null,
+      Number(unplannedVisitValue?.current?.mode_of_meeting) || null,
+    visit_date: unplannedVisitValue?.current?.visit_date || null,
+    visit_time: unplannedVisitValue?.current?.visit_time || null,
+    visit_reason: Number(unplannedVisitValue?.current?.visit_reason) || null,
+    visit_other_reason: unplannedVisitValue?.current?.other_issue || null,
     visit_discussion_points:
-      unPlannedVisitDetail?.discussion_point?.current || null,
+      unplannedVisitValue?.current?.discussion_point || null,
     visit_accompanying_executive:
-      unPlannedVisitDetail?.accompying_executive?.current || null,
-    visit_representative_id: enteredRepresentativeDetails?.id?.current || null,
+      unplannedVisitValue?.current?.accompying_executive || null,
+    visit_representative_id:  selectedIndex || null,
     visit_issues: selectedIssueArr.length > 0 ? selectedIssueArr : null,
     representative_name:
       representativeList.representativeListDetail[
-        selectedRepresentativeIndex.current
+        selectedIndex
       ]?.name || null,
     representative_designation:
       representativeList.representativeListDetail[
-        selectedRepresentativeIndex.current
+        selectedIndex
       ]?.designation || null,
     representative_department:
       representativeList.representativeListDetail[
-        selectedRepresentativeIndex.current
+        selectedIndex
       ]?.dept || null,
     representative_address:
       representativeList.representativeListDetail[
-        selectedRepresentativeIndex.current
+        selectedIndex
       ]?.address || null,
     representative_email:
       representativeList.representativeListDetail[
-        selectedRepresentativeIndex.current
+        selectedIndex
       ]?.email || null,
     representative_contact_number:
       representativeList.representativeListDetail[
-        selectedRepresentativeIndex.current
+        selectedIndex
       ]?.contact || null,
     representative_whatsapp_number:
       representativeList.representativeListDetail[
-        selectedRepresentativeIndex.current
+        selectedIndex
       ]?.whatsApp || null,
   };
 
@@ -484,8 +484,8 @@ export const plannedMeeting = (
   const temp = [
     plannedMeetingList?.data[selectedIndexValue]?.customer_data?.customer_code,
     plannedMeetingList?.data[selectedIndexValue]?.customer_data?.company_name,
-    plannedMeetingList?.data[selectedIndexValue]?.customer_data?.type,
-    plannedMeetingList?.data[selectedIndexValue]?.customer_data?.status,
+    plannedMeetingList?.data[selectedIndexValue]?.customer_data?.type?.type_name,
+    plannedMeetingList?.data[selectedIndexValue]?.customer_data?.status?.name,
     plannedMeetingList?.data[selectedIndexValue]?.mode_of_contact?.name,
     extractOnlyDate(
       plannedMeetingList?.data[selectedIndexValue]?.visit_date_time,
@@ -636,6 +636,14 @@ export const tacklePagination = (n: number, arr: any[]) => {
     return false;
   }
 };
+
+
+export const setFormDataToIntialValue=(data:any)=>{
+  for(let i=0;i<data?.length;i++){
+    Object.keys(data)[i]='';
+  }
+
+}
 
 export const setUpcomingFieldData = (
   upcomingVisitList: any,
@@ -927,17 +935,17 @@ export const getDropDownData = (
 
 export const addRepresentativeOfCreateCustomer = (
   selectRepresentativeImage: ISelectedImage | undefined,
-  enteredRepresentativeDetails: IRepresentativeEnteredDetail,
+  enteredRepresentativeDetails: MutableRefObject<Record<string,string>>,
 ) => {
   const representativeData = {
     file_name: selectRepresentativeImage?.fileName,
-    name: enteredRepresentativeDetails.name.current,
-    designation: enteredRepresentativeDetails.designation.current,
-    department: enteredRepresentativeDetails.dept.current,
-    address: enteredRepresentativeDetails.address.current,
-    email: enteredRepresentativeDetails.email.current,
-    contact_number: enteredRepresentativeDetails.contact.current,
-    whatsapp_number: enteredRepresentativeDetails.whatsApp.current,
+    name: enteredRepresentativeDetails?.current.name,
+    designation: enteredRepresentativeDetails?.current.designation,
+    department: enteredRepresentativeDetails?.current.dept,
+    address: enteredRepresentativeDetails?.current.address,
+    email: enteredRepresentativeDetails?.current.email,
+    contact_number: enteredRepresentativeDetails?.current.contact,
+    whatsapp_number: enteredRepresentativeDetails?.current.whatsApp,
   };
 
   return representativeData;

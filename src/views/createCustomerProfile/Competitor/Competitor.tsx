@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import { FlatList, Image, View } from "react-native";
 import CustomerDetailHeader from "../CustomerDetailHeader";
 import StringConstants from "shared/localization";
@@ -15,6 +15,7 @@ import { TextWrapper } from "components";
 import Glyphs from "assets/Glyphs";
 import styles from "../Style";
 import commonStyles from "commonStyles/CommonStyle";
+import { ValidationError } from "core/UseForm";
 
 interface RepresenatativeProps {
   addDetails: Function;
@@ -22,6 +23,7 @@ interface RepresenatativeProps {
   addDetailStatus: boolean;
   competitorList: ICompetitor[];
   handleTextChangeOfCompetitor:(text: string, id: number) => void;
+  competitorErrors:MutableRefObject<ValidationError[]>;
 }
 const CustomerRepresentative = (props: RepresenatativeProps) => {
   function renderCompetitorList({ item, index }: IFlatlistCompetitorList) {

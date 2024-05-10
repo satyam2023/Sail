@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import { ScrollView } from "react-native";
 import { Colors } from "commonStyles/RNColor.style";
 import InputTextField from "components/InputTextField";
@@ -7,8 +7,6 @@ import {
   ErrorMsgOfRepresentative,
   MeetingRepresentativeDetailInputField,
 } from "@shared-constants";
-import { IRepresentativeEnteredDetail } from "models/interface/ICreateCustomer";
-import { IMeetingRepresentativeError } from "helper/ValidationRegex";
 import { CustomFooter } from "components";
 import StringConstants from "shared/localization";
 import {
@@ -16,13 +14,13 @@ import {
   IFlatlistRepresentativeDetail,
 } from "models/interface/IMeeting";
 import styles from "../Style";
+import { ValidationError } from "core/UseForm";
 
 interface IRepresentative {
-  enteredRepresentativeDetails: IRepresentativeEnteredDetail;
-  representativeError: IMeetingRepresentativeError;
   handleAddRepresentative: () => void;
   handleRepresentativeOnTextChange: (text: string, id: number) => void;
   btnStatus: IBtnStatus;
+  representativeErrors:MutableRefObject<ValidationError[]>;
 }
 
 const Representative = (props: IRepresentative) => {
@@ -39,15 +37,8 @@ const Representative = (props: IRepresentative) => {
         inputMode={item.inputMode}
         maxlength={item.maxlength}
         containerStyle={{ backgroundColor: Colors.white }}
-        error={
-          index > 3
-            ? props?.representativeError[
-                Object.keys(props?.representativeError)[index - 4]
-              ] == false
-              ? ErrorMsgOfRepresentative[index]
-              : undefined
-            : undefined
-        }
+        errors={props?.representativeErrors.current}
+        inputBoxId={item?.key}
       />
     );
   };

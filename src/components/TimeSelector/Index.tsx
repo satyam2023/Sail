@@ -3,6 +3,7 @@ import commonStyles from "commonStyles/CommonStyle";
 import { Colors } from "commonStyles/RNColor.style";
 import PressableButton from "components/DeBouncePressable";
 import TextWrapper from "components/TextWrapper";
+import { ValidationError } from "core/UseForm";
 import { ScreenWidth } from "libs";
 import { useState } from "react";
 import {Image, StyleSheet, View, ViewStyle } from "react-native";
@@ -10,13 +11,15 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 import StringConstants from "shared/localization";
 
 interface ITimePicker {
+  timeBoxId?: string;
   defaultValue?: string;
   onTimePress:(time:any)=>void;
+  errors?:ValidationError[];
 }
 
 interface ITimeStyle{
   main:ViewStyle;
-  dateSelector:ViewStyle
+  dateSelector:ViewStyle;
 }
 
 const TimePicker = (props: ITimePicker) => {
@@ -26,6 +29,9 @@ const TimePicker = (props: ITimePicker) => {
   );
   const [isTimeSelectorVisible, setTimeSelectorVisible] =
     useState<boolean>(false);
+  const handleTimeselectorStatus=()=>{
+    setTimeSelectorVisible(true);
+  }
   return (
     <>
       <PressableButton
@@ -37,9 +43,7 @@ const TimePicker = (props: ITimePicker) => {
               : Colors.white
           }
         ]}
-        onPress={() => {
-          setTimeSelectorVisible(true);
-        }}
+        onPress={handleTimeselectorStatus}
       >
         <Image source={Glyphs.Calender} style={commonStyles.leftIcon} />
         <View>
@@ -54,6 +58,14 @@ const TimePicker = (props: ITimePicker) => {
           {selectedTime && <TextWrapper>{selectedTime}</TextWrapper>}
         </View>
       </PressableButton>
+      {props?.errors?.map(
+          (error) =>
+          error?.field == props?.timeBoxId && (
+              <TextWrapper style={[commonStyles.errorText, { bottom: 12 }]}>
+                {error?.message}
+              </TextWrapper>
+            )
+        )}
 
       {isTimeSelectorVisible ? (
         <DateTimePicker
@@ -71,6 +83,7 @@ const TimePicker = (props: ITimePicker) => {
           display="spinner"
           collapsable={true}
         />
+       
       ) : null}
     </>
   );

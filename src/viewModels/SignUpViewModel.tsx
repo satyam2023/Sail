@@ -47,7 +47,9 @@ const SignUpScreenViewMOdel = () => {
   const Submit = async () => {
     switch (CurrentScreen) {
       case 1:
+        { 
         handleContactSubmit();
+        }
         break;
       case 2:
         handleRoleSubmit();
@@ -55,7 +57,7 @@ const SignUpScreenViewMOdel = () => {
       case 3:
        {
         handlePasswordSubmit();
-      signup();
+       signup();
        }
         break;
       default:
@@ -63,10 +65,18 @@ const SignUpScreenViewMOdel = () => {
     }
   };
 
-  const handleForward = () => {
-    CurrentScreen != 3
-      ? setCurrentScreen(CurrentScreen + 1)
-      : setCurrentScreen(1);
+  const handleForward = async () => {
+       if(CurrentScreen==1 && await checkSAPUser()){
+        setCurrentScreen(2)
+       }
+      else if(CurrentScreen==2){
+        setCurrentScreen(3);
+      }
+      else {
+        setCurrentScreen(1);
+      }
+   
+
       setButtonStatus(false);
   };
 
@@ -155,14 +165,20 @@ const SignUpScreenViewMOdel = () => {
       if (res?.isSuccess) {
         if (res?.data?.data?.data?.Status != "1") {
           setAlreadyExist(true);
+          return false;
         } else if (alreadyExist) {
           setAlreadyExist(false);
+          return true;
+        }
+        else {
+          return true;
         }
       }
     } catch (error) {
       logger("CHECK SAP USER");
     } finally {
       dispatch(setLoaderVisibility(false));
+      return ;
     }
   };
 

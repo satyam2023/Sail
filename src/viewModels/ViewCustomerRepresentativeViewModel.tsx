@@ -6,6 +6,7 @@ import {
   getcustomerlist,
   updateRepresentativeAPIHandler,
 } from "controllers/viewCustomerController";
+import { FormValues } from "core/UseForm";
 import {
   IRepresentativeError,
   checkCustomerViewRepresentativeDetail,
@@ -54,6 +55,12 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
     whatsApp: useRef(""),
     id: useRef(-1),
   };
+
+  // const representativeDetails:IRepresentativeEnteredDetail ={
+    
+
+  // }
+
 
   let [representativeError, setRepresentativeError] =
     useState<IRepresentativeError>({

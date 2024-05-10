@@ -1,5 +1,5 @@
-import React from "react";
-import { KeyboardAvoidingView, ScrollView, View } from "react-native";
+import React, { MutableRefObject } from "react";
+import { ScrollView, View } from "react-native";
 import StringConstants from "shared/localization";
 import { UnplannedMeetingInputField } from "@shared-constants";
 import { Colors } from "commonStyles/RNColor.style";
@@ -9,6 +9,7 @@ import {
   CustomToggleBox,
   InputTextField,
   KeyboardAvoidingWrapper,
+  PressableButton,
   TextWrapper,
 } from "components";
 import { FlatList } from "react-native-gesture-handler";
@@ -21,11 +22,11 @@ import {
   IIisueList,
   IRepresentativeList,
   IUnplannedDropDownList,
-  IUnplannedMeetingEnteredDetail,
   IUnplannedMeetingField,
   IissueDetail,
 } from "models/interface/IMeeting";
 import styles from "../Style";
+import { ValidationError } from "core/UseForm";
 interface AddProps {
   addIssue: () => void;
   issueList: IIisueList;
@@ -34,13 +35,14 @@ interface AddProps {
   unplannedDropDownList: IUnplannedDropDownList;
   handleUnplannedVisitDetail: (text: string | number, id: number) => void;
   issueDetail: IissueDetail;
-  handleRepresentativeOnTextChange: (text: string | number, id: number) => void;
   handleSubmitButtonClick: () => void;
   btnStatus: IBtnStatus;
   selectIssuesDropDown: IdropDown[][];
   handleIssueDetailChange: (text: string | number, id: number) => void;
-  unPlannedVisitDetail: IUnplannedMeetingEnteredDetail;
   recordVoice: () => void;
+  unPlannedVisitError:MutableRefObject<ValidationError[]>;
+  handleEscalationAccompying:()=>void;
+  issueDetailValue:any
 }
 function AddUnplannedVisit({
   addIssue,
@@ -51,12 +53,13 @@ function AddUnplannedVisit({
   representativeList,
   issueDetail,
   recordVoice,
-  handleRepresentativeOnTextChange,
   handleSubmitButtonClick,
   btnStatus,
   selectIssuesDropDown,
   handleIssueDetailChange,
-  unPlannedVisitDetail,
+  unPlannedVisitError,
+  handleEscalationAccompying,
+  issueDetailValue
 }: AddProps) {
   const renderUnplannedMeetingField = ({
     item,
@@ -74,11 +77,9 @@ function AddUnplannedVisit({
             rightIcon={item?.rightIcon}
             onRighIconPress={recordVoice}
             maxlength={item?.length}
-            containerStyle={{ backgroundColor: Colors.white }}
-            value={
-              unPlannedVisitDetail[Object.keys(unPlannedVisitDetail)[index]]
-                .current as string
-            }
+            errors={unPlannedVisitError.current}
+            inputBoxId={item?.key}
+            containerStyle={{backgroundColor:Colors.white}}
           />
         ) : (
           <>
@@ -89,12 +90,16 @@ function AddUnplannedVisit({
                   onDayPress={(date: string) =>
                     handleUnplannedVisitDetail(date, index)
                   }
+                  errors={unPlannedVisitError.current}
+                  dateBoxId={item?.key}
                 />
               ) : (
                 <TimePicker
                   onTimePress={(time: string) =>
                     handleUnplannedVisitDetail(time, index)
                   }
+                  errors={unPlannedVisitError.current}
+                  timeBoxId={item?.key}
                 />
               )
             ) : (
@@ -123,6 +128,8 @@ function AddUnplannedVisit({
             selectIssuesDropDown={selectIssuesDropDown}
             handleIssueDetailChange={handleIssueDetailChange}
             issueDetail={issueDetail}
+            handleEscalationAccompying={handleEscalationAccompying}
+            issueDetailValue={issueDetailValue}
           />
         }
         style={styles.issueToggleBox}
@@ -157,12 +164,14 @@ function AddUnplannedVisit({
             }
             topheading={StringConstants.SELECT_REPRE}
             onPress={(item: IdropDown) =>
-              handleRepresentativeOnTextChange(item.id, 7)
+              handleUnplannedVisitDetail(item.id, 12)
             }
           />
-          <TextWrapper style={styles.text} onPress={handleAddRepresentative}>
+          <PressableButton onPress={handleAddRepresentative}>
+          <TextWrapper style={styles.text} >
             {StringConstants.PLUS__CUSTOMER_REP}
           </TextWrapper>
+          </PressableButton>
         </View>
       </ScrollView>
       </KeyboardAvoidingWrapper>

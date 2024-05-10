@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import CustomerDetails from "./CustomerDetails";
 import {SafeAreaView, ScrollView } from "react-native";
 import CustomerRepresentative from "./CustomerRepresentative/CustomerRepresentative";
@@ -30,20 +30,18 @@ import {
   IRepresentative,
 } from "models/ApiResponses/CreateCustomer";
 import StatusBarComponent from "components/StatusBarComponent";
+import { ValidationError } from "core/UseForm";
 interface ICreateCustomer {
   CurrentScreen: number;
   addDetails: (addDetailStatus: boolean) => void;
   handleScreenChange: (direction: string) => void;
   addDetailStatus: boolean;
-  enteredCustomerDetails: IEnteredCustomerDetails;
   dropdownDataList: IdropDown[][];
   setIndexofSubType: Function;
   setSubTypes: Function;
   isAllFieldHaveData: () => void;
   handleLocateMe: () => void;
   handleSelectImageVideo: () => void;
-  error: ICreateCustomerError;
-  enteredRepresentativeDetails: IRepresentativeEnteredDetail;
   addRepresentativeCompetitor: () => void;
   representativeList: IRepresentative[];
   competitorList: ICompetitor[];
@@ -55,7 +53,6 @@ interface ICreateCustomer {
   extraListDropDownset: Function;
   removeSelectedItem: (index: number, type: string) => void;
   cutomerTypeProjectEnteredData: ICustomerTypeProject;
-  representativeError: IRepresentativeError;
   customerDetailSelectedImage: ISelectedImage[];
   selectRepresentativeImage: ISelectedImage | undefined;
   handleTextOnTextChangeCustomer: (text: string | number, id: number) => void;
@@ -64,6 +61,9 @@ interface ICreateCustomer {
   handleTextChangeOfRepresentative: (text: string, id: number) => void;
   handleTextChangeOfCompetitor: (text: string, id: number) => void;
   showError:boolean;
+  representativeErrors:MutableRefObject<ValidationError[]>;
+  competitorErrors:MutableRefObject<ValidationError[]>;
+  customerErrors:MutableRefObject<ValidationError[]>;
 }
 
 const CreateCustomerScreen = (props: ICreateCustomer) => {

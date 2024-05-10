@@ -146,6 +146,7 @@ const CustomDropDown = (props: ICustomDropDown) => {
         </View>
       )}
       {isListVisible && (
+        <View style={styles.dropList}>
         <ScrollView
           style={styles.optionContainer}
           nestedScrollEnabled
@@ -162,6 +163,7 @@ const CustomDropDown = (props: ICustomDropDown) => {
             scrollEnabled={false}
           />
         </ScrollView>
+        </View>
       )}
     </>
   );
@@ -231,13 +233,11 @@ const styles = StyleSheet.create<IDropDownStyle>({
     shadowRadius: 2.22,
     elevation: 3,
     zIndex: 100,
+    position:'relative',
+    bottom:10,
   },
   optionContainer: {
-    position: "relative",
-    bottom: 10,
-    elevation: 2,
-    zIndex: 200,
     flex: 1,
-    height: ScreenHeight / 6,
+
   },
 });

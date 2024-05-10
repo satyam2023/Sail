@@ -484,8 +484,8 @@ const StringConstants = {
   PLS_REASON:'Please Select Visit Reason',
   PLS_MOC:'Please Select Mode of Contact',
   PLS_REMARKS:'Please Enter Remarks',
-  FINGER_PRINT_KEY:'Finger Print Key'
-
+  FINGER_PRINT_KEY:'Finger Print Key',
+  INVALID_WEBSITE:'Invalid Website'
 
   
   

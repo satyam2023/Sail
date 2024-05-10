@@ -1,6 +1,6 @@
 import { MutableRefObject, useRef, useState } from "react";
 
-export type FormValues = {
+export type FormValues= {
   [key: string]: string;
 };
 

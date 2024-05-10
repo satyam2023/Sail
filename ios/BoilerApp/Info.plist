@@ -43,13 +43,12 @@
 	<string>The location permission is required for using the app normally for only latitute and longitude.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
-	
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Your microphone is required to search product with voice search</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Speech recognition is required to enable voice search for products</string>
 	<key>NSFaceIDUsageDescription</key>
-<string>$(App_Name) requires FaceID access to allows you quick and secure access.</string>
+	<string>$(App_Name) requires FaceID access to allows you quick and secure access.</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
@@ -80,7 +79,7 @@
 		<string>Octicons.ttf</string>
 		<string>Zocial.ttf</string>
 		<string>Fontisto.ttf</string>
-	   <string>Poppins-Black.ttf</string>
+		<string>Poppins-Black.ttf</string>
 		<string>Poppins-Bold.ttf</string>
 		<string>Poppins-ExtraBold.ttf</string>
 		<string>Poppins-ExtraLight.ttf</string>

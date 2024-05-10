@@ -200,6 +200,150 @@ export const personalValidationRules = {
   ]
 };
 
+export const updatedPlannedVisitValidationRule={
+  visitTime:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+  ],
+  discussionPoint:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+    {
+      regex: Regex.NAME,
+      message: StringConstants.INVALID,
+    },
+  ]
+}
+
+export const representativeValidationRules = {
+  name: [
+    {
+      regex: Regex.NAME,
+      message: StringConstants.INVALID_NAME,
+    },
+  ],
+  email: [
+    {
+      regex: Regex.EMAIL,
+      message: StringConstants.INVALID_EMAIL,
+    },
+  ],
+  designation: [
+    {
+      regex: Regex.NAME,
+      message: `${StringConstants.INVALID} ${StringConstants.DESIGNATION}`,
+    },
+  ],
+  dept: [
+    {
+      regex: Regex.NAME,
+      message: `${StringConstants.INVALID} ${StringConstants.DEPARTMENT}`,
+    },
+  ],
+  contact: [
+    {
+      regex: Regex.CONTACT,
+      message: StringConstants.INVALID_CONTACT,
+    },
+  ],
+  whatsApp: [
+    {
+      regex: Regex.CONTACT,
+      message: `${StringConstants.INVALID} ${StringConstants.WHATSAPPNO}`,
+    },
+  ],
+};
+
+export const competitorValidationRules={
+  company:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+  ],
+ address:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+    {
+      regex: Regex.NAME,
+      message: StringConstants.INVALID,
+    },
+  ],
+  comment:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+  ]
+}
+
+export const customerValidationRules={
+  code: [
+    {
+      regex: Regex.ONLY_NUMBER,
+      message: `${StringConstants.INVALID} ${StringConstants.CUS_CODE}`,
+    },
+    {
+      regex: Regex.NUMBER_MAX,
+      message: StringConstants.ENTER_TEN_DIGIT,
+    },
+  ],
+  company:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+  ],
+pan:[
+  {
+    regex: Regex.REQUIRED,
+    message: StringConstants.REQUIRED
+  },
+  {
+    regex: Regex.PAN,
+    message: StringConstants.INVALID_PAN,
+  },
+],
+gst:[
+  {
+    regex: Regex.REQUIRED,
+    message: StringConstants.REQUIRED
+  },
+  {
+    regex: Regex.GST,
+    message: StringConstants.INVALID_GST,
+  },
+],
+website:[
+  {
+    regex: Regex.REQUIRED,
+    message: StringConstants.REQUIRED
+  },
+  {
+    regex: Regex.WEBSITE,
+     message: StringConstants.INVALID_WEBSITE,
+  },
+],
+location:[
+  {
+    regex: Regex.REQUIRED,
+    message: StringConstants.REQUIRED
+  },
+  {
+    regex: Regex.ADDRESS,
+     message: StringConstants.INVALID_ADDRESS,
+  },
+],
+
+}
+
+
 
 export const passwordValidationRules = {
   Password: [
@@ -220,6 +364,45 @@ export const passwordValidationRules = {
     {
       regex: Regex.PASSWORD,
       message:StringConstants.ERROR_MESSAGE,
+    },
+  ],
+};
+
+export const issueListValidationRule={};
+
+export const unplannedVisitValidationRule = {
+ code: [
+    {
+      regex: Regex.ONLY_NUMBER,
+      message: `${StringConstants.INVALID} ${StringConstants.CUS_CODE}`,
+    },
+    {
+      regex: Regex.NUMBER_MAX,
+      message: StringConstants.ENTER_TEN_DIGIT,
+    },
+  ],
+  name: [
+    {
+      regex: Regex.NAME,
+      message: `${StringConstants.INVALID} ${StringConstants.CUST_NAME}`,
+    },
+  ],
+  discussion_point: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+  ],
+  visit_date: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+  ],
+  visit_time: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
     },
   ],
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import { Image, ScrollView, View } from "react-native";
 import UploadDocumnet from "components/UploadDocument";
 import StringConstants from "shared/localization";
@@ -6,28 +6,26 @@ import { Colors } from "commonStyles/RNColor.style";
 import InputTextField from "components/InputTextField";
 import { FlatList } from "react-native";
 import {
-  ErrorMsgOfRepresentative,
-  RepresentativeDetailInputFieldData,
+  IMeetingRepresentativeDetailInputField,
+  MeetingRepresentativeDetailInputField,
 } from "@shared-constants";
 import { PressableButton } from "components";
 import { WindowWidth } from "libs";
 import {
-  IRepresentativeEnteredDetail,
   ISelectedImage,
 } from "models/interface/ICreateCustomer";
-import { IRepresentativeError } from "helper/ValidationRegex";
+import { ValidationError } from "core/UseForm";
 
 interface IRepresentative {
-  enteredRepresentativeDetails: IRepresentativeEnteredDetail;
   handleSelectImageVideo: () => void;
-  representativeError: IRepresentativeError;
   selectRepresentativeImage: ISelectedImage | undefined;
   handleTextChangeOfRepresentative: (text: string, id: number) => void;
+  representativeErrors:MutableRefObject<ValidationError[]>;
 }
 
 const RepresentativeDetails = (props: IRepresentative) => {
   const renderCustomerRepresentativeInputField = (
-    item: string,
+    item: IMeetingRepresentativeDetailInputField,
     index: number,
   ) => {
     return (
@@ -35,15 +33,11 @@ const RepresentativeDetails = (props: IRepresentative) => {
         onChangeText={(text: string) =>
           props?.handleTextChangeOfRepresentative(text, index)
         }
-        placeholder={item}
+        placeholder={item?.placeholder}
+        maxlength={item?.maxlength}
+        inputBoxId={item?.key}
         containerStyle={{ backgroundColor: Colors.white }}
-        error={
-          props?.representativeError[
-            Object.keys(props?.representativeError)[index]
-          ] == false
-            ? ErrorMsgOfRepresentative[index]
-            : undefined
-        }
+        errors={props?.representativeErrors?.current}
       />
     );
   };
@@ -66,7 +60,7 @@ const RepresentativeDetails = (props: IRepresentative) => {
       />
       <View style={{ marginTop: 16 }}>
         <FlatList
-          data={RepresentativeDetailInputFieldData}
+          data={MeetingRepresentativeDetailInputField}
           renderItem={({ item, index }) =>
             renderCustomerRepresentativeInputField(item, index)
           }

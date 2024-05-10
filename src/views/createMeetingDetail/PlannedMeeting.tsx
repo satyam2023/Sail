@@ -8,13 +8,14 @@ import {
   TextWrapper,
 } from "components";
 import TimePicker from "components/TimeSelector/Index";
-import React from "react";
+import React, { MutableRefObject } from "react";
 import { FlatList, ScrollView } from "react-native";
 import StringConstants from "shared/localization";
 import IssueDetail from "./addUnplannedVisit/IssueDetail";
 import styles from "./Style";
 import { IIisueList, IRepresentativeList, IissueDetail } from "models/interface/IMeeting";
 import { IdropDown } from "models/interface/ISetting";
+import { ValidationError } from "core/UseForm";
 
 interface IPlannedMeeting {
   plannedMeetingDetail: string[];
@@ -26,6 +27,9 @@ interface IPlannedMeeting {
   plannedrepresentativeList: IRepresentativeList;
   selectIssuesDropDown: IdropDown[][];
   handleIssueDetailChange:(text:string|number,id:number)=>void;
+  handlePlannedVisitTextChange:(text:string,id:number)=>void;
+  updatedPlannedVisitError:MutableRefObject<ValidationError[]>;
+  handlePlannedVisitSubmit:()=>void;
 }
 
 const PlannedMeeting = (props: IPlannedMeeting) => {
@@ -35,7 +39,7 @@ const PlannedMeeting = (props: IPlannedMeeting) => {
   ) => {
     return index != 6 ? (
       <InputTextField
-        onChangeText={() => {}}
+        onChangeText={(text)=>props?.handlePlannedVisitTextChange(text,index)}
         placeholder={item?.placeHolder}
         defaultValue={
           index < 9 ? props?.plannedMeetingDetail[index] : StringConstants.EMPTY
@@ -47,9 +51,11 @@ const PlannedMeeting = (props: IPlannedMeeting) => {
         isEditable={index > 8 ? true : false}
         rightIcon={item.rightIcon}
         rightIconTintColor={Colors.sailRed}
+        errors={props?.updatedPlannedVisitError.current}
+        inputBoxId={item?.key}
       />
     ) : (
-      <TimePicker onTimePress={(time: string) => {}} />
+      <TimePicker onTimePress={(time: string) => {props?.handlePlannedVisitTextChange(time,index)}} />
     );
   };
 
@@ -118,7 +124,7 @@ const PlannedMeeting = (props: IPlannedMeeting) => {
         leftButtonText={StringConstants.CANCEL}
         leftButtonPress={() => {}}
         rightButtonText={StringConstants.SUBMIT}
-        rightButtonPress={() => {}}
+        rightButtonPress={props?.handlePlannedVisitSubmit}
         isMovable
       />
     </>

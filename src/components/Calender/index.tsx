@@ -9,6 +9,7 @@ import Glyphs from "assets/Glyphs";
 import commonStyles from "commonStyles/CommonStyle";
 import TextWrapper from "components/TextWrapper";
 import StringConstants from "shared/localization";
+import { ValidationError } from "core/UseForm";
 
 interface ICalenderStyle{
 main:ViewStyle;
@@ -21,6 +22,8 @@ toCalender:ViewStyle;
 const Datepicker = ({
   isDateVisibleModal,
   error,
+  errors,
+  dateBoxId,
   type,
   setselectedDate,
   fromSelectedDate,
@@ -162,6 +165,14 @@ const Datepicker = ({
         }
         </View>
       </PressableButton>
+      {errors?.map(
+          (error:ValidationError) =>
+          error?.field == dateBoxId && (
+              <TextWrapper style={[commonStyles.errorText, { bottom: 12 }]}>
+                {error?.message}
+              </TextWrapper>
+            )
+        )}
       { error && <TextWrapper style={commonStyles.errorText}>{error}</TextWrapper>}
       {isCalenderVisible && renderCalender()}
     </>

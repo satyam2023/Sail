@@ -1,15 +1,17 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import { FlatList, SafeAreaView, View } from "react-native";
 import StringConstants from "shared/localization";
 import commonStyles from "commonStyles/CommonStyle";
-import { CompetitorDetailData } from "@shared-constants";
+import { CompetitorDetailData, CompetitorDetailInputField } from "@shared-constants";
 import { InputTextField, TextWrapper } from "components";
 import { Colors } from "commonStyles/RNColor.style";
 import { IEnteredCompetitorDetail } from "models/interface/ICreateCustomer";
+import { ValidationError } from "core/UseForm";
 
 interface ICompetitorDetail {
   enteredCompetitorDetail: IEnteredCompetitorDetail;
   handleTextChangeOfCompetitor: (text: string, id: number) => void;
+  competitorErrors:MutableRefObject<ValidationError[]>;
 }
 
 const CompetitorDetail = (props: ICompetitorDetail) => {
@@ -17,7 +19,7 @@ const CompetitorDetail = (props: ICompetitorDetail) => {
     item,
     index,
   }: {
-    item: string;
+    item: CompetitorDetailInputField;
     index: number;
   }) => {
     return (
@@ -25,7 +27,10 @@ const CompetitorDetail = (props: ICompetitorDetail) => {
         onChangeText={(text: string) =>
           props?.handleTextChangeOfCompetitor(text,index)
         }
-        placeholder={item}
+        placeholder={item?.placeholder}
+        maxlength={item?.length}
+        inputBoxId={item?.key}
+        errors={props?.competitorErrors?.current}
         containerStyle={{ backgroundColor: Colors.white }}
       />
     );
