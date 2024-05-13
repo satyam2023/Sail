@@ -1,5 +1,5 @@
 import { Colors } from "commonStyles/RNColor.style";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState } from "react";
 import {
   Animated,
   Image,
@@ -83,9 +83,9 @@ const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
       }).start();
   }, [textFocusStatus]);
 
-  const textFocus = useCallback(() => {
-    setTextFocusStatus(true);
-  }, []);
+  const textFocus = ()=>{
+    setTextFocusStatus(true)
+  }
 
   const textBlur = () => {
     if (enteredValue.current.length == 0) {
@@ -104,6 +104,10 @@ const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
           props.containerStyle,
           { paddingHorizontal: props.leftIcon ? 16 : 24 },
           props.error?.length ? styles.errorBox : {},
+          props?.errors ? props?.errors?.map(
+            (error) =>
+              error?.field == props?.inputBoxId ?styles.errorBox :{}
+          ):{}
         ]}
       >
         {props?.leftIcon && (
@@ -119,7 +123,7 @@ const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
         )}
 
         <PressableButton>
-          {(textFocusStatus || props.defaultValue) && (
+          {(textFocusStatus || props?.defaultValue ) && (
             <Animated.Text
               style={[styles.lable, { transform: [{ translateY }] }]}
             >

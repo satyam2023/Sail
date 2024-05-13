@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import { Image, SafeAreaView, ScrollView, View } from "react-native";
 import UploadDocumnet from "components/UploadDocument";
 import StringConstants from "shared/localization";
@@ -7,7 +7,6 @@ import InputTextField from "components/InputTextField";
 import { FlatList } from "react-native";
 import {
   MeetingRepresentativeDetailInputField,
-  RepresentativeErrorMsgOfViewCustomer,
 } from "@shared-constants";
 import { CustomFooter, KeyboardAvoidingWrapper, PressableButton, TextWrapper } from "components";
 import { WindowWidth } from "libs";
@@ -17,7 +16,7 @@ import {
   IViewCustomerRepresentative,
 } from "models/interface/IViewCustomerProfile";
 import styles from "./Style";
-import { IRepresentativeError } from "helper/ValidationRegex";
+import { ValidationError } from "core/UseForm";
 
 interface IRepresentative {
   handleUploadDocument: () => void;
@@ -25,10 +24,9 @@ interface IRepresentative {
   selectRepresentativeImage: ISelectedImage | undefined;
   handleAddStatus: () => void;
   representative: IViewCustomerRepresentative;
-  representativeDetail: any;
-  representativeError: IRepresentativeError;
+  representativeDetail: string[];
   btnStatus:boolean;
-  showError:boolean;
+  representativeErrors:MutableRefObject<ValidationError[]>;
 }
 
 const RepresentativeDetails = (props: IRepresentative) => {
@@ -54,13 +52,8 @@ const RepresentativeDetails = (props: IRepresentative) => {
           isEditTrue ? props.representativeDetail[index] : StringConstants.EMPTY
         }
         isEditable={isEditTrue && index == 0 ? false : true}
-        error={
-          props?.representativeError[
-            Object.keys(props?.representativeError)[index]
-          ] == false && props?.showError
-            ? RepresentativeErrorMsgOfViewCustomer[index]
-            : undefined
-        }
+        errors={props?.representativeErrors?.current}
+        inputBoxId={item?.key}
       />
     );
   };

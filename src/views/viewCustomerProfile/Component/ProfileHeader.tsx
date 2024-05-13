@@ -97,9 +97,6 @@ const ProfileHeader = ({
                 onPress={updateCustomerCode}
               />
             </View>
-            <TextWrapper style={styles.plsText}>
-              {StringConstants.PLS_ENTER_GST_PAN}
-            </TextWrapper>
           </View>
         )}
       </View>

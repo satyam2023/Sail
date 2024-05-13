@@ -6,7 +6,8 @@ import {
 } from "models/ApiResponses/CreateCustomer";
 import { MutableRefObject } from "react";
 import { IFlatlistIndex } from "./IMessage";
-import { ICustomerDetailInputField } from "@shared-constants";
+import { ICustomerDetailInputField, ICustomerTrader } from "@shared-constants";
+import { FormValues } from "core/UseForm";
 
 export interface IExample {
   [key: string | number]: MutableRefObject<string | number|undefined>;
@@ -120,7 +121,7 @@ export interface IadditionalList {
 }
 
 export interface IFlatListExtraItem {
-  item: string;
+  item: ICustomerTrader ;
   index: number;
 }
 
@@ -140,6 +141,27 @@ tentative_quality_procured: MutableRefObject<string>,
 supplier: MutableRefObject<number[]>,
 }
 
+export interface TraderProcuredSupplier{
+  [key:string|number]:MutableRefObject<string|number|number[]|null>
+  procured_products: MutableRefObject<number[]>,
+supplier: MutableRefObject<number[]>,
+}
+
+export interface CustomertypeTrader{
+  [key:string|number]:string
+cluster: string,
+contact_number: string,
+day_wise_stock: string,
+price_feedback_competitor: string,
+procured_products:string,
+tentative_quality_procured:string,
+supplier:string,
+}
+
+
+
+
+
 export interface ICustomerTypeProject {
   [key:string|number]:MutableRefObject<string|number|number[]>
   procured_products: MutableRefObject<number[]>,
@@ -147,6 +169,14 @@ export interface ICustomerTypeProject {
   supplier: MutableRefObject<number[]>,
   project_details: MutableRefObject<string>,
 };
+
+export interface CustomertypeProject{
+  [key:string|number]:string
+  procured_products: string,
+  tentative_quality_procured: string,
+  supplier: string,
+  project_details: string,
+}
 
 export interface IFlatListCustomerField extends IFlatlistIndex{
     item: ICustomerDetailInputField;

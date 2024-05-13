@@ -15,6 +15,8 @@ import {
   customerDetailOfViewModel,
   extarctSupplierData,
   extractProcuredProductData,
+  formatProcuder_Product_list,
+  formatSupplier_list,
   getDropDownData,
   logger,
   removeSelectedCustomerImage,
@@ -23,8 +25,7 @@ import {
   updateCustomerBody,
 } from "helper/helperFunctions";
 import {
-  IEnteredCustomerDetails,
-  IExample,
+  CustomerDetails,
   ISelectedImage,
   IsubType,
 } from "models/interface/ICreateCustomer";
@@ -39,35 +40,52 @@ import ViewProfileScreen from "views/viewCustomerProfile/ViewProfile";
 import { chooseImageVideo } from "helper/helperFunctions";
 import {
   ICustomerState,
-  IUpdateTrader_Project_Dealer_Type,
+  SpecialCustomerType,
 } from "models/interface/IViewCustomerProfile";
-import { Regex } from "helper/ValidationRegex";
+import {
+  Regex,
+  customerTypeValidationRules,
+  updatedCustomerValidationRules,
+} from "helper/ValidationRegex";
 import Geolocation from "@react-native-community/geolocation";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
 import { navigate } from "@navigation";
 import { SCREENS } from "@shared-constants";
+import useForm from "core/UseForm";
 
 const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
   const [indexofSubtype, setIndexofSubType] = useState<IsubType>({
     customerSegmentIndex: -1,
     customerSubTypeIndex: -1,
   });
+  const selectedIndexValue = route.params.selectedIndexValue;
+  const customerList: IViewCustomerBody[] = route.params.customerList;
   const [customer, setCustomer] = useState<ICustomerState>({
     editDetails: false,
-    procuredProduct: [],
-    supplier: [],
+    procuredProduct: [
+      ...formatProcuder_Product_list(
+        customerList[selectedIndexValue]?.procured_product_data,
+      ),
+    ],
+    supplier: [
+      ...formatSupplier_list(customerList[selectedIndexValue].supplier_data),
+    ],
     imageSelected: [],
   });
-  const customerList: IViewCustomerBody[] = route.params.customerList;
-  const selectedIndexValue = route.params.selectedIndexValue;
+ const customerTypeIndex=customerList[selectedIndexValue]?.type?.id ;
+  const isSpecialType: boolean =(customerTypeIndex==2||customerTypeIndex==6||customerTypeIndex==7)
   const dispatch = useDispatch();
   useFocusEffect(() => {
     dispatch(BottomTabVisibility(false));
-    return ()=> dispatch(BottomTabVisibility(true));
+    return () => dispatch(BottomTabVisibility(true));
   });
   const customerListdata: IViewCustomerBody[] = useSelector(
     (state: RootState) => state?.viewCustomerProfile?.customerListData,
   );
+  const traderDealerTypeDetail: (string | undefined)[] = [
+    ...traderDealerselectedCustomerDetail(customerList, selectedIndexValue),
+  ];
+
 
   useEffect(() => {
     navigation.setParams({
@@ -79,32 +97,63 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
 
   const detailToBeSearch = useRef<string>("");
   const customerCodeToBeUpdated = useRef<string>("");
-  const enteredCustomerDetails: IEnteredCustomerDetails = {
-    code: useRef<string>(""),
-    company: useRef<string>(""),
-    cust_seg: useRef<number>(-1),
-    cust_sub_seg: useRef<number>(-1),
-    cust_type: useRef<number>(-1),
-    cust_sub_type: useRef<number>(-1),
-    cust_status: useRef<number>(-1),
-    cust_region: useRef<string>(""),
-    pan: useRef<string>(""),
-    gst: useRef<string>(""),
-    website: useRef<string>(""),
-    location: useRef<string>(""),
-    latitude: useRef<string>(""),
-    longitude: useRef<string>(""),
+  const customerDetail = [
+    ...customerDetailOfViewModel(customerList, selectedIndexValue),
+  ];
+
+  const customerTypeTraderDealerDetails: SpecialCustomerType = {
+    cluster: customerList[selectedIndexValue]?.cluster?.id.toString() || "",
+    contact_number: traderDealerTypeDetail[1] || "",
+    day_wise_stock: traderDealerTypeDetail[2] || "",
+    price_feedback_competitor: traderDealerTypeDetail[3] || "",
+    procured_products: traderDealerTypeDetail[4] || "",
+    tentative_quality_procured: traderDealerTypeDetail[5] || "",
+    supplier: traderDealerTypeDetail[6] || "",
+    project_details:traderDealerTypeDetail[7]||customerTypeIndex==6?'':'dummy',
   };
-  const customerTypeTraderDealer: IUpdateTrader_Project_Dealer_Type = {
-    cluster: useRef<number>(null),
-    contact_number: useRef<string>(""),
-    day_wise_stock: useRef<string>(""),
-    price_feedback_competitor: useRef<string>(""),
-    procured_products: useRef<number[]>([]),
-    tentative_quality_procured: useRef<string>(""),
-    supplier: useRef<number[]>([]),
-    projectDetail: useRef<string>(""),
+
+  const {
+    values: customerTypeValues,
+    errors: customerTypeErrors,
+    handleSubmit: handleCustomerTypeSubmited,
+    handleTextChange: handleTextOfCustomerType,
+  } = useForm(
+    customerTypeTraderDealerDetails,
+    customerTypeValidationRules,
+    updateCustomerAPI,
+    true,
+  );
+
+
+
+  const customerDetails: CustomerDetails = {
+    code: customerDetail[0],
+    company: customerDetail[1],
+    cust_seg: customerList[selectedIndexValue]?.segment?.id.toString(),
+    cust_sub_seg: customerList[selectedIndexValue]?.sub_segment?.id.toString(),
+    cust_type: customerList[selectedIndexValue]?.type?.id?.toString(),
+    cust_sub_type: customerList[selectedIndexValue]?.sub_type?.id.toString(),
+    cust_status: customerList[selectedIndexValue]?.status?.id.toString(),
+    cust_region: customerDetail[7],
+    pan: customerDetail[8],
+    gst: customerDetail[9],
+    website: customerDetail[10],
+    location: customerDetail[11],
+    latitude: customerDetail[12],
+    longitude: customerDetail[13],
   };
+
+  const {
+    values: customerValue,
+    errors: customerErrors,
+    handleSubmit: handleCustomerSubmit,
+    handleTextChange: handleTextOfCustomer,
+  } = useForm(
+    customerDetails,
+    updatedCustomerValidationRules,
+    isSpecialType ? handleCustomerTypeSubmited : updateCustomerAPI,
+    true,
+  );
 
   useEffect(() => {
       getCustomerSegmenList(dispatch),
@@ -126,8 +175,14 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
   function handleLocation() {
     Geolocation.getCurrentPosition(
       async (pos: any) => {
-        enteredCustomerDetails.latitude.current = pos.coords.latitude;
-        enteredCustomerDetails.longitude.current = pos.coords.longitude;
+        handleTextOfCustomer(
+          Object.keys(customerDetails)[12],
+          pos.coords.latitude,
+        );
+        handleTextOfCustomer(
+          Object.keys(customerDetails)[13],
+          pos.coords.longitude,
+        );
       },
       (error: any) => logger(error, "getCurrentPosition", "error"),
       {
@@ -136,10 +191,6 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
       },
     );
   }
-
-  const traderDealerTypeDetail: (string | undefined)[] = [
-    ...traderDealerselectedCustomerDetail(customerList, selectedIndexValue),
-  ];
 
   function handleSearchTextChange(text: string) {
     detailToBeSearch.current = text;
@@ -154,7 +205,7 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
 
   const handleForwardClick = async () => {
     if (customer.editDetails) {
-      await updateCustomerAPI();
+      handleCustomerSubmit();
     } else {
       navigate(SCREENS.SHOW_VIEW_CUSTOMER_REPRESTATIVE, {
         customerList: route.params.customerList,
@@ -163,14 +214,6 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
       });
     }
   };
-
-  function isAllFieldHaveData() {
-    for (const key in enteredCustomerDetails) {
-      if (!enteredCustomerDetails[key]?.current) {
-        return;
-      }
-    }
-  }
 
   const getDropDownListData = useSelector(
     (state: RootState) => state?.createCustomer,
@@ -187,15 +230,11 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
     ),
   ];
 
-  function setSubTypes(
-    item: IdropDown,
-    index: number,
-    enteredCustomerDetails: IExample,
-  ) {
+  function setSubTypes(item: IdropDown, index: number) {
     if (index == 2) {
       setIndexofSubType((prev: any) => ({
         ...prev,
-        customerSegmentIndex: index,
+        customerSegmentIndex: item.id,
       }));
     } else if (index == 4) {
       setIndexofSubType((prev: any) => ({
@@ -203,13 +242,11 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
         customerSubTypeIndex: item.id,
       }));
     }
-    enteredCustomerDetails[Object.keys(enteredCustomerDetails)[index]].current =
-      index != 7 ? item.id : item.name;
+    handleTextOfCustomer(
+      Object.keys(customerDetails)[2],
+      index == 7 ? item.name : item.id.toString(),
+    );
   }
-
-  const customerDetail = [
-   ...customerDetailOfViewModel(customerList, selectedIndexValue)
-  ];
 
   const updateCustomerCodeAPICaliing = async () => {
     try {
@@ -228,7 +265,7 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
     }
   };
 
-  const updateCustomerAPI = async () => {
+  async function updateCustomerAPI() {
     dispatch(setLoaderVisibility(true));
     const appendFormData = new FormData();
     const custImageVideoData = customer?.imageSelected.map(
@@ -244,21 +281,23 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
     const body = updateCustomerBody(
       customerList,
       selectedIndexValue,
-      enteredCustomerDetails,
-      customerTypeTraderDealer,
+      customerValue,
+      customerTypeValues,
       customer,
       custImageVideoData,
     );
+
     appendFormData.append("data", JSON.stringify(body));
     try {
       const res = await updateCustomerDetailAPIHandler(appendFormData);
       if (res?.isSuccess) {
+        handleBackClick();
       }
     } catch (e) {
     } finally {
       dispatch(setLoaderVisibility(false));
     }
-  };
+  }
   function handleUpdateCustomerCode(text: string) {
     customerCodeToBeUpdated.current = text;
   }
@@ -270,23 +309,23 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
   }
 
   function handleCustomerDetailChange(text: string | number, id: number) {
-    enteredCustomerDetails[Object.keys(enteredCustomerDetails)[id]].current =
-      text;
+    handleTextOfCustomer(Object.keys(customerDetails)[id], text.toString());
   }
 
   function removeDropDownItem(id: number, type: string) {
-    if (type == StringConstants.PROCURED_PRODUCT)
+    if (type == StringConstants.PROCURED_PRODUCT && customer?.editDetails) {
       setCustomer((prev: ICustomerState) => ({
         ...prev,
         procuredProduct: [
           ...removeSelectedDropDownItem(id, customer.procuredProduct),
         ],
       }));
-    else if (type == StringConstants.SUPPLIER)
+    } else if (type == StringConstants.SUPPLIER && customer?.editDetails) {
       setCustomer((prev: ICustomerState) => ({
         ...prev,
         supplier: [...removeSelectedDropDownItem(id, customer.supplier)],
       }));
+    }
   }
 
   function removeSelectedImage(item: ISelectedImage) {
@@ -302,6 +341,7 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
     text: string | number,
     id: number,
   ) {
+
     if (id == 4) {
       setCustomer((prev: ICustomerState) => ({
         ...prev,
@@ -319,9 +359,10 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
         ],
       }));
     }
-    customerTypeTraderDealer[
-      Object.keys(customerTypeTraderDealer)[id]
-    ].current = text;
+    handleTextOfCustomerType(
+      Object.keys(customerTypeTraderDealerDetails)[id],
+      text.toString(),
+    );
   }
 
   return (
@@ -331,11 +372,9 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
         selectedIndexValue,
         handleForwardClick,
         handleBackClick,
-        enteredCustomerDetails,
         dropdownDataList,
         setIndexofSubType,
         setSubTypes,
-        isAllFieldHaveData,
         handleUploadDocument,
         handleLocation,
         handleUpdateCustomerCode,
@@ -348,7 +387,8 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
         handleSearchTextChange,
         removeDropDownItem,
         removeSelectedImage,
-        
+        customerErrors,
+        customerTypeErrors,
       }}
     />
   );

@@ -29,16 +29,15 @@ import {
 import {
   CompetitorDetail,
   CustomerDetails,
-  ICustomerTypeProject,
-  ICustomertypeTrader,
+  CustomertypeProject,
+  CustomertypeTrader,
   IEnteredCompetitorDetail,
-  IEnteredCustomerDetails,
-  IExample,
   ISelectedImage,
   IadditionalList,
   IselecteddropDown,
   IsubType,
   RepresentativeDetails,
+  TraderProcuredSupplier,
 } from "models/interface/ICreateCustomer";
 import { IdropDown } from "models/interface/ISetting";
 import React, { useEffect, useRef, useState } from "react";
@@ -50,16 +49,17 @@ import CreateCustomerScreen from "views/createCustomerProfile/CreateCustomerScre
 import {
   competitorValidationRules,
   customerValidationRules,
+  projectTypeValidationRule,
   representativeValidationRules,
+  traderDealerTypeValidationRule,
 } from "helper/ValidationRegex";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
-import useForm from "core/UseForm";
+import useForm, { FormValues } from "core/UseForm";
 
 const CreateCustomerViewModel = () => {
   const [CurrentScreen, setCurrentScreen] = useState<number>(1);
   const [addDetailStatus, setAddDetailsStatus] = useState<boolean>(false);
   const [sapUserExist, setSapUserExist] = useState<boolean>(false);
-  const [showError, setErrorStatus] = useState<boolean>(false);
   const [customerDetailSelectedImage, setCustomerSelectedImage] = useState<
     ISelectedImage[]
   >([]);
@@ -74,7 +74,7 @@ const CreateCustomerViewModel = () => {
 
   const [isAllDetailsFilled, setIsAllDetailField] = useState<boolean>(false);
   const [indexofSubtype, setIndexofSubType] = useState<IsubType>({
-    customerSegmentIndex: -1,
+    customerSegmentIndex: 2,
     customerSubTypeIndex: -1,
   });
   const [selectedDropdownItemList, setSelectedDropDownItemList] =
@@ -99,7 +99,7 @@ const CreateCustomerViewModel = () => {
   const userID = store?.getState()?.userAccount?.data?.data?.user?.id;
 
   useEffect(() => {
-    getCustomerSegmenList(dispatch),
+       getCustomerSegmenList(dispatch),
       getCustomerType(dispatch),
       getCustomerStatus(dispatch),
       getClusterAPI(dispatch),
@@ -108,18 +108,24 @@ const CreateCustomerViewModel = () => {
   }, []);
 
   const authCustomerScreen = () => {
-   setCurrentScreen(2);
+    setCurrentScreen(2);
+  };
+
+  const handleCustomerScreen = () => {
+    const typeIndex = indexofSubtype?.customerSubTypeIndex;
+    if (!isAllDetailsFilled) {
+      handleCustomerSubmited();
+      if (typeIndex == 2 || typeIndex == 7 || typeIndex == 6)
+        typeIndex == 6 ? handleProjectSubmit() : handleTraderDealerSubmit();
+    }
   };
   async function handleScreenChange(direction: string) {
     switch (direction) {
       case StringConstants.FORWARD:
         {
-          if (CurrentScreen == 1) {
-            if(isAllDetailsFilled)
-            handleCustomerSubmited();
-          } else if (CurrentScreen == 2) {
-            setCurrentScreen(3);
-          } else if (CurrentScreen == 3) {
+          if (CurrentScreen == 1) handleCustomerScreen();
+          else if (CurrentScreen == 2) setCurrentScreen(3);
+          else if (CurrentScreen == 3) {
             setCurrentScreen(4);
             createCustomer();
           }
@@ -142,15 +148,17 @@ const CreateCustomerViewModel = () => {
     convertSegemntToDropData(getDropDownListData?.segmentData),
     indexofSubtype.customerSegmentIndex >= 0
       ? convertSubSegemntToDropData(
-          getDropDownListData?.segmentData[indexofSubtype.customerSegmentIndex]
-            ?.sub_segment,
+          getDropDownListData?.segmentData[
+            indexofSubtype.customerSegmentIndex - 1
+          ]?.sub_segment,
         )
       : undefined,
     convertCustomerToDropData(getDropDownListData?.customerType),
     indexofSubtype.customerSubTypeIndex >= 0
       ? convertSubCustomerToDropData(
-          getDropDownListData?.customerType[indexofSubtype.customerSegmentIndex]
-            ?.sub_type,
+          getDropDownListData?.customerType[
+            indexofSubtype.customerSubTypeIndex - 1
+          ]?.sub_type,
         )
       : undefined,
     getDropDownListData?.customerStatus,
@@ -251,22 +259,44 @@ const CreateCustomerViewModel = () => {
     handleTextChange: handleTextOfCompetitor,
   } = useForm(competitorDetails, competitorValidationRules, addCompetitor);
 
-  const cutomerTypeProjectEnteredData: ICustomerTypeProject = {
-    procured_products: useRef<number[]>([]),
-    tentative_quality_procured: useRef<string>(""),
-    supplier: useRef<number[]>([]),
-    project_details: useRef<string>(""),
+  const customerTypeProjectDetail: CustomertypeProject = {
+    procured_products: "",
+    tentative_quality_procured: "",
+    supplier: "",
+    project_details: "",
   };
 
-  const customerTypeTraderDealer: ICustomertypeTrader = {
-    cluster: useRef<number>(-1),
-    contact_number: useRef<string>(""),
-    day_wise_stock: useRef<string>(""),
-    price_feedback_competitor: useRef<string>(""),
+  const {
+    values: projectValue,
+    errors: projectErrors,
+    handleSubmit: handleProjectSubmit,
+    handleTextChange: handleTextChangeOfProject,
+  } = useForm(customerTypeProjectDetail, projectTypeValidationRule, () => {});
+
+  const procured_supplier_list: TraderProcuredSupplier = {
     procured_products: useRef<number[]>([]),
-    tentative_quality_procured: useRef<string>(""),
     supplier: useRef<number[]>([]),
   };
+  const customerTypeTraderDealerDetail: CustomertypeTrader = {
+    cluster: "",
+    contact_number: "",
+    day_wise_stock: "",
+    price_feedback_competitor: "",
+    procured_products: "",
+    tentative_quality_procured: "",
+    supplier: "",
+  };
+
+  const {
+    values: traderDealerValue,
+    errors: traderDealerErrors,
+    handleSubmit: handleTraderDealerSubmit,
+    handleTextChange: handleTextChangeOfTrader,
+  } = useForm(
+    customerTypeTraderDealerDetail,
+    traderDealerTypeValidationRule,
+    () => {},
+  );
 
   const customerDetails: CustomerDetails = {
     code: "",
@@ -290,7 +320,7 @@ const CreateCustomerViewModel = () => {
     errors: customerErrors,
     handleSubmit: handleCustomerSubmited,
     handleTextChange: handleTextOfCustomer,
-  } = useForm(customerDetails,customerValidationRules, authCustomerScreen);
+  } = useForm(customerDetails, customerValidationRules, authCustomerScreen);
 
   async function handleSelectImageVideo() {
     const selectedAsset = await chooseImageVideo();
@@ -301,7 +331,18 @@ const CreateCustomerViewModel = () => {
   }
 
   function isAllFieldHaveData() {
-    if (isAllInputFieldHaveData(customerValue)) {
+    const subTypeIndex = indexofSubtype?.customerSubTypeIndex;
+    const isSpecialCustomerType: boolean =
+      subTypeIndex == 2 || subTypeIndex == 7 || subTypeIndex == 6;
+
+    if (
+      isAllInputFieldHaveData(customerValue) &&
+      (isSpecialCustomerType
+        ? isAllInputFieldHaveData(
+            subTypeIndex == 6 ? projectValue : traderDealerValue,
+          )
+        : true)
+    ) {
       if (!isAllDetailsFilled) setIsAllDetailField(true);
     } else {
       if (isAllDetailsFilled) setIsAllDetailField(false);
@@ -310,10 +351,12 @@ const CreateCustomerViewModel = () => {
 
   function extraListDropDownset(item: IdropDown, index: number, type: string) {
     if (type == StringConstants.CUSTOMER_TYPE_TRADER_DEFENCE) {
-      if (index == 0) {
-        customerTypeTraderDealer.cluster.current = item.id;
-      } else if (index == 4) {
-        customerTypeTraderDealer.procured_products.current?.push(item.id);
+      handleTextChangeOfTrader(
+        Object.keys(customerTypeTraderDealerDetail)[index],
+        item?.id.toString(),
+      );
+      if (index == 4) {
+        procured_supplier_list.procured_products.current?.push(item.id);
         setSelectedDropDownItemList((prev: any) => ({
           ...prev,
           selectedProcuredProduct: [
@@ -322,7 +365,7 @@ const CreateCustomerViewModel = () => {
           ],
         }));
       } else if (index == 6) {
-        customerTypeTraderDealer.supplier.current?.push(item.id);
+        procured_supplier_list.supplier.current?.push(item.id);
         setSelectedDropDownItemList((prev: any) => ({
           ...prev,
           selectedSupplier: [
@@ -332,8 +375,12 @@ const CreateCustomerViewModel = () => {
         }));
       }
     } else if (type == StringConstants.CUSTOMER_TYPE_PROJECT) {
+      handleTextChangeOfProject(
+        Object.keys(customerTypeProjectDetail)[index],
+        item?.id.toString(),
+      );
       if (index == 0) {
-        customerTypeTraderDealer.procured_products.current?.push(item.id);
+        procured_supplier_list.procured_products.current?.push(item.id);
         setSelectedDropDownItemList((prev: any) => ({
           ...prev,
           selectedProcuredProduct: [
@@ -342,7 +389,7 @@ const CreateCustomerViewModel = () => {
           ],
         }));
       } else if (index == 2) {
-        customerTypeTraderDealer.supplier.current?.push(item.id);
+        procured_supplier_list.supplier.current?.push(item.id);
         setSelectedDropDownItemList((prev: any) => ({
           ...prev,
           selectedSupplier: [
@@ -352,6 +399,7 @@ const CreateCustomerViewModel = () => {
         }));
       }
     }
+    isAllFieldHaveData();
   }
 
   function removeSelectedItem(index: number, type: string) {
@@ -382,10 +430,7 @@ const CreateCustomerViewModel = () => {
     ]);
   }
 
-  function setSubTypes(
-    item: IdropDown,
-    index: number,
-  ) {
+  const setSubTypes = (item: IdropDown, index: number) => {
     if (index == 2) {
       setIndexofSubType((prev: IsubType) => ({
         ...prev,
@@ -394,19 +439,28 @@ const CreateCustomerViewModel = () => {
     } else if (index == 4) {
       setIndexofSubType((prev: IsubType) => ({
         ...prev,
-        customerSubTypeIndex: item.id,
+        customerSubTypeIndex: item?.id,
       }));
     }
-    handleTextOfCustomer(Object.keys(customerDetails)[index],index != 7 ? item.id.toString() : item.name)
+    handleTextOfCustomer(
+      Object.keys(customerDetails)[index],
+      index != 7 ? item.id.toString() : item.name,
+    );
 
     isAllFieldHaveData();
-  }
+  };
 
   const handleLocateMe = () => {
     Geolocation.getCurrentPosition(
       async (pos: any) => {
-        handleTextOfCustomer(Object.keys(customerDetails)[12],pos.coords.latitude);
-        handleTextOfCustomer(Object.keys(customerDetails)[13],pos.coords.longitude);
+        handleTextOfCustomer(
+          Object.keys(customerDetails)[12],
+          pos.coords.latitude,
+        );
+        handleTextOfCustomer(
+          Object.keys(customerDetails)[13],
+          pos.coords.longitude,
+        );
         isAllFieldHaveData();
       },
       (error: any) => logger(error, "getCurrentPosition", "error"),
@@ -438,7 +492,7 @@ const CreateCustomerViewModel = () => {
         },
       );
       appendFormData.append(`repre1`, repVideoData);
-      const customer=customerValue.current;
+      const customer = customerValue.current;
       let body: ICreateCustomerBody = {
         user_id: userID,
         custFile: custImageVideoData,
@@ -463,28 +517,27 @@ const CreateCustomerViewModel = () => {
         indexofSubtype.customerSubTypeIndex == 2 ||
         indexofSubtype.customerSubTypeIndex == 7
       ) {
+        const traderTypeDetail = traderDealerValue.current;
         body = {
           ...body,
-          cluster: customerTypeTraderDealer?.cluster?.current,
-          contact_number: customerTypeTraderDealer.contact_number.current,
-          day_wise_stock: customerTypeTraderDealer.day_wise_stock.current,
-          price_feedback_competitor:
-            customerTypeTraderDealer.price_feedback_competitor.current,
-          procured_products: customerTypeTraderDealer.procured_products.current,
+          cluster: Number(traderTypeDetail?.cluster),
+          contact_number: traderTypeDetail.contact_number,
+          day_wise_stock: traderTypeDetail.day_wise_stock,
+          price_feedback_competitor: traderTypeDetail.price_feedback_competitor,
+          procured_products: procured_supplier_list.procured_products.current,
           tentative_quality_procured:
-            customerTypeTraderDealer.tentative_quality_procured.current,
-          supplier: customerTypeTraderDealer.supplier.current,
+            traderTypeDetail.tentative_quality_procured,
+          supplier: procured_supplier_list.supplier.current,
         };
       } else if (indexofSubtype.customerSubTypeIndex == 6) {
+        const projectTypeDetails: FormValues = projectValue.current;
         body = {
           ...body,
-          procured_products:
-            cutomerTypeProjectEnteredData?.procured_products?.current,
+          procured_products: procured_supplier_list?.procured_products?.current,
           tentative_quality_procured:
-            cutomerTypeProjectEnteredData?.tentative_quality_procured?.current,
-          supplier: cutomerTypeProjectEnteredData?.supplier?.current,
-          project_details:
-            cutomerTypeProjectEnteredData?.project_details?.current,
+            projectTypeDetails?.tentative_quality_procured,
+          supplier: procured_supplier_list?.supplier?.current,
+          project_details: projectTypeDetails?.project_details,
         };
       }
 
@@ -525,13 +578,16 @@ const CreateCustomerViewModel = () => {
       : null;
   };
 
-  function handleTextOnTextChangeCustomer(text: string | number, id: number) {
-    handleTextOfCustomer(Object.keys(customerDetails)[id],text.toString());
+  const handleTextOnTextChangeCustomer = (
+    text: string | number,
+    id: number,
+  ) => {
+    handleTextOfCustomer(Object.keys(customerDetails)[id], text.toString());
     isAllFieldHaveData();
     if (customerValue?.current?.code.length == 10 && id == 0) {
       checkSapCustomerExistAPI(customerValue?.current?.code);
     }
-  }
+  };
 
   const checkAllRepresentativeFieldHaveData = () => {
     if (isAllInputFieldHaveData(representativeValue)) {
@@ -549,15 +605,28 @@ const CreateCustomerViewModel = () => {
     }
   };
 
-  function handleTextChangeOfRepresentative(text: string, id: number) {
+  const handleTextChangeOfRepresentative = (text: string, id: number) => {
     handleTextOfRepresentative(Object.keys(representativeDetails)[id], text);
     checkAllRepresentativeFieldHaveData();
-  }
+  };
 
-  function handleTextChangeOfCompetitor(text: string, id: number) {
+  const handleTextChangeOfCompetitor = (text: string, id: number) => {
     handleTextOfCompetitor(Object.keys(competitorDetails)[id], text);
     checkAllCompetitorFieldHaveData();
-  }
+  };
+
+  const handleTraderDealerTypeTextChange = (text: string, id: number) => {
+    handleTextChangeOfTrader(
+      Object.keys(customerTypeTraderDealerDetail)[id],
+      text,
+    );
+    isAllFieldHaveData();
+  };
+
+  const handleProjectTypeTextChange = (text: string, id: number) => {
+    handleTextChangeOfProject(Object.keys(customerTypeProjectDetail)[id], text);
+    isAllFieldHaveData();
+  };
 
   return (
     <CreateCustomerScreen
@@ -567,7 +636,6 @@ const CreateCustomerViewModel = () => {
         handleScreenChange,
         addDetailStatus,
         dropdownDataList,
-        setIndexofSubType,
         setSubTypes,
         isAllFieldHaveData,
         handleLocateMe,
@@ -577,12 +645,10 @@ const CreateCustomerViewModel = () => {
         competitorList,
         enteredCompetitorDetail,
         isAllDetailsFilled,
-        customerTypeTraderDealer,
         indexofSubtype,
         selectedDropdownItemList,
         extraListDropDownset,
         removeSelectedItem,
-        cutomerTypeProjectEnteredData,
         customerDetailSelectedImage,
         selectRepresentativeImage,
         handleTextOnTextChangeCustomer,
@@ -590,10 +656,13 @@ const CreateCustomerViewModel = () => {
         removeSelectedImage,
         handleTextChangeOfRepresentative,
         handleTextChangeOfCompetitor,
-        showError,
+        handleTraderDealerTypeTextChange,
         representativeErrors,
         competitorErrors,
-        customerErrors
+        customerErrors,
+        traderDealerErrors,
+        projectErrors,
+        handleProjectTypeTextChange,
       }}
     />
   );

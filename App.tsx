@@ -45,7 +45,7 @@ const App = () => {
           }
         })
         .catch((e) => {
-          setVpnStatus(false);
+          // setVpnStatus(false);
           console.log("Error: ", JSON.stringify(e));
         });
     });

@@ -150,6 +150,7 @@ const CreateVisitPlanScreen = ({
                       height: 90,
                     }}
                     inputMode='text'
+                    key={'remarks'}
                   />
                 </View>
               </ScrollView>

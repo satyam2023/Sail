@@ -11,20 +11,12 @@ import {
   KeyboardAvoidingWrapper,
 } from "components";
 import {
-  ICustomerTypeProject,
-  ICustomertypeTrader,
   IEnteredCompetitorDetail,
-  IEnteredCustomerDetails,
-  IRepresentativeEnteredDetail,
   ISelectedImage,
   IselecteddropDown,
   IsubType,
 } from "models/interface/ICreateCustomer";
 import { IdropDown } from "models/interface/ISetting";
-import {
-  ICreateCustomerError,
-  IRepresentativeError,
-} from "helper/ValidationRegex";
 import {
   ICompetitor,
   IRepresentative,
@@ -37,7 +29,6 @@ interface ICreateCustomer {
   handleScreenChange: (direction: string) => void;
   addDetailStatus: boolean;
   dropdownDataList: IdropDown[][];
-  setIndexofSubType: Function;
   setSubTypes: Function;
   isAllFieldHaveData: () => void;
   handleLocateMe: () => void;
@@ -47,12 +38,10 @@ interface ICreateCustomer {
   competitorList: ICompetitor[];
   enteredCompetitorDetail: IEnteredCompetitorDetail;
   isAllDetailsFilled: boolean;
-  customerTypeTraderDealer: ICustomertypeTrader;
   indexofSubtype: IsubType;
   selectedDropdownItemList: IselecteddropDown;
   extraListDropDownset: Function;
   removeSelectedItem: (index: number, type: string) => void;
-  cutomerTypeProjectEnteredData: ICustomerTypeProject;
   customerDetailSelectedImage: ISelectedImage[];
   selectRepresentativeImage: ISelectedImage | undefined;
   handleTextOnTextChangeCustomer: (text: string | number, id: number) => void;
@@ -60,10 +49,13 @@ interface ICreateCustomer {
   removeSelectedImage: (item: ISelectedImage) => void;
   handleTextChangeOfRepresentative: (text: string, id: number) => void;
   handleTextChangeOfCompetitor: (text: string, id: number) => void;
-  showError:boolean;
+  handleTraderDealerTypeTextChange:(text:string,id:number)=>void;
+  handleProjectTypeTextChange:(text:string,id:number)=>void;
   representativeErrors:MutableRefObject<ValidationError[]>;
   competitorErrors:MutableRefObject<ValidationError[]>;
   customerErrors:MutableRefObject<ValidationError[]>;
+  traderDealerErrors:MutableRefObject<ValidationError[]>;
+  projectErrors:MutableRefObject<ValidationError[]>;
 }
 
 const CreateCustomerScreen = (props: ICreateCustomer) => {

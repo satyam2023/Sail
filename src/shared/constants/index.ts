@@ -68,8 +68,12 @@ export interface CompetitorDetailInputField {
   key: string;
 }
 
-export const CompetitorDetailData = [
-  { placeholder: StringConstants.ENTER_COMPANY_NAME, length: 20, key: "company" },
+export const CompetitorDetailData: CompetitorDetailInputField[] = [
+  {
+    placeholder: StringConstants.ENTER_COMPANY_NAME,
+    length: 20,
+    key: "company",
+  },
   { placeholder: StringConstants.ENTER_ADDRESS, length: 20, key: "address" },
   { placeholder: StringConstants.ENTER_COMMENTS, length: 20, key: "comment" },
 ];
@@ -172,21 +176,25 @@ export const RepresentativeErrorMsgOfViewCustomer: string[] = [
 export interface ICustomerDetailInputField {
   placeholder: string;
   maxlength?: number;
-  key?:string
+  key?: string;
 }
 
 export const CustomerDetailInputField = [
-  { placeholder: StringConstants.CUSTOMER_CODE, maxlength: 10,key:'code' },
-  { placeholder: StringConstants.ENTER_COMPANY_NAME, maxlength: 20,key:'company' },
+  { placeholder: StringConstants.CUSTOMER_CODE, maxlength: 10, key: "code" },
+  {
+    placeholder: StringConstants.ENTER_COMPANY_NAME,
+    maxlength: 20,
+    key: "company",
+  },
   { placeholder: StringConstants.CUSTOMER_SEG },
   { placeholder: StringConstants.CUSTOMER_SUB_SEG },
   { placeholder: StringConstants.CUSTOMER_TYPE },
   { placeholder: StringConstants.CUSTOMER_SUB_TYPE },
   { placeholder: StringConstants.CUSTOMER_STATUS },
   { placeholder: StringConstants.CUSTOMER_REGION },
-  { placeholder: StringConstants.ENTER_PAN_CARD, maxlength: 10 ,key:'pan'},
-  { placeholder: StringConstants.ENTER_GST, maxlength: 15,key:'gst' },
-  { placeholder: StringConstants.WEBSITE_LINK, maxlength: 20 ,key:'website'},
+  { placeholder: StringConstants.ENTER_PAN_CARD, maxlength: 10, key: "pan" },
+  { placeholder: StringConstants.ENTER_GST, maxlength: 15, key: "gst" },
+  { placeholder: StringConstants.WEBSITE_LINK, maxlength: 20, key: "website" },
 ];
 
 export const ErrorMsgOfCustomerInput = [
@@ -670,11 +678,93 @@ export const customerTypeTraderDealerField = [
   StringConstants.SUPPLIER,
 ];
 
+export interface CustomerTraderFields{
+  placeholder:string;
+  length?:number;
+  inputMode?:InputModeOptions;
+  key?:string;
+}
+
+export const CustomerTypeTraderDealer:CustomerTraderFields[] = [
+  { placeholder: StringConstants.SELECT_CLUSTER },
+  { placeholder: StringConstants.CONTACT_NUMBER, length: 10,inputMode:'numeric',key:'contact_number'},
+  { placeholder: StringConstants.DAY_WISE_STOCK, length: 10 ,inputMode:'text',key:'day_wise_stock'},
+  { placeholder: StringConstants.PRICE_FEEDBACK_COMPETITOR, length: 10,inputMode:'text',key:'price_feedback_competitor'},
+  { placeholder: StringConstants.PROCURED_PRODUCT, length: 10 },
+  { placeholder: StringConstants.TENTATIVE_QUALITY_PROCURED, length: 10 ,inputMode:'text',key:'tentative_quality_procured'},
+  { placeholder: StringConstants.SUPPLIER, length: 10 },
+];
+
+export interface ICustomerTrader {
+  placeholder: string;
+  length?: number;
+  key?: string;
+  input?: InputModeOptions;
+}
+
+export const CustomerTypeTraderFields: ICustomerTrader[] = [
+  { placeholder: StringConstants.SELECT_CLUSTER },
+  {
+    placeholder: StringConstants.CONTACT_NUMBER,
+    length: 10,
+    key: "contact_number",
+    input: "tel",
+  },
+  {
+    placeholder: StringConstants.DAY_WISE_STOCK,
+    length: 20,
+    key: "day_wise_stock",
+    input: "text",
+  },
+  {
+    placeholder: StringConstants.PRICE_FEEDBACK_COMPETITOR,
+    length: 20,
+    key: "price_feedback_competitor",
+    input: "text",
+  },
+  {
+    placeholder: StringConstants.PROCURED_PRODUCT,
+  },
+  {
+    placeholder: StringConstants.TENTATIVE_QUALITY_PROCURED,
+    length: 20,
+    key: "tentative_quality_procured",
+    input: "text",
+  },
+  { placeholder: StringConstants.SUPPLIER },
+];
+
 export const CustomerTypeProjectField = [
   StringConstants.PROCURED_PRODUCT,
   StringConstants.TENTATIVE_QUALITY_PROCURED,
   StringConstants.SUPPLIER,
   StringConstants.PROJECT_DETAILS,
+];
+
+export interface ICustomerProject {
+  placeholder: string;
+  length?: number;
+  key?: string;
+  input?: InputModeOptions;
+}
+
+export const CustomerTypeProject: ICustomerProject[] = [
+  {
+    placeholder: StringConstants.PROCURED_PRODUCT,
+  },
+  {
+    placeholder: StringConstants.TENTATIVE_QUALITY_PROCURED,
+    length: 20,
+    key: "tentative_quality_procured",
+    input: "text",
+  },
+  { placeholder: StringConstants.SUPPLIER },
+  {
+    placeholder: StringConstants.PROJECT_DETAILS,
+    length: 20,
+    key: "project_details",
+    input: "text",
+  },
 ];
 
 // export const TextFieldData = [

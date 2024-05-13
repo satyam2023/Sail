@@ -1,4 +1,4 @@
-import { ICompetitorOfViewProfile} from "models/interface/IViewCustomerProfile";
+import { ICompetitorOfViewProfile, Procured_Product_Data} from "models/interface/IViewCustomerProfile";
 import { ICustomerCluster, ICustomerSegment, ICustomerStatus, ICustomerType, IProcuredProduct, IRepresentative, ISubSegment, ISubType, ISupplier } from "./CreateCustomer";
 
 
@@ -26,11 +26,20 @@ export interface IViewCustomerBody {
     tentative_quality_procured?: string;
     supplier?:ISupplier;
     project_details?: string;
-    latitude: string;
-    longitude: string;
+    location_lat: string;
+    location_long: string;
     address: string;
     representatives: IRepresentative[];
     competitor: ICompetitorOfViewProfile[];
+    procured_product_data:Procured_Product_Data[],
+    supplier_data:Supplier_Data[],
+  }
+
+
+  export interface Supplier_Data{
+            customer_id: string,
+            supplier_id: string,
+            supplier_name: ISupplier,
   }
 
 

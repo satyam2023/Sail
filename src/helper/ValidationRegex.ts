@@ -283,6 +283,59 @@ export const competitorValidationRules={
   ]
 }
 
+export const traderDealerTypeValidationRule={
+  contact_number:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+    {
+      regex: Regex.CONTACT,
+      message: StringConstants.INVALID_CONTACT
+    }
+  ],
+  day_wise_stock:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+    {
+      regex: Regex.NAME,
+      message: StringConstants.INVALID,
+    },
+  ],
+  price_feedback_competitor:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+  ],
+  tentative_quality_procured:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+  ],
+
+}
+
+export const projectTypeValidationRule={
+  project_details:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+  ],
+  tentative_quality_procured:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+  ],
+
+}
+
+
 export const customerValidationRules={
   code: [
     {
@@ -340,6 +393,123 @@ location:[
      message: StringConstants.INVALID_ADDRESS,
   },
 ],
+latitude:[{
+  regex: Regex.REQUIRED,
+  message: StringConstants.REQUIRED
+}],
+longitude:[{
+  regex: Regex.REQUIRED,
+  message: StringConstants.REQUIRED
+}],
+
+}
+
+export const updatedCustomerValidationRules={
+pan:[
+  {
+    regex: Regex.REQUIRED,
+    message: StringConstants.REQUIRED
+  },
+  {
+    regex: Regex.PAN,
+    message: StringConstants.INVALID_PAN,
+  },
+],
+gst:[
+  {
+    regex: Regex.REQUIRED,
+    message: StringConstants.REQUIRED
+  },
+  {
+    regex: Regex.GST,
+    message: StringConstants.INVALID_GST,
+  },
+],
+website:[
+  {
+    regex: Regex.REQUIRED,
+    message: StringConstants.REQUIRED
+  },
+  {
+    regex: Regex.WEBSITE,
+     message: StringConstants.INVALID_WEBSITE,
+  },
+],
+latitude:[{
+  regex: Regex.REQUIRED,
+  message: StringConstants.REQUIRED
+}],
+longitude:[{
+  regex: Regex.REQUIRED,
+  message: StringConstants.REQUIRED
+}],
+cust_seg:[{
+  regex: Regex.REQUIRED,
+  message: StringConstants.REQUIRED
+}],
+cust_sub_seg:[{
+  regex: Regex.REQUIRED,
+  message: StringConstants.REQUIRED
+}],
+cust_sub_type:[{
+  regex: Regex.REQUIRED,
+  message: StringConstants.REQUIRED
+}]
+
+
+}
+
+
+export const customerTypeValidationRules={
+  cluster:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    
+  ],
+  contact_number:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    
+  ],
+  day_wise_stock:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    
+  ],
+  price_feedback_competitor:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    
+  ],
+  procured_products:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    
+  ],
+  tentative_quality_procured:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    
+  ],
+  supplier:[
+    {
+      regex: Regex.ONLY_NUMBER,
+      message: StringConstants.REQUIRED,
+    },
+    
+  ],
 
 }
 

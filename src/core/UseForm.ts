@@ -1,4 +1,4 @@
-import { MutableRefObject, useRef, useState } from "react";
+import { MutableRefObject,useRef, useState } from "react";
 
 export type FormValues= {
   [key: string]: string;
@@ -30,6 +30,7 @@ const useForm = (
   initialValues: FormValues,
   validationRules: ValidationRules,
   onSubmit: (values: FormValues) => void,
+  isEditingEnabled:boolean=false
 ): UseFormReturn => {
   const valuesRef = useRef<FormValues>(initialValues);
   const errorsRef = useRef<ValidationError[]>([]);
@@ -64,6 +65,15 @@ const useForm = (
     }
   };
 
+  if (isEditingEnabled) {
+    // Alert.alert("Editing Enabelled::::");
+    for (const key in initialValues) {
+      const value = initialValues[key];
+      valuesRef.current[key] = value;
+    }
+  }
+
+
   const handleTextChange = (field: string, value: string): void => {
     valuesRef.current[field] = value;
     errorsRef.current = [];
@@ -72,6 +82,8 @@ const useForm = (
       setShowErrorStatus(false);
     }
   };
+
+
 
   return {
     values: valuesRef,

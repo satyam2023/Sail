@@ -17,7 +17,7 @@ import commonStyles from "commonStyles/CommonStyle";
 import fonts from "@fonts";
 import { PressableButton } from "components";
 import { IdropDown } from "models/interface/ISetting";
-import { ScreenHeight, ScreenWidth } from "libs";
+import {ScreenWidth } from "libs";
 import StringConstants from "shared/localization";
 
 interface IDropDownStyle {
@@ -63,6 +63,10 @@ const CustomDropDown = (props: ICustomDropDown) => {
   const makeListVisible = () => {
     setIsListVisible(!isListVisible);
   };
+
+  const heightOfDropDown=(length:number|undefined)=>{
+    return length==undefined?0:length<=3?(length*56):168;
+  }
 
   const renderItem = ({ item }: { item: IdropDown }) => {
     return (
@@ -145,8 +149,8 @@ const CustomDropDown = (props: ICustomDropDown) => {
           <TextWrapper style={styles.errorMsg}>{props.error}</TextWrapper>
         </View>
       )}
-      {isListVisible && (
-        <View style={styles.dropList}>
+      {isListVisible &&  (
+        <View style={[styles.dropList,{height:heightOfDropDown(props?.ArrayOfData?.length)}]}>
         <ScrollView
           style={styles.optionContainer}
           nestedScrollEnabled

@@ -9,7 +9,10 @@ import {
 } from "models/ApiResponses/CreateCustomer";
 import { AccompRoot } from "models/ApiResponses/IdropDown";
 import { SignInResponse } from "models/ApiResponses/SignInResponse";
-import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
+import {
+  IViewCustomerBody,
+  Supplier_Data,
+} from "models/ApiResponses/ViewCustomerProfile";
 import { IdropDown } from "models/interface/ISetting";
 import { Platform } from "react-native";
 import RNFS from "react-native-fs";
@@ -21,13 +24,16 @@ import {
   IUpdateTrader_Project_Dealer_Type,
   IViewCustomerCompetitor,
   IViewCustomerRepresentative,
+  Procured_Product_Data,
 } from "models/interface/IViewCustomerProfile";
 import {
+  CompetitorDetail,
   IEnteredCompetitorDetail,
   IEnteredCustomerDetails,
   IRepresentativeEnteredDetail,
   ISelectedImage,
   IsubType,
+  RepresentativeDetails,
 } from "models/interface/ICreateCustomer";
 import {
   IRepresentativeList,
@@ -35,7 +41,7 @@ import {
 } from "models/interface/IMeeting";
 import StringConstants from "shared/localization";
 import { IProductCatalogue } from "models/ApiResponses/ProductCatalogue";
-import { MutableRefObject } from "react";
+import { MutableRefObject, SetStateAction } from "react";
 import { EscalatedList } from "models/interface/IMessage";
 import { FormValues } from "core/UseForm";
 
@@ -94,10 +100,10 @@ const returnMonth = (a: string) => {
 };
 
 export const extractOnlyDate = (data: string) => {
-  const wholeDate=data ? data.slice(0, 10) : "";
-  const month=returnMonth(wholeDate.slice(5,7))
-  const date=wholeDate.slice(8,10);
-  return date +" "+month;
+  const wholeDate = data ? data.slice(0, 10) : "";
+  const month = returnMonth(wholeDate.slice(5, 7));
+  const date = wholeDate.slice(8, 10);
+  return date + " " + month;
 };
 
 export const getCurrentDate1 = () => {
@@ -142,7 +148,7 @@ export const convertSegemntToDropData = (data: ICustomerSegment[]) => {
 
 export const convertSubSegemntToDropData = (data: ISubSegment[]) => {
   let ans: IdropDown[] = [];
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 0; i < data?.length; i++) {
     let temp = { name: "", id: -1 };
     temp.name = data[i].sub_segment_name;
     temp.id = data[i].id;
@@ -175,6 +181,12 @@ export const returnOnlyIndex = (data: any) => {
   return ans;
 };
 
+export const returnCustomerTypeIndex = (data: IdropDown[], id: number) => {
+  const ans = data.findIndex((item: IdropDown) => item.id == id);
+
+  return ans - 1;
+};
+
 export function logger(
   log: any,
   invoker?: string,
@@ -190,7 +202,6 @@ export function logger(
 }
 
 export const downloadFile = async (url: string) => {
-  console.log("url recieved in download>>>>>>", url);
   if (!url) {
     return null;
   }
@@ -352,69 +363,82 @@ export const setUpdateRepresentativeBody = (
   customerList: IViewCustomerBody[],
   selectedIndexValue: number,
   representative: IViewCustomerRepresentative,
-  enteredRepresentativeDetails: IRepresentativeEnteredDetail,
+  // enteredRepresentativeDetails: IRepresentativeEnteredDetail,
+  representativeValue: MutableRefObject<FormValues>,
   representativeDetail: string[],
   value: string,
 ) => {
+  const updatedValues = representativeValue?.current;
   const data = {
     represenatative_id:
       customerList[selectedIndexValue]?.representatives[
         representative.selectedRepresentativeIndex
       ]?.id,
-    designation:
-      enteredRepresentativeDetails?.designation?.current?.length > 0
-        ? enteredRepresentativeDetails?.designation?.current
-        : representativeDetail[1],
-    department:
-      enteredRepresentativeDetails?.dept?.current?.length > 0
-        ? enteredRepresentativeDetails?.dept?.current
-        : representativeDetail[2],
-    address:
-      enteredRepresentativeDetails?.address?.current?.length > 0
-        ? enteredRepresentativeDetails?.address?.current
-        : representativeDetail[3],
-    email_id:
-      enteredRepresentativeDetails?.email?.current?.length > 0
-        ? enteredRepresentativeDetails?.email?.current
-        : representativeDetail[4],
-    contact_number:
-      enteredRepresentativeDetails?.contact?.current?.length > 0
-        ? enteredRepresentativeDetails?.contact?.current
-        : representativeDetail[5],
-    whatsapp_number:
-      enteredRepresentativeDetails?.whatsApp?.current?.length > 0
-        ? enteredRepresentativeDetails?.whatsApp?.current
-        : representativeDetail[6],
+    designation: updatedValues?.designation,
+    // enteredRepresentativeDetails?.designation?.current?.length > 0
+    //   ? enteredRepresentativeDetails?.designation?.current
+    //   : representativeDetail[1],
+    department: updatedValues?.dept,
+    // enteredRepresentativeDetails?.dept?.current?.length > 0
+    //   ? enteredRepresentativeDetails?.dept?.current
+    //   : representativeDetail[2],
+    address: updatedValues?.address,
+    // enteredRepresentativeDetails?.address?.current?.length > 0
+    //   ? enteredRepresentativeDetails?.address?.current
+    //   : representativeDetail[3],
+    email_id: updatedValues?.email,
+    // enteredRepresentativeDetails?.email?.current?.length > 0
+    //   ? enteredRepresentativeDetails?.email?.current
+    //   : representativeDetail[4],
+    contact_number: updatedValues?.contact,
+    // enteredRepresentativeDetails?.contact?.current?.length > 0
+    //   ? enteredRepresentativeDetails?.contact?.current
+    //   : representativeDetail[5],
+    whatsapp_number: updatedValues?.whatsApp,
+    // enteredRepresentativeDetails?.whatsApp?.current?.length > 0
+    //   ? enteredRepresentativeDetails?.whatsApp?.current
+    //   : representativeDetail[6],
     active: value,
   };
 
   return data;
 };
 
+export const isAnyFieldUpdated = (
+  Value: MutableRefObject<FormValues>,
+  Oldvalue: RepresentativeDetails | CompetitorDetail,
+) => {
+  const value = Value.current;
+  for (let i in value) {
+    if (value[i] != Oldvalue[i]) {
+      return true;
+    }
+  }
+  return false;
+};
 export const setUpdateCompetitorBody = (
   customerList: IViewCustomerBody[],
   selectedIndexValue: number,
   competitor: IViewCustomerCompetitor,
-  enteredCompetitorDetail: IEnteredCompetitorDetail,
-  selectedCompetitorDetail: string[],
+  competitorValue: MutableRefObject<FormValues>,
 ) => {
   const data = {
     competitor_id:
       customerList[selectedIndexValue]?.competitor[
         competitor.selectedCompetitorIndex
       ]?.id,
-    company_name:
-      enteredCompetitorDetail?.company.current.length > 0
-        ? enteredCompetitorDetail?.company.current
-        : selectedCompetitorDetail[0],
-    address:
-      enteredCompetitorDetail?.address.current.length > 0
-        ? enteredCompetitorDetail?.address.current
-        : selectedCompetitorDetail[1],
-    comment:
-      enteredCompetitorDetail?.comment.current.length > 0
-        ? enteredCompetitorDetail?.comment.current
-        : selectedCompetitorDetail[2],
+    company_name: competitorValue?.current?.company,
+    // enteredCompetitorDetail?.company.current.length > 0
+    //   ? enteredCompetitorDetail?.company.current
+    //   : selectedCompetitorDetail[0],
+    address: competitorValue?.current?.address,
+    // enteredCompetitorDetail?.address.current.length > 0
+    //   ? enteredCompetitorDetail?.address.current
+    //   : selectedCompetitorDetail[1],
+    comment: competitorValue?.current?.comment,
+    // enteredCompetitorDetail?.comment.current.length > 0
+    //   ? enteredCompetitorDetail?.comment.current
+    //   : selectedCompetitorDetail[2],
   };
 
   return data;
@@ -425,11 +449,14 @@ export const unplannedVisitMeeting = (
   representativeList: IRepresentativeList,
   selectedIssueArr: any[],
 ) => {
- const selectedIndex= Number(unplannedVisitValue?.current?.selectedRepresentative);
+  const selectedIndex = Number(
+    unplannedVisitValue?.current?.selectedRepresentative,
+  );
   const body = {
     customer_code: unplannedVisitValue?.current?.code || null,
     company_name: unplannedVisitValue?.current?.name || null,
-    customer_status: Number(unplannedVisitValue?.current?.customer_status) || null,
+    customer_status:
+      Number(unplannedVisitValue?.current?.customer_status) || null,
     customer_type: Number(unplannedVisitValue?.current?.customer_type) || null,
     customer_region: unplannedVisitValue?.current?.customer_region || null,
     visit_mode_of_contact:
@@ -442,36 +469,26 @@ export const unplannedVisitMeeting = (
       unplannedVisitValue?.current?.discussion_point || null,
     visit_accompanying_executive:
       unplannedVisitValue?.current?.accompying_executive || null,
-    visit_representative_id:  selectedIndex || null,
+    visit_representative_id: selectedIndex || null,
     visit_issues: selectedIssueArr.length > 0 ? selectedIssueArr : null,
     representative_name:
-      representativeList.representativeListDetail[
-        selectedIndex
-      ]?.name || null,
+      representativeList.representativeListDetail[selectedIndex]?.name || null,
     representative_designation:
-      representativeList.representativeListDetail[
-        selectedIndex
-      ]?.designation || null,
+      representativeList.representativeListDetail[selectedIndex]?.designation ||
+      null,
     representative_department:
-      representativeList.representativeListDetail[
-        selectedIndex
-      ]?.dept || null,
+      representativeList.representativeListDetail[selectedIndex]?.dept || null,
     representative_address:
-      representativeList.representativeListDetail[
-        selectedIndex
-      ]?.address || null,
+      representativeList.representativeListDetail[selectedIndex]?.address ||
+      null,
     representative_email:
-      representativeList.representativeListDetail[
-        selectedIndex
-      ]?.email || null,
+      representativeList.representativeListDetail[selectedIndex]?.email || null,
     representative_contact_number:
-      representativeList.representativeListDetail[
-        selectedIndex
-      ]?.contact || null,
+      representativeList.representativeListDetail[selectedIndex]?.contact ||
+      null,
     representative_whatsapp_number:
-      representativeList.representativeListDetail[
-        selectedIndex
-      ]?.whatsApp || null,
+      representativeList.representativeListDetail[selectedIndex]?.whatsApp ||
+      null,
   };
 
   return body;
@@ -484,7 +501,8 @@ export const plannedMeeting = (
   const temp = [
     plannedMeetingList?.data[selectedIndexValue]?.customer_data?.customer_code,
     plannedMeetingList?.data[selectedIndexValue]?.customer_data?.company_name,
-    plannedMeetingList?.data[selectedIndexValue]?.customer_data?.type?.type_name,
+    plannedMeetingList?.data[selectedIndexValue]?.customer_data?.type
+      ?.type_name,
     plannedMeetingList?.data[selectedIndexValue]?.customer_data?.status?.name,
     plannedMeetingList?.data[selectedIndexValue]?.mode_of_contact?.name,
     extractOnlyDate(
@@ -541,11 +559,9 @@ export const checkAllInputField = (fields: any) => {
 export const isAllInputFieldHaveData = (fields: any) => {
   for (let i = 0; i < Object.keys(fields.current).length; i++) {
     if (fields.current[Object.keys(fields.current)[i]].length == 0) {
-      console.log("Returned Value is False:::::::");
       return false;
     }
   }
-  console.log("Returned Value is true:::::::");
   return true;
 };
 
@@ -637,13 +653,11 @@ export const tacklePagination = (n: number, arr: any[]) => {
   }
 };
 
-
-export const setFormDataToIntialValue=(data:any)=>{
-  for(let i=0;i<data?.length;i++){
-    Object.keys(data)[i]='';
+export const setFormDataToIntialValue = (data: any) => {
+  for (let i = 0; i < data?.length; i++) {
+    Object.keys(data)[i] = "";
   }
-
-}
+};
 
 export const setUpcomingFieldData = (
   upcomingVisitList: any,
@@ -724,75 +738,38 @@ export const setPlannedFieldData = (
 export const updateCustomerBody = (
   customerList: IViewCustomerBody[],
   selectedIndexValue: number,
-  enteredCustomerDetails: IEnteredCustomerDetails,
-  customerTypeTraderDealer: IUpdateTrader_Project_Dealer_Type,
+  customerValue: MutableRefObject<FormValues>,
+  customerTypeValue:MutableRefObject<FormValues>,
   customer: ICustomerState,
   custImageVideoData: any[],
 ) => {
+  const customerDetails = customerValue.current;
   const body = {
     customer_id: customerList[selectedIndexValue]?.id,
     custFile: custImageVideoData || [],
-    customer_region: customerList[selectedIndexValue]?.customer_region
-      ? customerList[selectedIndexValue]?.customer_region
-      : enteredCustomerDetails?.cust_region?.current || null,
-    segment: customerList[selectedIndexValue]?.segment?.id
-      ? customerList[selectedIndexValue]?.segment?.id
-      : enteredCustomerDetails?.cust_seg?.current || null,
-    sub_segment: customerList[selectedIndexValue]?.sub_segment?.id
-      ? customerList[selectedIndexValue]?.sub_segment?.id
-      : enteredCustomerDetails?.cust_sub_seg?.current || null,
+    customer_region: customerDetails?.cust_region,
+    segment: Number(customerDetails?.cust_seg),
+    sub_segment: Number(customerDetails?.cust_sub_seg),
     type: customerList[selectedIndexValue]?.type?.id || null,
-    sub_type: customerList[selectedIndexValue]?.sub_type?.id
-      ? customerList[selectedIndexValue]?.sub_type?.id
-      : enteredCustomerDetails?.cust_sub_type?.current || null,
-    status: customerList[selectedIndexValue]?.status?.id
-      ? customerList[selectedIndexValue]?.status?.id
-      : enteredCustomerDetails?.cust_status?.current || null,
-    panCard: customerList[selectedIndexValue]?.pan_number
-      ? customerList[selectedIndexValue]?.pan_number
-      : enteredCustomerDetails?.pan?.current || null,
-    gst_details: customerList[selectedIndexValue]?.gst_details
-      ? customerList[selectedIndexValue]?.gst_details
-      : enteredCustomerDetails?.gst?.current || null,
-    website_link: customerList[selectedIndexValue]?.website_link
-      ? customerList[selectedIndexValue]?.website_link
-      : enteredCustomerDetails?.website?.current || null,
-    latitude: customerList[selectedIndexValue]?.latitude
-      ? customerList[selectedIndexValue]?.latitude
-      : enteredCustomerDetails?.latitude?.current || null,
-    longitude: customerList[selectedIndexValue]?.longitude
-      ? customerList[selectedIndexValue]?.longitude
-      : enteredCustomerDetails?.longitude?.current || null,
-    address: customerList[selectedIndexValue]?.address
-      ? customerList[selectedIndexValue]?.address
-      : enteredCustomerDetails?.location?.current || null,
-    cluster: customerList[selectedIndexValue]?.cluster?.id
-      ? customerList[selectedIndexValue]?.cluster?.id
-      : customerTypeTraderDealer?.cluster?.current || null,
-    contact_number: customerList[selectedIndexValue]?.contact_number
-      ? customerList[selectedIndexValue]?.contact_number
-      : customerTypeTraderDealer?.contact_number?.current || null,
-    day_wise_stock: customerList[selectedIndexValue]?.day_wise_stock
-      ? customerList[selectedIndexValue]?.day_wise_stock
-      : customerTypeTraderDealer?.day_wise_stock?.current || null,
-    price_feedback_competitor: customerList[selectedIndexValue]
-      ?.price_feedback_competitor
-      ? customerList[selectedIndexValue]?.price_feedback_competitor
-      : customerTypeTraderDealer?.price_feedback_competitor?.current || null,
-    procured_products: customerList[selectedIndexValue]?.procured_products?.id
-      ? customerList[selectedIndexValue]?.procured_products?.id
-      : returnOnlyIndex(customer?.procuredProduct) || null,
-    tentative_quality_procured: customerList[selectedIndexValue]
-      ?.tentative_quality_procured
-      ? customerList[selectedIndexValue]?.tentative_quality_procured
-      : customerTypeTraderDealer?.tentative_quality_procured?.current || null,
-    supplier: customerList[selectedIndexValue]?.supplier?.id
-      ? customerList[selectedIndexValue]?.supplier?.id
-      : returnOnlyIndex(customer?.supplier) || null,
-    project_details: customerList[selectedIndexValue]?.project_details
-      ? customerList[selectedIndexValue]?.project_details
-      : customerTypeTraderDealer?.projectDetail?.current || null,
+    sub_type: Number(customerDetails?.cust_sub_type),
+    status: Number(customerDetails?.cust_status),
+    panCard: customerDetails?.pan,
+    gst_details: customerDetails?.gst,
+    website_link: customerDetails?.website,
+    latitude: customerDetails?.latitude,
+    longitude: customerDetails?.longitude,
+    address: customerDetails?.location,
+    cluster:customerTypeValue?.current?.cluster||null,
+    contact_number:customerTypeValue?.current?.contact_number||null,
+    day_wise_stock: customerTypeValue?.current?.day_wise_stock||null,
+    price_feedback_competitor:customerTypeValue?.current?.procured_products||null,
+    procured_products:returnOnlyIndex(customer?.procuredProduct) || null,
+    tentative_quality_procured: customerTypeValue?.current?.tentative_quality_procured||null,
+    supplier:returnOnlyIndex(customer?.supplier) || null,
+    project_details:customerList[selectedIndexValue]?.type?.id==6?customerTypeValue?.current?.project_details||null:null,
   };
+
+
 
   return body;
 };
@@ -832,7 +809,15 @@ export const representativeDetailsofViewCustomerProfile = (
     customerList[selectedIndexValue]?.representatives[
       representative.selectedRepresentativeIndex
     ]?.whatsapp_number,
+    "-1",
   ];
+
+  // for (let i = 0; i < Object.keys(representativeDetails).length; i++) {
+  //   handleTextOfRepresentative(
+  //     Object.keys(representativeDetails)[i],
+  //     data[i],
+  //   );
+  // }
 
   return data;
 };
@@ -854,7 +839,11 @@ export const customerDetailOfViewModel = (
     customerList[selectedIndexValue]?.gst_details,
     customerList[selectedIndexValue]?.website_link,
     customerList[selectedIndexValue]?.address,
+    customerList[selectedIndexValue]?.location_lat,
+    customerList[selectedIndexValue]?.location_long,
   ];
+
+
 
   return data;
 };
@@ -883,18 +872,20 @@ export const traderDealerselectedCustomerDetail = (
   customerList: IViewCustomerBody[],
   selectedIndexValue: number,
 ) => {
-  const data =
-    customerList[selectedIndexValue]?.type?.id == (2 || 4)
-      ? [
-          customerList[selectedIndexValue]?.cluster?.name,
-          customerList[selectedIndexValue]?.contact_number,
-          customerList[selectedIndexValue]?.day_wise_stock,
-          customerList[selectedIndexValue]?.price_feedback_competitor,
-          customerList[selectedIndexValue]?.procured_products?.name,
-          customerList[selectedIndexValue]?.tentative_quality_procured,
-          customerList[selectedIndexValue]?.supplier?.name,
-        ]
-      : [];
+  const index=customerList[selectedIndexValue]?.type?.id;
+  const isSpecialType: boolean =( index== 2 ||index== 6|| index==7) ;
+  const data = isSpecialType
+    ? [
+        customerList[selectedIndexValue]?.cluster?.name,
+        customerList[selectedIndexValue]?.contact_number,
+        customerList[selectedIndexValue]?.day_wise_stock,
+        customerList[selectedIndexValue]?.price_feedback_competitor,
+        customerList[selectedIndexValue]?.procured_product_data.length>0?customerList[selectedIndexValue]?.procured_product_data.length.toString():'',
+        customerList[selectedIndexValue]?.tentative_quality_procured,
+        customerList[selectedIndexValue]?.supplier_data.length>0?customerList[selectedIndexValue]?.supplier_data.length.toString():'',
+        customerList[selectedIndexValue]?.project_details,
+      ]
+    : [];
   return data;
 };
 
@@ -909,8 +900,9 @@ export const getDropDownData = (
     convertSegemntToDropData(getDropDownListData?.segmentData),
     indexofSubtype.customerSegmentIndex >= 0
       ? convertSubSegemntToDropData(
-          getDropDownListData?.segmentData[indexofSubtype.customerSegmentIndex]
-            ?.sub_segment,
+          getDropDownListData?.segmentData[
+            indexofSubtype.customerSegmentIndex - 1
+          ]?.sub_segment,
         )
       : undefined,
     convertCustomerToDropData(getDropDownListData?.customerType),
@@ -935,7 +927,7 @@ export const getDropDownData = (
 
 export const addRepresentativeOfCreateCustomer = (
   selectRepresentativeImage: ISelectedImage | undefined,
-  enteredRepresentativeDetails: MutableRefObject<Record<string,string>>,
+  enteredRepresentativeDetails: MutableRefObject<Record<string, string>>,
 ) => {
   const representativeData = {
     file_name: selectRepresentativeImage?.fileName,
@@ -991,4 +983,21 @@ export const getEscalatedId = (
 ) => {
   const ans = data.filter((item: EscalatedList) => item?.user_name == value);
   return Number(ans[0]?.id);
+};
+
+export const formatProcuder_Product_list = (data: Procured_Product_Data[]) => {
+  let ans: IProcuredProduct[] = [];
+  for (let i = 0; i < data?.length; i++) {
+    ans.push(data[i].procured_product_name);
+  }
+  return ans;
+};
+
+export const formatSupplier_list = (data: Supplier_Data[]) => {
+  let ans: ISupplier[] = [];
+  for (let i = 0; i < data?.length; i++) {
+    ans.push(data[i].supplier_name);
+  }
+
+  return ans;
 };

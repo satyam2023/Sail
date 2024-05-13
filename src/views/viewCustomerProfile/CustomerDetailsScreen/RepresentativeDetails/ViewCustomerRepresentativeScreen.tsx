@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import { FlatList, Image, SafeAreaView, ScrollView, View } from "react-native";
 import styles from "../Style";
 import Glyphs from "assets/Glyphs";
@@ -21,7 +21,7 @@ import { ISelectedImage } from "models/interface/ICreateCustomer";
 import ProfileHeader from "../../Component/ProfileHeader";
 import StatusBarComponent from "components/StatusBarComponent";
 import ShowRepresentative from "./ShowRepresentative";
-import { IRepresentativeError } from "helper/ValidationRegex";
+import { ValidationError } from "core/UseForm";
 
 interface SecondProps {
   customerList: IViewCustomerBody[];
@@ -36,9 +36,8 @@ interface SecondProps {
   representative: IViewCustomerRepresentative;
   setEditing: (id: number) => void;
   handleFooterButtonClick: (type: string) => void;
-  representativeError:IRepresentativeError;
   btnStatus:boolean;
-  showError:boolean;
+  representativeErrors:MutableRefObject<ValidationError[]>;
 }
 const ViewCustomerRepresentative = ({
   customerList,
@@ -53,9 +52,8 @@ const ViewCustomerRepresentative = ({
   representative,
   setEditing,
   handleFooterButtonClick,
-  representativeError,
   btnStatus,
-  showError
+  representativeErrors
 }: SecondProps) => {
   const renderRepresentativeList = ({
     item,
@@ -144,9 +142,8 @@ const ViewCustomerRepresentative = ({
             handleAddStatus,
             representative,
             representativeDetail,
-            representativeError,
             btnStatus,
-            showError
+            representativeErrors
           }}
         />
       )}

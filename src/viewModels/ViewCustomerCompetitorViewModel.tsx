@@ -5,22 +5,22 @@ import {
   getcustomerlist,
   updateCompetitorAPIHandler,
 } from "controllers/viewCustomerController";
-import { Regex} from "helper/ValidationRegex";
+import useForm from "core/UseForm";
+import { competitorValidationRules } from "helper/ValidationRegex";
 import {
-  checkAllInputField,
-  isAllFieldTrue,
+  isAllInputFieldHaveData,
+  isAnyFieldUpdated,
   selectedCompetitor,
-  setErrorToIntialValue,
-  setInputToIntialStringvalue,
   setUpdateCompetitorBody,
 } from "helper/helperFunctions";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
-import { IEnteredCompetitorDetail } from "models/interface/ICreateCustomer";
 import {
-  ICompetitorError,
+  CompetitorDetail,
+} from "models/interface/ICreateCustomer";
+import {
   IViewCustomerCompetitor,
 } from "models/interface/IViewCustomerProfile";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
 import { BottomTabVisibility } from "redux/actions/UIAction";
@@ -34,7 +34,6 @@ const ViewCustomerCompetitorViewModel = ({ route, navigation }: any) => {
   const selectedIndexValue = route.params?.selectedIndexValue;
   const [addDetailStatus, setAddDetailsStatus] = useState<boolean>(false);
   const [submitSuccess, setSubmitStatus] = useState<boolean>(false);
-  const [showError,setError]=useState<boolean>(false);
   const [addCompetitorBtnStatus, setAddCompetitorButtonStatus] =
     useState<boolean>(false);
   const [competitor, setcompetitor] = useState<IViewCustomerCompetitor>({
@@ -43,35 +42,51 @@ const ViewCustomerCompetitorViewModel = ({ route, navigation }: any) => {
     showcompetitorDetail: false,
     editDetails: false,
   });
-  const enteredCompetitorDetail: IEnteredCompetitorDetail = {
-    company: useRef<string>(""),
-    address: useRef<string>(""),
-    comment: useRef<string>(""),
+ 
+  const selectedCompetitorDetail: string[] = [
+    ...selectedCompetitor(customerList, selectedIndexValue, competitor),
+  ];
+
+  
+  const addCompetitor = async () => {
+    await addCompetitorApiCall();
+    setAddDetailsStatus(false);
+    setAddCompetitorButtonStatus(() => false);
+    resetcompetitorDetail();
+  };
+  const competitorDetails: CompetitorDetail = {
+    company: competitor?.editDetails ? selectedCompetitorDetail[0] : "",
+    address: competitor?.editDetails ? selectedCompetitorDetail[1] : "",
+    comment: competitor?.editDetails ? selectedCompetitorDetail[2] : "",
   };
 
-  const [competitorError, setCompetitorError] = useState<ICompetitorError>({
-    name: null,
-    address: null,
-    comment: null,
-  });
+  const {
+    values: competitorValue,
+    errors: competitorErrors,
+    handleSubmit: handleCompetitorSubmited,
+    handleTextChange: handleTextOfCompetitor,
+  } = useForm(
+    competitorDetails,
+    competitorValidationRules,
+    competitor?.editDetails ? handleUpdateCompetitor : addCompetitor,
+    competitor?.editDetails,
+  );
+
+
   useFocusEffect(() => {
     dispatch(BottomTabVisibility(false));
     return () => {
       dispatch(BottomTabVisibility(true));
     };
   });
-
-  useEffect(()=>{
-    if (isAllFieldTrue(competitorError)) {
-      addCompetitorApiCall();
-      setAddDetailsStatus(false);
-      setAddCompetitorButtonStatus(() => false);
-      setInputToIntialStringvalue<IEnteredCompetitorDetail>(
-        enteredCompetitorDetail,
+  const resetcompetitorDetail = () => {
+    for (let i = 0; i < 3; i++) {
+      handleTextOfCompetitor(
+        Object.keys(competitorDetails)[i],
+        StringConstants.EMPTY,
       );
-      setErrorToIntialValue<ICompetitorError>(competitorError);
     }
-  },[competitorError])
+  };
 
   const customerListdata: IViewCustomerBody[] = useSelector(
     (state: RootState) => state?.viewCustomerProfile?.customerListData,
@@ -91,33 +106,13 @@ const ViewCustomerCompetitorViewModel = ({ route, navigation }: any) => {
   }
 
   async function add_edit_Competitor() {
-    if (competitor.editDetails) {
-      handleUpdateCompetitor();
-    } else {
-      handleAddCompetitor();
-    }
+    competitor.editDetails? handleUpdateCompetitor():handleCompetitorSubmited();
   }
-  const checkCompetitorDetail = (
-    enteredCompetitorDetail: IEnteredCompetitorDetail,
-    setCompetitorError: Function,
-  ) => {
-    setCompetitorError({
-      name: Regex.NAME.test(enteredCompetitorDetail?.company.current),
-      address: Regex.ADDRESS.test(enteredCompetitorDetail?.address.current),
-      comment: Regex.NAME.test(enteredCompetitorDetail?.comment.current),
-    });
-  };
-
-
-  function handleAddCompetitor() {
-    checkCompetitorDetail(enteredCompetitorDetail, setCompetitorError);
-    if ( addCompetitorBtnStatus) {
-      setError(true);
-    }
-  }
-
-  function handleUpdateCompetitor() {
-    updateCompatitorAPICaliing();
+ 
+  
+  async function handleUpdateCompetitor() {
+    if(isAnyFieldUpdated(competitorValue,competitorDetails))
+     {await updateCompatitorAPICaliing();}
     setcompetitor((prev: IViewCustomerCompetitor) => ({
       ...prev,
       selectedCompetitorIndex: -1,
@@ -131,9 +126,9 @@ const ViewCustomerCompetitorViewModel = ({ route, navigation }: any) => {
       dispatch(setLoaderVisibility(true));
       const body = {
         customer_id: customerList[selectedIndexValue]?.id,
-        company_name: enteredCompetitorDetail?.company?.current,
-        address: enteredCompetitorDetail?.address?.current,
-        comment: enteredCompetitorDetail?.comment?.current,
+        company_name: competitorValue?.current?.company,
+        address: competitorValue?.current?.address,
+        comment: competitorValue?.current?.comment,
       };
       const res = await addCustomerCompetitorAPIHandler(body);
       if (res?.isSuccess) {
@@ -144,9 +139,6 @@ const ViewCustomerCompetitorViewModel = ({ route, navigation }: any) => {
       dispatch(setLoaderVisibility(false));
     }
   }
-  const selectedCompetitorDetail: string[] = [
-    ...selectedCompetitor(customerList, selectedIndexValue, competitor),
-  ];
 
   const updateCompatitorAPICaliing = async () => {
     try {
@@ -155,8 +147,7 @@ const ViewCustomerCompetitorViewModel = ({ route, navigation }: any) => {
         customerList,
         selectedIndexValue,
         competitor,
-        enteredCompetitorDetail,
-        selectedCompetitorDetail,
+        competitorValue,
       );
       const res = await updateCompetitorAPIHandler(body);
       if (res?.isSuccess) {
@@ -178,15 +169,12 @@ const ViewCustomerCompetitorViewModel = ({ route, navigation }: any) => {
   }
 
   function handleCompetiotorTextChange(text: string, id: number) {
-    enteredCompetitorDetail[Object.keys(enteredCompetitorDetail)[id]].current =
-      text;
+    handleTextOfCompetitor(Object.keys(competitorDetails)[id], text);
     handleAddCompetitorBtnStatus();
-    if(showError)
-     setError(false);
   }
 
   function handleAddCompetitorBtnStatus() {
-    if (checkAllInputField(enteredCompetitorDetail)) {
+    if (isAllInputFieldHaveData(competitorValue)) {
       if (!addCompetitorBtnStatus) setAddCompetitorButtonStatus(true);
     } else {
       if (addCompetitorBtnStatus) setAddCompetitorButtonStatus(false);
@@ -223,9 +211,9 @@ const ViewCustomerCompetitorViewModel = ({ route, navigation }: any) => {
         handleCompetiotorTextChange,
         handleFooterButtonClick,
         submitSuccess,
-        competitorError,
         addCompetitorBtnStatus,
-        showError,
+
+        competitorErrors,
       }}
     />
   );

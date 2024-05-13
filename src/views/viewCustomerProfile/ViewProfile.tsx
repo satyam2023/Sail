@@ -1,7 +1,6 @@
-import React, { memo } from "react";
-import { KeyboardAvoidingView, SafeAreaView } from "react-native";
+import React, { MutableRefObject, memo } from "react";
+import { SafeAreaView } from "react-native";
 import {
-  IEnteredCustomerDetails,
   ISelectedImage,
 } from "models/interface/ICreateCustomer";
 import { IdropDown } from "models/interface/ISetting";
@@ -13,18 +12,16 @@ import First from "./CustomerDetailsScreen/First";
 import ProfileHeader from "./Component/ProfileHeader";
 import { CustomFooter, KeyboardAvoidingWrapper } from "components";
 import StringConstants from "shared/localization";
-import { isAndroid } from "libs";
+import { ValidationError } from "core/UseForm";
 
 interface IViewProfile {
   customerList: IViewCustomerBody[];
   selectedIndexValue: number;
   handleForwardClick: () => void;
   handleBackClick: () => void;
-  enteredCustomerDetails: IEnteredCustomerDetails;
   dropdownDataList: IdropDown[][];
   setIndexofSubType: Function;
   setSubTypes: Function;
-  isAllFieldHaveData: () => void;
   handleUploadDocument: () => void;
   handleLocation: () => void;
   handleUpdateCustomerCode: (text: string) => void;
@@ -39,6 +36,8 @@ interface IViewProfile {
   ) => void;
   removeDropDownItem: (id: number, type: string) => void;
   removeSelectedImage: (item: ISelectedImage) => void;
+  customerErrors:MutableRefObject<ValidationError[]>;
+  customerTypeErrors:MutableRefObject<ValidationError[]>;
 }
 
 const ViewProfileScreen = ({
@@ -47,10 +46,8 @@ const ViewProfileScreen = ({
   handleForwardClick,
   handleBackClick,
   setSubTypes,
-  enteredCustomerDetails,
   dropdownDataList,
   setIndexofSubType,
-  isAllFieldHaveData,
   handleUploadDocument,
   handleLocation,
   handleUpdateCustomerCode,
@@ -62,12 +59,14 @@ const ViewProfileScreen = ({
   handleSpecificCustomerTypeDetailChange,
   removeDropDownItem,
   removeSelectedImage,
+  customerErrors,
+  customerTypeErrors
 }: IViewProfile) => {
   return (
     <>
       <StatusBarComponent
         backgroundColor={Colors.sailBlue}
-        conentType={"dark-content"}
+        conentType={'light-content'}
       />
       <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
         <ProfileHeader
@@ -79,10 +78,8 @@ const ViewProfileScreen = ({
           <First
             {...{
               setSubTypes,
-              enteredCustomerDetails,
               dropdownDataList,
               setIndexofSubType,
-              isAllFieldHaveData,
               customerList,
               selectedIndexValue,
               customerDetail,
@@ -94,6 +91,8 @@ const ViewProfileScreen = ({
               handleUploadDocument,
               removeDropDownItem,
               removeSelectedImage,
+              customerErrors,
+              customerTypeErrors
             }}
           />
         </KeyboardAvoidingWrapper>

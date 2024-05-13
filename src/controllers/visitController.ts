@@ -104,7 +104,6 @@ export const applyFilterAPI = async (
     body,
   );
   if (res.isSuccess) {
-    console.log("FIlter Data response::::::", res);
   }
   return res;
 };

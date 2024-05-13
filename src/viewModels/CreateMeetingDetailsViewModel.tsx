@@ -184,11 +184,12 @@ const CreateMetingDetailsViewModel = () => {
 
 
   useEffect(() => {
-    getCustomerType(dispatch),
+      fetchPlannedVisitData(1)
+      getCustomerType(dispatch),
       getCustomerStatus(dispatch),
       getReasonContact(dispatch),
       getAccompanying(dispatch);
-    getEscaltedDropdownData(dispatch);
+     getEscaltedDropdownData(dispatch);
   }, []);
 
 
@@ -291,7 +292,6 @@ const CreateMetingDetailsViewModel = () => {
   const recordVoice = async () => {
     try {
       const recorderAudio = await Voice.start("en-US");
-      console.log("REcoderd Voice:::::", recorderAudio);
     } catch (e) {
       logger(e, "Error in Voice Recognization");
     }

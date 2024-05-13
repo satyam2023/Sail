@@ -7,7 +7,8 @@ import { IFlatlistIndex } from "./IMessage";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
 import { ICustomertypeTrader, ISelectedImage } from "./ICreateCustomer";
 import { MutableRefObject } from "react";
-import { IMeetingRepresentativeDetailInputField } from "@shared-constants";
+import { CustomerTraderFields, IMeetingRepresentativeDetailInputField } from "@shared-constants";
+import { IdropDown } from "./ISetting";
 
 export interface IFlatListCustomerList extends IFlatlistIndex {
   item: IViewCustomerBody;
@@ -18,7 +19,7 @@ export interface IFlatListRepresentativeList extends IFlatlistIndex {
 }
 
 export interface IFlatListInputField extends IFlatlistIndex {
-  item: string;
+  item:CustomerTraderFields;
 }
 
 
@@ -91,9 +92,27 @@ export interface IUpdateTrader_Project_Dealer_Type extends ICustomertypeTrader {
   projectDetail: MutableRefObject<string>;
 }
 
+export interface SpecialCustomerType{
+  [key:string]:string,
+  cluster: string,
+  contact_number: string,
+  day_wise_stock: string,
+  price_feedback_competitor: string,
+  procured_products: string,
+  tentative_quality_procured:string,
+  supplier: string,
+  project_details:string
+}
+
 export interface ICompetitorError {
   [key: string | number]: boolean | null;
   name: boolean | null;
   address: boolean | null;
   comment: boolean | null;
+}
+
+export interface Procured_Product_Data{
+    customer_id: string,
+    procured_product_id: 1,
+    procured_product_name: IProcuredProduct
 }

@@ -11,9 +11,13 @@ import {
 import TextWrapper from "../TextWrapper";
 import StringConstants from "shared/localization";
 import { PressableButton } from "components";
+import { ValidationError } from "core/UseForm";
+import commonStyles from "commonStyles/CommonStyle";
 
 interface ILocateMeProps {
   onPress: (e: GestureResponderEvent) => void;
+  errors?:ValidationError[];
+  key?:string;
 }
 
 interface ILocateMeStyle {
@@ -24,12 +28,22 @@ interface ILocateMeStyle {
 
 const LocateMe = (props: ILocateMeProps) => {
   return (
+    <>
     <PressableButton onPress={props.onPress} style={styles.locateMeContainer}>
       <Image source={Glyphs.LocateMe} style={styles.locateMeImg} />
       <TextWrapper color={Colors.sailBlue} fontSize={14}>
         {StringConstants.LOCATE_ME}
       </TextWrapper>
     </PressableButton>
+    {props?.errors?.map(
+        (error) =>
+          error?.field == props?.key && (
+            <TextWrapper style={[commonStyles.errorText, { bottom: 12 }]}>
+              {error?.message}
+            </TextWrapper>
+          )
+      )}
+    </>
   );
 };
 

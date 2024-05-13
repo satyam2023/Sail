@@ -131,7 +131,7 @@ const SignUpScreenViewMOdel = () => {
       } else {
       }
     } catch (error) {
-      console.error(error);
+      logger(error,"Error in SignUp")
     } finally {
       dispatch(setLoaderVisibility(false));
     }
