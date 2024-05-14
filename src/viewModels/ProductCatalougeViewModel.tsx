@@ -28,9 +28,9 @@ const ProductCatalougeViewModel = () => {
   const [searchResult, setSearchResult] = useState<IProductCatalogue[]>();
 
   function handleEnterSearchText(text: string) {
-    // details.searchDetails.current = text;
-    // const res = searchProductList(productData, details.searchDetails.current);
-    // setSearchResult(res);
+    details.searchDetails.current = text;
+    const res = searchProductList(productData, details.searchDetails.current);
+    setSearchResult(res);
   }
 
   function handleQrVisibility(param:string) {

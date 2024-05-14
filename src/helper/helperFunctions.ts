@@ -21,27 +21,22 @@ import { launchImageLibrary } from "react-native-image-picker";
 import Geolocation from "@react-native-community/geolocation";
 import {
   ICustomerState,
-  IUpdateTrader_Project_Dealer_Type,
   IViewCustomerCompetitor,
   IViewCustomerRepresentative,
   Procured_Product_Data,
 } from "models/interface/IViewCustomerProfile";
 import {
   CompetitorDetail,
-  IEnteredCompetitorDetail,
-  IEnteredCustomerDetails,
-  IRepresentativeEnteredDetail,
   ISelectedImage,
   IsubType,
   RepresentativeDetails,
 } from "models/interface/ICreateCustomer";
 import {
   IRepresentativeList,
-  IUnplannedMeetingEnteredDetail,
 } from "models/interface/IMeeting";
 import StringConstants from "shared/localization";
 import { IProductCatalogue } from "models/ApiResponses/ProductCatalogue";
-import { MutableRefObject, SetStateAction } from "react";
+import { MutableRefObject } from "react";
 import { EscalatedList } from "models/interface/IMessage";
 import { FormValues } from "core/UseForm";
 
@@ -363,7 +358,6 @@ export const setUpdateRepresentativeBody = (
   customerList: IViewCustomerBody[],
   selectedIndexValue: number,
   representative: IViewCustomerRepresentative,
-  // enteredRepresentativeDetails: IRepresentativeEnteredDetail,
   representativeValue: MutableRefObject<FormValues>,
   representativeDetail: string[],
   value: string,
@@ -375,29 +369,17 @@ export const setUpdateRepresentativeBody = (
         representative.selectedRepresentativeIndex
       ]?.id,
     designation: updatedValues?.designation,
-    // enteredRepresentativeDetails?.designation?.current?.length > 0
-    //   ? enteredRepresentativeDetails?.designation?.current
-    //   : representativeDetail[1],
+
     department: updatedValues?.dept,
-    // enteredRepresentativeDetails?.dept?.current?.length > 0
-    //   ? enteredRepresentativeDetails?.dept?.current
-    //   : representativeDetail[2],
+ 
     address: updatedValues?.address,
-    // enteredRepresentativeDetails?.address?.current?.length > 0
-    //   ? enteredRepresentativeDetails?.address?.current
-    //   : representativeDetail[3],
+
     email_id: updatedValues?.email,
-    // enteredRepresentativeDetails?.email?.current?.length > 0
-    //   ? enteredRepresentativeDetails?.email?.current
-    //   : representativeDetail[4],
+    
     contact_number: updatedValues?.contact,
-    // enteredRepresentativeDetails?.contact?.current?.length > 0
-    //   ? enteredRepresentativeDetails?.contact?.current
-    //   : representativeDetail[5],
+  
     whatsapp_number: updatedValues?.whatsApp,
-    // enteredRepresentativeDetails?.whatsApp?.current?.length > 0
-    //   ? enteredRepresentativeDetails?.whatsApp?.current
-    //   : representativeDetail[6],
+
     active: value,
   };
 
@@ -428,17 +410,11 @@ export const setUpdateCompetitorBody = (
         competitor.selectedCompetitorIndex
       ]?.id,
     company_name: competitorValue?.current?.company,
-    // enteredCompetitorDetail?.company.current.length > 0
-    //   ? enteredCompetitorDetail?.company.current
-    //   : selectedCompetitorDetail[0],
+
     address: competitorValue?.current?.address,
-    // enteredCompetitorDetail?.address.current.length > 0
-    //   ? enteredCompetitorDetail?.address.current
-    //   : selectedCompetitorDetail[1],
+ 
     comment: competitorValue?.current?.comment,
-    // enteredCompetitorDetail?.comment.current.length > 0
-    //   ? enteredCompetitorDetail?.comment.current
-    //   : selectedCompetitorDetail[2],
+ 
   };
 
   return data;
@@ -556,8 +532,8 @@ export const checkAllInputField = (fields: any) => {
   return true;
 };
 
-export const isAllInputFieldHaveData = (fields: any) => {
-  for (let i = 0; i < Object.keys(fields.current).length; i++) {
+export const isAllInputFieldHaveData = (fields: MutableRefObject<FormValues>) => {
+  for (let i = 0; i < Object.keys(fields.current)?.length; i++) {
     if (fields.current[Object.keys(fields.current)[i]].length == 0) {
       return false;
     }
@@ -812,12 +788,7 @@ export const representativeDetailsofViewCustomerProfile = (
     "-1",
   ];
 
-  // for (let i = 0; i < Object.keys(representativeDetails).length; i++) {
-  //   handleTextOfRepresentative(
-  //     Object.keys(representativeDetails)[i],
-  //     data[i],
-  //   );
-  // }
+ 
 
   return data;
 };
@@ -826,6 +797,8 @@ export const customerDetailOfViewModel = (
   customerList: IViewCustomerBody[],
   selectedIndexValue: number,
 ) => {
+
+  console.log("Customer List:::::",customerList[selectedIndexValue]);
   const data = [
     customerList[selectedIndexValue]?.customer_code,
     customerList[selectedIndexValue]?.company_name,
@@ -998,6 +971,14 @@ export const formatSupplier_list = (data: Supplier_Data[]) => {
   for (let i = 0; i < data?.length; i++) {
     ans.push(data[i].supplier_name);
   }
-
   return ans;
 };
+
+export const filterAccompyingExecutive=(id:number,data:any)=>{
+ const ans= data.filter((item:IdropDown)=>{
+     return item?.id==id;
+  })
+
+return ans[0];
+
+}

@@ -1,19 +1,12 @@
 import { useFocusEffect } from "@react-navigation/native";
 import {
-  getCustomerStatus,
-  getCustomerType,
-} from "controllers/createCustomerController";
-import {
-  getAccompanying,
-  getReasonContact,
-} from "controllers/dropDownDataController";
-import {
   getPlannedVisit,
   getUnplannedVisitExecution,
 } from "controllers/meetingController";
 import {
   convertAccomToDropData,
   convertCustomerToDropData,
+  filterAccompyingExecutive,
   isAllInputFieldHaveData,
   logger,
   plannedMeeting,
@@ -30,6 +23,8 @@ import {
   IRepresentativeList,
   Iissue,
   IissueDetail,
+  IssueDetails,
+  PlannedMeetingUpdate,
 } from "models/interface/IMeeting";
 import { IdropDown } from "models/interface/ISetting";
 import React, { useEffect, useRef, useState } from "react";
@@ -46,7 +41,6 @@ import {
   updatedPlannedVisitValidationRule,
 } from "helper/ValidationRegex";
 import Voice from "@react-native-voice/voice";
-import { getEscaltedDropdownData } from "controllers/messageController";
 import { EscalatedList } from "models/interface/IMessage";
 import useForm, { FormValues } from "core/UseForm";
 
@@ -145,17 +139,17 @@ const CreateMetingDetailsViewModel = () => {
     resolved_status: useRef<number>(0),
   };
 
-  const issueDetails:FormValues={
+  const [issueDetails,setIssueDetails]=useState<IssueDetails>({
     issueName: '',
     comment: '',
     escalatedTo: '',
     escalated_comment: '',
     resolved_status:'',
-  }
+  });
 
   const {
     values: issueDetailValue,
-    errors: issueListError,
+    errors: issueListErrors,
     handleSubmit: handleIssueSubmit,
     handleTextChange: handleTextChangeOfIssue,
   } = useForm(
@@ -168,6 +162,15 @@ const CreateMetingDetailsViewModel = () => {
     visitTime: "",
     discussionPoint: "",
   };
+
+
+  const [updatePlannedVisit,setPlannedUpdateVisit]=useState<PlannedMeetingUpdate>({
+    visitTime: "",
+    discussionPoint: "",
+    accompying:[]
+  });
+
+  
 
   const plannedVisitSubmit = () => {};
 
@@ -185,11 +188,6 @@ const CreateMetingDetailsViewModel = () => {
 
   useEffect(() => {
       fetchPlannedVisitData(1)
-      getCustomerType(dispatch),
-      getCustomerStatus(dispatch),
-      getReasonContact(dispatch),
-      getAccompanying(dispatch);
-     getEscaltedDropdownData(dispatch);
   }, []);
 
 
@@ -254,6 +252,7 @@ const CreateMetingDetailsViewModel = () => {
         ? storeDetailsOfPlannedRepresentative()
         : storeDetailsOfUnplannedRepresentative();
     }
+    resetRepresentativeDetail();
   };
 
   const {
@@ -274,6 +273,8 @@ const CreateMetingDetailsViewModel = () => {
     (state: RootState) => state?.craeteMeeting,
   );
 
+  console.log("Planned Meeting List:::::::",plannedMeetingList)
+
   const plannedMeetingDetail =
     selectedIndexValue >= 0
       ? [...plannedMeeting(plannedMeetingList, selectedIndexValue)]
@@ -289,6 +290,7 @@ const CreateMetingDetailsViewModel = () => {
     (state: RootState) => state?.message?.EscaletedDropDownData?.data,
   );
 
+
   const recordVoice = async () => {
     try {
       const recorderAudio = await Voice.start("en-US");
@@ -301,6 +303,7 @@ const CreateMetingDetailsViewModel = () => {
     try {
       const res = await getPlannedVisit(dispatch, pagenumber);
       if (res) {
+       
       }
     } catch (error) {
       logger(error, "Error in Fetching Planned Visit data");
@@ -472,18 +475,31 @@ const CreateMetingDetailsViewModel = () => {
     }
   }
 
+
   function handleIssueDetailChange(text: string | number, id: number) {
-   handleTextChangeOfIssue(Object.keys(issueDetails)[id],text.toString())
+    issueDetails[id]=text.toString();
+  //  handleTextChangeOfIssue(Object.keys(issueDetails)[id],text.toString())
      if(id==2){
       handleEscalationAccompying();
      }
   }
 
   const handlePlannedVisitTextChange = (text: string, id: number) => {
-    handleTextChangeOfPlannedVisit(
-      Object.keys(updatedPlannedVisit.current)[id],
-      text,
-    );
+    if(id==6)
+    setPlannedUpdateVisit((prev:PlannedMeetingUpdate)=>({
+      ...prev,
+       visitTime:text
+     }))
+    else if(id==9)
+    setPlannedUpdateVisit((prev:PlannedMeetingUpdate)=>({
+      ...prev,
+      discussionPoint:text
+     }))
+ else if(id==10)
+ setPlannedUpdateVisit((prev:PlannedMeetingUpdate)=>({
+   ...prev,
+   accompying:[...updatePlannedVisit.accompying,filterAccompyingExecutive(Number(text),unplannedDropDownList[11])],
+ }))
   };
 
   const handleEscalationAccompying=()=>{
@@ -528,7 +544,9 @@ const CreateMetingDetailsViewModel = () => {
         escalation_accompying_Status,
         escalatedCustomerList,
         handleEscalationAccompying,
-        issueDetailValue
+        issueDetailValue,
+        updatePlannedVisit,
+        issueDetails,
       }}
     />
   );

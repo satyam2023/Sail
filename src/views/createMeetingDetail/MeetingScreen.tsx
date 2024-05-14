@@ -9,6 +9,7 @@ import StringConstants from "shared/localization";
 import InputTextField from "components/InputTextField";
 import HorizontalSlider from "components/HorizontalSliderTab";
 import {
+  KeyboardAvoidingWrapper,
   PressableButton,
   RectangularBox,
   StatusBarComponent,
@@ -24,6 +25,8 @@ import {
   IRepresentativeList,
   IUnplannedDropDownList,
   IissueDetail,
+  IssueDetails,
+  PlannedMeetingUpdate,
 } from "models/interface/IMeeting";
 import PlannedMeeting from "./PlannedMeeting";
 import Representative from "./addUnplannedVisit/AddRepresentative";
@@ -65,6 +68,8 @@ interface IMeetingScreen {
   escalatedCustomerList: EscalatedList[];
   handleEscalationAccompying:()=>void;
   issueDetailValue:any;
+  updatePlannedVisit:PlannedMeetingUpdate;
+  issueDetails:IssueDetails;
 }
 
 const MeetingScreen = ({
@@ -100,7 +105,8 @@ const MeetingScreen = ({
   escalation_accompying_Status,
   escalatedCustomerList,
   handleEscalationAccompying,
-  issueDetailValue
+  issueDetailValue,
+  updatePlannedVisit
 }: IMeetingScreen) => {
   const renderRectangularBox = ({ item, index }: IFlatlistRectangularBox) => {
     return (
@@ -177,6 +183,10 @@ const MeetingScreen = ({
                           handlePlannedVisitTextChange,
                           updatedPlannedVisitError,
                           handlePlannedVisitSubmit,
+                          handleEscalationAccompying,
+                          issueDetailValue,
+                          unplannedDropDownList,
+                          updatePlannedVisit
                         }}
                       />
                     ) : (
@@ -190,6 +200,7 @@ const MeetingScreen = ({
                             marginTop: 16,
                           }}
                         />
+                       
                         <FlatList
                           data={plannedMeetingList?.data}
                           renderItem={renderRectangularBox}

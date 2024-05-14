@@ -69,6 +69,22 @@ export interface IissueDetail{
     
   }
 
+  export interface IssueDetails{
+    [key:string]:string
+    issueName: string,
+    comment: string,
+    escalatedTo: string,
+    escalated_comment: string,
+    resolved_status:string,
+  }
+
+  export interface PlannedMeetingUpdate{
+    [key:string|number]:string|IdropDown[],
+    visitTime:string,
+    discussionPoint: string,
+    accompying:IdropDown[]
+  }
+
   export interface IBtnStatus{
     submitBtn: boolean,
     representativeBtn: boolean
