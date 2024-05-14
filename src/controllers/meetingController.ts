@@ -25,7 +25,6 @@ export const getPlannedVisit = async (dispatch: Dispatch<AnyAction>, page: numbe
       await sendGetRequest<PlannedVisitResponse>(
         `${APIConstants.PLANNED_MEETING_LIST}?page=${page}`,
       );
-
     if (res.isSuccess) {
       dispatch(savePlannedVisit(res.data, page));
     }

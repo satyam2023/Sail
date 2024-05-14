@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Image,
-  SafeAreaView,
   ScrollView,
   TouchableOpacity,
   View,
@@ -17,7 +16,7 @@ import StringConstants from "shared/localization";
 import { SignInResponse } from "models/ApiResponses/SignInResponse";
 import { ExtarctTwoLetterName } from "helper/helperFunctions";
 import { HomeResponse } from "models/ApiResponses/HomeResponse";
-import { HorizontalScrollableList, StatusBarComponent } from "components";
+import { HorizontalScrollableList, ShimmerPlaceholder, StatusBarComponent } from "components";
 interface IHomeScreen {
   userData: SignInResponse;
   homeScreenData: HomeResponse;
@@ -36,15 +35,17 @@ const HomeScreen = ({
     <>
       <StatusBarComponent
         backgroundColor={Colors.sailBlue}
-        conentType={"light-content"}
+        conentType={'dark-content'}
       />
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false} 
+      bounces={false}
+      >
         <View style={styles.topContainer}>
           <TextWrapper style={styles.welcometext}>
             {StringConstants.WELCOME}
-            {userData.user.user_name}
+            {userData?.user?.user_name}
             <TextWrapper style={styles.roleText}>
-              {`(${userData.user.user_role_name})`}
+              {`  (${userData?.user?.user_role_name})`}
             </TextWrapper>
           </TextWrapper>
           <View style={{ flexDirection: "row" }}>

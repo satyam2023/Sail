@@ -1,26 +1,25 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import CustomHeader from "../Component/CustomHeader/CustomHeader";
 import Glyphs from "assets/Glyphs";
 import InputTextField from "components/InputTextField";
 import SafeAreaContainer from "components/SafeAreaContainer";
 import StringConstants from "shared/localization";
-import { Ierror } from "helper/ValidationRegex";
-import { Iuserdetail } from "models/interface/ISignUp";
 import { TextWrapper } from "components";
 import styles from "./Styles";
+import { FormValues, ValidationError } from "core/UseForm";
 
 interface IFirstSignUpScreen {
-  error: Ierror;
   handleOnTextChange: (text: string, id: number) => void;
-  userDetail: Iuserdetail;
   alreadyExist: boolean;
+  errors:MutableRefObject<ValidationError[]>;
+  upn_contact_values:FormValues;
 }
 
 const First = ({
-  error,
   handleOnTextChange,
-  userDetail,
-  alreadyExist
+  alreadyExist,
+  errors,
+  upn_contact_values
 }: IFirstSignUpScreen) => {
   return (
     <SafeAreaContainer>
@@ -30,14 +29,16 @@ const First = ({
         onChangeText={(text: string) => handleOnTextChange(text, 0)}
         placeholder={StringConstants.YOUR_UNIQUE}
         maxlength={7}
-        error={error?.upn ? StringConstants.UPN_ERROR_MSG : undefined}
+        errors={errors.current}
+        inputBoxId={Object.keys(upn_contact_values)[0]}
       />
       <InputTextField
         leftIcon={Glyphs.Phone}
         onChangeText={(text: string) => handleOnTextChange(text, 1)}
         placeholder={StringConstants.CONTACT_NUMBER}
         maxlength={10}
-        error={error?.Contact ? StringConstants.CONTACT_ERROR_MSG : undefined}
+        errors={errors.current}
+        inputBoxId={Object.keys(upn_contact_values)[1]}
       />
       { alreadyExist &&
       <TextWrapper style={styles.alresdyExistText}>

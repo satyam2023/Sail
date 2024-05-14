@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Image, Pressable, StyleSheet, View } from "react-native";
 import { SCREENS } from "@shared-constants";
 import { navigate } from "@navigation";
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   exedcutedNumber: {
-    fontFamily: fonts.type.bold,
+    fontFamily: fonts.type.semiBold,
     lineHeight: 36,
     fontSize: 24,
     marginTop: 16,

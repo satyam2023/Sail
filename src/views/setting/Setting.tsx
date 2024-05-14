@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import { FlatList, SafeAreaView, View,KeyboardAvoidingView} from "react-native";
 import styles from "./Style/Style";
 import Glyphs from "assets/Glyphs";
@@ -21,6 +21,7 @@ import { MasterDataResponse } from "models/ApiResponses/MasterDataResponse";
 import { TextFieldData } from "@shared-constants";
 import StatusBarComponent from "components/StatusBarComponent";
 import { isAndroid } from "libs";
+import { ValidationError } from "core/UseForm";
 
 interface ISetting {
   userData: SignInResponse;
@@ -30,7 +31,8 @@ interface ISetting {
   updateApiCalling: () => void;
   isDetailsUpdating: boolean;
   roleLocationDropDownList: MasterDataResponse;
-  handleOntextChange: (text: string | number, id: number) => void;
+  handleOntextChange: (text: string|number, id: number) => void;
+  emailError:MutableRefObject<ValidationError[]>
 }
 
 const SettingScreen = ({
@@ -41,6 +43,7 @@ const SettingScreen = ({
   isDetailsUpdating,
   roleLocationDropDownList,
   handleOntextChange,
+  emailError
 }: ISetting) => {
   function renderItem({ item, index }: IFlalistSetting) {
     return (
@@ -54,10 +57,12 @@ const SettingScreen = ({
                   ? Colors.white
                   : Colors.lightGray,
             }}
-            placeholder={item}
+            placeholder={item?.placeholder}
             maxlength={30}
             defaultValue={dataofInputField[index]}
             isEditable={index < 3 ? false : isDetailsUpdating}
+            inputBoxId={item?.key}
+            errors={emailError.current}
           />
         }
       </>
@@ -67,7 +72,7 @@ const SettingScreen = ({
     <>
       <StatusBarComponent
         backgroundColor={Colors.sailBlue}
-        conentType={"dark-content"}
+        conentType={'light-content'}
       />
       <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
         <Header
@@ -79,7 +84,7 @@ const SettingScreen = ({
         <ScrollView
           style={{ paddingHorizontal: 20}}
           showsVerticalScrollIndicator={false}
-          nestedScrollEnabled
+          nestedScrollEnabled={true}
         >
           <View style={styles.detailContainer}>
             <View style={styles.circle}>
@@ -116,6 +121,7 @@ const SettingScreen = ({
             data={TextFieldData}
             renderItem={renderItem}
             scrollEnabled={false}
+            keyExtractor={(_, index) => index.toString()}
           />
           <CustomDropDown
             ArrayOfData={
@@ -129,7 +135,7 @@ const SettingScreen = ({
             }}
             defaultValue={dataofInputField[4]}
             isRightDropDownVisible={!isDetailsUpdating}
-            onPress={(item: IdropDown) => handleOntextChange(item.id, 1)}
+            onPress={(item: IdropDown) => handleOntextChange(item.name, 1)}
           />
           <CustomDropDown
             ArrayOfData={
@@ -143,7 +149,7 @@ const SettingScreen = ({
             }}
             defaultValue={dataofInputField[5]}
             isRightDropDownVisible={!isDetailsUpdating}
-            onPress={(item: IdropDown) => (item.id, 2)}
+            onPress={(item: IdropDown) =>handleOntextChange(item.id, 2)}
           />
           {isDetailsUpdating && (
             <CustomButton

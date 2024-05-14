@@ -1,6 +1,6 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import CustomerDetails from "./CustomerDetails";
-import { KeyboardAvoidingView, SafeAreaView, ScrollView } from "react-native";
+import {SafeAreaView, ScrollView } from "react-native";
 import CustomerRepresentative from "./CustomerRepresentative/CustomerRepresentative";
 import RegistrationCompleted from "./RegistrationCompleted/RegistrationCompleted";
 import StringConstants from "shared/localization";
@@ -9,56 +9,39 @@ import { Colors } from "commonStyles/RNColor.style";
 import {
   CustomFooter,
   KeyboardAvoidingWrapper,
-  SafeAreaContainer,
 } from "components";
 import {
-  ICustomerTypeProject,
-  ICustomertypeTrader,
   IEnteredCompetitorDetail,
-  IEnteredCustomerDetails,
-  IRepresentativeEnteredDetail,
   ISelectedImage,
   IselecteddropDown,
   IsubType,
 } from "models/interface/ICreateCustomer";
 import { IdropDown } from "models/interface/ISetting";
 import {
-  ICreateCustomerError,
-  IRepresentativeError,
-} from "helper/ValidationRegex";
-import {
   ICompetitor,
   IRepresentative,
 } from "models/ApiResponses/CreateCustomer";
 import StatusBarComponent from "components/StatusBarComponent";
-import { isAndroid } from "libs";
-
+import { ValidationError } from "core/UseForm";
 interface ICreateCustomer {
   CurrentScreen: number;
   addDetails: (addDetailStatus: boolean) => void;
   handleScreenChange: (direction: string) => void;
   addDetailStatus: boolean;
-  enteredCustomerDetails: IEnteredCustomerDetails;
   dropdownDataList: IdropDown[][];
-  setIndexofSubType: Function;
   setSubTypes: Function;
   isAllFieldHaveData: () => void;
   handleLocateMe: () => void;
   handleSelectImageVideo: () => void;
-  error: ICreateCustomerError;
-  enteredRepresentativeDetails: IRepresentativeEnteredDetail;
   addRepresentativeCompetitor: () => void;
   representativeList: IRepresentative[];
   competitorList: ICompetitor[];
   enteredCompetitorDetail: IEnteredCompetitorDetail;
   isAllDetailsFilled: boolean;
-  customerTypeTraderDealer: ICustomertypeTrader;
   indexofSubtype: IsubType;
   selectedDropdownItemList: IselecteddropDown;
   extraListDropDownset: Function;
   removeSelectedItem: (index: number, type: string) => void;
-  cutomerTypeProjectEnteredData: ICustomerTypeProject;
-  representativeError: IRepresentativeError;
   customerDetailSelectedImage: ISelectedImage[];
   selectRepresentativeImage: ISelectedImage | undefined;
   handleTextOnTextChangeCustomer: (text: string | number, id: number) => void;
@@ -66,6 +49,13 @@ interface ICreateCustomer {
   removeSelectedImage: (item: ISelectedImage) => void;
   handleTextChangeOfRepresentative: (text: string, id: number) => void;
   handleTextChangeOfCompetitor: (text: string, id: number) => void;
+  handleTraderDealerTypeTextChange:(text:string,id:number)=>void;
+  handleProjectTypeTextChange:(text:string,id:number)=>void;
+  representativeErrors:MutableRefObject<ValidationError[]>;
+  competitorErrors:MutableRefObject<ValidationError[]>;
+  customerErrors:MutableRefObject<ValidationError[]>;
+  traderDealerErrors:MutableRefObject<ValidationError[]>;
+  projectErrors:MutableRefObject<ValidationError[]>;
 }
 
 const CreateCustomerScreen = (props: ICreateCustomer) => {
@@ -97,7 +87,7 @@ const CreateCustomerScreen = (props: ICreateCustomer) => {
       />
       <SafeAreaView style={{flex:1}} >
         <KeyboardAvoidingWrapper>
-        <ScrollView style={{ backgroundColor: Colors.background, flex: 1 }}>
+        <ScrollView style={{ backgroundColor: Colors.background, flex: 1 }} bounces={false} showsVerticalScrollIndicator={false}>
           {renderScreen()}
         </ScrollView>
         </KeyboardAvoidingWrapper>

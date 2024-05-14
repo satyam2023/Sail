@@ -44,14 +44,13 @@ const HomeScreenViewModel = () => {
         dispatch(setLoaderVisibility(false));
       }
     };
-
     fetchHome();
   }
 
   useEffect(() => {
     try {
-      dispatch(setLoaderVisibility(true));
-      handleHomeApiCall(dispatch),
+       dispatch(setLoaderVisibility(true));
+       handleHomeApiCall(dispatch),
         setMasterData(dispatch),
         getAccompanying(dispatch),
         getReasonContact(dispatch),

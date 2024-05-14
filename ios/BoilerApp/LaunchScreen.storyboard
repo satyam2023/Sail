@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="jsb-Qt-KOO">
-    <device id="retina5_5" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="rfo-Cm-4FR">
+    <device id="retina6_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
@@ -9,30 +9,69 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Item-->
         <scene sceneID="1Jy-GP-gSC">
             <objects>
                 <viewController id="jsb-Qt-KOO" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="WV8-Gg-F3j">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="1200px-SAIL_Logo 1 (1).png" translatesAutoresizingMaskIntoConstraints="NO" id="Ift-zV-d1m">
-                                <rect key="frame" x="124.33333333333333" y="272.66666666666669" width="165.33333333333337" height="191"/>
-                            </imageView>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dfO-eY-bSA">
+                                <rect key="frame" x="40" y="271" width="310" height="271"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="eKe-fi-yE0">
+                                        <rect key="frame" x="20" y="20" width="270" height="231"/>
+                                        <subviews>
+                                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9VH-De-2lO">
+                                                <rect key="frame" x="0.0" y="0.0" width="270" height="231"/>
+                                                <subviews>
+                                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" image="1200px-SAIL_Logo 1 (1).png" translatesAutoresizingMaskIntoConstraints="NO" id="Ift-zV-d1m">
+                                                        <rect key="frame" x="44" y="20" width="182" height="191"/>
+                                                    </imageView>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstAttribute="trailing" secondItem="Ift-zV-d1m" secondAttribute="trailing" constant="44" id="H1s-N1-PBC"/>
+                                                    <constraint firstAttribute="bottom" secondItem="Ift-zV-d1m" secondAttribute="bottom" constant="20" id="IQb-M7-eMT"/>
+                                                    <constraint firstItem="Ift-zV-d1m" firstAttribute="centerY" secondItem="9VH-De-2lO" secondAttribute="centerY" id="RqX-Pq-K3G"/>
+                                                    <constraint firstItem="Ift-zV-d1m" firstAttribute="centerX" secondItem="9VH-De-2lO" secondAttribute="centerX" id="n6u-LV-Mb2"/>
+                                                    <constraint firstItem="Ift-zV-d1m" firstAttribute="width" secondItem="9VH-De-2lO" secondAttribute="width" multiplier="0.4" constant="74" id="tNy-Cm-OBy"/>
+                                                </constraints>
+                                                <viewLayoutGuide key="contentLayoutGuide" id="wqj-sm-Djx"/>
+                                                <viewLayoutGuide key="frameLayoutGuide" id="ge2-zt-elR"/>
+                                            </scrollView>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="W9N-ed-wJ0"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="Ift-zV-d1m" firstAttribute="width" secondItem="WV8-Gg-F3j" secondAttribute="width" multiplier="0.4" id="5Df-jU-Not"/>
-                            <constraint firstItem="Ift-zV-d1m" firstAttribute="centerX" secondItem="WV8-Gg-F3j" secondAttribute="centerX" id="Eyn-Qc-47M"/>
-                            <constraint firstItem="Ift-zV-d1m" firstAttribute="centerY" secondItem="WV8-Gg-F3j" secondAttribute="centerY" id="xt9-Wq-dIN"/>
-                        </constraints>
                     </view>
+                    <tabBarItem key="tabBarItem" title="Item" id="pUk-JP-iMu"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bC6-WG-4jo" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-333" y="-395"/>
+            <point key="canvasLocation" x="595.38461538461536" y="-395.26066350710897"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="Tj8-nD-dqh">
+            <objects>
+                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="rfo-Cm-4FR" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="xw9-wE-f2e">
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="jsb-Qt-KOO" kind="relationship" relationship="viewControllers" id="evl-M6-j0e"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="t64-wF-uub" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-333.84615384615381" y="-395.26066350710897"/>
         </scene>
     </scenes>
     <color key="tintColor" systemColor="linkColor"/>

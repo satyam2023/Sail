@@ -10,7 +10,7 @@ import {
 import { Header, InputTextField, TextWrapper } from "components";
 import { IProductCatalogue } from "models/ApiResponses/ProductCatalogue";
 import styles from "./style";
-import { IFlatlistProduct } from "models/interface/IProductCatalog";
+import { IFlatlistProduct, ProcductSearchDetail } from "models/interface/IProductCatalog";
 import StatusBarComponent from "components/StatusBarComponent";
 import commonStyles from "commonStyles/CommonStyle";
 import { Colors } from "commonStyles/RNColor.style";
@@ -22,6 +22,7 @@ interface IProductScreen {
   handleQrVisibility: (param: string) => void;
   searchResult: IProductCatalogue[] | undefined;
   downloadCatalouge: (url: string) => void;
+  details:ProcductSearchDetail
 }
 
 const ProductCatalogScreen = (props: IProductScreen) => {
@@ -65,6 +66,7 @@ const ProductCatalogScreen = (props: IProductScreen) => {
               placeholder={StringConstants.SEARCH}
               rightIcon={Glyphs.Search}
               containerStyle={{ backgroundColor: Colors.white, marginTop: 16 }}
+              value={props?.details?.searchDetails?.current}
             />
             <FlatList
               data={

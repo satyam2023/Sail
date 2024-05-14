@@ -7,13 +7,12 @@ import {
 } from "components";
 import {
   IFlatListCompetitor,
-  IFlatListInputField,
   IViewCustomerCompetitor,
 } from "models/interface/IViewCustomerProfile";
 import { FlatList, Image, ScrollView, View } from "react-native";
 import StringConstants from "shared/localization";
 
-import { CompetitorDetailData } from "@shared-constants";
+import { CompetitorDetailData, CompetitorDetailInputField } from "@shared-constants";
 import fonts from "@fonts";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
 import { Colors } from "commonStyles/RNColor.style";
@@ -54,13 +53,14 @@ const ShowCompetitorListing = (props: IShowCompetitorListing) => {
     );
   }
 
-  const showCompetitorDetail = ({ item, index }: IFlatListInputField) => {
+  const showCompetitorDetail = ({ item, index }:{item:CompetitorDetailInputField,index:number}) => {
     return (
       <InputTextField
         onChangeText={() => {}}
         defaultValue={props?.selectedCompetitorDetail[index]}
-        placeholder={item}
+        placeholder={item?.placeholder}
         containerStyle={{ backgroundColor: Colors.disabledGrey }}
+        isEditable={false}
       />
     );
   };

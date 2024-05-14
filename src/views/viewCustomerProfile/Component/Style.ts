@@ -68,6 +68,9 @@ const styles = StyleSheet.create<IStyle>({
     backgroundColor: Colors.sailBlue,
     width: "30%",
     height: 30,
+   justifyContent:'center',
+   marginBottom:10,
+   alignItems:'center',
   },
 
   plsText: {
@@ -84,6 +87,7 @@ const styles = StyleSheet.create<IStyle>({
     alignItems: "center",
     width: "100%",
     paddingHorizontal: 16,
+    marginBottom:10,
     backgroundColor: Colors.white,
   },
   inputContainer: {

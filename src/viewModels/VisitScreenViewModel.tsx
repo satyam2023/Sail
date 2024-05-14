@@ -5,7 +5,7 @@ import {
   ExecutedResponse,
   VisitResponse,
 } from "models/ApiResponses/VisitResponse";
-import { useEffect, useRef, useState } from "react";
+import {useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BottomTabVisibility } from "redux/actions/UIAction";
 import VisitScreen from "views/visit/VisitScreen";
@@ -28,17 +28,13 @@ import {
   tacklePagination,
 } from "helper/helperFunctions";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
-import { Platform } from "react-native";
 import {
   IFilterDataDetails,
   IVisitScreenPagination,
 } from "models/interface/IVisit";
 import { store } from "redux/store/Store";
 import { Regex } from "helper/ValidationRegex";
-import {
-  saveExecutedVisits,
-  saveUpcomingVisits,
-} from "redux/actions/VisitAction";
+import { isAndroid } from "libs";
 
 const VisitScreenViewModel = () => {
   const [selectedIndexValue, setSelectedIndexValue] = useState<number>(-1);
@@ -55,16 +51,14 @@ const VisitScreenViewModel = () => {
 
   const lastPages = {
     upcomingLastPage: useRef<number>(1),
-    plannedLastPage: useRef<number>(1),
+    plannedLastPage: useRef<number>(-1),
     executedLastPage: useRef<number>(1),
   };
   const modeOfContactDropData =
     store?.getState()?.dropdown?.reasonContactData?.data?.ModeofContact;
   const userID = store?.getState()?.userAccount?.data?.data?.user?.id;
   const visitCount = store?.getState()?.home?.data?.data?.AllVisttsCount;
-  const upcomingVisitList = useSelector(
-    (state: any) => state?.visitDetail?.upcoming,
-  );
+  const [upcomingVisitList,setUpcomingVisitList]=useState<VisitResponse[]>([]);
   const plannedVisitList = useSelector(
     (state: any) => state?.visitDetail?.planned,
   );
@@ -74,9 +68,8 @@ const VisitScreenViewModel = () => {
     planned: useRef<number>(1),
     executed: useRef<number>(1),
   };
-  const executedVisitList = useSelector(
-    (state: any) => state?.visitDetail?.executed,
-  );
+  const [executedVisitList,setExecutedVisitList]=useState<ExecutedResponse[]>([]);
+
   const visitType = useSelector((state: any) => state?.UIReducer?.visitType);
   const dispatch = useDispatch();
   useFocusEffect(() => {
@@ -85,12 +78,11 @@ const VisitScreenViewModel = () => {
   });
   useEffect(() => {
     callUpcomingVisit(pageNumber.upcoming.current);
-    callPlannedVisitApi(pageNumber.planned.current);
+    callPlannedVisitApi(1);
     callExecutedVisit(pageNumber.executed.current);
-  }, []);
-  useEffect(() => {
     setCurrentVisit(visitType);
-  }, [visitType]);
+  }, []);
+  
 
   useEffect(() => {
     setSearchResult([]);
@@ -133,26 +125,29 @@ const VisitScreenViewModel = () => {
   function callUpcomingVisit(page: number) {
     const setUpcomingVisits = async (page: number) => {
       try {
-        if (tacklePagination(page, upcomingVisitList)) {
+       
           const res: IApiResponse<IPagination<VisitResponse>> =
             await getUpcomingVisits(page);
           if (res?.isSuccess) {
             lastPages.executedLastPage.current = res?.data?.data
               ? res?.data?.data?.last_page
               : 1;
-
-            dispatch(saveUpcomingVisits(res?.data?.data?.data));
+              const tempData = res?.data?.data?.data ? res?.data?.data?.data : [];
+            setUpcomingVisitList(upcomingVisitList.concat(tempData));
           }
-        }
-      } catch {}
+
+      } catch(e) {
+        logger(e,"Error in Upcoming Visit Api Calling")
+      }
     };
 
     setUpcomingVisits(page);
   }
 
-  function callPlannedVisitApi(page: number) {
+  function callPlannedVisitApi(page: number,isVisitCancelled=false) {
     const setPlannedVisits = async (page: number) => {
       try {
+     
         dispatch(setLoaderVisibility(true));
         const res: IApiResponse<IPagination<VisitResponse>> =
           await getPlannedVisits(page);
@@ -160,10 +155,11 @@ const VisitScreenViewModel = () => {
           lastPages.plannedLastPage.current = res?.data?.data
             ? res?.data?.data?.last_page
             : 1;
-          if (tacklePagination(page, plannedVisit)) {
-            const tempData = res?.data?.data?.data ? res?.data?.data?.data : [];
-            setPlannedVisit([...plannedVisit, ...tempData]);
-          }
+          const tempData = res?.data?.data?.data ? res?.data?.data?.data : [];
+          if(isVisitCancelled)
+          setPlannedVisit(tempData);
+          else 
+          setPlannedVisit(plannedVisit.concat(tempData));
         }
       } catch (e) {
         logger(e, "Error in Planned Visit");
@@ -185,15 +181,17 @@ const VisitScreenViewModel = () => {
             lastPages.executedLastPage.current = res?.data?.data
               ? res?.data?.data?.last_page
               : 1;
-            dispatch(saveExecutedVisits(res?.data?.data?.data));
+              const tempData = res?.data?.data?.data ? res?.data?.data?.data : [];
+            setExecutedVisitList(executedVisitList.concat(tempData));
           }
         }
-      } catch {
+      } catch (e){
+        logger(e,"Error in Executed Visit")
+
       } finally {
         dispatch(setLoaderVisibility(false));
       }
     };
-
     setExecutedVisits(page);
   }
 
@@ -211,10 +209,10 @@ const VisitScreenViewModel = () => {
   };
 
   function plannedVisitEdit() {
-    if (isVisitEditable) editVisitAPIHandler();
-    else {
-      setVisitEditable(true);
-    }
+    // if (isVisitEditable) editVisitAPIHandler();
+    // else {
+    //   setVisitEditable(true);
+    // }
   }
 
   const callDownloadPDFApi = async (id: number) => {
@@ -224,7 +222,7 @@ const VisitScreenViewModel = () => {
     try {
       const res = await pdfDownloadAPI(dispatch, sendId);
       dispatch(setLoaderVisibility(true));
-      if (Platform.OS === "android") {
+      if (isAndroid) {
         await downloadFile(res?.data?.data?.executiveUrl);
       } else {
         downloadFile(res?.data?.data?.executiveUrl);
@@ -240,15 +238,25 @@ const VisitScreenViewModel = () => {
     const data = {
       visit_id: plannedVisitEditDetails?.id?.current || null,
     };
+    try{
     const res = await cancelVisitAPI(data);
     if (res?.isSuccess) {
-      setSearchResult([]);
-      setPlannedVisit([]);
-      callPlannedVisitApi(1);
-      setCustomerDetails(false);
-      pageNumber.planned.current = 1;
+     handleCleanAfterCancelVisit()
     }
+  }
+  catch(e){
+    logger(e,"Error in cancelling the Planned Visit")
+  }
   };
+
+  const handleCleanAfterCancelVisit =() => {
+    if(searchResult.length>0)
+    setSearchResult(()=>[]);
+    setCustomerDetails(false);
+    pageNumber.planned.current = 1;
+    callPlannedVisitApi(1,true);
+  }
+
 
   const returnVisitType = () => {
     if (currentVisit == 1 || currentVisit == 2) return 0;
@@ -287,6 +295,7 @@ const VisitScreenViewModel = () => {
         setSearchResult(res?.data?.data?.data);
       }
     } catch (e) {
+      logger(e,"Error in Apply Filter API")
     } finally {
       dispatch(setLoaderVisibility(false));
     }
@@ -304,8 +313,7 @@ const VisitScreenViewModel = () => {
 
   const upcomingScreenPagination = () => {
     if (
-      pageNumber.upcoming.current < lastPages.upcomingLastPage.current &&
-      tacklePagination(pageNumber.upcoming.current + 1, upcomingVisitList)
+      pageNumber.upcoming.current < lastPages.upcomingLastPage.current
     ) {
       pageNumber.upcoming.current += 1;
       callUpcomingVisit(pageNumber.upcoming.current);

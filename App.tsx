@@ -1,10 +1,10 @@
 import "react-native-gesture-handler";
-import React from "react";
-import { useColorScheme, LogBox} from "react-native";
+import React, { useState } from "react";
+import { useColorScheme, LogBox } from "react-native";
 import SplashScreen from "react-native-splash-screen";
-import { Provider} from "react-redux";
+import { Provider } from "react-redux";
 import Navigation from "./src/route";
-import { useNetInfo } from "@react-native-community/netinfo";
+import { addEventListener, useNetInfo } from "@react-native-community/netinfo";
 import { persistor, store } from "redux/store/Store";
 import { PersistGate } from "redux-persist/integration/react";
 import StatusCode from "core/StatusCode";
@@ -12,6 +12,7 @@ import PleaseWaitLoader from "views/emptyState/PleaseWaitLoader";
 import { getRememberMe } from "shared/constants/accountService";
 import { SCREENS } from "@shared-constants";
 import { navigate } from "@navigation";
+import InternetManager from "components/InternetManager";
 LogBox.ignoreAllLogs();
 
 if (__DEV__) {
@@ -19,6 +20,7 @@ if (__DEV__) {
 }
 
 const App = () => {
+  const [vpnStatus, setVpnStatus] = useState<boolean>(true);
   const scheme = useColorScheme();
   const isDarkMode = scheme === "dark";
   const netInfo = useNetInfo({
@@ -33,6 +35,27 @@ const App = () => {
     useNativeReachability: false,
   });
   console.log(netInfo);
+
+  React.useEffect(() => {
+    const unsubscribe = addEventListener(() => {
+      fetch("https://cmoccuat.sailcmo.co.in:8000/api")
+        .then((response: any) => {
+          if (response.status === 404) {
+            setVpnStatus(true);
+          }
+        })
+        .catch((e) => {
+          // setVpnStatus(false);
+          console.log("Error: ", JSON.stringify(e));
+        });
+    });
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, []);
+
   React.useEffect(() => {
     setTimeout(async () => {
       SplashScreen.hide();
@@ -44,11 +67,16 @@ const App = () => {
       }
     }, 2000);
   }, [scheme, isDarkMode]);
+  
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
         <PleaseWaitLoader />
-        <Navigation />
+        {vpnStatus ? (
+           <Navigation />
+        ) : (
+          <InternetManager isVpnConected={vpnStatus} />
+        )}
       </PersistGate>
     </Provider>
   );

@@ -1,11 +1,5 @@
-import React from "react";
-import {
-  FlatList,
-  Image,
-  KeyboardAvoidingView,
-  SafeAreaView,
-  View,
-} from "react-native";
+import React, { MutableRefObject } from "react";
+import { FlatList, Image, View } from "react-native";
 import CustomerDetailHeader from "./CustomerDetailHeader";
 import StringConstants from "shared/localization";
 import { Colors } from "commonStyles/RNColor.style";
@@ -19,13 +13,10 @@ import {
 } from "components";
 import {
   CustomerDetailInputField,
-  CustomerTypeProjectField,
-  ErrorMsgOfCustomerInput,
+  CustomerTypeProject,
+  CustomerTypeTraderFields,
 } from "@shared-constants";
 import {
-  ICustomerTypeProject,
-  ICustomertypeTrader,
-  IEnteredCustomerDetails,
   IFlatListCustomerField,
   IFlatListExtraItem,
   ISelectedImage,
@@ -33,32 +24,30 @@ import {
   IsubType,
 } from "models/interface/ICreateCustomer";
 import { IdropDown } from "models/interface/ISetting";
-import { customerTypeTraderDealerField } from "@shared-constants";
 import Glyphs from "assets/Glyphs";
-import { ICreateCustomerError } from "helper/ValidationRegex";
 import styles from "./Style";
 import commonStyles from "commonStyles/CommonStyle";
-import { isAndroid } from "libs";
+import { ValidationError } from "core/UseForm";
 
 interface ICust {
-  enteredCustomerDetails: IEnteredCustomerDetails;
   dropdownDataList: IdropDown[][];
-  setIndexofSubType: Function;
   setSubTypes: Function;
   isAllFieldHaveData: () => void;
   handleLocateMe: () => void;
   handleSelectImageVideo: () => void;
-  error: ICreateCustomerError;
-  customerTypeTraderDealer: ICustomertypeTrader;
   indexofSubtype: IsubType;
   selectedDropdownItemList: IselecteddropDown;
   extraListDropDownset: Function;
   removeSelectedItem: (index: number, type: string) => void;
-  cutomerTypeProjectEnteredData: ICustomerTypeProject;
   customerDetailSelectedImage: ISelectedImage[];
   handleTextOnTextChangeCustomer: (text: string | number, id: number) => void;
   sapUserExist: boolean;
   removeSelectedImage: (item: ISelectedImage) => void;
+  customerErrors: MutableRefObject<ValidationError[]>;
+  traderDealerErrors:MutableRefObject<ValidationError[]>;
+  projectErrors:MutableRefObject<ValidationError[]>;
+  handleTraderDealerTypeTextChange: (text: string, id: number) => void;
+  handleProjectTypeTextChange:(text:string,id:number)=>void;
 }
 
 const CreateCustomerDetails = (props: ICust) => {
@@ -77,13 +66,8 @@ const CreateCustomerDetails = (props: ICust) => {
               placeholder={item.placeholder}
               maxlength={item?.maxlength}
               containerStyle={{ backgroundColor: Colors.white }}
-              error={
-                index == 0 || index == 8 || index == 9
-                  ? props?.error[Object.keys(props?.error)[index]] == false
-                    ? ErrorMsgOfCustomerInput[index]
-                    : undefined
-                  : undefined
-              }
+              errors={props?.customerErrors?.current}
+              inputBoxId={item?.key}
             />
             {index == 0 && props.sapUserExist && (
               <TextWrapper style={commonStyles.errorText}>
@@ -95,9 +79,7 @@ const CreateCustomerDetails = (props: ICust) => {
           <CustomDropDown
             ArrayOfData={props?.dropdownDataList[index - 2]}
             topheading={item.placeholder}
-            onPress={(item: IdropDown) =>
-              props?.setSubTypes(item, index, props?.enteredCustomerDetails)
-            }
+            onPress={(item: IdropDown) => props?.setSubTypes(item, index)}
           />
         )}
       </>
@@ -123,21 +105,21 @@ const CreateCustomerDetails = (props: ICust) => {
       <>
         {index == 1 || index == 3 ? (
           <InputTextField
-            onChangeText={(text: string) => {
-              props.cutomerTypeProjectEnteredData[
-                Object.keys(props?.cutomerTypeProjectEnteredData)[index]
-              ].current = text;
-              props?.isAllFieldHaveData();
-            }}
-            placeholder={item}
+            onChangeText={(text: string) =>
+              props?.handleProjectTypeTextChange(text, index)
+            }
+            placeholder={item?.placeholder}
+             inputBoxId={item?.key}
+             maxlength={item?.length}
             containerStyle={{ backgroundColor: Colors.white }}
+            errors={props?.projectErrors?.current}
           />
         ) : (
           (index == 0 || index == 2) && (
             <>
               <CustomDropDown
                 ArrayOfData={props?.dropdownDataList[10 + index]}
-                topheading={item}
+                topheading={item?.placeholder}
                 onPress={(item: IdropDown) => {
                   props.extraListDropDownset(
                     item,
@@ -163,7 +145,7 @@ const CreateCustomerDetails = (props: ICust) => {
                       item,
                       index,
                       StringConstants.PROCURED_PRODUCT,
-                    )
+                    ),
                 )}
             </>
           )
@@ -173,24 +155,27 @@ const CreateCustomerDetails = (props: ICust) => {
   };
 
   const renderExtratypeField = ({ item, index }: IFlatListExtraItem) => {
+    const isTextField: boolean =
+      index == 1 || index == 2 || index == 3 || index == 5;
     return (
       <>
-        {index == 1 || index == 2 || index == 3 || index == 5 ? (
+        {isTextField ? (
           <InputTextField
-            onChangeText={(text: string) => {
-              props.customerTypeTraderDealer[
-                Object.keys(props?.customerTypeTraderDealer)[index]
-              ].current = text;
-              props?.isAllFieldHaveData();
-            }}
-            placeholder={item}
+            onChangeText={(text: string) =>
+              props?.handleTraderDealerTypeTextChange(text, index)
+            }
+            errors={props?.traderDealerErrors?.current}
+            placeholder={item?.placeholder}
+            maxlength={item?.length}
+            inputMode={item?.input}
+            inputBoxId={item?.key}
             containerStyle={{ backgroundColor: Colors.white }}
           />
         ) : (
           <>
             <CustomDropDown
               ArrayOfData={props?.dropdownDataList[6 + index]}
-              topheading={item}
+              topheading={item?.placeholder}
               onPress={(item: IdropDown) => {
                 props?.extraListDropDownset(
                   item,
@@ -227,23 +212,28 @@ const CreateCustomerDetails = (props: ICust) => {
         CurrentScreen={1}
         topheading={StringConstants.CREATE_CUSTOMER_PROFILE}
       />
-      <View style={{ paddingHorizontal: 20,marginBottom:16}}>
+      <View style={{ paddingHorizontal: 20, marginBottom: 16 }}>
         <FlatList
           data={CustomerDetailInputField}
           renderItem={renderCustomerInputField}
           scrollEnabled={false}
+          keyExtractor={(_, index) => index.toString()}
         />
         {(props?.indexofSubtype.customerSubTypeIndex == 2 ||
           props?.indexofSubtype.customerSubTypeIndex == 7) && (
           <FlatList
-            data={customerTypeTraderDealerField}
+            data={CustomerTypeTraderFields}
             renderItem={renderExtratypeField}
+            scrollEnabled={false}
+            keyExtractor={(_,index)=>index.toString()}
           />
         )}
         {props?.indexofSubtype.customerSubTypeIndex == 6 && (
           <FlatList
-            data={CustomerTypeProjectField}
+            data={CustomerTypeProject}
             renderItem={renderProjectFields}
+            scrollEnabled={false}
+            keyExtractor={(_,index)=>index.toString()}
           />
         )}
         <LocateMe onPress={props?.handleLocateMe} />
@@ -252,9 +242,10 @@ const CreateCustomerDetails = (props: ICust) => {
             props?.handleTextOnTextChangeCustomer(text, 11)
           }
           placeholder={StringConstants.ADD_TAG_LOCATION}
+          errors={props?.customerErrors?.current}
+          inputBoxId="location"
           containerStyle={{ backgroundColor: Colors.white }}
         />
-
         <UploadDocumnet
           uploadType={StringConstants.UPLOAD_VIDEO_IMAGE}
           mediaType={StringConstants.PNG_MP4}

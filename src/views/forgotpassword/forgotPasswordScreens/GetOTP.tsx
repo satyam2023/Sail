@@ -25,6 +25,7 @@ const GetOTP = (props:IGetOTP) => {
          onChangeText={(text) => props?.handleUpnContactEntered(text,1)}
         placeholder={StringConstants.CONTACT_NUMBER}
         leftIcon={Glyphs.Phone}
+        maxlength={10}
         inputMode={'numeric'}
       />
     </View>

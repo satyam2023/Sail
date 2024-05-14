@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import {
   FlatList,
   SafeAreaView,
@@ -8,8 +8,7 @@ import {
 import PlanCompleted from "./PlanCompleted";
 import StringConstants from "shared/localization";
 import { Colors } from "commonStyles/RNColor.style";
-import { CreateVisitPlanField, createVisitErrorMsg } from "@shared-constants";
-
+import { CreateVisitPlanField} from "@shared-constants";
 import Glyphs from "assets/Glyphs";
 import {
   CustomDropDown,
@@ -24,10 +23,10 @@ import { createVisitData } from "helper/helperFunctions";
 import { IdropDown } from "models/interface/ISetting";
 import { NickNameResponse } from "models/ApiResponses/CreateVisitResponse";
 import {
-  ICreateVisitError,
   ICreateVisitFieldFlatlist,
 } from "models/interface/ICreateVisit";
 import styles from "./Style";
+import { ValidationError } from "core/UseForm";
 interface ICreateVisitPlanScreen {
   isVisitDetailFilled: boolean;
   dropDownData: IdropDown[][];
@@ -36,9 +35,8 @@ interface ICreateVisitPlanScreen {
   footerButtonPress: (button: string) => void;
   nicknameApicalling: () => void;
   isAllFieldHaveData: boolean;
-  visitPlanError: ICreateVisitError;
   handleTextChange: (text: string | number, id: number) => void;
-  showError: boolean;
+  createvisitPlanError:MutableRefObject<ValidationError[]>;
 }
 
 const CreateVisitPlanScreen = ({
@@ -49,9 +47,8 @@ const CreateVisitPlanScreen = ({
   footerButtonPress,
   nicknameApicalling,
   isAllFieldHaveData,
-  visitPlanError,
   handleTextChange,
-  showError,
+  createvisitPlanError
 }: ICreateVisitPlanScreen) => {
   const renderCreateVisitPlanField = ({
     item,
@@ -77,17 +74,13 @@ const CreateVisitPlanScreen = ({
                 ? Colors.lightGray
                 : Colors.white,
             }}
-            error={
-              visitPlanError[Object.keys(visitPlanError)[index]] == false &&
-              showError
-                ? createVisitErrorMsg[index]
-                : StringConstants.EMPTY
-            }
+            errors={createvisitPlanError.current}
             isEditable={index == 1 ? !nickNameResult : true}
             defaultValue={
               (index == 1 ? nickNameResult?.company_name : undefined) ||
               (index == 0 ? nickNameResult?.customer_code : undefined)
             }
+            inputBoxId={item?.key}
           />
         ) : index != 5 ? (
           <CustomDropDown
@@ -105,12 +98,6 @@ const CreateVisitPlanScreen = ({
                 ? nickNameResult?.customer_region
                 : undefined
             }
-            error={
-              visitPlanError[Object.keys(visitPlanError)[index]] == false &&
-              showError == true
-                ? createVisitErrorMsg[index]
-                : StringConstants.EMPTY
-            }
             isRightDropDownVisible={nickNameResult && index == 3}
             style={{
               backgroundColor:
@@ -123,11 +110,7 @@ const CreateVisitPlanScreen = ({
             onDayPress={(date: string) => {
               handleTextChange(date, index);
             }}
-            error={
-              visitPlanError[Object.keys(visitPlanError)[index]] == false
-                ? createVisitErrorMsg[index]
-                : StringConstants.EMPTY
-            }
+           
           />
         )}
       </>
@@ -137,7 +120,7 @@ const CreateVisitPlanScreen = ({
     <>
       <StatusBarComponent
         backgroundColor={Colors.sailBlue}
-        conentType={"dark-content"}
+        conentType={'light-content'}
       />
       <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }}>
         {!isVisitDetailFilled ? (
@@ -156,6 +139,7 @@ const CreateVisitPlanScreen = ({
                   renderItem={renderCreateVisitPlanField}
                   style={styles.inputFieldFlatList}
                   scrollEnabled={false}
+                  keyExtractor={(_, index) => index.toString()}
                 />
                 <View style={{ paddingHorizontal: 20, flex: 1}}>
                   <InputTextField
@@ -165,12 +149,8 @@ const CreateVisitPlanScreen = ({
                       backgroundColor: Colors.white,
                       height: 90,
                     }}
-                    error={
-                      visitPlanError[Object.keys(visitPlanError)[8]] == false
-                        ? createVisitErrorMsg[8]
-                        : StringConstants.EMPTY
-                    }
                     inputMode='text'
+                    key={'remarks'}
                   />
                 </View>
               </ScrollView>

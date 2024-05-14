@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: 20,
+    
   },
   welcometext: {
     fontFamily: fonts.type.regular,

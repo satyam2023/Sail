@@ -1,5 +1,4 @@
-import React from "react";
-
+import React, { MutableRefObject } from "react";
 import CustomHeader from "../Component/CustomHeader/CustomHeader";
 import Glyphs from "assets/Glyphs";
 import InputTextField from "components/InputTextField";
@@ -7,14 +6,15 @@ import CustomDropDown from "components/CustomDropDown";
 import { Colors} from "commonStyles/RNColor.style";
 import SafeAreaContainer from "components/SafeAreaContainer";
 import StringConstants from "shared/localization";
-import { Ierror } from "helper/ValidationRegex";
 import { IdropDown } from "models/interface/ISetting";
+import { FormValues, ValidationError } from "core/UseForm";
 interface SecondProps {
-  error:Ierror;
   handleOnTextChange:(text:string,id:number)=>void;
   locationAndRoleDropDown:IdropDown[][];
+  roleNameErrors:MutableRefObject<ValidationError[]>;
+  roleNameDetails:FormValues;
 }
-const Second = ({error,handleOnTextChange,locationAndRoleDropDown}: SecondProps,) => {
+const Second = ({handleOnTextChange,locationAndRoleDropDown,roleNameErrors,roleNameDetails}: SecondProps,) => {
  
   return (
     <SafeAreaContainer>
@@ -24,14 +24,16 @@ const Second = ({error,handleOnTextChange,locationAndRoleDropDown}: SecondProps,
         placeholder={StringConstants.YOUR_NAME}
         maxlength={20}
         leftIcon={Glyphs.Contact}
-        error={error.Name?StringConstants.NAME_ERROR_MSG:undefined}
+        errors={roleNameErrors.current}
+        inputBoxId={Object.keys(roleNameDetails)[0]}
       />
       <InputTextField
         onChangeText={(text:string)=>handleOnTextChange(text,3)}
         placeholder={StringConstants.YOUR_EMAIL_ID}
         maxlength={20}
         leftIcon={Glyphs.Email}
-        error={error.Email?StringConstants.EMAIL_ERROR_MSG:undefined}
+        errors={roleNameErrors.current}
+        inputBoxId={Object.keys(roleNameDetails)[1]}
       />
       <CustomDropDown
         ArrayOfData={locationAndRoleDropDown[0]}
@@ -39,8 +41,6 @@ const Second = ({error,handleOnTextChange,locationAndRoleDropDown}: SecondProps,
         leftIcon={Glyphs.Location}
         style={{ backgroundColor: Colors.inputBG }}
         onPress={(item:IdropDown)=>handleOnTextChange(item.name,4)}
-       
-        error={error.Location?StringConstants.LOCATION_ERROR_MSG:undefined}
       />
 
       <CustomDropDown
@@ -49,7 +49,6 @@ const Second = ({error,handleOnTextChange,locationAndRoleDropDown}: SecondProps,
         leftIcon={Glyphs.Role}
         style={{ backgroundColor: Colors.inputBG }}
         onPress={(item:IdropDown)=>handleOnTextChange(item.name,5)}
-        error={error.Role?StringConstants.ROLE_ERROR_MSG:undefined}
       />
     </SafeAreaContainer>
   );

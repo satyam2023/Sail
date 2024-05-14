@@ -74,6 +74,11 @@ export interface IissueDetail{
     representativeBtn: boolean
   }
 
+  export interface Escalation_Accompying{
+    escalation:boolean,
+    accompying:boolean
+  }
+
   export interface IIisueList{
     issueList: object[],
     issueListDetail: Iissue[],

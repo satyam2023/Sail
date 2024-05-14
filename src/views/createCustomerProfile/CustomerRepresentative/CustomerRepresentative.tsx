@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import { FlatList, Image, SafeAreaView, StyleSheet, View } from "react-native";
 import CustomerDetailHeader from "../CustomerDetailHeader";
 import StringConstants from "shared/localization";
@@ -14,16 +14,16 @@ import { CustomButton, TextWrapper } from "components";
 import Glyphs from "assets/Glyphs";
 import commonStyles from "commonStyles/CommonStyle";
 import { IRepresentative } from "models/ApiResponses/CreateCustomer";
+import { ValidationError } from "core/UseForm";
 interface RepresenatativeProps {
   addDetails: (addDetailStatus: boolean) => void;
-  enteredRepresentativeDetails: IRepresentativeEnteredDetail;
   representativeList: IRepresentative[];
   competitorList: object[];
   handleSelectImageVideo: () => void;
-  representativeError: IRepresentativeError;
   addDetailStatus: boolean;
   selectRepresentativeImage: ISelectedImage | undefined;
   handleTextChangeOfRepresentative: (text: string, id: number) => void;
+  representativeErrors:MutableRefObject<ValidationError[]>;
 }
 const CustomerRepresentative = (props: RepresenatativeProps) => {
   const renderRepresentativeList = (item: IRepresentative, _: number) => {

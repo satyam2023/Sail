@@ -6,3 +6,9 @@ export interface ISignInUser{
     password: MutableRefObject<string>,
     rememberMe: MutableRefObject<number>,
 }
+
+export interface IBiometricStatus{
+    [key:string|number]:boolean;
+    faceId:boolean,
+    fingerId:boolean,
+}

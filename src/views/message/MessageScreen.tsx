@@ -2,21 +2,32 @@ import React from "react";
 import MsgDetails from "./MsgDetails";
 import { Colors } from "commonStyles/RNColor.style";
 import StringConstants from "shared/localization";
-import { Header, RectangularBox, StatusBarComponent } from "components";
+import {
+  Header,
+  PressableButton,
+  RectangularBox,
+  StatusBarComponent,
+} from "components";
 import { FlatList, SafeAreaView, View } from "react-native";
 import { MessageResponse } from "models/ApiResponses/MessageResponse";
-import { IFlatlistMessageBox } from "models/interface/IMessage";
+import {
+  EscalatedList,
+  IEscalatedToAndComment,
+  IFlatListEscalation,
+  IFlatlistMessageBox,
+} from "models/interface/IMessage";
 import commonStyles from "commonStyles/CommonStyle";
-import { IdropDown } from "models/interface/ISetting";
-
 interface IMessageScreen {
   msgOpenStatus: boolean;
   messagedata: MessageResponse;
   selectedMsgIndex: number;
   handleTextChange: (text: string, id: number) => void;
   handleMessageBoxClick: (msgStatus: boolean, index: number) => void;
-  escalatedDropDown: IdropDown[];
+  escalatedCustomerList: EscalatedList[];
   escalalteToAnotherApiCalling: () => void;
+  escalatedPersonStatus: boolean;
+  handleSelecteEscalatedTo: () => void;
+  escalatedRemarks: IEscalatedToAndComment;
 }
 
 const MessageScreen = ({
@@ -24,9 +35,12 @@ const MessageScreen = ({
   messagedata,
   selectedMsgIndex,
   handleTextChange,
-  escalatedDropDown,
+  escalatedCustomerList,
   handleMessageBoxClick,
   escalalteToAnotherApiCalling,
+  escalatedPersonStatus,
+  handleSelecteEscalatedTo,
+  escalatedRemarks,
 }: IMessageScreen) => {
   const msgData = messagedata?.[selectedMsgIndex];
   const renderMessageBox = ({ item, index }: IFlatlistMessageBox) => {
@@ -40,6 +54,19 @@ const MessageScreen = ({
       />
     );
   };
+  const renderEscalationPersonList = ({ item }: IFlatListEscalation) => {
+    return (
+      <PressableButton
+        onPress={() =>handleTextChange(item?.user_name, 0) }
+      >
+        <RectangularBox
+          heading={item?.user_name}
+          subHeading={item?.user_upn}
+          isRightNotIconRequired
+        />
+      </PressableButton>
+    );
+  };
   return (
     <>
       <StatusBarComponent
@@ -50,23 +77,32 @@ const MessageScreen = ({
         {!msgOpenStatus ? (
           <View>
             <Header topheading={StringConstants.INBOX} />
-              <FlatList
-                data={messagedata}
-                renderItem={renderMessageBox}
-                showsVerticalScrollIndicator={false}
-                style={{ paddingHorizontal: 20, marginVertical:30}}
-              />
-      
+            <FlatList
+              data={messagedata}
+              renderItem={renderMessageBox}
+              showsVerticalScrollIndicator={false}
+              style={{ paddingHorizontal: 20, marginVertical: 30 }}
+            />
           </View>
         ) : selectedMsgIndex >= 0 ? (
-          <MsgDetails
-            {...{
-              msgData,
-              handleTextChange,
-              escalatedDropDown,
-              escalalteToAnotherApiCalling,
-            }}
-          />
+          !escalatedPersonStatus ? (
+            <MsgDetails
+              {...{
+                msgData,
+                handleTextChange,
+                escalatedCustomerList,
+                escalalteToAnotherApiCalling,
+                handleSelecteEscalatedTo,
+                escalatedRemarks,
+              }}
+            />
+          ) : (
+            <FlatList
+              data={escalatedCustomerList}
+              renderItem={renderEscalationPersonList}
+              style={{ paddingHorizontal: 20, marginTop: 20 }}
+            />
+          )
         ) : null}
       </SafeAreaView>
     </>
