@@ -132,6 +132,7 @@ function AddUnplannedVisit({
             issueDetailValue={issueDetailValue}
           />
         }
+        visibleContent={true}
         style={styles.issueToggleBox}
         toggleContentStyle={{ padding: 0 }}
       />

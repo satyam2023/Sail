@@ -1,4 +1,5 @@
 import { navigate } from "@navigation";
+import { useFocusEffect } from "@react-navigation/native";
 import { SCREENS } from "@shared-constants";
 import {
   getcustomerlist,
@@ -10,6 +11,7 @@ import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
+import { BottomTabVisibility } from "redux/actions/UIAction";
 import { getListReducer } from "redux/actions/ViewCustomerProfileAction";
 import { RootState } from "redux/store/Store";
 import CustomerProfile from "views/viewCustomerProfile/CustomersProfileList/CustomerProfile";
@@ -28,6 +30,11 @@ const ViewCustomerListViewModel = () => {
   function handleSearchTextChange(text: string) {
     detailToBeSearch.current = text;
   }
+
+  useFocusEffect(() => {
+    dispatch(BottomTabVisibility(false));
+    return () => dispatch(BottomTabVisibility(true));
+  });
 
   const dispatch = useDispatch();
   const fetchCustomerList = () => {

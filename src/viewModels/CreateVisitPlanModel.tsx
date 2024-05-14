@@ -30,8 +30,7 @@ const CreateVisitPlanViewModel = () => {
   const [nickNameResult, setNickNameResult] = useState<NickNameResponse>();
   const [isAllFieldHaveData, setAllFieldData] = useState<boolean>(false);
   const dropData = store?.getState()?.dropdown;
-  const regionDropdownList =
-    store?.getState()?.home?.data?.data?.CustomerRegion;
+  const regionDropdownList =store?.getState()?.home?.data?.data?.CustomerRegion;
   const dispatch = useDispatch();
   useFocusEffect(() => {
     dispatch(BottomTabVisibility(false));

@@ -2,13 +2,7 @@ import Geolocation from "@react-native-community/geolocation";
 import { useFocusEffect } from "@react-navigation/native";
 import {
   checkSAPCustomer,
-  getClusterAPI,
   getCreateCustomerProfile,
-  getCustomerSegmenList,
-  getCustomerStatus,
-  getCustomerType,
-  getProcuredProductAPI,
-  getSupplierAPI,
 } from "controllers/createCustomerController";
 import {
   addRepresentativeOfCreateCustomer,
@@ -97,15 +91,6 @@ const CreateCustomerViewModel = () => {
     return () => dispatch(BottomTabVisibility(true));
   });
   const userID = store?.getState()?.userAccount?.data?.data?.user?.id;
-
-  useEffect(() => {
-       getCustomerSegmenList(dispatch),
-      getCustomerType(dispatch),
-      getCustomerStatus(dispatch),
-      getClusterAPI(dispatch),
-      getProcuredProductAPI(dispatch),
-      getSupplierAPI(dispatch);
-  }, []);
 
   const authCustomerScreen = () => {
     setCurrentScreen(2);

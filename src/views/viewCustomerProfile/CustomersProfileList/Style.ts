@@ -1,6 +1,5 @@
 import { Colors } from "commonStyles/RNColor.style";
 import { StyleSheet, ViewStyle } from "react-native";
-import { View } from "react-native-reanimated/lib/typescript/Animated";
 
 interface ICustomerProfileListStyle{
     mainScreen:ViewStyle;
@@ -13,6 +12,7 @@ const styles = StyleSheet.create<ICustomerProfileListStyle>({
     paddingHorizontal: 20,
     backgroundColor: Colors.background,
     flex: 1,
+    // marginBottom:20
   },
   floatingTextInput: {
     width: '100%',
