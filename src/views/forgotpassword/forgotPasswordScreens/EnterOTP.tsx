@@ -1,18 +1,25 @@
 import { TextWrapper } from "components";
-import { TextInput, View } from "react-native";
+import { FlatList, TextInput, View } from "react-native";
 import styles from "../Style";
 import StringConstants from "shared/localization";
-import { FlatList } from "react-native-gesture-handler";
+import { IOTPFields } from "models/interface/IForgotPassword";
 
-const EnterOTP = () => {
-  const renderOtpField = (item: any, index: number) => {
+interface IGetOTP{
+  handleOtpEntered:(text:string,id:number)=>void;
+  inputFieldRef:IOTPFields;
+}
+
+const EnterOTP = ({handleOtpEntered,inputFieldRef}:IGetOTP) => {
+  const renderOtpField = ({index}:{index:number}) => {
     return (
       <TextInput
+        ref={inputFieldRef[Object.keys(inputFieldRef)[index]]}
         inputMode="numeric"
         textAlign="center"
         maxLength={1}
         placeholder={StringConstants.EMPTY}
         style={styles.conatiner}
+        onChangeText={(text:string)=>{handleOtpEntered(text,index); console.log("Text:::::::",text)}}
       />
     );
   };
@@ -22,15 +29,12 @@ const EnterOTP = () => {
       <TextWrapper style={styles.infoText}>
         {StringConstants.ENTER_OTP}
       </TextWrapper>
-
-      {
         <FlatList
           data={new Array(5)}
-          renderItem={({ item, index }) => renderOtpField(item, index)}
+          renderItem={renderOtpField}
           numColumns={5}
           columnWrapperStyle={{ justifyContent: "space-around" }}
         />
-      }
     </View>
   );
 };

@@ -98,6 +98,7 @@ export const Regex = {
   NUMBER_MAX: /^\d{10}$/,
   SLASHNAME: /^[A-Za-z.&/() ]+(?:[ -']+[A-Za-z.&/() ]+)*$/,
   ADDRESS: /^[#.0-9a-zA-Z\s,-]+$/,
+  OTP:/^\d{6}$/,
 };
 
 const validateUpnNumber = (uniqueNumber: string) => {
@@ -458,6 +459,39 @@ cust_sub_type:[{
 
 
 }
+
+export const forgotValidationRules = {
+  upn: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+    {
+      regex: Regex.UPN,
+      message: StringConstants.INVALID,
+    },
+  ],
+  contact:[
+   { regex:Regex.CONTACT,
+     message:StringConstants.INVALID_CONTACT
+   }
+  ]
+};
+
+export const otpValidationRules = {
+  otp: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+    {
+      regex: Regex.OTP,
+      message: StringConstants.INVALID,
+    },
+  ]
+};
+
+
 
 
 export const customerTypeValidationRules={
