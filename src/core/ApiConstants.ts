@@ -68,7 +68,8 @@ const APIConstants = {
   APPLY_FILTER: "search-visit",
   CUS_DETAIL_EXISTING: "customer-details-existing",
   ESCALATED_TO: "escalate-to-dropdown-list",
-  
+  VERIFY_OTP: "forget-password-otp",
+  RESET_PASSWORD: "forget-password-reset",
 };
 
 export default APIConstants;

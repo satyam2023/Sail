@@ -70,7 +70,7 @@ const styles = StyleSheet.create<IStyle>({
     height: "50%",
   },
   productList: {
-    marginBottom: 15,
+    // marginBottom: 15,
     flex: 1,
     backgroundColor: Colors.transparent,
   },

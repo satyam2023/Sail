@@ -365,6 +365,9 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
     );
   }
 
+
+  console.log("Customer detailsss:::::",customerDetail);
+
   return (
     <ViewProfileScreen
       {...{

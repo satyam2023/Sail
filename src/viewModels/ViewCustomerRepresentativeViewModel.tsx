@@ -81,6 +81,9 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
   );
 
 
+ 
+
+
   const resetRepresentativeDetail = () => {
     for (let i = 0; i < 7; i++) {
       handleTextOfRepresentative(
