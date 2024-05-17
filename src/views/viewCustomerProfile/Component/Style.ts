@@ -46,7 +46,7 @@ const styles = StyleSheet.create<IStyle>({
     borderColor: Colors.white,
   },
   numberstyle: {
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 16,
     color: Colors.white,
     textAlign: "center",
@@ -59,7 +59,7 @@ const styles = StyleSheet.create<IStyle>({
     flexGrow:1,
   },
   circleBottomText: {
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 10,
     color: Colors.blackPeral,
     marginTop: 7,
@@ -75,7 +75,7 @@ const styles = StyleSheet.create<IStyle>({
 
   plsText: {
     color: Colors.red,
-    fontFamily: fonts.type.regular,
+    fontFamily: fonts.Poppins.regular,
     fontSize: 14,
     marginLeft: 16,
     marginBottom: 5,

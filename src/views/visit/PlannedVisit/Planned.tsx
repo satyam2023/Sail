@@ -43,7 +43,6 @@ const Planned = ({
   plannedVisit
 }: PlannedProps) => {
 
-  console.log("Planned List :::::",plannedVisit);
   const isSearchResult: boolean = searchResult.length > 0 ? true : false;
   const renderPlannedVisit = ({ item, index }: IFlatListPlannedVisit) => {
     return (
@@ -65,7 +64,8 @@ const Planned = ({
           <FlatList
             data={isSearchResult?searchResult: plannedVisit}
             renderItem={renderPlannedVisit}
-            onMomentumScrollEnd={setPaginationPage}
+            onEndReachedThreshold={0.2} 
+            onEndReached={setPaginationPage}
             showsVerticalScrollIndicator={false}
           />
         </>

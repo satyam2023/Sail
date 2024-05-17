@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import React, { useState } from "react";
-import { useColorScheme, LogBox } from "react-native";
+import { useColorScheme, LogBox, SafeAreaView, Text} from "react-native";
 import SplashScreen from "react-native-splash-screen";
 import { Provider } from "react-redux";
 import Navigation from "./src/route";
@@ -13,6 +13,8 @@ import { getRememberMe } from "shared/constants/accountService";
 import { SCREENS } from "@shared-constants";
 import { navigate } from "@navigation";
 import InternetManager from "components/InternetManager";
+import { TextWrapper } from "components";
+import fonts from "@fonts";
 LogBox.ignoreAllLogs();
 
 if (__DEV__) {
@@ -34,7 +36,7 @@ const App = () => {
     shouldFetchWiFiSSID: true,
     useNativeReachability: false,
   });
-  console.log(netInfo);
+  // console.log(netInfo);
 
   React.useEffect(() => {
     const unsubscribe = addEventListener(() => {
@@ -58,13 +60,9 @@ const App = () => {
 
   React.useEffect(() => {
     setTimeout(async () => {
-      SplashScreen.hide();
       const isRemember = getRememberMe();
-      if (isRemember == "1") {
-        navigate(SCREENS.TAB);
-      } else {
-        navigate(SCREENS.ONBOARDING);
-      }
+      isRemember == "1"?navigate(SCREENS.TAB):navigate(SCREENS.ONBOARDING);
+      SplashScreen.hide();
     }, 2000);
   }, [scheme, isDarkMode]);
   

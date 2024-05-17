@@ -163,6 +163,7 @@ const SignUpScreenViewMOdel = () => {
       dispatch(setLoaderVisibility(true));
       const res: IApiResponse<SAPResponse> = await SAPUserAlreadyExist(body);
       if (res?.isSuccess) {
+        dispatch(setLoaderVisibility(false));
         if (res?.data?.data?.data?.Status != "1") {
           setAlreadyExist(true);
           return false;
@@ -176,10 +177,8 @@ const SignUpScreenViewMOdel = () => {
       }
     } catch (error) {
       logger("CHECK SAP USER");
-    } finally {
       dispatch(setLoaderVisibility(false));
-      return ;
-    }
+    } 
   };
 
   function checkButtonStatus() {

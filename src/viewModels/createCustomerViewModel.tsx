@@ -79,6 +79,12 @@ const CreateCustomerViewModel = () => {
   const getDropDownListData: IRootCustomerCreate = useSelector(
     (state: RootState) => state?.createCustomer,
   );
+
+  console.log("All dropDown Data::::::",getDropDownListData);
+
+
+
+
   useEffect(() => {
     if (CurrentScreen == 2 || CurrentScreen == 3) setAddDetailsStatus(true);
     setIsAllDetailField(false);

@@ -10,51 +10,56 @@ import {
   TextWrapper,
 } from "components";
 import TimePicker from "components/TimeSelector/Index";
-import React, { MutableRefObject } from "react";
+import React from "react";
 import { FlatList, ScrollView } from "react-native";
 import StringConstants from "shared/localization";
 import IssueDetail from "./addUnplannedVisit/IssueDetail";
 import styles from "./Style";
 import {
-  IIisueList,
   IRepresentativeList,
   IUnplannedDropDownList,
-  IissueDetail,
+  IssueDetails,
   PlannedMeetingUpdate,
 } from "models/interface/IMeeting";
 import { IdropDown } from "models/interface/ISetting";
-import { ValidationError } from "core/UseForm";
 import Glyphs from "assets/Glyphs";
 
 interface IPlannedMeeting {
   plannedMeetingDetail: string[];
-  issueDetail: IissueDetail;
   handleRepresentativeOnTextChange: (text: string | number, id: number) => void;
   handleAddRepresentative: () => void;
   addIssue: () => void;
-  plannedissueList: IIisueList;
+  plannedissueList: IssueDetails[];
   plannedrepresentativeList: IRepresentativeList;
   selectIssuesDropDown: IdropDown[][];
-  handleIssueDetailChange: (text: string | number, id: number) => void;
-  handlePlannedVisitTextChange: (text: string, id: number) => void;
-  updatedPlannedVisitError: MutableRefObject<ValidationError[]>;
+  handleIssueDetailChange: (
+    text: string,
+    id: number,
+    key: string,
+    issueDetails: IssueDetails,
+    IssueNumber: number,
+  ) => void;
+  handlePlannedVisitTextChange: (text: string, id: number,key:string) => void;
   handlePlannedVisitSubmit: () => void;
-  handleEscalationAccompying: () => void;
-  issueDetailValue: any;
+  handleEscalationAccompying:  (selectedIssueIndex:number) => void;
   unplannedDropDownList: IUnplannedDropDownList;
   updatePlannedVisit: PlannedMeetingUpdate;
+  issueDetails: IssueDetails;
 }
 
 const PlannedMeeting = (props: IPlannedMeeting) => {
-  const renderPlanedMeetingDetails = (
-    item: IPlannedMeetingInputField,
-    index: number,
-  ) => {
+  const renderPlanedMeetingDetails = ({
+    item,
+    index,
+  }: {
+    item: IPlannedMeetingInputField;
+    index: number;
+  }) => {
     return [6, 10].includes(index) ? (
-      index == 6 ? (
+      [6].includes(index) ? (
         <TimePicker
           onTimePress={(time: string) => {
-            props?.handlePlannedVisitTextChange(time, index);
+            props?.handlePlannedVisitTextChange(time, index,item?.key);
           }}
           defaultValue={props?.updatePlannedVisit[
             Object.keys(props?.updatePlannedVisit)[0]
@@ -66,13 +71,13 @@ const PlannedMeeting = (props: IPlannedMeeting) => {
           <CustomDropDown
             ArrayOfData={props?.unplannedDropDownList[index + 1]}
             topheading={item?.placeHolder}
-            onPress={(item: IdropDown) => {
-              props?.handlePlannedVisitTextChange(item?.id.toString(), index);
+            onPress={(items: IdropDown) => {
+              props?.handlePlannedVisitTextChange(items?.id.toString(), index,item?.key);
             }}
             rightIcon={Glyphs.Plus}
             isSelectedItemNotVisible={true}
           />
-          {props?.updatePlannedVisit?.accompying.map((item, index) => {
+          {props?.updatePlannedVisit?.accompying.map((item, _) => {
             return (
               <CustomButton
                 text={`${item?.name} (${item?.id})`}
@@ -80,7 +85,7 @@ const PlannedMeeting = (props: IPlannedMeeting) => {
                   backgroundColor: Colors.disabledGrey,
                   marginBottom: 10,
                 }}
-                textStyle={{ position: "absolute", left: 20,fontSize:14 }}
+                textStyle={{ position: "absolute", left: 20, fontSize: 14 }}
               />
             );
           })}
@@ -89,7 +94,7 @@ const PlannedMeeting = (props: IPlannedMeeting) => {
     ) : (
       <InputTextField
         onChangeText={(text) =>
-          props?.handlePlannedVisitTextChange(text, index)
+          props?.handlePlannedVisitTextChange(text, index,item?.key)
         }
         placeholder={item?.placeHolder}
         defaultValue={
@@ -109,7 +114,6 @@ const PlannedMeeting = (props: IPlannedMeeting) => {
         isEditable={index > 8 ? true : false}
         rightIcon={item.rightIcon}
         rightIconTintColor={Colors.sailRed}
-        errors={props?.updatedPlannedVisitError.current}
         inputBoxId={item?.key}
       />
     );
@@ -118,14 +122,15 @@ const PlannedMeeting = (props: IPlannedMeeting) => {
   function renderIssueList({ item, index }: { item: any; index: number }) {
     return (
       <CustomToggleBox
+        key={index}
         heading={`${StringConstants.SELECT_ISSUE} ${index + 1}`}
         toggleContent={
           <IssueDetail
             selectIssuesDropDown={props.selectIssuesDropDown}
             handleIssueDetailChange={props?.handleIssueDetailChange}
             handleEscalationAccompying={props?.handleEscalationAccompying}
-            issueDetailValue={props?.issueDetailValue}
-            
+            issueDetail={props?.plannedissueList[index]}
+            index={index}
           />
         }
         style={styles.issueToggleBox}
@@ -139,24 +144,17 @@ const PlannedMeeting = (props: IPlannedMeeting) => {
     <>
       <KeyboardAvoidingWrapper>
         <ScrollView
-          style={{
-            flex: 1,
-            backgroundColor: Colors.background,
-            paddingHorizontal: 20,
-          }}
+          style={styles.plannedMeetingContainer}
           showsVerticalScrollIndicator={false}
         >
           <FlatList
             data={PlannedInput}
-            renderItem={({ item, index }) =>
-              renderPlanedMeetingDetails(item, index)
-            }
+            renderItem={renderPlanedMeetingDetails}
             showsVerticalScrollIndicator={false}
             scrollEnabled={false}
           />
-
           <FlatList
-            data={props?.plannedissueList?.issueList}
+            data={props?.plannedissueList}
             renderItem={renderIssueList}
             showsVerticalScrollIndicator={false}
             scrollEnabled={false}
@@ -166,10 +164,7 @@ const PlannedMeeting = (props: IPlannedMeeting) => {
           </TextWrapper>
           <CustomDropDown
             ArrayOfData={
-              props?.plannedrepresentativeList?.representativeDropDown.length >
-              0
-                ? props?.plannedrepresentativeList?.representativeDropDown
-                : undefined
+              props?.plannedrepresentativeList?.representativeDropDown
             }
             topheading={StringConstants.SELECT_REPRE}
             onPress={(item: IdropDown) =>

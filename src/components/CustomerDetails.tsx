@@ -24,7 +24,7 @@ interface ICustomerDetails {
 const CustomerDetails = (props: ICustomerDetails) => {
   const renderItem = (item: string, index: number) => {
     return (
-    (props.plannedVisitEditDetails && (index==1|| index==2))?
+    (props.plannedVisitEditDetails &&[1,2].includes(index))?
     null:
       <RectangularBox
         key={index}

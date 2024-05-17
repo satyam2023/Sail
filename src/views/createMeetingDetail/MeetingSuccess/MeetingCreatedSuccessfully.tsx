@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   meetingCompletedContainer: {
     width: 253,
     height: 60,
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 20,
     lineHeight: 30,
     textAlign: "center",

@@ -35,8 +35,6 @@ interface IMsg {
 }
 
 const MsgDetails = (props: IMsg) => {
-
-  console.log("Default value:::::",props?.escalatedRemarks?.escalated_to?.current);
   const renderMessageDetail = ({ item, index }: IFlatlistMessageDetail) => {
     return (
       <RectangularBox
@@ -62,7 +60,7 @@ const MsgDetails = (props: IMsg) => {
   return (
     <>
       <Header topheading={StringConstants.MESSAGE_DETAILS} />
-      <SafeAreaContainer>
+      <SafeAreaContainer style={{paddingBottom:20}}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={styles.container}
@@ -89,7 +87,6 @@ const MsgDetails = (props: IMsg) => {
           />
           {props?.msgData?.escalated_to != null ? (
             <View style={styles.escalaltedInputContainer}>
-
                 <InputTextField
                   onChangeText={() => {}}
                   placeholder={StringConstants.ESCALATED_TO}

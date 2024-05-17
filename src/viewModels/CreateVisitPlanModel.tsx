@@ -138,7 +138,6 @@ const CreateVisitPlanViewModel = () => {
         nicknameApicalling,
         isAllFieldHaveData,
         handleTextChange,
-
         createvisitPlanError
       }}
     />

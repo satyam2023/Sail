@@ -34,18 +34,18 @@ const styles = StyleSheet.create<ISettingStyle>({
   },
   editTxt: {
     height: 20,
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 16,
     color: Colors.white,
     marginLeft: 30,
   },
   circleContent: {
     color: Colors.white,
-    fontFamily: fonts.type.bold,
+    fontFamily: fonts.Poppins.bold,
     fontSize: 20,
   },
   userPost: {
-    fontFamily: fonts.type.regular,
+    fontFamily: fonts.Poppins.regular,
     fontSize: 12,
     color: Colors.sailBlue,
     marginTop: 7,

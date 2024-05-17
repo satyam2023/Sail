@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     
   },
   welcometext: {
-    fontFamily: fonts.type.regular,
+    fontFamily: fonts.Poppins.regular,
     fontSize: 16,
     color: Colors.white,
     marginTop: 12,
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   roleText: {
-    fontFamily: fonts.type.Poppins,
+    fontFamily: fonts.Poppins.regular,
     fontSize: 12,
     marginLeft: 10,
   },
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   circleTxt: {
     textAlign: "center",
     color: Colors.white,
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 14,
   },
   topTxt: {

@@ -106,7 +106,7 @@ const ViewCustomerRepresentative = ({
                   backgroundColor: Colors.dashed,
                   justifyContent: "center",
                 }}
-                textStyle={{ fontFamily: fonts.type.regular }}
+                textStyle={{ fontFamily: fonts.Poppins.regular }}
                 onPress={handleAddStatus}
               />
             </ScrollView>

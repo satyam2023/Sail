@@ -202,14 +202,14 @@ const styles = StyleSheet.create<IDropDownStyle>({
   lable: {
     color: Colors.darkGrey,
     bottom: 5,
-    fontFamily: fonts.type.regular,
+    fontFamily: fonts.Poppins.regular,
     fontSize: 12,
   },
   errorMsg: {
     color: Colors.red,
     fontSize: 14,
     marginLeft: 16,
-    fontFamily: fonts.type.regular,
+    fontFamily: fonts.Poppins.regular,
   },
   errorBox: {
     borderWidth: 1,

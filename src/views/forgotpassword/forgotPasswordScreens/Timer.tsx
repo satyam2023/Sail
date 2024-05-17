@@ -27,7 +27,7 @@ const CountdownTimer = ({handleTimer}:ICountDown) => {
       style={{
         marginTop: 10,
         color: Colors.sailBlue,
-        fontFamily: fonts.type.regular,
+        fontFamily: fonts.Poppins.regular,
         fontSize:14,
       }}
     >{` ${timeLeft}s`}</TextWrapper>

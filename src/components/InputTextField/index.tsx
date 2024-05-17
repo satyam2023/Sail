@@ -229,7 +229,7 @@ const styles = StyleSheet.create<ITextInputStyle>({
     color: Colors.red,
     fontSize: 14,
     marginLeft: 16,
-    fontFamily: fonts.type.regular,
+    fontFamily: fonts.Poppins.regular,
   },
   placeholderText: {
     color: Colors.greyDark,
@@ -251,7 +251,7 @@ const styles = StyleSheet.create<ITextInputStyle>({
   },
   lable: {
     color: Colors.darkGrey,
-    fontFamily: fonts.type.regular,
+    fontFamily: fonts.Poppins.regular,
     fontSize: 12,
   },
   errorBox: {

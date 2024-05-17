@@ -77,7 +77,9 @@ const ForgotPasswordViewModel = () => {
       const res: IApiResponse<VerifyOtpResponse> = await verifyOTP(body);
       dispatch(setLoaderVisibility(false));
       if (res.isSuccess) {
+
       } else {
+        
       }
     } catch (error) {
       logger(error, "ForgotPasswordViewModel: OTPButtonHandler", "error");
@@ -145,7 +147,7 @@ const ForgotPasswordViewModel = () => {
     );
 
   const handleVerifyOtp = () => {
-    OtpVerifier();
+    enteredOTP.current.join("").length == 5 && OtpVerifier();
   };
 
   const handleButtonClicked = () => {
@@ -165,9 +167,7 @@ const ForgotPasswordViewModel = () => {
     getOTP();
   }
 
-  function handleTimer() {
-    setTimerstatus(true);
-  }
+  const handleTimer = () => setTimerstatus(true);
 
   const handleEnteredPassword = (text: string, id: number) => {
     handleTextChangeOfPassword(Object.keys(passwordEntered)[id], text);

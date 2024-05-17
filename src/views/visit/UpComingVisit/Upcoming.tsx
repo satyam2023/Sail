@@ -44,7 +44,8 @@ const UpcomingVisit = (props: IUpcomingScreen) => {
             data={isSearchResult?props.searchResult:props.upcomingVisitList}
             renderItem={({ item, index }) => renderUpcomingVisit(item, index)}
             extraData={Data}
-            onMomentumScrollEnd={props?.setPaginationPage}
+            onEndReachedThreshold={0.2} 
+            onEndReached={props?.setPaginationPage}
             showsVerticalScrollIndicator={false}
           />
         </>

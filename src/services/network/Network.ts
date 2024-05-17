@@ -198,10 +198,8 @@ export function sendMultipleGetRequests<T>(urls: string[]): any {
 
   return axios.all(promises)
     .then(axios.spread((...responses) => {
-      console.log("network result::::::",responses)
       return responses;
     }))
     .finally(() => {
-      console.log("Finally of Parallel Api Calling")
     });
 }

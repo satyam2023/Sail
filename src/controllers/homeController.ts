@@ -63,15 +63,16 @@ export const allDropDownListApiCall = async (dispatch: Dispatch<AnyAction>) => {
       APIConstants.GET_ESCALTED_DROPDOWN_DATA,
     ]);
 
-    res[0]?.data?.isSuccess && dispatch(getSegmentReducer(res[0]?.data));
-    res[1]?.data?.isSuccess && dispatch(getCustType(res[1]?.data));
-    res[2]?.data?.isSuccess && dispatch(getCustStatus(res[2]?.data));
-    res[3]?.data?.isSuccess && dispatch(getClusterData(res[3]?.data));
-    res[4]?.data?.isSuccess && dispatch(getProcuredData(res[4]?.data));
-    res[5]?.data?.isSuccess && dispatch(getSupplierdData(res[5]?.data));
-    res[6]?.data?.isSuccess && dispatch(saveReasonContact(res[6]?.data));
-    res[7]?.data?.isSuccess && dispatch(saveAccompaying(res[7]?.data));
-    res[8]?.data?.isSuccess && dispatch(saveEscaltedData(res[8]?.data));
+
+     dispatch(getSegmentReducer(res[0]?.data));
+     dispatch(getCustType(res[1]?.data));
+     dispatch(getCustStatus(res[2]?.data));
+     dispatch(getClusterData(res[3]?.data));
+     dispatch(getProcuredData(res[4]?.data));
+     dispatch(getSupplierdData(res[5]?.data));
+     dispatch(saveReasonContact(res[6]?.data));
+     dispatch(saveAccompaying(res[7]?.data));
+     dispatch(saveEscaltedData(res[8]?.data));
   } catch (e) {
     logger(e, "Error in Parallel api calling of all dropDowns");
   }

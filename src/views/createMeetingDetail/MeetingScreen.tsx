@@ -9,7 +9,6 @@ import StringConstants from "shared/localization";
 import InputTextField from "components/InputTextField";
 import HorizontalSlider from "components/HorizontalSliderTab";
 import {
-  KeyboardAvoidingWrapper,
   PressableButton,
   RectangularBox,
   StatusBarComponent,
@@ -20,30 +19,27 @@ import {
   Escalation_Accompying,
   IBtnStatus,
   IFlatlistRectangularBox,
-  IIisueList,
   IPlannedMeetingData,
   IRepresentativeList,
   IUnplannedDropDownList,
-  IissueDetail,
   IssueDetails,
   PlannedMeetingUpdate,
 } from "models/interface/IMeeting";
 import PlannedMeeting from "./PlannedMeeting";
 import Representative from "./addUnplannedVisit/AddRepresentative";
 import { IdropDown } from "models/interface/ISetting";
-import { ValidationError } from "core/UseForm";
+import { FormValues, ValidationError } from "core/UseForm";
 import { EscalatedList, IFlatListEscalation } from "models/interface/IMessage";
 
 interface IMeetingScreen {
   currentScreen: number;
   successStatus: boolean;
   setCurrentScreen: (currentScreen: number) => void;
-  plannedMeetingList: IPlannedMeetingData;
+  plannedMeetingList: IPlannedMeetingData[];
   selectedIndexValue: number;
   setSelectedIndexValue: (selectedIndexValue: number) => void;
   plannedMeetingDetail: string[];
   addIssue: () => void;
-  issueList: IIisueList;
   handlePagination: () => void;
   unplannedDropDownList: IUnplannedDropDownList;
   representativeList: IRepresentativeList;
@@ -51,25 +47,30 @@ interface IMeetingScreen {
   addUnPlannedRepresentative: boolean;
   handleRepresentativeOnTextChange: (text: string | number, id: number) => void;
   handleUnplannedVisitDetail: (text: string | number, id: number) => void;
-  issueDetail: IissueDetail;
   handleSubmitButtonClick: () => void;
   btnStatus: IBtnStatus;
-  plannedissueList: IIisueList;
+  plannedissueList: IssueDetails[];
   plannedrepresentativeList: IRepresentativeList;
   selectIssuesDropDown: IdropDown[][];
-  handleIssueDetailChange: (text: string | number, id: number) => void;
+  handleIssueDetailChange: (
+    text: string,
+    id: number,
+    key: string,
+    issueDetails: IssueDetails,
+    IssueIndex: number,
+  ) => void;
   recordVoice: () => void;
-  handlePlannedVisitTextChange: (text: string, id: number) => void;
-  updatedPlannedVisitError: MutableRefObject<ValidationError[]>;
+  handlePlannedVisitTextChange: (text: string, id: number, key: string) => void;
   handlePlannedVisitSubmit: () => void;
   unPlannedVisitError: MutableRefObject<ValidationError[]>;
   representativeErrors: MutableRefObject<ValidationError[]>;
   escalation_accompying_Status: Escalation_Accompying;
   escalatedCustomerList: EscalatedList[];
-  handleEscalationAccompying:()=>void;
-  issueDetailValue:any;
-  updatePlannedVisit:PlannedMeetingUpdate;
-  issueDetails:IssueDetails;
+  handleEscalationAccompying: (selectedIssueIndex: number) => void;
+  updatePlannedVisit: PlannedMeetingUpdate;
+  issueDetails: IssueDetails;
+  selectedIssueIndex: number;
+  unplannedVisitValue:MutableRefObject<FormValues>;
 }
 
 const MeetingScreen = ({
@@ -82,14 +83,12 @@ const MeetingScreen = ({
   setSelectedIndexValue,
   plannedMeetingDetail,
   addIssue,
-  issueList,
   handlePagination,
   representativeList,
   handleAddRepresentative,
   addUnPlannedRepresentative,
   handleRepresentativeOnTextChange,
   handleUnplannedVisitDetail,
-  issueDetail,
   handleSubmitButtonClick,
   btnStatus,
   plannedissueList,
@@ -98,15 +97,16 @@ const MeetingScreen = ({
   handleIssueDetailChange,
   recordVoice,
   handlePlannedVisitTextChange,
-  updatedPlannedVisitError,
   handlePlannedVisitSubmit,
   unPlannedVisitError,
   representativeErrors,
   escalation_accompying_Status,
   escalatedCustomerList,
   handleEscalationAccompying,
-  issueDetailValue,
-  updatePlannedVisit
+  updatePlannedVisit,
+  issueDetails,
+  selectedIssueIndex,
+  unplannedVisitValue
 }: IMeetingScreen) => {
   const renderRectangularBox = ({ item, index }: IFlatlistRectangularBox) => {
     return (
@@ -123,7 +123,15 @@ const MeetingScreen = ({
   const renderEscalationPersonList = ({ item }: IFlatListEscalation) => {
     return (
       <PressableButton
-      onPress={() =>handleIssueDetailChange(item?.user_name, 2) }
+        onPress={() =>
+          handleIssueDetailChange(
+            item?.user_name,
+            2,
+            "escalatedTo",
+            plannedissueList[selectedIssueIndex],
+            selectedIssueIndex,
+          )
+        }
       >
         <RectangularBox
           heading={item?.user_name}
@@ -133,6 +141,9 @@ const MeetingScreen = ({
       </PressableButton>
     );
   };
+
+
+console.log("Planned???????????????????",plannedMeetingList);
 
   return (
     <>
@@ -169,7 +180,6 @@ const MeetingScreen = ({
                     selectedIndexValue >= 0 ? (
                       <PlannedMeeting
                         {...{
-                          issueList,
                           representativeList,
                           plannedMeetingDetail,
                           handleRepresentativeOnTextChange,
@@ -178,15 +188,13 @@ const MeetingScreen = ({
                           plannedissueList,
                           plannedrepresentativeList,
                           selectIssuesDropDown,
-                          issueDetail,
                           handleIssueDetailChange,
                           handlePlannedVisitTextChange,
-                          updatedPlannedVisitError,
                           handlePlannedVisitSubmit,
                           handleEscalationAccompying,
-                          issueDetailValue,
                           unplannedDropDownList,
-                          updatePlannedVisit
+                          updatePlannedVisit,
+                          issueDetails,
                         }}
                       />
                     ) : (
@@ -200,11 +208,11 @@ const MeetingScreen = ({
                             marginTop: 16,
                           }}
                         />
-                       
+
                         <FlatList
-                          data={plannedMeetingList?.data}
+                          data={plannedMeetingList}
                           renderItem={renderRectangularBox}
-                          onEndReachedThreshold={0.5}
+                          onEndReachedThreshold={0.2}
                           onEndReached={handlePagination}
                         />
                       </View>
@@ -213,12 +221,10 @@ const MeetingScreen = ({
                     <AddUnplannedVisit
                       {...{
                         addIssue,
-                        issueList,
                         representativeList,
                         handleAddRepresentative,
                         unplannedDropDownList,
                         handleUnplannedVisitDetail,
-                        issueDetail,
                         handleSubmitButtonClick,
                         btnStatus,
                         selectIssuesDropDown,
@@ -226,7 +232,9 @@ const MeetingScreen = ({
                         recordVoice,
                         unPlannedVisitError,
                         handleEscalationAccompying,
-                        issueDetailValue
+                        selectedIssueIndex,
+                        plannedissueList,
+                        unplannedVisitValue
                       }}
                     />
                   )}

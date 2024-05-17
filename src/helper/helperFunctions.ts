@@ -420,32 +420,48 @@ export const setUpdateCompetitorBody = (
   return data;
 };
 
+
+export const getdropDownsId=(arr:IdropDown[],value:string)=>{
+  const ans=arr.filter((item)=>item.name=value)
+return Number(ans[0].id);
+}
+
+export const getEscalationId=(arr:EscalatedList[],value:string)=>{
+  const ans=arr.filter((item)=>item.user_name=value)
+return Number(ans[0].id);
+}
+
+
+
 export const unplannedVisitMeeting = (
   unplannedVisitValue: any,
   representativeList: IRepresentativeList,
   selectedIssueArr: any[],
+  unplannedDropDownList:any,
 ) => {
   const selectedIndex = Number(
     unplannedVisitValue?.current?.selectedRepresentative,
   );
+
+  console.log("Slected representative::idex",selectedIndex);
   const body = {
     customer_code: unplannedVisitValue?.current?.code || null,
     company_name: unplannedVisitValue?.current?.name || null,
     customer_status:
-      Number(unplannedVisitValue?.current?.customer_status) || null,
-    customer_type: Number(unplannedVisitValue?.current?.customer_type) || null,
+      getdropDownsId(unplannedDropDownList[2],unplannedVisitValue?.current?.customer_status) || null,
+    customer_type:  getdropDownsId(unplannedDropDownList[3],unplannedVisitValue?.current?.customer_type) || null,
     customer_region: unplannedVisitValue?.current?.customer_region || null,
     visit_mode_of_contact:
-      Number(unplannedVisitValue?.current?.mode_of_meeting) || null,
+    getdropDownsId(unplannedDropDownList[5],unplannedVisitValue?.current?.mode_of_meeting) || null,
     visit_date: unplannedVisitValue?.current?.visit_date || null,
     visit_time: unplannedVisitValue?.current?.visit_time || null,
-    visit_reason: Number(unplannedVisitValue?.current?.visit_reason) || null,
+    visit_reason: getdropDownsId(unplannedDropDownList[8],unplannedVisitValue?.current?.visit_reason) || null,
     visit_other_reason: unplannedVisitValue?.current?.other_issue || null,
     visit_discussion_points:
       unplannedVisitValue?.current?.discussion_point || null,
     visit_accompanying_executive:
       unplannedVisitValue?.current?.accompying_executive || null,
-    visit_representative_id: selectedIndex || null,
+    visit_representative_id: selectedIndex||null,
     visit_issues: selectedIssueArr.length > 0 ? selectedIssueArr : null,
     representative_name:
       representativeList.representativeListDetail[selectedIndex]?.name || null,
@@ -475,18 +491,18 @@ export const plannedMeeting = (
   selectedIndexValue: number,
 ) => {
   const temp = [
-    plannedMeetingList?.data[selectedIndexValue]?.customer_data?.customer_code,
-    plannedMeetingList?.data[selectedIndexValue]?.customer_data?.company_name,
-    plannedMeetingList?.data[selectedIndexValue]?.customer_data?.type
+    plannedMeetingList[selectedIndexValue]?.customer_data?.customer_code,
+    plannedMeetingList[selectedIndexValue]?.customer_data?.company_name,
+    plannedMeetingList[selectedIndexValue]?.customer_data?.type
       ?.type_name,
-    plannedMeetingList?.data[selectedIndexValue]?.customer_data?.status?.name,
-    plannedMeetingList?.data[selectedIndexValue]?.mode_of_contact?.name,
+    plannedMeetingList[selectedIndexValue]?.customer_data?.status?.name,
+    plannedMeetingList[selectedIndexValue]?.mode_of_contact?.name,
     extractOnlyDate(
-      plannedMeetingList?.data[selectedIndexValue]?.visit_date_time,
+      plannedMeetingList[selectedIndexValue]?.visit_date_time,
     ),
     StringConstants.EMPTY,
-    plannedMeetingList?.data[selectedIndexValue]?.reason?.name,
-    plannedMeetingList?.data[selectedIndexValue]?.others_reason,
+    plannedMeetingList[selectedIndexValue]?.reason?.name,
+    plannedMeetingList[selectedIndexValue]?.others_reason,
   ];
 
   return temp;
@@ -846,7 +862,7 @@ export const traderDealerselectedCustomerDetail = (
   selectedIndexValue: number,
 ) => {
   const index=customerList[selectedIndexValue]?.type?.id;
-  const isSpecialType: boolean =( index== 2 ||index== 6|| index==7) ;
+  const isSpecialType: boolean =[2,6,7].includes(index);
   const data = isSpecialType
     ? [
         customerList[selectedIndexValue]?.cluster?.name,
