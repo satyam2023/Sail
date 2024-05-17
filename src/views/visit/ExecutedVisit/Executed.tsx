@@ -55,7 +55,8 @@ const Executed = ({
           <FlatList
             data={isSearchResult ?searchResult:executedVisitList}
             renderItem={renderExecutedVisit}
-            onMomentumScrollEnd={setPaginationPage}
+            onEndReachedThreshold={0.2} 
+            onEndReached={setPaginationPage}
             style={{flex:1}}
             showsVerticalScrollIndicator={false}
           />

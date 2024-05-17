@@ -1,3 +1,5 @@
+import { ICustomerCluster, ICustomerSegment, ICustomerStatus, ICustomerType, IProcuredProduct, ISupplier } from "./CreateCustomer";
+import { Reason_ContactRoot } from "./IdropDown";
 import { IProductCatalogue } from "./ProductCatalogue";
 
 
@@ -16,4 +18,15 @@ export interface AllVisttsCount {
 export interface CustomerRegion {
   id: number;
   name: string;
+}
+
+
+export interface ParallelDropDownAPiCall {
+  segmentData: ICustomerSegment[];
+  customerType: ICustomerType[];
+  customerStatus: ICustomerStatus[];
+  clusterData: ICustomerCluster[];
+  procuredData: IProcuredProduct[];
+  supplierData: ISupplier[];
+  modeofContact?:Reason_ContactRoot;
 }

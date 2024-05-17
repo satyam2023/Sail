@@ -44,58 +44,58 @@ const commonStyles = StyleSheet.create<ICommonStyle>({
   },
   font14RegularBlack: {
     fontSize: 14,
-    fontFamily:fonts.type.regular, 
+    fontFamily:fonts.Poppins.regular, 
     color: Colors.black,
   },
   font14RegularGray: {
     fontSize: 14,
-    fontFamily:fonts.type.regular, 
+    fontFamily:fonts.Poppins.regular, 
     color: Colors.jetGray,
   },
   font14RegularDarkGray: {
     fontSize: 14,
-    fontFamily:fonts.type.regular, 
+    fontFamily:fonts.Poppins.regular, 
     color: Colors.darkGrey,
   },
   font14MediumDarkGray: {
     fontSize: 14,
-    fontFamily:fonts.type.medium, 
+    fontFamily:fonts.Poppins.medium, 
     color: Colors.darkGrey,
   },
   font14RegularTextGray:{
     fontSize: 14,
-    fontFamily:fonts.type.regular, 
+    fontFamily:fonts.Poppins.regular, 
     color: Colors.textGrey,
   },
 
   font14MediumBlack: {
     fontSize: 14,
-    fontFamily:fonts.type.medium, 
+    fontFamily:fonts.Poppins.medium, 
     color: Colors.black,
   },
   font14BoldBlue: {
     fontSize: 14,
-    fontFamily:fonts.type.bold, 
+    fontFamily:fonts.Poppins.bold, 
     color: Colors.sailBlue,
   },
   font14MediumBlackpearl:{
     fontSize: 14,
-    fontFamily:fonts.type.medium, 
+    fontFamily:fonts.Poppins.medium, 
     color: Colors.blackPeral,
   },
   font16MediumBlackpearl:{
     fontSize: 16,
-    fontFamily:fonts.type.medium, 
+    fontFamily:fonts.Poppins.medium, 
     color: Colors.blackPeral,
   },
   font12RegularGrey: {
     fontSize: 12,
-    fontFamily:fonts.type.regular, 
+    fontFamily:fonts.Poppins.regular, 
     color: Colors.textGrey,
   },
   font10RegularGrey: {
     fontSize: 10,
-    fontFamily:fonts.type.regular,
+    fontFamily:fonts.Poppins.regular,
     color: Colors.textGrey,
   },
   deActivatedButton: {
@@ -114,13 +114,13 @@ const commonStyles = StyleSheet.create<ICommonStyle>({
   },
   errorText: {
     color: Colors.sailRed,
-    fontFamily:fonts.type.regular,
+    fontFamily:fonts.Poppins.regular,
     paddingLeft: 15,
     marginBottom: 4,
   },
   mediumText: {
     fontSize: 14,
-    fontFamily:fonts.type.medium, 
+    fontFamily:fonts.Poppins.medium, 
     color: Colors.blackPeral,
   },
   leftIcon: {

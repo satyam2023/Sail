@@ -26,7 +26,7 @@ const CustomerDetailHeader = ({
           <TextWrapper style={styles.screenNumber}>
             {StringConstants[0]}
             {CurrentScreen}
-            <TextWrapper style={{ fontFamily: fonts.type.regular }}>
+            <TextWrapper style={{ fontFamily: fonts.Poppins.regular }}>
               {StringConstants[3]}
             </TextWrapper>
           </TextWrapper>
@@ -49,14 +49,14 @@ const styles = StyleSheet.create({
   screenTracker: {
     height: 36,
     color: Colors.black,
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 16,
     marginTop: 20,
   },
   screenNumber: {
     marginTop: 20,
     color: Colors.black,
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 16,
   },
 });

@@ -21,27 +21,22 @@ import { launchImageLibrary } from "react-native-image-picker";
 import Geolocation from "@react-native-community/geolocation";
 import {
   ICustomerState,
-  IUpdateTrader_Project_Dealer_Type,
   IViewCustomerCompetitor,
   IViewCustomerRepresentative,
   Procured_Product_Data,
 } from "models/interface/IViewCustomerProfile";
 import {
   CompetitorDetail,
-  IEnteredCompetitorDetail,
-  IEnteredCustomerDetails,
-  IRepresentativeEnteredDetail,
   ISelectedImage,
   IsubType,
   RepresentativeDetails,
 } from "models/interface/ICreateCustomer";
 import {
   IRepresentativeList,
-  IUnplannedMeetingEnteredDetail,
 } from "models/interface/IMeeting";
 import StringConstants from "shared/localization";
 import { IProductCatalogue } from "models/ApiResponses/ProductCatalogue";
-import { MutableRefObject, SetStateAction } from "react";
+import { MutableRefObject } from "react";
 import { EscalatedList } from "models/interface/IMessage";
 import { FormValues } from "core/UseForm";
 
@@ -363,7 +358,6 @@ export const setUpdateRepresentativeBody = (
   customerList: IViewCustomerBody[],
   selectedIndexValue: number,
   representative: IViewCustomerRepresentative,
-  // enteredRepresentativeDetails: IRepresentativeEnteredDetail,
   representativeValue: MutableRefObject<FormValues>,
   representativeDetail: string[],
   value: string,
@@ -375,29 +369,17 @@ export const setUpdateRepresentativeBody = (
         representative.selectedRepresentativeIndex
       ]?.id,
     designation: updatedValues?.designation,
-    // enteredRepresentativeDetails?.designation?.current?.length > 0
-    //   ? enteredRepresentativeDetails?.designation?.current
-    //   : representativeDetail[1],
+
     department: updatedValues?.dept,
-    // enteredRepresentativeDetails?.dept?.current?.length > 0
-    //   ? enteredRepresentativeDetails?.dept?.current
-    //   : representativeDetail[2],
+ 
     address: updatedValues?.address,
-    // enteredRepresentativeDetails?.address?.current?.length > 0
-    //   ? enteredRepresentativeDetails?.address?.current
-    //   : representativeDetail[3],
+
     email_id: updatedValues?.email,
-    // enteredRepresentativeDetails?.email?.current?.length > 0
-    //   ? enteredRepresentativeDetails?.email?.current
-    //   : representativeDetail[4],
+    
     contact_number: updatedValues?.contact,
-    // enteredRepresentativeDetails?.contact?.current?.length > 0
-    //   ? enteredRepresentativeDetails?.contact?.current
-    //   : representativeDetail[5],
+  
     whatsapp_number: updatedValues?.whatsApp,
-    // enteredRepresentativeDetails?.whatsApp?.current?.length > 0
-    //   ? enteredRepresentativeDetails?.whatsApp?.current
-    //   : representativeDetail[6],
+
     active: value,
   };
 
@@ -428,48 +410,58 @@ export const setUpdateCompetitorBody = (
         competitor.selectedCompetitorIndex
       ]?.id,
     company_name: competitorValue?.current?.company,
-    // enteredCompetitorDetail?.company.current.length > 0
-    //   ? enteredCompetitorDetail?.company.current
-    //   : selectedCompetitorDetail[0],
+
     address: competitorValue?.current?.address,
-    // enteredCompetitorDetail?.address.current.length > 0
-    //   ? enteredCompetitorDetail?.address.current
-    //   : selectedCompetitorDetail[1],
+ 
     comment: competitorValue?.current?.comment,
-    // enteredCompetitorDetail?.comment.current.length > 0
-    //   ? enteredCompetitorDetail?.comment.current
-    //   : selectedCompetitorDetail[2],
+ 
   };
 
   return data;
 };
 
+
+export const getdropDownsId=(arr:IdropDown[],value:string)=>{
+  const ans=arr.filter((item)=>item.name=value)
+return Number(ans[0].id);
+}
+
+export const getEscalationId=(arr:EscalatedList[],value:string)=>{
+  const ans=arr.filter((item)=>item.user_name=value)
+return Number(ans[0].id);
+}
+
+
+
 export const unplannedVisitMeeting = (
   unplannedVisitValue: any,
   representativeList: IRepresentativeList,
   selectedIssueArr: any[],
+  unplannedDropDownList:any,
 ) => {
   const selectedIndex = Number(
     unplannedVisitValue?.current?.selectedRepresentative,
   );
+
+  console.log("Slected representative::idex",selectedIndex);
   const body = {
     customer_code: unplannedVisitValue?.current?.code || null,
     company_name: unplannedVisitValue?.current?.name || null,
     customer_status:
-      Number(unplannedVisitValue?.current?.customer_status) || null,
-    customer_type: Number(unplannedVisitValue?.current?.customer_type) || null,
+      getdropDownsId(unplannedDropDownList[2],unplannedVisitValue?.current?.customer_status) || null,
+    customer_type:  getdropDownsId(unplannedDropDownList[3],unplannedVisitValue?.current?.customer_type) || null,
     customer_region: unplannedVisitValue?.current?.customer_region || null,
     visit_mode_of_contact:
-      Number(unplannedVisitValue?.current?.mode_of_meeting) || null,
+    getdropDownsId(unplannedDropDownList[5],unplannedVisitValue?.current?.mode_of_meeting) || null,
     visit_date: unplannedVisitValue?.current?.visit_date || null,
     visit_time: unplannedVisitValue?.current?.visit_time || null,
-    visit_reason: Number(unplannedVisitValue?.current?.visit_reason) || null,
+    visit_reason: getdropDownsId(unplannedDropDownList[8],unplannedVisitValue?.current?.visit_reason) || null,
     visit_other_reason: unplannedVisitValue?.current?.other_issue || null,
     visit_discussion_points:
       unplannedVisitValue?.current?.discussion_point || null,
     visit_accompanying_executive:
       unplannedVisitValue?.current?.accompying_executive || null,
-    visit_representative_id: selectedIndex || null,
+    visit_representative_id: selectedIndex||null,
     visit_issues: selectedIssueArr.length > 0 ? selectedIssueArr : null,
     representative_name:
       representativeList.representativeListDetail[selectedIndex]?.name || null,
@@ -499,18 +491,18 @@ export const plannedMeeting = (
   selectedIndexValue: number,
 ) => {
   const temp = [
-    plannedMeetingList?.data[selectedIndexValue]?.customer_data?.customer_code,
-    plannedMeetingList?.data[selectedIndexValue]?.customer_data?.company_name,
-    plannedMeetingList?.data[selectedIndexValue]?.customer_data?.type
+    plannedMeetingList[selectedIndexValue]?.customer_data?.customer_code,
+    plannedMeetingList[selectedIndexValue]?.customer_data?.company_name,
+    plannedMeetingList[selectedIndexValue]?.customer_data?.type
       ?.type_name,
-    plannedMeetingList?.data[selectedIndexValue]?.customer_data?.status?.name,
-    plannedMeetingList?.data[selectedIndexValue]?.mode_of_contact?.name,
+    plannedMeetingList[selectedIndexValue]?.customer_data?.status?.name,
+    plannedMeetingList[selectedIndexValue]?.mode_of_contact?.name,
     extractOnlyDate(
-      plannedMeetingList?.data[selectedIndexValue]?.visit_date_time,
+      plannedMeetingList[selectedIndexValue]?.visit_date_time,
     ),
     StringConstants.EMPTY,
-    plannedMeetingList?.data[selectedIndexValue]?.reason?.name,
-    plannedMeetingList?.data[selectedIndexValue]?.others_reason,
+    plannedMeetingList[selectedIndexValue]?.reason?.name,
+    plannedMeetingList[selectedIndexValue]?.others_reason,
   ];
 
   return temp;
@@ -556,8 +548,8 @@ export const checkAllInputField = (fields: any) => {
   return true;
 };
 
-export const isAllInputFieldHaveData = (fields: any) => {
-  for (let i = 0; i < Object.keys(fields.current).length; i++) {
+export const isAllInputFieldHaveData = (fields: MutableRefObject<FormValues>) => {
+  for (let i = 0; i < Object.keys(fields.current)?.length; i++) {
     if (fields.current[Object.keys(fields.current)[i]].length == 0) {
       return false;
     }
@@ -812,12 +804,7 @@ export const representativeDetailsofViewCustomerProfile = (
     "-1",
   ];
 
-  // for (let i = 0; i < Object.keys(representativeDetails).length; i++) {
-  //   handleTextOfRepresentative(
-  //     Object.keys(representativeDetails)[i],
-  //     data[i],
-  //   );
-  // }
+ 
 
   return data;
 };
@@ -826,6 +813,8 @@ export const customerDetailOfViewModel = (
   customerList: IViewCustomerBody[],
   selectedIndexValue: number,
 ) => {
+
+  console.log("Customer List:::::",customerList[selectedIndexValue]);
   const data = [
     customerList[selectedIndexValue]?.customer_code,
     customerList[selectedIndexValue]?.company_name,
@@ -873,7 +862,7 @@ export const traderDealerselectedCustomerDetail = (
   selectedIndexValue: number,
 ) => {
   const index=customerList[selectedIndexValue]?.type?.id;
-  const isSpecialType: boolean =( index== 2 ||index== 6|| index==7) ;
+  const isSpecialType: boolean =[2,6,7].includes(index);
   const data = isSpecialType
     ? [
         customerList[selectedIndexValue]?.cluster?.name,
@@ -998,6 +987,14 @@ export const formatSupplier_list = (data: Supplier_Data[]) => {
   for (let i = 0; i < data?.length; i++) {
     ans.push(data[i].supplier_name);
   }
-
   return ans;
 };
+
+export const filterAccompyingExecutive=(id:number,data:any)=>{
+ const ans= data.filter((item:IdropDown)=>{
+     return item?.id==id;
+  })
+
+return ans[0];
+
+}

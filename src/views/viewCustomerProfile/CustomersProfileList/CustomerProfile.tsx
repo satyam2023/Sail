@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { View, VirtualizedList } from "react-native";
 import Glyphs from "assets/Glyphs";
 import StringConstants from "shared/localization";
 import { Colors } from "commonStyles/RNColor.style";
@@ -10,6 +10,7 @@ import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
 import { SafeAreaView } from "react-native";
 import StatusBarComponent from "components/StatusBarComponent";
 import styles from "./Style";
+import { ScreenHeight } from "libs";
 
 interface ICustomerProfile {
   customerListdata: IViewCustomerBody[];
@@ -41,7 +42,7 @@ const CustomerProfile = ({
         backgroundColor={Colors.sailBlue}
         conentType={'light-content'}
       />
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1,paddingBottom:50 }}>
         <Header topheading={StringConstants.CUSTOMER_PROFILE} />
         <View
           style={styles.emptyContainer}
@@ -60,7 +61,8 @@ const CustomerProfile = ({
             data={customerListdata}
             renderItem={renderCustomerList}
             showsVerticalScrollIndicator={false}
-            style={{ bottom: 26 }}
+            style={{flex:1}}
+            initialNumToRender={ScreenHeight/56}
           />
         </View>
       </SafeAreaView>

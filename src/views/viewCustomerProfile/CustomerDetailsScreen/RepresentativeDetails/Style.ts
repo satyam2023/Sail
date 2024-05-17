@@ -38,7 +38,7 @@ const styles = StyleSheet.create<IStyle>({
   txt: {
     lineHeight: 20,
     color: Colors.sailBlue,
-    fontFamily: fonts.type.bold,
+    fontFamily: fonts.Poppins.bold,
     fontSize: 16,
   },
 });

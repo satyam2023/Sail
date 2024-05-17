@@ -30,7 +30,7 @@ const styles = StyleSheet.create<IStyle>({
     paddingHorizontal: 17,
   },
   txt: {
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 14,
     lineHeight: 20,
     color: Colors.blackPeral,
@@ -39,7 +39,7 @@ const styles = StyleSheet.create<IStyle>({
   },
   dwd: {
     color: Colors.orange,
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 12,
     lineHeight:20,
     textDecorationLine: "underline",
@@ -51,13 +51,13 @@ const styles = StyleSheet.create<IStyle>({
     resizeMode: "cover",
   },
   qrText: {
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 24,
     color: Colors.black,
     marginTop: 10,
   },
   headingText: {
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 24,
     color: Colors.black,
     marginTop: 10,

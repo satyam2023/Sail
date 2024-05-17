@@ -14,12 +14,8 @@ import {
   setUpdateCompetitorBody,
 } from "helper/helperFunctions";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
-import {
-  CompetitorDetail,
-} from "models/interface/ICreateCustomer";
-import {
-  IViewCustomerCompetitor,
-} from "models/interface/IViewCustomerProfile";
+import { CompetitorDetail } from "models/interface/ICreateCustomer";
+import { IViewCustomerCompetitor } from "models/interface/IViewCustomerProfile";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
@@ -42,12 +38,11 @@ const ViewCustomerCompetitorViewModel = ({ route, navigation }: any) => {
     showcompetitorDetail: false,
     editDetails: false,
   });
- 
+
   const selectedCompetitorDetail: string[] = [
     ...selectedCompetitor(customerList, selectedIndexValue, competitor),
   ];
 
-  
   const addCompetitor = async () => {
     await addCompetitorApiCall();
     setAddDetailsStatus(false);
@@ -72,6 +67,7 @@ const ViewCustomerCompetitorViewModel = ({ route, navigation }: any) => {
     competitor?.editDetails,
   );
 
+ 
 
   useFocusEffect(() => {
     dispatch(BottomTabVisibility(false));
@@ -106,13 +102,13 @@ const ViewCustomerCompetitorViewModel = ({ route, navigation }: any) => {
   }
 
   async function add_edit_Competitor() {
-    competitor.editDetails? handleUpdateCompetitor():handleCompetitorSubmited();
+  handleCompetitorSubmited();
   }
- 
-  
+
   async function handleUpdateCompetitor() {
-    if(isAnyFieldUpdated(competitorValue,competitorDetails))
-     {await updateCompatitorAPICaliing();}
+    if (isAnyFieldUpdated(competitorValue, competitorDetails)) {
+      await updateCompatitorAPICaliing();
+    }
     setcompetitor((prev: IViewCustomerCompetitor) => ({
       ...prev,
       selectedCompetitorIndex: -1,
@@ -169,6 +165,7 @@ const ViewCustomerCompetitorViewModel = ({ route, navigation }: any) => {
   }
 
   function handleCompetiotorTextChange(text: string, id: number) {
+    console.log("competitor Values:::::", competitorValue);
     handleTextOfCompetitor(Object.keys(competitorDetails)[id], text);
     handleAddCompetitorBtnStatus();
   }

@@ -149,7 +149,6 @@ const EnquiryViewModel = () => {
   }
 
   function handleTextChangeofUserEnquiry(text:string,id:number){
-  
    userEnquiryEnteredDetail[Object.keys(userEnquiryEnteredDetail)[id]].current=text;
     if(isDetailFilled(userEnquiryEnteredDetail)){
       if(!btnStatus.enquiryBtn){
@@ -168,6 +167,7 @@ const EnquiryViewModel = () => {
       }
     }
   }
+
   function handleTextChangeofIssueEnquiry(text:string,id:number){
    issueEnquiryEnteredDetail[Object.keys(issueEnquiryEnteredDetail)[id]].current=text;
    if(isDetailFilled(issueEnquiryEnteredDetail)){
@@ -187,6 +187,7 @@ const EnquiryViewModel = () => {
     }
   }
    }
+   
 
   return (
     <EnquiryScreen

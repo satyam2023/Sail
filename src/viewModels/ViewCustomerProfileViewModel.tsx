@@ -73,7 +73,7 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
     imageSelected: [],
   });
  const customerTypeIndex=customerList[selectedIndexValue]?.type?.id ;
-  const isSpecialType: boolean =(customerTypeIndex==2||customerTypeIndex==6||customerTypeIndex==7)
+  const isSpecialType: boolean =[2,6,7].includes(customerTypeIndex)
   const dispatch = useDispatch();
   useFocusEffect(() => {
     dispatch(BottomTabVisibility(false));
@@ -364,6 +364,9 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
       text.toString(),
     );
   }
+
+
+  console.log("Customer detailsss:::::",customerDetail);
 
   return (
     <ViewProfileScreen

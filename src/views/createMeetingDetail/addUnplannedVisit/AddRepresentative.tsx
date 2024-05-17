@@ -1,13 +1,12 @@
 import React, { MutableRefObject } from "react";
-import { ScrollView } from "react-native";
+import {ScrollView } from "react-native";
 import { Colors } from "commonStyles/RNColor.style";
 import InputTextField from "components/InputTextField";
 import { FlatList } from "react-native";
 import {
-  ErrorMsgOfRepresentative,
   MeetingRepresentativeDetailInputField,
 } from "@shared-constants";
-import { CustomFooter } from "components";
+import { CustomFooter, KeyboardAvoidingWrapper } from "components";
 import StringConstants from "shared/localization";
 import {
   IBtnStatus,
@@ -44,7 +43,8 @@ const Representative = (props: IRepresentative) => {
   };
   return (
     <>
-      <ScrollView style={styles.addRepresentativeContainer}>
+    <KeyboardAvoidingWrapper>
+      <ScrollView style={styles.addRepresentativeContainer} showsVerticalScrollIndicator={false}>
         <FlatList
           data={MeetingRepresentativeDetailInputField}
           renderItem={renderCustomerRepresentativeInputField}
@@ -52,6 +52,7 @@ const Representative = (props: IRepresentative) => {
           style={{ marginTop: 16 }}
         />
       </ScrollView>
+      </KeyboardAvoidingWrapper>
       <CustomFooter
         leftButtonText={StringConstants.ADD_REPRE}
         leftButtonPress={props?.handleAddRepresentative}

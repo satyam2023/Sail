@@ -92,7 +92,7 @@ const ProfileHeader = ({
                 buttonStyle={styles.updatebtnStyle}
                 textStyle={{
                   color: Colors.white,
-                  fontFamily: fonts.type.medium,
+                  fontFamily: fonts.Poppins.medium,
                 }}
                 onPress={updateCustomerCode}
               />

@@ -50,7 +50,7 @@ const styles = StyleSheet.create<IViewStyle>({
     borderRadius: 5,
   },
   text: {
-    fontFamily: fonts.type.regular,
+    fontFamily: fonts.Poppins.regular,
     color: Colors.blackPeral,
     fontSize: 16,
     textAlign: "center",

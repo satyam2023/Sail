@@ -5,20 +5,18 @@ import Glyphs from "assets/Glyphs";
 import { SCREENS } from "@shared-constants";
 import CustomButton from "components/CustomButton";
 import { navigate } from "@navigation";
-import { Colors, blue, lightWhite, white } from "commonStyles/RNColor.style";
+import { Colors } from "commonStyles/RNColor.style";
 import SafeAreaContainer from "components/SafeAreaContainer";
 import TextWrapper from "components/TextWrapper";
 import StringConstants from "shared/localization";
 import commonStyles from "commonStyles/CommonStyle";
 import GradientBackground from "components/LinearGradient";
-import { StatusBarComponent } from "components";
-import { isAndroid } from "libs";
+
 
 
 const OnboardingScreen = () => {
   return (
     <GradientBackground>
-     
     <SafeAreaContainer >
       <View style={[{ flex: 0.4 },commonStyles.center]}>
         <Image source={Glyphs.Sail} style={styles.imgsail} />
@@ -34,8 +32,8 @@ const OnboardingScreen = () => {
         <Image source={Glyphs.HandShake} style={styles.imghand} />
       <View style={{ flex: 0.3,paddingHorizontal:20}}>
         <CustomButton
-          textStyle={{ color: white }}
-          buttonStyle={{ backgroundColor: blue }}
+          textStyle={{ color: Colors.white }}
+          buttonStyle={{ backgroundColor: Colors.sailBlue }}
           onPress={() => navigate(SCREENS.SIGNUP)}
           text={StringConstants.CREATE_ACCOUNT}
         />
@@ -43,7 +41,7 @@ const OnboardingScreen = () => {
           textStyle={{
             color: Colors.blackPeral,
           }}
-          buttonStyle={{ backgroundColor: lightWhite }}
+          buttonStyle={{ backgroundColor:Colors.background2 }}
           onPress={() =>navigate(SCREENS.SIGNIN)}
           text={StringConstants.SIGN_IN}
         />
@@ -58,6 +56,3 @@ export default OnboardingScreen;
 
 
 
-/*
-<key>NSAllowsArbitraryLoads</key>
-		<true/>*/

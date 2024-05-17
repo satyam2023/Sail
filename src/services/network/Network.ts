@@ -197,7 +197,9 @@ export function sendMultipleGetRequests<T>(urls: string[]): any {
   });
 
   return axios.all(promises)
-    .then(axios.spread((...responses) => {}))
+    .then(axios.spread((...responses) => {
+      return responses;
+    }))
     .finally(() => {
     });
 }

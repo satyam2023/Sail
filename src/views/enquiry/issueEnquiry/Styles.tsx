@@ -18,12 +18,12 @@ interface IIssueEnquiryStyle {
 
 const styles = StyleSheet.create<IIssueEnquiryStyle>({
   openIssue: {
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 14,
     alignSelf: "center",
   },
   resolvedIssue: {
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 14,
     color: Colors.jetGray,
   },

@@ -15,11 +15,13 @@ interface ITimePicker {
   defaultValue?: string;
   onTimePress:(time:any)=>void;
   errors?:ValidationError[];
+  style?:ViewStyle;
 }
 
 interface ITimeStyle{
   main:ViewStyle;
   dateSelector:ViewStyle;
+
 }
 
 const TimePicker = (props: ITimePicker) => {
@@ -41,7 +43,8 @@ const TimePicker = (props: ITimePicker) => {
             backgroundColor:props?.defaultValue
               ? Colors.lightGray
               : Colors.white
-          }
+          },
+          props?.style
         ]}
         onPress={handleTimeselectorStatus}
       >
@@ -50,7 +53,7 @@ const TimePicker = (props: ITimePicker) => {
           <TextWrapper
             style={[
               commonStyles.font14RegularGray,
-              { bottom: selectedTime ? 5 : 0 },
+              { bottom: selectedTime ? 2 : 0 },
             ]}
           >
             {StringConstants.VISIT_TIME}

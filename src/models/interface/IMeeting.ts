@@ -9,9 +9,8 @@ import StringConstants from "shared/localization";
 import { Colors } from "commonStyles/RNColor.style";
 import Glyphs from "assets/Glyphs";
 
-export interface IPlannedMeetingData{
-    last_page: number;
-    data:RootData[]
+export interface IPlannedMeetingData extends RootData{
+    
 }
 
 // export interface IAddUnplannedVisitEnteredDetail{
@@ -69,6 +68,22 @@ export interface IissueDetail{
     
   }
 
+  export interface IssueDetails{
+    [key:string]:string
+    issueName: string,
+    comment: string,
+    escalatedTo: string,
+    escalated_comment: string,
+    resolved_status:string,
+  }
+
+  export interface PlannedMeetingUpdate{
+    [key:string|number]:string|IdropDown[],
+    visitTime:string,
+    discussionPoint: string,
+    accompying:IdropDown[]
+  }
+
   export interface IBtnStatus{
     submitBtn: boolean,
     representativeBtn: boolean
@@ -85,11 +100,11 @@ export interface IissueDetail{
   }
 
   export interface Iissue{
-    issueName:string|undefined,
-    comment:string|undefined
-    escalatedTo:string|undefined,
-    escalated_comment:string|undefined,
-    resolved_status:number|undefined,
+    issueName:string,
+    comment:string,
+    escalatedTo:string,
+    escalated_comment:string,
+    resolved_status:number,
   }
 
 
@@ -128,24 +143,29 @@ export interface IRepresentativeList{
       rightIcon?: ImageURISource;
       dropDownTintColor?: string;
       rightIconTintColor?: string;
+      key:string
     }
     export const IssueDetailInputField: IssueDetailInputField[] = [
       {
         placeholder: StringConstants.SELECT_ISSUE,
         dropDownTintColor: Colors.sailRed,
+        key:'issueName'
       },
       {
         placeholder: StringConstants.COMMENT,
         rightIcon: Glyphs.Mic,
         rightIconTintColor: Colors.darkGrey,
+        key:'comment'
       },
       {
         placeholder: StringConstants.ESCALATED_TO,
+        key:'escalatedTo'
       },
       {
         placeholder: StringConstants.ESCALATED_COMMENT,
         rightIcon: Glyphs.Mic,
         rightIconTintColor: Colors.darkGrey,
+        key:'escalated_comment'
       },
     ];
 

@@ -8,14 +8,14 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
   signUpText: {
-    fontFamily: fonts.type.bold,
+    fontFamily: fonts.Poppins.bold,
     fontSize: 24,
     lineHeight: 31.2,
     color: Colors.sailBlue,
     textAlign: "center",
   },
   detailText: {
-    fontFamily: fonts.type.regular,
+    fontFamily: fonts.Poppins.regular,
     fontSize: 16,
     textAlign: "center",
     color: Colors.darkGrey,
