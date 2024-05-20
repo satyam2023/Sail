@@ -29,11 +29,12 @@ interface ICustomToggleBox {
   iconStyle?: StyleProp<ImageStyle>;
   isNotificationDate?: string;
   toggleContentStyle?: ViewStyle;
+  visibleContent?:boolean;
 }
 
 const CustomToggleBox = (props: ICustomToggleBox) => {
   const [isToggleContentVisible, setIsToggleCOntentVisible] =
-    useState<boolean>(false);
+    useState<boolean>(props?.visibleContent?true:false);
   return (
     <View style={{ marginBottom: 16 }}>
       <PressableButton

@@ -114,7 +114,7 @@ const styles = StyleSheet.create<IFooterStyle>({
     backgroundColor: Colors.darkGrey,
   },
   buttonText: {
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 16,
   },
   firstButtonStyle: {

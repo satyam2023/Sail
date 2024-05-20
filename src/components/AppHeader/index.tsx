@@ -86,7 +86,7 @@ const styles = StyleSheet.create<IAppHeaderStyle>({
   headingContent: {
     color: Colors.white,
     marginLeft: 16,
-    fontFamily: fonts.type.bold,
+    fontFamily: fonts.Poppins.bold,
     fontSize: 16,
   },
   logoutBtn: {

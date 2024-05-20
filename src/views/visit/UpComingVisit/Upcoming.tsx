@@ -27,7 +27,7 @@ const UpcomingVisit = (props: IUpcomingScreen) => {
   const renderUpcomingVisit = (item: VisitResponse, index: number) => {
     return (
       <RectangularBox
-        leftIcon={Glyphs.Profile2userClicked}
+        leftIcon={Glyphs.multiProfile}
         heading={` ${StringConstants.CUSTOMER_VISIT}  ${index + 1}`}
         subHeading={item?.customer_data?.company_name}
         onPress={() => props?.handleUpcomingVisitBoxClick(index)}
@@ -44,7 +44,8 @@ const UpcomingVisit = (props: IUpcomingScreen) => {
             data={isSearchResult?props.searchResult:props.upcomingVisitList}
             renderItem={({ item, index }) => renderUpcomingVisit(item, index)}
             extraData={Data}
-            onMomentumScrollEnd={props?.setPaginationPage}
+            onEndReachedThreshold={0.2} 
+            onEndReached={props?.setPaginationPage}
             showsVerticalScrollIndicator={false}
           />
         </>

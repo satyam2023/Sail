@@ -350,6 +350,7 @@ const VisitScreenViewModel = () => {
     handleCustomerClick();
     setSelectedIndexValue(index);
   }
+  
   function handleFilterSearch() {
     setApplyFilterSearch(true);
   }

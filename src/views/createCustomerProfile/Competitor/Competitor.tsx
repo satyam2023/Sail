@@ -62,7 +62,7 @@ const CustomerRepresentative = (props: RepresenatativeProps) => {
                 backgroundColor: Colors.dashed,
                 justifyContent: "flex-start",
               }}
-              textStyle={{ fontFamily: fonts.type.regular }}
+              textStyle={{ fontFamily: fonts.Poppins.regular }}
               onPress={() => {
                 props?.addDetails(true);
               }}

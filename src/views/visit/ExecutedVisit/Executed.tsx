@@ -41,7 +41,7 @@ const Executed = ({
   const renderExecutedVisit = ({item,index}:IFlatlistExecuted) => {
     return (
       <RectangularBox
-        leftIcon={Glyphs.Profile2userClicked}
+        leftIcon={Glyphs.multiProfile}
         heading={` ${StringConstants.CUSTOMER_VISIT}  ${index + 1}`}
         subHeading={item?.customer_data?.company_name}
         onPress={() => handleUpcomingVisitBoxClick(index) }
@@ -55,7 +55,8 @@ const Executed = ({
           <FlatList
             data={isSearchResult ?searchResult:executedVisitList}
             renderItem={renderExecutedVisit}
-            onMomentumScrollEnd={setPaginationPage}
+            onEndReachedThreshold={0.2} 
+            onEndReached={setPaginationPage}
             style={{flex:1}}
             showsVerticalScrollIndicator={false}
           />

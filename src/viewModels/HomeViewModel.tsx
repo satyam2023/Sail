@@ -5,7 +5,7 @@ import { Colors } from "commonStyles/RNColor.style";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { RootState } from "redux/store/Store";
-import { fetchHomeData, setMasterData } from "controllers/homeController";
+import { allDropDownListApiCall, fetchHomeData, setMasterData } from "controllers/homeController";
 import {
   getAccompanying,
   getIssue,
@@ -49,12 +49,11 @@ const HomeScreenViewModel = () => {
 
   useEffect(() => {
     try {
-       dispatch(setLoaderVisibility(true));
-       handleHomeApiCall(dispatch),
+        dispatch(setLoaderVisibility(true));
+        handleHomeApiCall(dispatch),
         setMasterData(dispatch),
-        getAccompanying(dispatch),
-        getReasonContact(dispatch),
         getIssue(dispatch);
+        allDropDownListApiCall(dispatch);
     } finally {
       dispatch(setLoaderVisibility(false));
     }

@@ -84,13 +84,12 @@ const SettingScreen = ({
         <ScrollView
           style={{ paddingHorizontal: 20}}
           showsVerticalScrollIndicator={false}
-          nestedScrollEnabled={true}
         >
           <View style={styles.detailContainer}>
             <View style={styles.circle}>
               <TextWrapper
                 color={Colors.white}
-                fontFamily={fonts.type.medium}
+                fontFamily={fonts.Poppins.medium}
                 style={{ fontSize: 20 }}
               >
                 {ExtarctTwoLetterName(userData?.user?.user_name)}

@@ -90,7 +90,7 @@ const Third = ({
             backgroundColor: Colors.dashed,
             justifyContent: "center",
           }}
-          textStyle={{ fontFamily: fonts.type.regular, color: Colors.sailBlue }}
+          textStyle={{ fontFamily: fonts.Poppins.regular, color: Colors.sailBlue }}
           onPress={handleAddStatus}
         />
       </View>
