@@ -13,8 +13,6 @@ import { getRememberMe } from "shared/constants/accountService";
 import { SCREENS } from "@shared-constants";
 import { navigate } from "@navigation";
 import InternetManager from "components/InternetManager";
-import { TextWrapper } from "components";
-import fonts from "@fonts";
 LogBox.ignoreAllLogs();
 
 if (__DEV__) {
@@ -47,7 +45,7 @@ const App = () => {
           }
         })
         .catch((e) => {
-          // setVpnStatus(false);
+          setVpnStatus(false);
           console.log("Error: ", JSON.stringify(e));
         });
     });

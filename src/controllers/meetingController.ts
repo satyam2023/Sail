@@ -39,3 +39,16 @@ export const getPlannedVisitSearch = async (body: object) => {
     logger(error);
   }
 };
+
+export const getPlannedVisitExecution = async (body: object) => {
+  try {
+    const res = await sendPostRequest(
+      APIConstants.PLANNED_MEETING_EXECUTION,
+      body,
+    );
+    return res;
+  } catch (error) {
+    logger(error);
+  }
+};
+

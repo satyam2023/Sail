@@ -24,6 +24,7 @@ import {
   IUnplannedDropDownList,
   IssueDetails,
   PlannedMeetingUpdate,
+  VoicDetails,
 } from "models/interface/IMeeting";
 import PlannedMeeting from "./PlannedMeeting";
 import Representative from "./addUnplannedVisit/AddRepresentative";
@@ -59,7 +60,11 @@ interface IMeetingScreen {
     issueDetails: IssueDetails,
     IssueIndex: number,
   ) => void;
-  recordVoice: () => void;
+  recordVoice:  (
+    key: string,
+    IssueDetail: IssueDetails,
+    IssueIndex: number,
+  ) => void;
   handlePlannedVisitTextChange: (text: string, id: number, key: string) => void;
   handlePlannedVisitSubmit: () => void;
   unPlannedVisitError: MutableRefObject<ValidationError[]>;
@@ -71,6 +76,8 @@ interface IMeetingScreen {
   issueDetails: IssueDetails;
   selectedIssueIndex: number;
   unplannedVisitValue:MutableRefObject<FormValues>;
+  recordDiscussionVoice:()=>void;
+  voiceIndex:VoicDetails;
 }
 
 const MeetingScreen = ({
@@ -106,8 +113,14 @@ const MeetingScreen = ({
   updatePlannedVisit,
   issueDetails,
   selectedIssueIndex,
-  unplannedVisitValue
+  unplannedVisitValue,
+  recordDiscussionVoice,
+  voiceIndex,
 }: IMeetingScreen) => {
+
+
+
+
   const renderRectangularBox = ({ item, index }: IFlatlistRectangularBox) => {
     return (
       <RectangularBox
@@ -143,8 +156,6 @@ const MeetingScreen = ({
   };
 
 
-console.log("Planned???????????????????",plannedMeetingList);
-
   return (
     <>
       <StatusBarComponent
@@ -164,6 +175,7 @@ console.log("Planned???????????????????",plannedMeetingList);
                   data={escalatedCustomerList}
                   renderItem={renderEscalationPersonList}
                   style={{ paddingHorizontal: 20, marginTop: 20 }}
+                  keyExtractor={(_,index)=>index.toString()}
                 />
               ) : (
                 <>
@@ -185,6 +197,7 @@ console.log("Planned???????????????????",plannedMeetingList);
                           handleRepresentativeOnTextChange,
                           handleAddRepresentative,
                           addIssue,
+                          recordVoice,
                           plannedissueList,
                           plannedrepresentativeList,
                           selectIssuesDropDown,
@@ -195,6 +208,8 @@ console.log("Planned???????????????????",plannedMeetingList);
                           unplannedDropDownList,
                           updatePlannedVisit,
                           issueDetails,
+                          recordDiscussionVoice,
+                          voiceIndex,
                         }}
                       />
                     ) : (
@@ -234,7 +249,9 @@ console.log("Planned???????????????????",plannedMeetingList);
                         handleEscalationAccompying,
                         selectedIssueIndex,
                         plannedissueList,
-                        unplannedVisitValue
+                        unplannedVisitValue,
+                        recordDiscussionVoice,
+                        voiceIndex,
                       }}
                     />
                   )}

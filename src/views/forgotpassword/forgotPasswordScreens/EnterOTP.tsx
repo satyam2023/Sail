@@ -19,7 +19,7 @@ const EnterOTP = ({handleOtpEntered,inputFieldRef}:IGetOTP) => {
         maxLength={1}
         placeholder={StringConstants.EMPTY}
         style={styles.conatiner}
-        onChangeText={(text:string)=>{handleOtpEntered(text,index); console.log("Text:::::::",text)}}
+        onChangeText={(text:string)=>{handleOtpEntered(text,index);}}
       />
     );
   };

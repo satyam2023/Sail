@@ -20,6 +20,7 @@ import {
   IUnplannedDropDownList,
   IssueDetails,
   PlannedMeetingUpdate,
+  VoicDetails,
 } from "models/interface/IMeeting";
 import { IdropDown } from "models/interface/ISetting";
 import Glyphs from "assets/Glyphs";
@@ -45,6 +46,13 @@ interface IPlannedMeeting {
   unplannedDropDownList: IUnplannedDropDownList;
   updatePlannedVisit: PlannedMeetingUpdate;
   issueDetails: IssueDetails;
+  recordVoice:  (
+    key: string,
+    IssueDetail: IssueDetails,
+    IssueIndex: number,
+  ) => void;
+  recordDiscussionVoice:()=>void;
+  voiceIndex:VoicDetails;
 }
 
 const PlannedMeeting = (props: IPlannedMeeting) => {
@@ -113,13 +121,14 @@ const PlannedMeeting = (props: IPlannedMeeting) => {
         leftIcon={item.leftIcon}
         isEditable={index > 8 ? true : false}
         rightIcon={item.rightIcon}
+        onRighIconPress={props?.recordDiscussionVoice}
         rightIconTintColor={Colors.sailRed}
         inputBoxId={item?.key}
       />
     );
   };
 
-  function renderIssueList({ item, index }: { item: any; index: number }) {
+  function renderIssueList({index }: {index: number }) {
     return (
       <CustomToggleBox
         key={index}
@@ -131,6 +140,8 @@ const PlannedMeeting = (props: IPlannedMeeting) => {
             handleEscalationAccompying={props?.handleEscalationAccompying}
             issueDetail={props?.plannedissueList[index]}
             index={index}
+            recordVoice={props?.recordVoice}
+            voiceIndex={props?.voiceIndex}
           />
         }
         style={styles.issueToggleBox}
@@ -152,12 +163,14 @@ const PlannedMeeting = (props: IPlannedMeeting) => {
             renderItem={renderPlanedMeetingDetails}
             showsVerticalScrollIndicator={false}
             scrollEnabled={false}
+            keyExtractor={(_,index)=>index.toString()}
           />
           <FlatList
             data={props?.plannedissueList}
             renderItem={renderIssueList}
             showsVerticalScrollIndicator={false}
             scrollEnabled={false}
+            keyExtractor={(_,index)=>index.toString()}
           />
           <TextWrapper style={styles.addDetailText} onPress={props?.addIssue}>
             {StringConstants.ADD_ANOTHER}

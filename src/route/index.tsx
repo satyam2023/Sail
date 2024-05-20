@@ -32,6 +32,8 @@ import ViewCustomerListViewModel from "viewModels/CustomerProfileListViewModel";
 import ViewCustomerRepressentativeViewModel from "viewModels/ViewCustomerRepresentativeViewModel";
 import ViewCustomerCompetitorViewModel from "viewModels/ViewCustomerCompetitorViewModel";
 import CreateCustomerViewModel from "viewModels/CreateCustomerViewModel";
+import SplashScreen from "react-native-splash-screen";
+
 
 
 

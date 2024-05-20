@@ -165,7 +165,7 @@ const ViewCustomerCompetitorViewModel = ({ route, navigation }: any) => {
   }
 
   function handleCompetiotorTextChange(text: string, id: number) {
-    console.log("competitor Values:::::", competitorValue);
+
     handleTextOfCompetitor(Object.keys(competitorDetails)[id], text);
     handleAddCompetitorBtnStatus();
   }

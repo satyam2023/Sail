@@ -667,7 +667,7 @@ export const PlannedInput = [
     maxLength: 20,
     rightIcon: Glyphs.Add,
     leftIcon: undefined,
-    key:''
+    key:'accompying'
   },
 ];
 

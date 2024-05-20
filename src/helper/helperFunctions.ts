@@ -422,12 +422,12 @@ export const setUpdateCompetitorBody = (
 
 
 export const getdropDownsId=(arr:IdropDown[],value:string)=>{
-  const ans=arr.filter((item)=>item.name=value)
+  const ans=arr.filter((item)=>item.name==value)
 return Number(ans[0].id);
 }
 
 export const getEscalationId=(arr:EscalatedList[],value:string)=>{
-  const ans=arr.filter((item)=>item.user_name=value)
+  const ans=arr.filter((item)=>item.user_name==value)
 return Number(ans[0].id);
 }
 
@@ -992,7 +992,7 @@ export const formatSupplier_list = (data: Supplier_Data[]) => {
 
 export const filterAccompyingExecutive=(id:number,data:any)=>{
  const ans= data.filter((item:IdropDown)=>{
-     return item?.id==id;
+     return item?.id==Number(id);
   })
 
 return ans[0];

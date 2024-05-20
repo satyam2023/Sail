@@ -1,11 +1,13 @@
 import { useFocusEffect } from "@react-navigation/native";
 import {
   getPlannedVisit,
+  getPlannedVisitExecution,
   getUnplannedVisitExecution,
 } from "controllers/meetingController";
 import {
   convertAccomToDropData,
   convertCustomerToDropData,
+  filterAccompyingExecutive,
   getEscalationId,
   getdropDownsId,
   isAllInputFieldHaveData,
@@ -18,12 +20,14 @@ import { IRootCustomerCreate } from "models/ApiResponses/CreateCustomer";
 import {
   Escalation_Accompying,
   IBtnStatus,
+  IPlannedMeetingData,
   IRepresentativeList,
   IssueDetails,
   PlannedMeetingUpdate,
+  VoicDetails,
 } from "models/interface/IMeeting";
 import { IdropDown } from "models/interface/ISetting";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
 import { BottomTabVisibility } from "redux/actions/UIAction";
@@ -34,9 +38,10 @@ import {
   representativeValidationRules,
   unplannedVisitValidationRule,
 } from "helper/ValidationRegex";
-import Voice from "@react-native-voice/voice";
+
 import { EscalatedList } from "models/interface/IMessage";
 import useForm, { FormValues } from "core/UseForm";
+import useVoiceToText from "components/VoiceToText";
 
 const CreateMetingDetailsViewModel = () => {
   const [currentScreen, setCurrentScreen] = useState<number>(1);
@@ -44,8 +49,17 @@ const CreateMetingDetailsViewModel = () => {
   const [addUnPlannedRepresentative, setAddUnplannedRepresentative] =
     useState<boolean>(false);
   const [selectedIssueIndex, setIssueIndex] = useState<number>(-1);
-  const [plannedMeetingList, setplannedMeetingList] = useState([]);
+  const [plannedMeetingList, setplannedMeetingList] = useState<
+    IPlannedMeetingData[]
+  >([]);
   const [selectedIndexValue, setSelectedIndexValue] = useState<number>(-1);
+  const [voiceIndex,setVoiceIndex]=useState<VoicDetails>(
+    {
+      index:-1,
+      type:''
+    }
+  );
+ 
   const getRegionData = store?.getState()?.home?.data?.data?.CustomerRegion;
   const [btnStatus, setBtnStatus] = useState<IBtnStatus>({
     submitBtn: false,
@@ -108,9 +122,6 @@ const CreateMetingDetailsViewModel = () => {
       selectedIssueArr,
       unplannedDropDownList,
     );
-
-    console.log("Body::::::::", body);
-
     try {
       const res = await getUnplannedVisitExecution(body);
       if (res?.isSuccess) {
@@ -122,6 +133,8 @@ const CreateMetingDetailsViewModel = () => {
       dispatch(setLoaderVisibility(false));
     }
   };
+
+
 
   const {
     values: unplannedVisitValue,
@@ -145,7 +158,7 @@ const CreateMetingDetailsViewModel = () => {
     fetchPlannedVisitData(1);
   }, []);
 
-  useEffect(() => {
+  useCallback(() => {
     setPlannedIssueList([
       {
         issueName: "",
@@ -157,7 +170,7 @@ const CreateMetingDetailsViewModel = () => {
     ]);
     resetIssueForm();
     resetRepresentativeDetail();
-  }, [currentScreen]);
+  }, [currentScreen])
 
   const getDropDownListData: IRootCustomerCreate = useSelector(
     (state: RootState) => state?.createCustomer,
@@ -166,6 +179,9 @@ const CreateMetingDetailsViewModel = () => {
   const accompy_modeOfContact = useSelector(
     (state: RootState) => state?.dropdown,
   );
+
+  const { isRecording, result, startRecording, stopRecording } =
+    useVoiceToText();
 
   const [representativeList] = useState<IRepresentativeList>({
     representativeList: [StringConstants.EMPTY],
@@ -232,12 +248,27 @@ const CreateMetingDetailsViewModel = () => {
     (state: RootState) => state?.message?.EscaletedDropDownData?.data,
   );
 
-  const recordVoice = async () => {
-    try {
-      const recorderAudio = await Voice.start("en-US");
-    } catch (e) {
-      logger(e, "Error in Voice Recognization");
-    }
+
+
+  const recordVoice = async (
+    key: string,
+    IssueDetail: IssueDetails,
+    IssueIndex: number,
+  ) => {
+      setVoiceIndex({
+        index:IssueIndex,
+        type:key
+      });
+    startRecording();
+    handleIssueDetailChange(result, 1, key, IssueDetail, IssueIndex);
+  };
+
+  const recordDiscussionVoice = async () => {
+    // isRecording ? stopRecording() : startRecording();
+    startRecording();
+    currentScreen == 1
+      ? handlePlannedVisitTextChange(result, -1, "discussionPoint")
+      : handleUnplannedVisitDetail(result, 10);
   };
 
   const fetchPlannedVisitData = async (pagenumber: number) => {
@@ -358,7 +389,7 @@ const CreateMetingDetailsViewModel = () => {
 
   const handleRepresentativeOnTextChange = (
     text: string | number,
-    id: number,
+    id: number
   ) => {
     id != 7
       ? handleTextChangeOfRepresentativeDetail(
@@ -434,13 +465,21 @@ const CreateMetingDetailsViewModel = () => {
     updateIssue({ ...IssueDetail, [key]: text }, IssueIndex);
   };
 
-  const handlePlannedVisitTextChange = (text: string, _: number, key: string) =>
+  const handlePlannedVisitTextChange = (
+    text: string,
+    index: number,
+    key: string,
+  ) => {
     setPlannedUpdateVisit((prev: PlannedMeetingUpdate) => ({
-      ...prev,
-      [key]: text,
-    }));
+          ...prev,
+          [key]: index==10?[
+            ...updatePlannedVisit.accompying,
+            filterAccompyingExecutive(Number(text), unplannedDropDownList[11]),
+          ]:text,
+        }));
+  };
 
-  const handlePlannedVisitSubmit = () => {};
+  const handlePlannedVisitSubmit = () => callPlannedVisitExecution();
 
   const handleEscalationAccompying = (selectedIssueIndex: number) => {
     escalation_accompying_Status?.escalation
@@ -450,6 +489,85 @@ const CreateMetingDetailsViewModel = () => {
       ...prev,
       escalation: !escalation_accompying_Status.escalation,
     }));
+  };
+
+  const callPlannedVisitExecution = async () => {
+    const selectedIssueArr=
+    plannedissueList
+      .map((selectedIssue: IssueDetails) => {
+        const hasNonEmptyValues =
+          selectedIssue.issueName != "" ||
+          selectedIssue.comment !="" ||
+          selectedIssue.escalatedTo ||
+          selectedIssue.escalated_comment !== "" ||
+          selectedIssue.resolved_status !== "";
+        const escalatedToId = getEscalationId(
+          escalatedCustomerList,
+          selectedIssue?.escalatedTo,
+        );
+        return hasNonEmptyValues
+          ? {
+              issue: getdropDownsId(issueDropDownList, selectedIssue.issueName),
+              comment: selectedIssue.comment,
+              escalated_to: escalatedToId,
+              escalation_comment: selectedIssue.escalated_comment,
+              resolved: selectedIssue.resolved_status == "false" ? 0 : 1,
+            }
+          : null;
+      })
+      .filter((selectedIssue) => selectedIssue !== null);
+
+    const body = {
+      visit_id: plannedMeetingList[selectedIndexValue]?.id || null,
+      customer_id: Number(plannedMeetingList[selectedIndexValue]?.customer_id )|| null,
+      visit_time: updatePlannedVisit.visitTime || null,
+      visit_discussion: updatePlannedVisit.discussionPoint || null,
+      accompanying_executive:
+        getdropDownsId(
+          unplannedDropDownList[11],
+          updatePlannedVisit.accompying[0]?.name,
+        ) || null,
+      visit_issues: selectedIssueArr.length > 0 ? selectedIssueArr : null,
+      visit_representative_id: selectedRepresentativeIndex.current || null,
+      representative_name:
+        plannedrepresentativeList.representativeListDetail[
+          selectedRepresentativeIndex.current
+        ].name || null,
+      representative_designation:
+        plannedrepresentativeList.representativeListDetail[
+          selectedRepresentativeIndex.current
+        ].designation || null,
+      representative_department:
+        plannedrepresentativeList.representativeListDetail[
+          selectedRepresentativeIndex.current
+        ].dept || null,
+      representative_address:
+        plannedrepresentativeList.representativeListDetail[
+          selectedRepresentativeIndex.current
+        ].address || null,
+      representative_email:
+        plannedrepresentativeList.representativeListDetail[
+          selectedRepresentativeIndex.current
+        ].email || null,
+      representative_contact_number:
+        plannedrepresentativeList.representativeListDetail[
+          selectedRepresentativeIndex.current
+        ].contact || null,
+      representative_whatsapp_number:
+        plannedrepresentativeList.representativeListDetail[
+          selectedRepresentativeIndex.current
+        ].whatsApp || null,
+    };
+    try {
+      dispatch(setLoaderVisibility(true));
+      const res = await getPlannedVisitExecution(body);
+      if (res?.isSuccess) {
+      }
+    } catch (error) {
+      logger(error, "Planned Visit Executive Error")
+    } finally {
+      dispatch(setLoaderVisibility(false));
+    }
   };
 
   return (
@@ -488,6 +606,8 @@ const CreateMetingDetailsViewModel = () => {
         issueDetails,
         selectedIssueIndex,
         unplannedVisitValue,
+        recordDiscussionVoice,
+        voiceIndex
       }}
     />
   );

@@ -29,6 +29,7 @@ interface ICommonStyle{
   rightIcon:ImageStyle;
   rectangularBoxRadius:ViewStyle;
   font14RegularTextGray:TextStyle;
+  detailLeftIcon:ImageStyle;
 
 }
 
@@ -157,6 +158,12 @@ const commonStyles = StyleSheet.create<ICommonStyle>({
   rectangularBoxRadius:{
     borderRadius:10,
   },
+  detailLeftIcon:{
+    height:38,
+    width:38,
+    resizeMode:'contain',
+    marginRight:16
+  }
   
 });
 

@@ -71,7 +71,7 @@ const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
   useEffect(() => {
     if (textFocusStatus)
       Animated.timing(translateY, {
-        toValue: Platform.OS == "ios" ? -5 : 10,
+        toValue: Platform.OS == "ios" ? -5 : 15,
         duration: 100,
         useNativeDriver: true,
       }).start();

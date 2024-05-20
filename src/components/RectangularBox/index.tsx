@@ -52,7 +52,7 @@ const RectangularBox = (props: IRectangularBox) => {
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         {props.leftIcon && (
-          <Image source={props.leftIcon} style={[commonStyles.leftIcon,props?.leftIconStyle]} />
+          <Image source={props.leftIcon} style={[commonStyles.detailLeftIcon,props?.leftIconStyle]} />
         )}
         <View>
           <View style={{ flexDirection: "row" }}>

@@ -48,7 +48,7 @@ const Planned = ({
     return (
       <RectangularBox
         onPress={() => handlePlannedVisitBoxClick(index, item.id)}
-        leftIcon={Glyphs.Profile2userClicked}
+        leftIcon={Glyphs.multiProfile}
         heading={`${StringConstants.CUSTOMER_VISIT} ${index + 1}`}
         subHeading={item?.customer_data?.company_name}
         cancelled={item.visit_status == "0" ? false : true}

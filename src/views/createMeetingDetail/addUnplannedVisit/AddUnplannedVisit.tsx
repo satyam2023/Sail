@@ -22,6 +22,7 @@ import {
   IUnplannedDropDownList,
   IUnplannedMeetingField,
   IssueDetails,
+  VoicDetails,
 } from "models/interface/IMeeting";
 import styles from "../Style";
 import { FormValues, ValidationError } from "core/UseForm";
@@ -35,12 +36,18 @@ interface AddProps {
   btnStatus: IBtnStatus;
   selectIssuesDropDown: IdropDown[][];
   handleIssueDetailChange: (text: string, id: number,key:string,issueDetails:IssueDetails,IssueIndex:number) => void;
-  recordVoice: () => void;
+  recordVoice:  (
+    key: string,
+    IssueDetail: IssueDetails,
+    IssueIndex: number,
+  ) => void;
   unPlannedVisitError:MutableRefObject<ValidationError[]>;
   handleEscalationAccompying:(index:number)=>void;
   selectedIssueIndex: number;
   plannedissueList: IssueDetails[];
   unplannedVisitValue:MutableRefObject<FormValues>;
+  recordDiscussionVoice:()=>void;
+  voiceIndex:VoicDetails;
 }
 function AddUnplannedVisit({
   addIssue,
@@ -56,7 +63,9 @@ function AddUnplannedVisit({
   unPlannedVisitError,
   handleEscalationAccompying,
   plannedissueList,
-  unplannedVisitValue
+  unplannedVisitValue,
+  recordDiscussionVoice,
+  voiceIndex,
 
 }: AddProps) {
   const renderUnplannedMeetingField = ({
@@ -75,7 +84,7 @@ const value=unplannedVisitValue.current[Object.keys(unplannedVisitValue.current)
             placeholder={item.placeholder}
             leftIcon={item?.leftIcon}
             rightIcon={item?.rightIcon}
-            onRighIconPress={recordVoice}
+            onRighIconPress={recordDiscussionVoice}
             maxlength={item?.length}
             defaultValue={value}
             errors={unPlannedVisitError.current}
@@ -135,6 +144,8 @@ const value=unplannedVisitValue.current[Object.keys(unplannedVisitValue.current)
             handleEscalationAccompying={handleEscalationAccompying}
             index={index}
             issueDetail={plannedissueList[index]}
+            recordVoice={recordVoice}
+            voiceIndex={voiceIndex}
           />
         }
         visibleContent={true}
