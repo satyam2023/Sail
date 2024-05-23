@@ -146,7 +146,7 @@ const styles = (visitNumber?: number) => {
       paddingVertical:10
     },
     text: {
-      fontFamily: fonts.type.medium,
+      fontFamily: fonts.Poppins.medium,
       fontSize: 14,
     },
 

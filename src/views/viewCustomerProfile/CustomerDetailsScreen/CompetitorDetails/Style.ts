@@ -30,7 +30,7 @@ const styles = StyleSheet.create<IStyle>({
   Txt: {
     height: 16,
     color: Colors.sailBlue,
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 14,
   },
   showCompetitorDetailContainer: {

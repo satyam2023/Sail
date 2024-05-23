@@ -24,10 +24,10 @@ interface IUpcomingScreen {
 
 const UpcomingVisit = (props: IUpcomingScreen) => {
   const isSearchResult: boolean = props?.searchResult.length > 0 ? true : false;
-  const renderUpcomingVisit = (item: VisitResponse, index: number) => {
+  const renderUpcomingVisit = ({item,index}:{item: VisitResponse, index: number}) => {
     return (
       <RectangularBox
-        leftIcon={Glyphs.Profile2userClicked}
+        leftIcon={Glyphs.multiProfile}
         heading={` ${StringConstants.CUSTOMER_VISIT}  ${index + 1}`}
         subHeading={item?.customer_data?.company_name}
         onPress={() => props?.handleUpcomingVisitBoxClick(index)}
@@ -42,9 +42,10 @@ const UpcomingVisit = (props: IUpcomingScreen) => {
         <>
           <FlatList
             data={isSearchResult?props.searchResult:props.upcomingVisitList}
-            renderItem={({ item, index }) => renderUpcomingVisit(item, index)}
+            renderItem={renderUpcomingVisit}
             extraData={Data}
-            onMomentumScrollEnd={props?.setPaginationPage}
+            onEndReachedThreshold={0.2} 
+            onEndReached={props?.setPaginationPage}
             showsVerticalScrollIndicator={false}
           />
         </>

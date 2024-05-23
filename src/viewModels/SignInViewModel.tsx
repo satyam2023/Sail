@@ -124,7 +124,7 @@ const SignInViewModel = () => {
               upn: getCredentials.username,
               password: getCredentials.password,
             };
-            console.log("Values", await Keychain.getGenericPassword());
+  
             if (getCredentials) {
               loginAPICAllingHandler(values);
             } else {

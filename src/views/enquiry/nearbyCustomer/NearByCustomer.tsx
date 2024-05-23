@@ -1,11 +1,9 @@
 import React from "react";
 import { FlatList, View } from "react-native";
 import { RectangularBox } from "components";
-import commonStyles from "commonStyles/CommonStyle";
 import { INearbyCustomer } from "models/ApiResponses/IEnquiryResponses";
 import Glyphs from "assets/Glyphs";
 import MapComponent from "components/CustomMap";
-import { Colors } from "commonStyles/RNColor.style";
 import styles from "./Style";
 
 interface Iuser {
@@ -18,7 +16,7 @@ interface INearby {
 }
 
 const NearbyCustomer = (props: INearby) => {
-  function renderitem({ item, index }: Iuser) {
+  function renderitem({ item}: Iuser) {
     return (
       <View style={styles.mapCOnatiner}>
         <RectangularBox

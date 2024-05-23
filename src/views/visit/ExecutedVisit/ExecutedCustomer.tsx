@@ -56,7 +56,7 @@ const ExecutedCustomer = ({
         <Image source={Glyphs.Download} style={{ marginHorizontal: 16 }} />
         <TextWrapper
           style={{
-            fontFamily: fonts.type.medium,
+            fontFamily: fonts.Poppins.medium,
             color: Colors.sailBlue,
             textDecorationLine: "underline",
           }}

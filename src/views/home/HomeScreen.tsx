@@ -16,7 +16,7 @@ import StringConstants from "shared/localization";
 import { SignInResponse } from "models/ApiResponses/SignInResponse";
 import { ExtarctTwoLetterName } from "helper/helperFunctions";
 import { HomeResponse } from "models/ApiResponses/HomeResponse";
-import { HorizontalScrollableList, ShimmerPlaceholder, StatusBarComponent } from "components";
+import { HorizontalScrollableList, StatusBarComponent } from "components";
 interface IHomeScreen {
   userData: SignInResponse;
   homeScreenData: HomeResponse;

@@ -1,7 +1,6 @@
 import { useFocusEffect } from "@react-navigation/native";
 import {
   escalateToAnotherAPI,
-  getEscaltedDropdownData,
   getInboxData,
 } from "controllers/messageController";
 import { getEscalatedId, logger } from "helper/helperFunctions";
@@ -31,7 +30,6 @@ const MessageScreenViewModel = () => {
   
   useEffect(() => {
     getInboxData(dispatch);
-    getEscaltedDropdownData(dispatch);
   }, []);
 
   const messagedata = useSelector(

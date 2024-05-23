@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   exedcutedNumber: {
-    fontFamily: fonts.type.semiBold,
+    fontFamily: fonts.Poppins.semiBold,
     lineHeight: 36,
     fontSize: 24,
     marginTop: 16,

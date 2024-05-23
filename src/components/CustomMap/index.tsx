@@ -50,7 +50,7 @@ const MapComponent = (Props: InputProps) => {
   );
 };
 
-export default MapComponent;
+export default React.memo(MapComponent);
 
 const styles = StyleSheet.create<IMapStyle>({
   container: {

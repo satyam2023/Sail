@@ -25,7 +25,7 @@ const LastScreen = () => {
         onPress={() => navigate(SCREENS.MAIN)}
         text={StringConstants.BACK_TO_HOME}
         buttonStyle={{ width: "40%", backgroundColor: Colors.sailBlue }}
-        textStyle={{ fontFamily: fonts.type.medium, color: Colors.white }}
+        textStyle={{ fontFamily: fonts.Poppins.medium, color: Colors.white }}
       />
     </SafeAreaView>
   );
@@ -37,7 +37,7 @@ const styles = StyleSheet.create<{ lastPageConatiner: TextStyle,img:ImageStyle }
   lastPageConatiner: {
     width: 297,
     height: 60,
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 20,
     lineHeight: 30,
     textAlign: "center",

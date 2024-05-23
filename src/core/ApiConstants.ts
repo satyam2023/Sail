@@ -28,6 +28,7 @@ const APIConstants = {
   CUS_DETAIL_BY_NICKNAME: "customer-details-by-nickname",
   CREATE_VISIT_PLAN: "create-visit",
   PLANNED_MEETING_LIST: "planned-visit-meeting-list",
+  PLANNED_MEETING_EXECUTION: "planned-meeting-list-execution",
   PLANNED_VISIT_SEARCH: "planned-meeting-list-search",
   EMPTY:'Empty',
   CANCEL_VISIT: "cancel-visit",
@@ -68,7 +69,8 @@ const APIConstants = {
   APPLY_FILTER: "search-visit",
   CUS_DETAIL_EXISTING: "customer-details-existing",
   ESCALATED_TO: "escalate-to-dropdown-list",
-  
+  VERIFY_OTP: "forget-password-otp",
+  RESET_PASSWORD: "forget-password-reset",
 };
 
 export default APIConstants;

@@ -75,13 +75,13 @@ const MessageScreen = ({
       />
       <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
         {!msgOpenStatus ? (
-          <View>
+          <View style={{flex:1}}>
             <Header topheading={StringConstants.INBOX} />
             <FlatList
               data={messagedata}
               renderItem={renderMessageBox}
               showsVerticalScrollIndicator={false}
-              style={{ paddingHorizontal: 20, marginVertical: 30 }}
+              style={{ paddingHorizontal: 20,marginTop:20,flex:1}}
             />
           </View>
         ) : selectedMsgIndex >= 0 ? (

@@ -578,7 +578,7 @@ export interface IPlannedMeetingInputField {
   maxLength: number;
   rightIcon: ImageURISource | undefined;
   leftIcon: ImageURISource | undefined;
-  key?: string;
+  key: string;
 }
 
 export const PlannedInput = [
@@ -587,6 +587,8 @@ export const PlannedInput = [
     maxLength: 20,
     rightIcon: undefined,
     leftIcon: undefined,
+    key:''
+
   },
 
   {
@@ -594,6 +596,7 @@ export const PlannedInput = [
     maxLength: 20,
     rightIcon: undefined,
     leftIcon: undefined,
+    key:''
   },
 
   {
@@ -601,6 +604,7 @@ export const PlannedInput = [
     maxLength: 20,
     rightIcon: undefined,
     leftIcon: undefined,
+    key:''
   },
 
   {
@@ -608,6 +612,7 @@ export const PlannedInput = [
     maxLength: 20,
     rightIcon: undefined,
     leftIcon: undefined,
+    key:''
   },
 
   {
@@ -615,6 +620,7 @@ export const PlannedInput = [
     maxLength: 20,
     rightIcon: undefined,
     leftIcon: undefined,
+    key:''
   },
 
   {
@@ -622,6 +628,7 @@ export const PlannedInput = [
     maxLength: 20,
     rightIcon: undefined,
     leftIcon: Glyphs.Calender,
+    key:''
   },
 
   {
@@ -637,6 +644,7 @@ export const PlannedInput = [
     maxLength: 20,
     rightIcon: undefined,
     leftIcon: undefined,
+    key:''
   },
 
   {
@@ -644,6 +652,7 @@ export const PlannedInput = [
     maxLength: 20,
     rightIcon: undefined,
     leftIcon: undefined,
+    key:''
   },
 
   {
@@ -658,6 +667,7 @@ export const PlannedInput = [
     maxLength: 20,
     rightIcon: Glyphs.Add,
     leftIcon: undefined,
+    key:'accompying'
   },
 ];
 

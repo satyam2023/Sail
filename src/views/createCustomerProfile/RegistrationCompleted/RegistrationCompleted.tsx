@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     
   },
   txt: {
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 20,
     color: Colors.sailBlue,
     marginTop:20

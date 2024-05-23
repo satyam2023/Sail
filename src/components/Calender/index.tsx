@@ -1,6 +1,6 @@
 import { getCurrentDate1 } from "helper/helperFunctions";
 import { ScreenHeight, ScreenWidth } from "libs";
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { Image, StyleSheet, View, ViewStyle } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { Colors } from "commonStyles/RNColor.style";
@@ -35,13 +35,9 @@ const Datepicker = ({
 }: any) => {
   const [disableMonth, setDisableMonth] = useState<boolean>(false);
   const [isCalenderVisible, setCalenderVisibility] = useState<boolean>(false);
-  const [selectedDate,setSelectedDate]=useState<string>(defaultValue?defaultValue:"");
+  const [selectedDate,setSelectedDate]=useState<string>(defaultValue);
 
-  function dayPress(day: string, type: string) {
-    if (type == "from") {
-    } else if (type == "to") {
-    }
-  }
+
 
   function addWeeks(date: Date, weeks: number) {
     date.setDate(date.getDate() + 6 * weeks);
@@ -50,7 +46,6 @@ const Datepicker = ({
 
   const returnDate = (type: string) => {
     const date = new Date(fromSelectedDate);
-
     if (type == "7") {
       const minDate = addWeeks(date, 1);
       const year = minDate.getFullYear();
@@ -179,7 +174,7 @@ const Datepicker = ({
   );
 };
 
-export default Datepicker;
+export default memo(Datepicker);
 
 const styles = StyleSheet.create<ICalenderStyle>({
   main: {

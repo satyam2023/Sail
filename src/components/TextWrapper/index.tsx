@@ -1,5 +1,4 @@
 import React from "react";
-import fonts from "@fonts";
 import RNText, { IRNTextProps } from "components/RNText/RNText";
 
 interface ITextWrapperProps extends IRNTextProps {
@@ -9,7 +8,7 @@ interface ITextWrapperProps extends IRNTextProps {
 }
 
 const TextWrapper: React.FC<ITextWrapperProps> = ({
-  fontFamily = fonts.type.regular,
+  fontFamily,
   color,
   children,
   ...rest
