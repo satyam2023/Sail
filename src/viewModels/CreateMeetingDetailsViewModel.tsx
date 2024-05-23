@@ -38,7 +38,6 @@ import {
   representativeValidationRules,
   unplannedVisitValidationRule,
 } from "helper/ValidationRegex";
-
 import { EscalatedList } from "models/interface/IMessage";
 import useForm, { FormValues } from "core/UseForm";
 import useVoiceToText from "components/VoiceToText";
@@ -53,13 +52,11 @@ const CreateMetingDetailsViewModel = () => {
     IPlannedMeetingData[]
   >([]);
   const [selectedIndexValue, setSelectedIndexValue] = useState<number>(-1);
-  const [voiceIndex,setVoiceIndex]=useState<VoicDetails>(
-    {
-      index:-1,
-      type:''
-    }
-  );
- 
+  const [voiceIndex, setVoiceIndex] = useState<VoicDetails>({
+    index: -1,
+    type: "",
+  });
+
   const getRegionData = store?.getState()?.home?.data?.data?.CustomerRegion;
   const [btnStatus, setBtnStatus] = useState<IBtnStatus>({
     submitBtn: false,
@@ -134,8 +131,6 @@ const CreateMetingDetailsViewModel = () => {
     }
   };
 
-
-
   const {
     values: unplannedVisitValue,
     errors: unPlannedVisitError,
@@ -170,7 +165,7 @@ const CreateMetingDetailsViewModel = () => {
     ]);
     resetIssueForm();
     resetRepresentativeDetail();
-  }, [currentScreen])
+  }, [currentScreen]);
 
   const getDropDownListData: IRootCustomerCreate = useSelector(
     (state: RootState) => state?.createCustomer,
@@ -180,7 +175,7 @@ const CreateMetingDetailsViewModel = () => {
     (state: RootState) => state?.dropdown,
   );
 
-  const { isRecording, result, startRecording, stopRecording } =
+  const { isRecording, result, startRecording, toggleRecording } =
     useVoiceToText();
 
   const [representativeList] = useState<IRepresentativeList>({
@@ -248,27 +243,42 @@ const CreateMetingDetailsViewModel = () => {
     (state: RootState) => state?.message?.EscaletedDropDownData?.data,
   );
 
-
+  const resetVoiceIndex = () => {
+    setVoiceIndex({
+      index: -1,
+      type: "",
+    });
+  };
 
   const recordVoice = async (
     key: string,
-    IssueDetail: IssueDetails,
-    IssueIndex: number,
+    issueDetail: IssueDetails,
+    issueIndex: number,
   ) => {
-      setVoiceIndex({
-        index:IssueIndex,
-        type:key
-      });
-    startRecording();
-    handleIssueDetailChange(result, 1, key, IssueDetail, IssueIndex);
+   
+    setVoiceIndex({
+      index: issueIndex,
+      type: key,
+    });
+
+    const onSpeechResultCallback = (text: string) => {
+      handleIssueDetailChange(text, 1, key, issueDetail, issueIndex);
+    };
+
+    startRecording(onSpeechResultCallback);
   };
 
   const recordDiscussionVoice = async () => {
-    // isRecording ? stopRecording() : startRecording();
-    startRecording();
-    currentScreen == 1
-      ? handlePlannedVisitTextChange(result, -1, "discussionPoint")
-      : handleUnplannedVisitDetail(result, 10);
+    setVoiceIndex({
+      index: -2,
+      type: currentScreen == 1 ? "plannedDiscussion" : "unplannedDiscussion",
+    });
+    const onSpeechResultCallback = (text: string) => {
+      currentScreen == 1
+        ? handlePlannedVisitTextChange(text, -1, "discussionPoint")
+        : handleUnplannedVisitDetail(text, 10);
+    };
+    startRecording(onSpeechResultCallback);
   };
 
   const fetchPlannedVisitData = async (pagenumber: number) => {
@@ -389,7 +399,7 @@ const CreateMetingDetailsViewModel = () => {
 
   const handleRepresentativeOnTextChange = (
     text: string | number,
-    id: number
+    id: number,
   ) => {
     id != 7
       ? handleTextChangeOfRepresentativeDetail(
@@ -471,12 +481,18 @@ const CreateMetingDetailsViewModel = () => {
     key: string,
   ) => {
     setPlannedUpdateVisit((prev: PlannedMeetingUpdate) => ({
-          ...prev,
-          [key]: index==10?[
-            ...updatePlannedVisit.accompying,
-            filterAccompyingExecutive(Number(text), unplannedDropDownList[11]),
-          ]:text,
-        }));
+      ...prev,
+      [key]:
+        index == 10
+          ? [
+              ...updatePlannedVisit.accompying,
+              filterAccompyingExecutive(
+                Number(text),
+                unplannedDropDownList[11],
+              ),
+            ]
+          : text,
+    }));
   };
 
   const handlePlannedVisitSubmit = () => callPlannedVisitExecution();
@@ -492,12 +508,11 @@ const CreateMetingDetailsViewModel = () => {
   };
 
   const callPlannedVisitExecution = async () => {
-    const selectedIssueArr=
-    plannedissueList
+    const selectedIssueArr = plannedissueList
       .map((selectedIssue: IssueDetails) => {
         const hasNonEmptyValues =
           selectedIssue.issueName != "" ||
-          selectedIssue.comment !="" ||
+          selectedIssue.comment != "" ||
           selectedIssue.escalatedTo ||
           selectedIssue.escalated_comment !== "" ||
           selectedIssue.resolved_status !== "";
@@ -519,7 +534,8 @@ const CreateMetingDetailsViewModel = () => {
 
     const body = {
       visit_id: plannedMeetingList[selectedIndexValue]?.id || null,
-      customer_id: Number(plannedMeetingList[selectedIndexValue]?.customer_id )|| null,
+      customer_id:
+        Number(plannedMeetingList[selectedIndexValue]?.customer_id) || null,
       visit_time: updatePlannedVisit.visitTime || null,
       visit_discussion: updatePlannedVisit.discussionPoint || null,
       accompanying_executive:
@@ -564,7 +580,7 @@ const CreateMetingDetailsViewModel = () => {
       if (res?.isSuccess) {
       }
     } catch (error) {
-      logger(error, "Planned Visit Executive Error")
+      logger(error, "Planned Visit Executive Error");
     } finally {
       dispatch(setLoaderVisibility(false));
     }
@@ -607,7 +623,7 @@ const CreateMetingDetailsViewModel = () => {
         selectedIssueIndex,
         unplannedVisitValue,
         recordDiscussionVoice,
-        voiceIndex
+        voiceIndex,
       }}
     />
   );

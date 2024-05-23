@@ -40,19 +40,19 @@ interface IPlannedMeeting {
     issueDetails: IssueDetails,
     IssueNumber: number,
   ) => void;
-  handlePlannedVisitTextChange: (text: string, id: number,key:string) => void;
+  handlePlannedVisitTextChange: (text: string, id: number, key: string) => void;
   handlePlannedVisitSubmit: () => void;
-  handleEscalationAccompying:  (selectedIssueIndex:number) => void;
+  handleEscalationAccompying: (selectedIssueIndex: number) => void;
   unplannedDropDownList: IUnplannedDropDownList;
   updatePlannedVisit: PlannedMeetingUpdate;
   issueDetails: IssueDetails;
-  recordVoice:  (
+  recordVoice: (
     key: string,
     IssueDetail: IssueDetails,
     IssueIndex: number,
   ) => void;
-  recordDiscussionVoice:()=>void;
-  voiceIndex:VoicDetails;
+  recordDiscussionVoice: () => void;
+  voiceIndex: VoicDetails;
 }
 
 const PlannedMeeting = (props: IPlannedMeeting) => {
@@ -67,7 +67,7 @@ const PlannedMeeting = (props: IPlannedMeeting) => {
       [6].includes(index) ? (
         <TimePicker
           onTimePress={(time: string) => {
-            props?.handlePlannedVisitTextChange(time, index,item?.key);
+            props?.handlePlannedVisitTextChange(time, index, item?.key);
           }}
           defaultValue={props?.updatePlannedVisit[
             Object.keys(props?.updatePlannedVisit)[0]
@@ -80,7 +80,11 @@ const PlannedMeeting = (props: IPlannedMeeting) => {
             ArrayOfData={props?.unplannedDropDownList[index + 1]}
             topheading={item?.placeHolder}
             onPress={(items: IdropDown) => {
-              props?.handlePlannedVisitTextChange(items?.id.toString(), index,item?.key);
+              props?.handlePlannedVisitTextChange(
+                items?.id.toString(),
+                index,
+                item?.key,
+              );
             }}
             rightIcon={Glyphs.Plus}
             isSelectedItemNotVisible={true}
@@ -102,7 +106,7 @@ const PlannedMeeting = (props: IPlannedMeeting) => {
     ) : (
       <InputTextField
         onChangeText={(text) =>
-          props?.handlePlannedVisitTextChange(text, index,item?.key)
+          props?.handlePlannedVisitTextChange(text, index, item?.key)
         }
         placeholder={item?.placeHolder}
         defaultValue={
@@ -122,13 +126,19 @@ const PlannedMeeting = (props: IPlannedMeeting) => {
         isEditable={index > 8 ? true : false}
         rightIcon={item.rightIcon}
         onRighIconPress={props?.recordDiscussionVoice}
-        rightIconTintColor={Colors.sailRed}
         inputBoxId={item?.key}
+        rightIconTintColor={
+          index == 9
+            ? props?.voiceIndex.type == "plannedDiscussion"
+              ? Colors.sailRed
+              : Colors.darkGrey
+            : undefined
+        }
       />
     );
   };
 
-  function renderIssueList({index }: {index: number }) {
+  function renderIssueList({ index }: { index: number }) {
     return (
       <CustomToggleBox
         key={index}
@@ -163,14 +173,14 @@ const PlannedMeeting = (props: IPlannedMeeting) => {
             renderItem={renderPlanedMeetingDetails}
             showsVerticalScrollIndicator={false}
             scrollEnabled={false}
-            keyExtractor={(_,index)=>index.toString()}
+            keyExtractor={(_, index) => index.toString()}
           />
           <FlatList
             data={props?.plannedissueList}
             renderItem={renderIssueList}
             showsVerticalScrollIndicator={false}
             scrollEnabled={false}
-            keyExtractor={(_,index)=>index.toString()}
+            keyExtractor={(_, index) => index.toString()}
           />
           <TextWrapper style={styles.addDetailText} onPress={props?.addIssue}>
             {StringConstants.ADD_ANOTHER}

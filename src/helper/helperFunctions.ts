@@ -31,14 +31,14 @@ import {
   IsubType,
   RepresentativeDetails,
 } from "models/interface/ICreateCustomer";
-import {
-  IRepresentativeList,
-} from "models/interface/IMeeting";
+import { IRepresentativeList } from "models/interface/IMeeting";
 import StringConstants from "shared/localization";
 import { IProductCatalogue } from "models/ApiResponses/ProductCatalogue";
 import { MutableRefObject } from "react";
 import { EscalatedList } from "models/interface/IMessage";
 import { FormValues } from "core/UseForm";
+import Notification from "views/notification/Notification";
+import { InformationDetails } from "models/interface/ICustomerInformation";
 
 export function ExtarctTwoLetterName(name: string) {
   let ans = name[0];
@@ -371,13 +371,13 @@ export const setUpdateRepresentativeBody = (
     designation: updatedValues?.designation,
 
     department: updatedValues?.dept,
- 
+
     address: updatedValues?.address,
 
     email_id: updatedValues?.email,
-    
+
     contact_number: updatedValues?.contact,
-  
+
     whatsapp_number: updatedValues?.whatsApp,
 
     active: value,
@@ -412,56 +412,66 @@ export const setUpdateCompetitorBody = (
     company_name: competitorValue?.current?.company,
 
     address: competitorValue?.current?.address,
- 
+
     comment: competitorValue?.current?.comment,
- 
   };
 
   return data;
 };
 
+export const getdropDownsId = (arr: IdropDown[], value: string) => {
+  const ans = arr.filter((item) => item.name == value);
+  return Number(ans[0].id);
+};
 
-export const getdropDownsId=(arr:IdropDown[],value:string)=>{
-  const ans=arr.filter((item)=>item.name==value)
-return Number(ans[0].id);
-}
-
-export const getEscalationId=(arr:EscalatedList[],value:string)=>{
-  const ans=arr.filter((item)=>item.user_name==value)
-return Number(ans[0].id);
-}
-
-
+export const getEscalationId = (arr: EscalatedList[], value: string) => {
+  const ans = arr.filter((item) => item.user_name == value);
+  return Number(ans[0].id);
+};
 
 export const unplannedVisitMeeting = (
   unplannedVisitValue: any,
   representativeList: IRepresentativeList,
   selectedIssueArr: any[],
-  unplannedDropDownList:any,
+  unplannedDropDownList: any,
 ) => {
   const selectedIndex = Number(
     unplannedVisitValue?.current?.selectedRepresentative,
   );
 
-  console.log("Slected representative::idex",selectedIndex);
+  console.log("Slected representative::idex", selectedIndex);
   const body = {
     customer_code: unplannedVisitValue?.current?.code || null,
     company_name: unplannedVisitValue?.current?.name || null,
     customer_status:
-      getdropDownsId(unplannedDropDownList[2],unplannedVisitValue?.current?.customer_status) || null,
-    customer_type:  getdropDownsId(unplannedDropDownList[3],unplannedVisitValue?.current?.customer_type) || null,
+      getdropDownsId(
+        unplannedDropDownList[2],
+        unplannedVisitValue?.current?.customer_status,
+      ) || null,
+    customer_type:
+      getdropDownsId(
+        unplannedDropDownList[3],
+        unplannedVisitValue?.current?.customer_type,
+      ) || null,
     customer_region: unplannedVisitValue?.current?.customer_region || null,
     visit_mode_of_contact:
-    getdropDownsId(unplannedDropDownList[5],unplannedVisitValue?.current?.mode_of_meeting) || null,
+      getdropDownsId(
+        unplannedDropDownList[5],
+        unplannedVisitValue?.current?.mode_of_meeting,
+      ) || null,
     visit_date: unplannedVisitValue?.current?.visit_date || null,
     visit_time: unplannedVisitValue?.current?.visit_time || null,
-    visit_reason: getdropDownsId(unplannedDropDownList[8],unplannedVisitValue?.current?.visit_reason) || null,
+    visit_reason:
+      getdropDownsId(
+        unplannedDropDownList[8],
+        unplannedVisitValue?.current?.visit_reason,
+      ) || null,
     visit_other_reason: unplannedVisitValue?.current?.other_issue || null,
     visit_discussion_points:
       unplannedVisitValue?.current?.discussion_point || null,
     visit_accompanying_executive:
       unplannedVisitValue?.current?.accompying_executive || null,
-    visit_representative_id: selectedIndex||null,
+    visit_representative_id: selectedIndex || null,
     visit_issues: selectedIssueArr.length > 0 ? selectedIssueArr : null,
     representative_name:
       representativeList.representativeListDetail[selectedIndex]?.name || null,
@@ -493,13 +503,10 @@ export const plannedMeeting = (
   const temp = [
     plannedMeetingList[selectedIndexValue]?.customer_data?.customer_code,
     plannedMeetingList[selectedIndexValue]?.customer_data?.company_name,
-    plannedMeetingList[selectedIndexValue]?.customer_data?.type
-      ?.type_name,
+    plannedMeetingList[selectedIndexValue]?.customer_data?.type?.type_name,
     plannedMeetingList[selectedIndexValue]?.customer_data?.status?.name,
     plannedMeetingList[selectedIndexValue]?.mode_of_contact?.name,
-    extractOnlyDate(
-      plannedMeetingList[selectedIndexValue]?.visit_date_time,
-    ),
+    extractOnlyDate(plannedMeetingList[selectedIndexValue]?.visit_date_time),
     StringConstants.EMPTY,
     plannedMeetingList[selectedIndexValue]?.reason?.name,
     plannedMeetingList[selectedIndexValue]?.others_reason,
@@ -548,7 +555,9 @@ export const checkAllInputField = (fields: any) => {
   return true;
 };
 
-export const isAllInputFieldHaveData = (fields: MutableRefObject<FormValues>) => {
+export const isAllInputFieldHaveData = (
+  fields: MutableRefObject<FormValues>,
+) => {
   for (let i = 0; i < Object.keys(fields.current)?.length; i++) {
     if (fields.current[Object.keys(fields.current)[i]].length == 0) {
       return false;
@@ -731,7 +740,7 @@ export const updateCustomerBody = (
   customerList: IViewCustomerBody[],
   selectedIndexValue: number,
   customerValue: MutableRefObject<FormValues>,
-  customerTypeValue:MutableRefObject<FormValues>,
+  customerTypeValue: MutableRefObject<FormValues>,
   customer: ICustomerState,
   custImageVideoData: any[],
 ) => {
@@ -751,17 +760,20 @@ export const updateCustomerBody = (
     latitude: customerDetails?.latitude,
     longitude: customerDetails?.longitude,
     address: customerDetails?.location,
-    cluster:customerTypeValue?.current?.cluster||null,
-    contact_number:customerTypeValue?.current?.contact_number||null,
-    day_wise_stock: customerTypeValue?.current?.day_wise_stock||null,
-    price_feedback_competitor:customerTypeValue?.current?.procured_products||null,
-    procured_products:returnOnlyIndex(customer?.procuredProduct) || null,
-    tentative_quality_procured: customerTypeValue?.current?.tentative_quality_procured||null,
-    supplier:returnOnlyIndex(customer?.supplier) || null,
-    project_details:customerList[selectedIndexValue]?.type?.id==6?customerTypeValue?.current?.project_details||null:null,
+    cluster: customerTypeValue?.current?.cluster || null,
+    contact_number: customerTypeValue?.current?.contact_number || null,
+    day_wise_stock: customerTypeValue?.current?.day_wise_stock || null,
+    price_feedback_competitor:
+      customerTypeValue?.current?.procured_products || null,
+    procured_products: returnOnlyIndex(customer?.procuredProduct) || null,
+    tentative_quality_procured:
+      customerTypeValue?.current?.tentative_quality_procured || null,
+    supplier: returnOnlyIndex(customer?.supplier) || null,
+    project_details:
+      customerList[selectedIndexValue]?.type?.id == 6
+        ? customerTypeValue?.current?.project_details || null
+        : null,
   };
-
-
 
   return body;
 };
@@ -804,8 +816,6 @@ export const representativeDetailsofViewCustomerProfile = (
     "-1",
   ];
 
- 
-
   return data;
 };
 
@@ -813,8 +823,7 @@ export const customerDetailOfViewModel = (
   customerList: IViewCustomerBody[],
   selectedIndexValue: number,
 ) => {
-
-  console.log("Customer List:::::",customerList[selectedIndexValue]);
+  console.log("Customer List:::::", customerList[selectedIndexValue]);
   const data = [
     customerList[selectedIndexValue]?.customer_code,
     customerList[selectedIndexValue]?.company_name,
@@ -831,8 +840,6 @@ export const customerDetailOfViewModel = (
     customerList[selectedIndexValue]?.location_lat,
     customerList[selectedIndexValue]?.location_long,
   ];
-
-
 
   return data;
 };
@@ -861,17 +868,23 @@ export const traderDealerselectedCustomerDetail = (
   customerList: IViewCustomerBody[],
   selectedIndexValue: number,
 ) => {
-  const index=customerList[selectedIndexValue]?.type?.id;
-  const isSpecialType: boolean =[2,6,7].includes(index);
+  const index = customerList[selectedIndexValue]?.type?.id;
+  const isSpecialType: boolean = [2, 6, 7].includes(index);
   const data = isSpecialType
     ? [
         customerList[selectedIndexValue]?.cluster?.name,
         customerList[selectedIndexValue]?.contact_number,
         customerList[selectedIndexValue]?.day_wise_stock,
         customerList[selectedIndexValue]?.price_feedback_competitor,
-        customerList[selectedIndexValue]?.procured_product_data.length>0?customerList[selectedIndexValue]?.procured_product_data.length.toString():'',
+        customerList[selectedIndexValue]?.procured_product_data.length > 0
+          ? customerList[
+              selectedIndexValue
+            ]?.procured_product_data.length.toString()
+          : "",
         customerList[selectedIndexValue]?.tentative_quality_procured,
-        customerList[selectedIndexValue]?.supplier_data.length>0?customerList[selectedIndexValue]?.supplier_data.length.toString():'',
+        customerList[selectedIndexValue]?.supplier_data.length > 0
+          ? customerList[selectedIndexValue]?.supplier_data.length.toString()
+          : "",
         customerList[selectedIndexValue]?.project_details,
       ]
     : [];
@@ -990,11 +1003,90 @@ export const formatSupplier_list = (data: Supplier_Data[]) => {
   return ans;
 };
 
-export const filterAccompyingExecutive=(id:number,data:any)=>{
- const ans= data.filter((item:IdropDown)=>{
-     return item?.id==Number(id);
-  })
+export const filterAccompyingExecutive = (id: number, data: any) => {
+  const ans = data.filter((item: IdropDown) => {
+    return item?.id == Number(id);
+  });
 
-return ans[0];
+  return ans[0];
+};
 
-}
+type Notification = {
+  details: {
+    customerCode: string;
+    modeOfContact: string;
+    reason: string;
+    remarks: string;
+    visitingExecutive: string;
+  };
+  notificationDate: string;
+  notificationTitle: string;
+};
+
+type GroupedNotifications = {
+  [date: string]: Notification[];
+};
+
+export const groupNotificationsByDate = (
+  notifications: any,
+): GroupedNotifications => {
+  return notifications.reduce(
+    (acc: GroupedNotifications, notification: Notification) => {
+      const date = notification.notificationDate.split("T")[0];
+      if (!acc[date]) {
+        acc[date] = [];
+      }
+      acc[date].push(notification);
+      return acc;
+    },
+    {},
+  );
+};
+
+export const getPdfurl = (
+  details: InformationDetails,
+  currentScreen: number,
+) => {
+  switch (currentScreen) {
+    case 0:
+      return details?.salesOrder?.LCBGReportUrl || "";
+    case 1:
+      return details?.ddReport?.DDorderReportUrl || "";
+    case 2:
+      return details?.mou?.MouReportUrl || "";
+      case 3:
+      return details?.outstanding?.OutStandingReportUrl|| "";
+      case 5:
+        return details?.offTakeStatus?.OfftakeReportUrl|| "";
+    default:
+      return "";
+  }
+};
+
+export const getCustomername = (
+  details: InformationDetails,
+  currentScreen: number,
+) => {
+  switch (currentScreen) {
+    case 0:
+      return details?.salesOrder?.data[0]?.CustomerName|| "";
+    case 1:
+      return details?.ddReport?.data[0]?.CustomerName || "";
+    case 2:
+      return details?.mou?.data[0]?.CustomerName || "";
+      case 3:
+      return details?.outstanding?.data[0]?.customerName || "";
+      case 5:
+      return details?.offTakeStatus?.data[0]?.Customer || "";
+    default:
+      return "";
+  }
+};
+
+export const isAnyInformationHaveData = (details: InformationDetails) => {
+  for (let i in details) {
+    console.log("???????????????????", details[i]);
+    if (details[i] != null) return true;
+  }
+  return false;
+};

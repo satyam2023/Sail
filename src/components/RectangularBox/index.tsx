@@ -101,7 +101,7 @@ const RectangularBox = (props: IRectangularBox) => {
   );
 };
 
-export default RectangularBox;
+export default React.memo(RectangularBox);
 
 const styles = StyleSheet.create<IRectangulBoxStyle>({
   container: {

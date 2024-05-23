@@ -1,34 +1,62 @@
 import { Colors } from "commonStyles/RNColor.style";
-import {
-  CustomButton,
-  Header,
-  InputTextField,
-  SafeAreaContainer,
-  TextWrapper,
-} from "components";
+import { CustomButton, Header, InputTextField, TextWrapper } from "components";
 import React from "react";
-import { View } from "react-native";
+import { SafeAreaView, ScrollView, View } from "react-native";
 import StringConstants from "shared/localization";
 import styles from "./Style";
 import { CustomerInformation } from "@shared-constants";
 import StatusBarComponent from "components/StatusBarComponent";
+import Glyphs from "assets/Glyphs";
+import { InformationDetails } from "models/interface/ICustomerInformation";
+import SalesOrder from "./screens/SalesOrder";
+import {
+  getCustomername,
+  getPdfurl,
+  isAnyInformationHaveData,
+} from "helper/helperFunctions";
+import DDReport from "./screens/DDReport";
+import MouStatus from "./screens/MouStatus";
+import OverStanding from "./screens/OverStanding";
+import OffTake from "./screens/OffTake";
+import commonStyles from "commonStyles/CommonStyle";
 
 interface ICustomerInformation {
   handleEnteredCode_Name: (text: string) => void;
   searchButtonStatus: boolean;
   onSearchButtonClick: () => void;
   currentInformationTab: number;
-  downloadReport:()=>void;
+  isSearchSuccessful: boolean;
+  downloadReport: (url: string) => void;
+  toggelStatus: () => void;
+  details: InformationDetails;
 }
 
 const CustomerInformationScreen = (props: ICustomerInformation) => {
+  const renderInformationScreens = () => {
+    switch (props?.currentInformationTab) {
+      case 0:
+        return <SalesOrder data={props?.details?.salesOrder?.data} />;
+      case 1:
+        return <DDReport data={props?.details?.ddReport?.data} />;
+      case 2:
+        return <MouStatus data={props?.details?.mou?.data} />;
+      case 3:
+        return <OverStanding data={props?.details?.outstanding?.data} />;
+      case 5:
+        return <OffTake data={props?.details?.offTakeStatus?.data} />;
+
+      default:
+        return;
+    }
+  };
+
   return (
     <>
       <StatusBarComponent
         backgroundColor={Colors.sailBlue}
-        conentType={"dark-content"}
+        conentType={"light-content"}
       />
-      <SafeAreaContainer style={{ paddingHorizontal: 0 }}>
+      <SafeAreaView style={styles.mainContainer}>
         <Header topheading={StringConstants.CUSTOMER_INFORMATION} />
         <View style={styles.informationContainer}>
           <TextWrapper style={styles.text}>
@@ -37,13 +65,16 @@ const CustomerInformationScreen = (props: ICustomerInformation) => {
           <InputTextField
             onChangeText={(text: string) => props.handleEnteredCode_Name(text)}
             placeholder={StringConstants.ENTER_CUST_CODE_OR_NAME}
-            onRighIconPress={() => {}}
+            onRighIconPress={props?.toggelStatus}
             containerStyle={{
-              backgroundColor: Colors.white,
+              backgroundColor: props?.searchButtonStatus
+                ? Colors.disabledGrey
+                : Colors.white,
             }}
-            isEditable={true}
+            isEditable={props?.isSearchSuccessful ? false : true}
+            rightIcon={props?.isSearchSuccessful && Glyphs.Close}
+            rightIconTintColor={Colors.darkGrey}
           />
-
           <CustomButton
             text={StringConstants.SEARCH}
             buttonStyle={{
@@ -59,8 +90,43 @@ const CustomerInformationScreen = (props: ICustomerInformation) => {
             }}
             onPress={props?.onSearchButtonClick}
           />
+          {isAnyInformationHaveData(props?.details) ? (
+            <>
+              <TextWrapper style={styles.customerNameStyle}>{`${
+                StringConstants.CUSTOMER
+              } ${getCustomername(
+                props?.details,
+                props?.currentInformationTab,
+              )}`}</TextWrapper>
+              <ScrollView
+                horizontal
+                style={{ flex: 1 }}
+                showsHorizontalScrollIndicator={false}
+              >
+                <View>{renderInformationScreens()}</View>
+              </ScrollView>
+              <CustomButton
+                text={StringConstants.DOWNLOAD_PDF_REPORT}
+                buttonStyle={{ backgroundColor: Colors.sailBlue }}
+                onPress={() =>
+                  props?.downloadReport(
+                    getPdfurl(props?.details, props?.currentInformationTab),
+                  )
+                }
+                textStyle={{ color: Colors.white }}
+              />
+            </>
+          ) : (
+            props?.isSearchSuccessful && (
+              <View style={[{ flex: 1 }, commonStyles.center]}>
+                <TextWrapper style={styles.noRecordFound}>
+                  {StringConstants.NO_RECORDS_FOUND}
+                </TextWrapper>
+              </View>
+            )
+          )}
         </View>
-      </SafeAreaContainer>
+      </SafeAreaView>
     </>
   );
 };

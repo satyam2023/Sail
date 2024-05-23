@@ -24,7 +24,7 @@ interface IUpcomingScreen {
 
 const UpcomingVisit = (props: IUpcomingScreen) => {
   const isSearchResult: boolean = props?.searchResult.length > 0 ? true : false;
-  const renderUpcomingVisit = (item: VisitResponse, index: number) => {
+  const renderUpcomingVisit = ({item,index}:{item: VisitResponse, index: number}) => {
     return (
       <RectangularBox
         leftIcon={Glyphs.multiProfile}
@@ -42,7 +42,7 @@ const UpcomingVisit = (props: IUpcomingScreen) => {
         <>
           <FlatList
             data={isSearchResult?props.searchResult:props.upcomingVisitList}
-            renderItem={({ item, index }) => renderUpcomingVisit(item, index)}
+            renderItem={renderUpcomingVisit}
             extraData={Data}
             onEndReachedThreshold={0.2} 
             onEndReached={props?.setPaginationPage}
