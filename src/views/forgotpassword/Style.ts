@@ -30,7 +30,7 @@ const styles=StyleSheet.create<IForgotPasswordStyle>({
       },
       resetText:{
         textAlign: "center",
-        fontFamily: fonts.type.bold,
+        fontFamily: fonts.Poppins.bold,
         fontSize: 24,
         lineHeight: 32,
         color: Colors.sailBlue,
@@ -38,7 +38,7 @@ const styles=StyleSheet.create<IForgotPasswordStyle>({
       },
       infoText:{
         textAlign: "center",
-        fontFamily: fonts.type.bold,
+        fontFamily: fonts.Poppins.bold,
         fontSize: 16,
         lineHeight: 20,
         color: Colors.darkGrey,
@@ -52,14 +52,14 @@ const styles=StyleSheet.create<IForgotPasswordStyle>({
         borderRadius: 33,
         alignSelf: "center",
         color:Colors.blackPeral,
-        fontFamily:fonts.type.regular,
+        fontFamily:fonts.Poppins.regular,
         fontSize:24
       },
       resendText:{
         marginTop: 10,
         textAlign: "center",
         color: Colors.sailBlue,
-        fontFamily: fonts.type.regular,
+        fontFamily: fonts.Poppins.regular,
         fontSize: 14,
       }
 });

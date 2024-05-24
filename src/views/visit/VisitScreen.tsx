@@ -20,7 +20,6 @@ import {
   Header,
   HorizontalSlider,
   InputTextField,
-  KeyboardAvoidingWrapper,
   PressableButton,
   TextWrapper,
 } from "components";
@@ -111,7 +110,7 @@ const VisitScreen = ({
               setCurrentVisit(index);
             }}
             countArray={visitCountArray}
-            style={{ backgroundColor: Colors.background }}
+            style={{ backgroundColor: Colors.background}}
           />
           <TextWrapper style={[commonStyles.font12RegularGrey, styles.txt]}>
             {StringConstants.ENTER_CUST_CODE_OR_NAME}

@@ -8,6 +8,7 @@ import Datepicker from "./Calender";
 import CustomDropDown from "./CustomDropDown";
 import { IPlannedVisitEdit } from "models/interface/IVisit";
 import { IdropDown } from "models/interface/ISetting";
+import { isAndroid } from "libs";
 
 interface ICustomerDetails {
   CustomerData:  string[];
@@ -24,7 +25,7 @@ interface ICustomerDetails {
 const CustomerDetails = (props: ICustomerDetails) => {
   const renderItem = (item: string, index: number) => {
     return (
-    (props.plannedVisitEditDetails && (index==1|| index==2))?
+    (props.plannedVisitEditDetails &&[1,2].includes(index))?
     null:
       <RectangularBox
         key={index}
@@ -76,7 +77,7 @@ const CustomerDetails = (props: ICustomerDetails) => {
         data={props.CustomerData}
         renderItem={({ item, index }) => renderItem(item, index)}
         scrollEnabled={false}
-        style={{ marginTop: -10 }}
+        style={{ marginTop: 0,marginBottom:isAndroid?20:0}}
       />
     </ScrollView>
   );

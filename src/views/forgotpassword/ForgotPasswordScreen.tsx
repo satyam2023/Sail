@@ -11,6 +11,9 @@ import ResetPassword from "./forgotPasswordScreens/ResetPassword";
 import { goBack } from "@navigation";
 import GradientBackground from "components/LinearGradient";
 import CountdownTimer from "./forgotPasswordScreens/Timer";
+import { MutableRefObject } from "react";
+import { ValidationError } from "core/UseForm";
+import { IOTPFields } from "models/interface/IForgotPassword";
 
 interface IForgetScreen {
   currentScreen: number;
@@ -19,8 +22,12 @@ interface IForgetScreen {
   handleButtonClicked: () => void;
   handleTimer: () => void;
   timerEnd: boolean;
-  handleResendOTP:()=>void;
-
+  handleResendOTP: () => void;
+  forgotPasswordErrors: MutableRefObject<ValidationError[]>;
+  handleOtpEntered: (text:string,id:number) => void;
+  handleEnteredPassword :(text:string,id:number)=>void;
+  createPasswordError:MutableRefObject<ValidationError[]>;
+  inputFieldRef:IOTPFields
 }
 
 const ForgotPasswordScreen = ({
@@ -30,23 +37,29 @@ const ForgotPasswordScreen = ({
   handleButtonClicked,
   handleTimer,
   timerEnd,
-  handleResendOTP
+  handleResendOTP,
+  forgotPasswordErrors,
+  handleOtpEntered,
+  handleEnteredPassword ,
+  createPasswordError,
+  inputFieldRef,
 }: IForgetScreen) => {
   return (
     <GradientBackground>
       <SafeAreaView style={{ flex: 1, paddingHorizontal: 20 }}>
-        <PressableButton onPress={() => goBack()}>
+        <PressableButton onPress={goBack}>
           <Image source={Glyphs.Arrow} style={styles.arrowImage} />
         </PressableButton>
         <Image source={Glyphs.ForgotPassword} style={styles.forgotImage} />
-
         <TextWrapper style={styles.resetText}>
           {StringConstants.RESET_PASSWORD}
         </TextWrapper>
         <View style={{ paddingHorizontal: 20 }}>
-          {currentScreen == 1 && <GetOTP {...{ handleUpnContactEntered }} />}
-          {currentScreen == 2 && <EnterOTP />}
-          {currentScreen == 3 && <ResetPassword />}
+          {currentScreen == 1 && (
+            <GetOTP {...{ handleUpnContactEntered, forgotPasswordErrors}} />
+          )}
+          {currentScreen == 2 && <EnterOTP {...{ handleOtpEntered,inputFieldRef }} />}
+          {currentScreen == 3 && <ResetPassword {...{handleEnteredPassword,createPasswordError }}/>}
           <CustomButton
             text={buttonText[currentScreen - 1]}
             buttonStyle={{ backgroundColor: Colors.sailBlue }}

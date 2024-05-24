@@ -84,7 +84,7 @@ const ShowCompetitorListing = (props: IShowCompetitorListing) => {
                 justifyContent: "center",
               }}
               textStyle={{
-                fontFamily: fonts.type.regular,
+                fontFamily: fonts.Poppins.regular,
                 color: Colors.sailBlue,
               }}
               onPress={props?.handleAddStatus}

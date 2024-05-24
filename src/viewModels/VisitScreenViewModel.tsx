@@ -5,7 +5,7 @@ import {
   ExecutedResponse,
   VisitResponse,
 } from "models/ApiResponses/VisitResponse";
-import {useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BottomTabVisibility } from "redux/actions/UIAction";
 import VisitScreen from "views/visit/VisitScreen";
@@ -45,9 +45,7 @@ const VisitScreenViewModel = () => {
   const [applyFilterSearch, setApplyFilterSearch] = useState<boolean>(false);
   const [searchResult, setSearchResult] = useState<VisitResponse[]>([]);
   const [plannedVisit, setPlannedVisit] = useState<VisitResponse[]>([]);
-  function handleCustomerClick() {
-    setCustomerDetails(!customerDetails);
-  }
+ const  handleCustomerClick=()=> setCustomerDetails(!customerDetails);
 
   const lastPages = {
     upcomingLastPage: useRef<number>(1),
@@ -58,17 +56,24 @@ const VisitScreenViewModel = () => {
     store?.getState()?.dropdown?.reasonContactData?.data?.ModeofContact;
   const userID = store?.getState()?.userAccount?.data?.data?.user?.id;
   const visitCount = store?.getState()?.home?.data?.data?.AllVisttsCount;
-  const [upcomingVisitList,setUpcomingVisitList]=useState<VisitResponse[]>([]);
+  const [upcomingVisitList, setUpcomingVisitList] = useState<VisitResponse[]>(
+    [],
+  );
   const plannedVisitList = useSelector(
     (state: any) => state?.visitDetail?.planned,
   );
   const enteredCustomerCodeToSearch = useRef<string>("");
+ 
   const pageNumber: IVisitScreenPagination = {
     upcoming: useRef<number>(1),
     planned: useRef<number>(1),
     executed: useRef<number>(1),
   };
-  const [executedVisitList,setExecutedVisitList]=useState<ExecutedResponse[]>([]);
+
+
+  const [executedVisitList, setExecutedVisitList] = useState<
+    ExecutedResponse[]
+  >([]);
 
   const visitType = useSelector((state: any) => state?.UIReducer?.visitType);
   const dispatch = useDispatch();
@@ -82,7 +87,6 @@ const VisitScreenViewModel = () => {
     callExecutedVisit(pageNumber.executed.current);
     setCurrentVisit(visitType);
   }, []);
-  
 
   useEffect(() => {
     setSearchResult([]);
@@ -125,29 +129,26 @@ const VisitScreenViewModel = () => {
   function callUpcomingVisit(page: number) {
     const setUpcomingVisits = async (page: number) => {
       try {
-       
-          const res: IApiResponse<IPagination<VisitResponse>> =
-            await getUpcomingVisits(page);
-          if (res?.isSuccess) {
-            lastPages.executedLastPage.current = res?.data?.data
-              ? res?.data?.data?.last_page
-              : 1;
-              const tempData = res?.data?.data?.data ? res?.data?.data?.data : [];
-            setUpcomingVisitList(upcomingVisitList.concat(tempData));
-          }
-
-      } catch(e) {
-        logger(e,"Error in Upcoming Visit Api Calling")
+        const res: IApiResponse<IPagination<VisitResponse>> =
+          await getUpcomingVisits(page);
+        if (res?.isSuccess) {
+          lastPages.executedLastPage.current = res?.data?.data
+            ? res?.data?.data?.last_page
+            : 1;
+          const tempData = res?.data?.data?.data ? res?.data?.data?.data : [];
+          setUpcomingVisitList(upcomingVisitList.concat(tempData));
+        }
+      } catch (e) {
+        logger(e, "Error in Upcoming Visit Api Calling");
       }
     };
 
     setUpcomingVisits(page);
   }
 
-  function callPlannedVisitApi(page: number,isVisitCancelled=false) {
+  function callPlannedVisitApi(page: number, isVisitCancelled = false) {
     const setPlannedVisits = async (page: number) => {
       try {
-     
         dispatch(setLoaderVisibility(true));
         const res: IApiResponse<IPagination<VisitResponse>> =
           await getPlannedVisits(page);
@@ -156,10 +157,8 @@ const VisitScreenViewModel = () => {
             ? res?.data?.data?.last_page
             : 1;
           const tempData = res?.data?.data?.data ? res?.data?.data?.data : [];
-          if(isVisitCancelled)
-          setPlannedVisit(tempData);
-          else 
-          setPlannedVisit(plannedVisit.concat(tempData));
+          if (isVisitCancelled) setPlannedVisit(tempData);
+          else setPlannedVisit(plannedVisit.concat(tempData));
         }
       } catch (e) {
         logger(e, "Error in Planned Visit");
@@ -181,13 +180,12 @@ const VisitScreenViewModel = () => {
             lastPages.executedLastPage.current = res?.data?.data
               ? res?.data?.data?.last_page
               : 1;
-              const tempData = res?.data?.data?.data ? res?.data?.data?.data : [];
+            const tempData = res?.data?.data?.data ? res?.data?.data?.data : [];
             setExecutedVisitList(executedVisitList.concat(tempData));
           }
         }
-      } catch (e){
-        logger(e,"Error in Executed Visit")
-
+      } catch (e) {
+        logger(e, "Error in Executed Visit");
       } finally {
         dispatch(setLoaderVisibility(false));
       }
@@ -238,25 +236,22 @@ const VisitScreenViewModel = () => {
     const data = {
       visit_id: plannedVisitEditDetails?.id?.current || null,
     };
-    try{
-    const res = await cancelVisitAPI(data);
-    if (res?.isSuccess) {
-     handleCleanAfterCancelVisit()
+    try {
+      const res = await cancelVisitAPI(data);
+      if (res?.isSuccess) {
+        handleCleanAfterCancelVisit();
+      }
+    } catch (e) {
+      logger(e, "Error in cancelling the Planned Visit");
     }
-  }
-  catch(e){
-    logger(e,"Error in cancelling the Planned Visit")
-  }
   };
 
-  const handleCleanAfterCancelVisit =() => {
-    if(searchResult.length>0)
-    setSearchResult(()=>[]);
+  const handleCleanAfterCancelVisit = () => {
+    if (searchResult.length > 0) setSearchResult(() => []);
     setCustomerDetails(false);
     pageNumber.planned.current = 1;
-    callPlannedVisitApi(1,true);
-  }
-
+    callPlannedVisitApi(1, true);
+  };
 
   const returnVisitType = () => {
     if (currentVisit == 1 || currentVisit == 2) return 0;
@@ -295,7 +290,7 @@ const VisitScreenViewModel = () => {
         setSearchResult(res?.data?.data?.data);
       }
     } catch (e) {
-      logger(e,"Error in Apply Filter API")
+      logger(e, "Error in Apply Filter API");
     } finally {
       dispatch(setLoaderVisibility(false));
     }
@@ -312,55 +307,45 @@ const VisitScreenViewModel = () => {
   }
 
   const upcomingScreenPagination = () => {
-    if (
-      pageNumber.upcoming.current < lastPages.upcomingLastPage.current
-    ) {
+    if (pageNumber.upcoming.current < lastPages.upcomingLastPage.current) {
       pageNumber.upcoming.current += 1;
       callUpcomingVisit(pageNumber.upcoming.current);
     }
   };
 
   const plannedScreenPagination = () => {
-    if (
-      pageNumber.planned.current < lastPages.plannedLastPage.current &&
-      tacklePagination(pageNumber.planned.current + 1, plannedVisit)
-    ) {
+    if (pageNumber.planned.current < lastPages.plannedLastPage.current) {
       pageNumber.planned.current += 1;
       callPlannedVisitApi(pageNumber.planned.current);
     }
   };
 
   const executedScreenPagination = () => {
-    if (
-      pageNumber.executed.current < lastPages.executedLastPage.current &&
-      tacklePagination(pageNumber.executed.current + 1, executedVisitList)
-    ) {
+    if (pageNumber.executed.current < lastPages.executedLastPage.current) {
       pageNumber.executed.current += 1;
       callExecutedVisit(pageNumber.executed.current);
     }
   };
 
-  function setPaginationPage() {
+  const setPaginationPage=()=> {
     if (currentVisit == 1) upcomingScreenPagination();
     else if (currentVisit == 2) plannedScreenPagination();
     else if (currentVisit == 3) executedScreenPagination();
   }
 
-  function handleUpcomingVisitBoxClick(index: number) {
+  const handleUpcomingVisitBoxClick=(index: number)=>{
     handleCustomerClick();
     setSelectedIndexValue(index);
   }
-  function handleFilterSearch() {
-    setApplyFilterSearch(true);
-  }
 
-  function handleCustomerCodeNameEntered(text: string) {
-    enteredCustomerCodeToSearch.current = text;
-  }
+  const handleFilterSearch=()=> setApplyFilterSearch(true);
+  
 
-  function handleClearSearchResult() {
-    setSearchResult([]);
-  }
+  const handleCustomerCodeNameEntered=(text: string)=> enteredCustomerCodeToSearch.current = text;
+  
+
+  const handleClearSearchResult=()=> setSearchResult([]);
+  
 
   return (
     <VisitScreen

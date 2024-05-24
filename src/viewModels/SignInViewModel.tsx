@@ -63,8 +63,7 @@ const SignInViewModel = () => {
         setRememberMe(Number(userDetailValue.current.rememberMe));
         navigate(SCREENS.TAB);
         saveCredentails(values);
-      } else {
-      }
+      } 
     } catch (error) {
       logger(error, "Error in Login Api Calling");
     } finally {
@@ -124,7 +123,7 @@ const SignInViewModel = () => {
               upn: getCredentials.username,
               password: getCredentials.password,
             };
-            console.log("Values", await Keychain.getGenericPassword());
+  
             if (getCredentials) {
               loginAPICAllingHandler(values);
             } else {

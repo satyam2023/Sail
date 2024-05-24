@@ -56,7 +56,7 @@ const styles = StyleSheet.create<IButtonStyle>({
   },
   text: {
     fontSize: 16,
-    fontFamily:fonts.type.medium,
+    fontFamily:fonts.Poppins.medium,
     color:Colors.blackPeral
   },
   leftIcon: {

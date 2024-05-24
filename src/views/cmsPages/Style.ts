@@ -17,19 +17,19 @@ const styles = StyleSheet.create({
   },
   privacytext: {
     lineHeight: 24,
-    fontFamily: fonts.type.regular,
+    fontFamily: fonts.Poppins.regular,
     fontSize: 12,
     color: Colors.blackPeral,
     marginTop: 24,
     marginBottom: 20,
   },
   privacuinnrttext: {
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     marginTop: 30,
   },
   txt: {
     height: 25,
-    fontWeight: fonts.type.medium,
+    fontWeight: fonts.Poppins.medium,
     fontSize: 14,
     lineHeight: 24,
     color: Colors.blackPeral,

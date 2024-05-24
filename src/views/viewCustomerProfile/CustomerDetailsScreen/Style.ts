@@ -26,13 +26,13 @@ const styles = StyleSheet.create({
   Txt: {
     height: 16,
     color: Colors.sailBlue,
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 14,
   },
   txt:{
     lineHeight:20,
     color: Colors.sailBlue,
-    fontFamily: fonts.type.bold,
+    fontFamily: fonts.Poppins.bold,
     fontSize: 16,
   },
   img: { height: 16, width: 16, resizeMode: "contain" ,marginLeft:20},

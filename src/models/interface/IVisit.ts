@@ -49,3 +49,18 @@ export interface IFlatListPlannedVisit extends IFlatlistIndex{
   item: VisitResponse;
  
 }
+
+export interface PaginationPages{
+  upcoming:{
+    currentpage:number,
+    lastPage:number,
+  },
+  planned:{
+    currentpage:number,
+    lastPage:number,
+  },
+  executed:{
+    currentpage:number,
+    lastPage:number,
+  }
+}

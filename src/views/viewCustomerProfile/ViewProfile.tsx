@@ -1,4 +1,4 @@
-import React, { MutableRefObject, memo } from "react";
+import React, { MutableRefObject} from "react";
 import { SafeAreaView } from "react-native";
 import {
   ISelectedImage,
@@ -114,4 +114,4 @@ const ViewProfileScreen = ({
     </>
   );
 };
-export default memo(ViewProfileScreen);
+export default ViewProfileScreen;

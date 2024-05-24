@@ -43,13 +43,12 @@ const Planned = ({
   plannedVisit
 }: PlannedProps) => {
 
-  console.log("Planned List :::::",plannedVisit);
   const isSearchResult: boolean = searchResult.length > 0 ? true : false;
   const renderPlannedVisit = ({ item, index }: IFlatListPlannedVisit) => {
     return (
       <RectangularBox
         onPress={() => handlePlannedVisitBoxClick(index, item.id)}
-        leftIcon={Glyphs.Profile2userClicked}
+        leftIcon={Glyphs.multiProfile}
         heading={`${StringConstants.CUSTOMER_VISIT} ${index + 1}`}
         subHeading={item?.customer_data?.company_name}
         cancelled={item.visit_status == "0" ? false : true}
@@ -65,7 +64,8 @@ const Planned = ({
           <FlatList
             data={isSearchResult?searchResult: plannedVisit}
             renderItem={renderPlannedVisit}
-            onMomentumScrollEnd={setPaginationPage}
+            onEndReachedThreshold={0.2} 
+            onEndReached={setPaginationPage}
             showsVerticalScrollIndicator={false}
           />
         </>

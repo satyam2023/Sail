@@ -1,10 +1,12 @@
+import fonts from "@fonts";
 import { Colors } from "commonStyles/RNColor.style";
-import { ImageStyle, ViewStyle } from "react-native";
+import { ImageStyle, TextStyle, ViewStyle } from "react-native";
 import { StyleSheet } from "react-native";
 
 interface INearbyCustomerStyle{
   leftIconStyle:ImageStyle;
   mapCOnatiner:ViewStyle;
+  noCustFound:TextStyle
 }
 
 const styles = StyleSheet.create<INearbyCustomerStyle>({
@@ -20,5 +22,12 @@ const styles = StyleSheet.create<INearbyCustomerStyle>({
     backgroundColor: Colors.white,
     borderRadius:10,
   },
+  noCustFound:{
+    fontFamily: fonts.Poppins.medium,
+    color: Colors.blackPeral,
+    fontSize: 14,
+    flex:1,
+    textAlign: "center",
+  }
 });
 export default styles;

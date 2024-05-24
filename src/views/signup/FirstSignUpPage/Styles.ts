@@ -5,7 +5,7 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
 
   alresdyExistText:{
-    fontFamily:fonts.type.regular,
+    fontFamily:fonts.Poppins.regular,
     color:Colors?.red,
     fontSize:14,
   }

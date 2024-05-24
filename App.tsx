@@ -13,6 +13,7 @@ import { getRememberMe } from "shared/constants/accountService";
 import { SCREENS } from "@shared-constants";
 import { navigate } from "@navigation";
 import InternetManager from "components/InternetManager";
+import { sendGetRequest } from "services/network/Network";
 LogBox.ignoreAllLogs();
 
 if (__DEV__) {
@@ -37,17 +38,16 @@ const App = () => {
   console.log(netInfo);
 
   React.useEffect(() => {
-    const unsubscribe = addEventListener(() => {
-      fetch("https://cmoccuat.sailcmo.co.in:8000/api")
-        .then((response: any) => {
-          if (response.status === 404) {
-            setVpnStatus(true);
-          }
-        })
-        .catch((e) => {
-          // setVpnStatus(false);
-          console.log("Error: ", JSON.stringify(e));
-        });
+    const unsubscribe = addEventListener(async () => {
+      try {
+        const res = await sendGetRequest(
+          "https://cmoccuat.sailcmo.co.in:8000"
+        );
+        console.log("Response::::",res);
+        setVpnStatus(true);
+      } catch (e) {
+        setVpnStatus(false);
+      }
     });
     return () => {
       if (unsubscribe) {
@@ -58,22 +58,18 @@ const App = () => {
 
   React.useEffect(() => {
     setTimeout(async () => {
-      SplashScreen.hide();
       const isRemember = getRememberMe();
-      if (isRemember == "1") {
-        navigate(SCREENS.TAB);
-      } else {
-        navigate(SCREENS.ONBOARDING);
-      }
+      isRemember == "1" ? navigate(SCREENS.TAB) : navigate(SCREENS.ONBOARDING);
+      SplashScreen.hide();
     }, 2000);
   }, [scheme, isDarkMode]);
-  
+  console.log("Vpn status::::", vpnStatus);
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
         <PleaseWaitLoader />
         {vpnStatus ? (
-           <Navigation />
+          <Navigation />
         ) : (
           <InternetManager isVpnConected={vpnStatus} />
         )}
