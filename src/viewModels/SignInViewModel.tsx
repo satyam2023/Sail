@@ -63,8 +63,7 @@ const SignInViewModel = () => {
         setRememberMe(Number(userDetailValue.current.rememberMe));
         navigate(SCREENS.TAB);
         saveCredentails(values);
-      } else {
-      }
+      } 
     } catch (error) {
       logger(error, "Error in Login Api Calling");
     } finally {

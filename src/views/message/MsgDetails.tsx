@@ -12,7 +12,6 @@ import {
   Header,
   InputTextField,
   RectangularBox,
-  SafeAreaContainer,
 } from "components";
 import { MessageDetailField } from "@shared-constants";
 import {
@@ -60,11 +59,12 @@ const MsgDetails = (props: IMsg) => {
   return (
     <>
       <Header topheading={StringConstants.MESSAGE_DETAILS} />
-      <SafeAreaContainer style={{paddingBottom:20}}>
+     <View style={{paddingHorizontal:20,flex:1,marginBottom:20}}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={styles.container}
           nestedScrollEnabled
+          
         >
           <FlatList
             data={[
@@ -83,7 +83,7 @@ const MsgDetails = (props: IMsg) => {
             data={props?.msgData?.allEscalations}
             renderItem={renderEscalatedCard}
             scrollEnabled={false}
-            style={{ paddingHorizontal: 20 }}
+            style={{ paddingHorizontal: 20 ,marginBottom:20}}
           />
           {props?.msgData?.escalated_to != null ? (
             <View style={styles.escalaltedInputContainer}>
@@ -111,7 +111,8 @@ const MsgDetails = (props: IMsg) => {
             </View>
           ) : null}
         </ScrollView>
-      </SafeAreaContainer>
+        </View>
+   
     </>
   );
 };

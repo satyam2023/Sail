@@ -1,5 +1,6 @@
 import fonts from "@fonts";
 import { Colors } from "commonStyles/RNColor.style";
+import { isAndroid } from "libs";
 import { StyleSheet, TextStyle, ViewStyle } from "react-native";
 
 interface IStyle {
@@ -11,6 +12,7 @@ interface IStyle {
   itemSeperatorStyle: ViewStyle;
   noRecordFound: TextStyle;
   mainContainer: ViewStyle;
+  dwdReportBtn: ViewStyle;
 }
 
 const styles = StyleSheet.create<IStyle>({
@@ -54,8 +56,11 @@ const styles = StyleSheet.create<IStyle>({
   },
   mainContainer: {
     flex: 1,
-    paddingHorizontal: 20,
     backgroundColor: Colors.background2,
+  },
+  dwdReportBtn: {
+    backgroundColor: Colors.sailBlue,
+    marginBottom: isAndroid?20:0,
   },
 });
 

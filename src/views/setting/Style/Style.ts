@@ -33,10 +33,10 @@ const styles = StyleSheet.create<ISettingStyle>({
     alignItems: "center",
   },
   editTxt: {
-    height: 20,
     fontFamily: fonts.Poppins.medium,
     fontSize: 16,
     color: Colors.white,
+    lineHeight:20,
     marginLeft: 30,
   },
   circleContent: {
@@ -52,12 +52,16 @@ const styles = StyleSheet.create<ISettingStyle>({
   },
   detailContainer: {
     flexDirection: "row",
+    flex:1,
+    alignItems:'center',
+    justifyContent:'space-between',
     marginVertical: 24,
   },
   infoContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent:'space-around',
     alignItems: "center",
+    flex:1,
   },
   btnStyle: {
     width: "50%",

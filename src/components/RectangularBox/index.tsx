@@ -50,14 +50,14 @@ const RectangularBox = (props: IRectangularBox) => {
         ],
       ]}
     >
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <View style={{ flexDirection: "row", alignItems: "center",flex:0.8}}>
         {props.leftIcon && (
           <Image source={props.leftIcon} style={[commonStyles.detailLeftIcon,props?.leftIconStyle]} />
         )}
         <View>
           <View style={{ flexDirection: "row" }}>
             <TextWrapper
-              style={commonStyles.font14RegularDarkGray}
+              style={[commonStyles.font14RegularDarkGray]}
             >
             {props.heading}
             </TextWrapper>
@@ -105,7 +105,7 @@ export default React.memo(RectangularBox);
 
 const styles = StyleSheet.create<IRectangulBoxStyle>({
   container: {
-    width: "100%",
+    flex:1,
     height: 70,
     backgroundColor: Colors.white,
     flexDirection: "row",

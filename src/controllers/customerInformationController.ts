@@ -10,7 +10,6 @@ import {
   OutStandingAPIResponse,
   
 } from "models/ApiResponses/CustomerInfoResponse";
-import { IApiResponse } from "models/ApiResponses/IApiResponse";
 import { ICustomerBody } from "models/interface/ICustomerInfo";
 
 import { sendPostRequest } from "services/network/Network";

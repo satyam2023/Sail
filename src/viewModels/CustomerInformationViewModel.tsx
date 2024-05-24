@@ -33,6 +33,8 @@ const CustomerInformationViewModel = () => {
     mou: null,
     outstanding: null,
     offTakeStatus: null,
+    lcbgReport:null,
+    qcStatus:null,
   });
   const detailToBeSearch = useRef<string>("");
   const currentInformationTab = useSelector(
@@ -67,7 +69,7 @@ const CustomerInformationViewModel = () => {
     };
     try {
       dispatch(setLoaderVisibility(true));
-      let res: any;
+      let res:any;
       switch (currentInformationTab) {
         case 0:
           {
@@ -153,15 +155,39 @@ const CustomerInformationViewModel = () => {
           }
           break;
         case 6:
-          res = await lgbcStatus(body);
+         { res = await lgbcStatus(body);
+          if (res?.isSuccess) {
+            setSearchStatus(true);
+            res?.data?.data?.data[0].message ==
+            StringConstants.NO_DATA_FETCHED
+              ? setDetailsToIntialState()
+              : setDetails((prev: InformationDetails) => ({
+                  ...prev,
+                  lcbgReport: res?.data?.data,
+                }));
+          }
+         }
           break;
         case 7:
+          {
           res = await qcStatus(body);
+          if (res?.isSuccess) {
+            setSearchStatus(true);
+            res?.data?.data?.data[0].message ==
+            StringConstants.NO_DATA_FETCHED
+              ? setDetailsToIntialState()
+              : setDetails((prev: InformationDetails) => ({
+                  ...prev,
+                  qcStatus: res?.data?.data,
+                }));
+          }
+          }
           break;
         default:
           break;
       }
     } catch (e) {
+      logger(e,"Error in fecthing Customer Information")
     } finally {
       dispatch(setLoaderVisibility(false));
     }
@@ -172,6 +198,7 @@ const CustomerInformationViewModel = () => {
   };
 
   const toggelStatus = () => {
+    setSeachButtonStatus(false);
     setDetailsToIntialState();
     setSearchStatus(!isSearchSuccessful);
   };

@@ -53,8 +53,8 @@ const UpcomingVisit = (props: IUpcomingScreen) => {
       
         <CustomerDetails
           onPress={props?.handleCustomerClick}
-          CustomerData={props.upcomingFieldData}
-          placeholderData={props.upcomingVisitDetails}
+          CustomerData={props?.upcomingFieldData}
+          placeholderData={props?.upcomingVisitDetails}
           companyName={
             (isSearchResult ? props?.searchResult : props?.upcomingVisitList)[props?.selectedIndexValue].customer_data
               ?.company_name

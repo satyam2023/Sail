@@ -45,9 +45,7 @@ const VisitScreenViewModel = () => {
   const [applyFilterSearch, setApplyFilterSearch] = useState<boolean>(false);
   const [searchResult, setSearchResult] = useState<VisitResponse[]>([]);
   const [plannedVisit, setPlannedVisit] = useState<VisitResponse[]>([]);
-  function handleCustomerClick() {
-    setCustomerDetails(!customerDetails);
-  }
+ const  handleCustomerClick=()=> setCustomerDetails(!customerDetails);
 
   const lastPages = {
     upcomingLastPage: useRef<number>(1),
@@ -65,11 +63,14 @@ const VisitScreenViewModel = () => {
     (state: any) => state?.visitDetail?.planned,
   );
   const enteredCustomerCodeToSearch = useRef<string>("");
+ 
   const pageNumber: IVisitScreenPagination = {
     upcoming: useRef<number>(1),
     planned: useRef<number>(1),
     executed: useRef<number>(1),
   };
+
+
   const [executedVisitList, setExecutedVisitList] = useState<
     ExecutedResponse[]
   >([]);
@@ -326,28 +327,25 @@ const VisitScreenViewModel = () => {
     }
   };
 
-  function setPaginationPage() {
+  const setPaginationPage=()=> {
     if (currentVisit == 1) upcomingScreenPagination();
     else if (currentVisit == 2) plannedScreenPagination();
     else if (currentVisit == 3) executedScreenPagination();
   }
 
-  function handleUpcomingVisitBoxClick(index: number) {
+  const handleUpcomingVisitBoxClick=(index: number)=>{
     handleCustomerClick();
     setSelectedIndexValue(index);
   }
 
-  function handleFilterSearch() {
-    setApplyFilterSearch(true);
-  }
+  const handleFilterSearch=()=> setApplyFilterSearch(true);
+  
 
-  function handleCustomerCodeNameEntered(text: string) {
-    enteredCustomerCodeToSearch.current = text;
-  }
+  const handleCustomerCodeNameEntered=(text: string)=> enteredCustomerCodeToSearch.current = text;
+  
 
-  function handleClearSearchResult() {
-    setSearchResult([]);
-  }
+  const handleClearSearchResult=()=> setSearchResult([]);
+  
 
   return (
     <VisitScreen

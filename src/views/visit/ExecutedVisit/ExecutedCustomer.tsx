@@ -74,7 +74,7 @@ const ExecutedCustomer = ({
 
       <CustomButton
         text={StringConstants.SUBMIT}
-        buttonStyle={{ backgroundColor: Colors.sailBlue }}
+        buttonStyle={{ backgroundColor: Colors.sailBlue,marginBottom:20}}
         textStyle={{ color: Colors.white }}
         onPress={() => navigate(SCREENS.MAIN)}
       />

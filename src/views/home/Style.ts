@@ -13,25 +13,26 @@ const styles = StyleSheet.create({
   topContainer: {
     height: 128,
     borderBottomLeftRadius: 20,
-    width: "100%",
+    flex:1,
     backgroundColor: Colors.sailBlue,
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    
   },
   welcometext: {
-    fontFamily: fonts.Poppins.regular,
+    fontFamily: fonts.Poppins.semiBold,
     fontSize: 16,
     color: Colors.white,
     marginTop: 12,
     textAlign: "left",
     lineHeight: 24,
+    flex:0.95,
   },
   roleText: {
-    fontFamily: fonts.Poppins.regular,
-    fontSize: 12,
+    fontFamily: fonts.Poppins.medium,
+    fontSize: 14,
     marginLeft: 10,
+    lineHeight:24
   },
   circle: {
     marginTop: 15,

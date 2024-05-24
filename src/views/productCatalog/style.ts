@@ -23,7 +23,7 @@ const styles = StyleSheet.create<IStyle>({
     resizeMode: "contain",
   },
   card: {
-    width: "45%",
+    flex:0.48,
     paddingVertical: 20,
     borderRadius: 15,
     backgroundColor: Colors.white,
@@ -70,7 +70,7 @@ const styles = StyleSheet.create<IStyle>({
     height: "50%",
   },
   productList: {
-    // marginBottom: 15,
+    marginBottom: 40,
     flex: 1,
     backgroundColor: Colors.transparent,
   },
@@ -80,5 +80,6 @@ const styles = StyleSheet.create<IStyle>({
     backgroundColor: Colors.lightGray,
     marginTop: 16,
   },
+  
 });
 export default styles;

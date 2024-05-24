@@ -86,6 +86,7 @@ const MessageScreen = ({
           </View>
         ) : selectedMsgIndex >= 0 ? (
           !escalatedPersonStatus ? (
+            
             <MsgDetails
               {...{
                 msgData,
@@ -96,6 +97,7 @@ const MessageScreen = ({
                 escalatedRemarks,
               }}
             />
+         
           ) : (
             <FlatList
               data={escalatedCustomerList}

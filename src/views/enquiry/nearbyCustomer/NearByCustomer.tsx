@@ -1,10 +1,11 @@
 import React from "react";
 import { FlatList, View } from "react-native";
-import { RectangularBox } from "components";
+import { RectangularBox, TextWrapper } from "components";
 import { INearbyCustomer } from "models/ApiResponses/IEnquiryResponses";
 import Glyphs from "assets/Glyphs";
 import MapComponent from "components/CustomMap";
 import styles from "./Style";
+import StringConstants from "shared/localization";
 
 interface Iuser {
   item: INearbyCustomer;
@@ -16,7 +17,7 @@ interface INearby {
 }
 
 const NearbyCustomer = (props: INearby) => {
-  function renderitem({ item}: Iuser) {
+  function renderitem({ item }: Iuser) {
     return (
       <View style={styles.mapCOnatiner}>
         <RectangularBox
@@ -24,7 +25,7 @@ const NearbyCustomer = (props: INearby) => {
           subHeading={item?.address}
           leftIcon={Glyphs.Customer}
           isRightNotIconRequired
-          style={{marginBottom:0,paddingHorizontal:0}}
+          style={{ marginBottom: 0, paddingHorizontal: 0 }}
           leftIconStyle={styles.leftIconStyle}
         />
         <MapComponent
@@ -35,13 +36,26 @@ const NearbyCustomer = (props: INearby) => {
     );
   }
 
+
   return (
-    <FlatList
-      data={props?.NearByCustomerList}
-      renderItem={renderitem}
-      style={{ paddingHorizontal: 20 ,flex:1}}
-      scrollEnabled={false}
-    />
+    <>
+      {props?.NearByCustomerList?.length ? (
+        <FlatList
+          data={props?.NearByCustomerList}
+          renderItem={renderitem}
+          style={{ paddingHorizontal: 20, flex: 1 }}
+          scrollEnabled={false}
+        />
+      ) : (
+        
+          <TextWrapper
+            style={styles.noCustFound}
+          >
+            {StringConstants.NO_CUSTOMER_FOUND}
+          </TextWrapper>
+        
+      )}
+    </>
   );
 };
 

@@ -8,6 +8,7 @@ import Datepicker from "./Calender";
 import CustomDropDown from "./CustomDropDown";
 import { IPlannedVisitEdit } from "models/interface/IVisit";
 import { IdropDown } from "models/interface/ISetting";
+import { isAndroid } from "libs";
 
 interface ICustomerDetails {
   CustomerData:  string[];
@@ -76,7 +77,7 @@ const CustomerDetails = (props: ICustomerDetails) => {
         data={props.CustomerData}
         renderItem={({ item, index }) => renderItem(item, index)}
         scrollEnabled={false}
-        style={{ marginTop: -10 }}
+        style={{ marginTop: 0,marginBottom:isAndroid?20:0}}
       />
     </ScrollView>
   );

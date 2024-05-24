@@ -1,5 +1,5 @@
 import React from "react";
-import { View, VirtualizedList } from "react-native";
+import { View } from "react-native";
 import Glyphs from "assets/Glyphs";
 import StringConstants from "shared/localization";
 import { Colors } from "commonStyles/RNColor.style";

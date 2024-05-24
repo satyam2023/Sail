@@ -120,7 +120,7 @@ const HorizontalSlider = (props: IHorizontalSlider) => {
         }
         horizontal
         showsHorizontalScrollIndicator={false}
-        style={styles().horizontalContainer}
+        style={{marginBottom:10}}
       />
     </View>
   );
@@ -133,7 +133,6 @@ const styles = (visitNumber?: number) => {
     horizontalContainer: {
       paddingHorizontal:20,
       marginBottom:10,
-      
     },
     clickableContainer: {
       marginTop: 16,
@@ -149,7 +148,6 @@ const styles = (visitNumber?: number) => {
       fontFamily: fonts.Poppins.medium,
       fontSize: 14,
     },
-
     circle: {
       borderRadius: 100,
       paddingHorizontal:10,

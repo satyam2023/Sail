@@ -823,7 +823,6 @@ export const customerDetailOfViewModel = (
   customerList: IViewCustomerBody[],
   selectedIndexValue: number,
 ) => {
-  console.log("Customer List:::::", customerList[selectedIndexValue]);
   const data = [
     customerList[selectedIndexValue]?.customer_code,
     customerList[selectedIndexValue]?.company_name,
@@ -1058,6 +1057,10 @@ export const getPdfurl = (
       return details?.outstanding?.OutStandingReportUrl|| "";
       case 5:
         return details?.offTakeStatus?.OfftakeReportUrl|| "";
+        case 6:
+        return details?.lcbgReport?.LCBGReportUrl|| "";
+        case 7:
+        return details?.qcStatus?.QCReportUrl|| "";
     default:
       return "";
   }
@@ -1078,6 +1081,10 @@ export const getCustomername = (
       return details?.outstanding?.data[0]?.customerName || "";
       case 5:
       return details?.offTakeStatus?.data[0]?.Customer || "";
+      case 6:
+        return details?.lcbgReport?.data[0]?.customer || "";
+        case 7:
+          return details?.qcStatus?.data[0]?.CustomerName || "";
     default:
       return "";
   }

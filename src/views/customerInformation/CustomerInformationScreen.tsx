@@ -19,6 +19,8 @@ import MouStatus from "./screens/MouStatus";
 import OverStanding from "./screens/OverStanding";
 import OffTake from "./screens/OffTake";
 import commonStyles from "commonStyles/CommonStyle";
+import LGBCStatus from "./screens/LGBCStatus";
+import QCStatus from "./screens/QCStatus";
 
 interface ICustomerInformation {
   handleEnteredCode_Name: (text: string) => void;
@@ -44,7 +46,10 @@ const CustomerInformationScreen = (props: ICustomerInformation) => {
         return <OverStanding data={props?.details?.outstanding?.data} />;
       case 5:
         return <OffTake data={props?.details?.offTakeStatus?.data} />;
-
+      case 6:
+        return <LGBCStatus data={props?.details?.lcbgReport?.data} />;
+      case 7:
+        return <QCStatus data={props?.details?.qcStatus?.data} />;
       default:
         return;
     }
@@ -107,7 +112,7 @@ const CustomerInformationScreen = (props: ICustomerInformation) => {
               </ScrollView>
               <CustomButton
                 text={StringConstants.DOWNLOAD_PDF_REPORT}
-                buttonStyle={{ backgroundColor: Colors.sailBlue }}
+                buttonStyle={styles.dwdReportBtn}
                 onPress={() =>
                   props?.downloadReport(
                     getPdfurl(props?.details, props?.currentInformationTab),

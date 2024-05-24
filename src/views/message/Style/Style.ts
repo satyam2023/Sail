@@ -12,7 +12,7 @@ const styles = StyleSheet.create<IMessageStyle>({
     backgroundColor: Colors.white,
     width: "100%",
     marginTop: 24,
-    borderRadius: 10,
+    borderRadius: 10,  
   },
   img: {
     transform: [{ rotate: "0deg" }],

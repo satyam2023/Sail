@@ -175,7 +175,7 @@ const CreateMetingDetailsViewModel = () => {
     (state: RootState) => state?.dropdown,
   );
 
-  const { isRecording, result, startRecording, toggleRecording } =
+  const {startRecording } =
     useVoiceToText();
 
   const [representativeList] = useState<IRepresentativeList>({
@@ -243,12 +243,12 @@ const CreateMetingDetailsViewModel = () => {
     (state: RootState) => state?.message?.EscaletedDropDownData?.data,
   );
 
-  const resetVoiceIndex = () => {
-    setVoiceIndex({
-      index: -1,
-      type: "",
-    });
-  };
+  // const resetVoiceIndex = () => {
+  //   setVoiceIndex({
+  //     index: -1,
+  //     type: "",
+  //   });
+  // };
 
   const recordVoice = async (
     key: string,
@@ -283,7 +283,7 @@ const CreateMetingDetailsViewModel = () => {
 
   const fetchPlannedVisitData = async (pagenumber: number) => {
     try {
-      const res = await getPlannedVisit(pagenumber);
+      const res:any= await getPlannedVisit(pagenumber);
       if (res) {
         paginationPage.lastPage.current = res.data.data.last_page;
         setplannedMeetingList(res.data.data.data);

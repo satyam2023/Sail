@@ -1,4 +1,4 @@
-import { useFocusEffect } from "@react-navigation/native";
+import {  useFocusEffect } from "@react-navigation/native";
 import {
   getClusterAPI,
   getCustomerSegmenList,
@@ -53,7 +53,7 @@ import { navigate } from "@navigation";
 import { SCREENS } from "@shared-constants";
 import useForm from "core/UseForm";
 
-const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
+const ViewCustomerProfileViewModel = ({ route, navigation }:any) => {
   const [indexofSubtype, setIndexofSubType] = useState<IsubType>({
     customerSegmentIndex: -1,
     customerSubTypeIndex: -1,
@@ -93,6 +93,7 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
       selectedIndexValue: selectedIndexValue,
       fetchCustomerList: route.params.fetchCustomerList,
     });
+   
   }, [customerListdata]);
 
   const detailToBeSearch = useRef<string>("");
@@ -100,6 +101,8 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
   const customerDetail = [
     ...customerDetailOfViewModel(customerList, selectedIndexValue),
   ];
+
+
 
   const customerTypeTraderDealerDetails: SpecialCustomerType = {
     cluster: customerList[selectedIndexValue]?.cluster?.id.toString() || "",
@@ -192,16 +195,16 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
     );
   }
 
-  function handleSearchTextChange(text: string) {
+  const handleSearchTextChange=(text: string) =>
     detailToBeSearch.current = text;
-  }
+  
 
-  function handleBackClick() {
+  const handleBackClick=()=> 
     setCustomer((prev: ICustomerState) => ({
       ...prev,
       editDetails: !customer.editDetails,
     }));
-  }
+  
 
   const handleForwardClick = async () => {
     if (customer.editDetails) {
@@ -210,7 +213,7 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
       navigate(SCREENS.SHOW_VIEW_CUSTOMER_REPRESTATIVE, {
         customerList: route.params.customerList,
         selectedIndexValue: route.params.selectedIndexValue,
-        fetchCustomerList: route.params.fetchCustomerList,
+        fetchCustomerList: route?.params?.fetchCustomerList,
       });
     }
   };
@@ -258,7 +261,7 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
 
       const res = await UpdateCustomerCodeAPIHandler(body);
       if (res?.isSuccess) {
-        await route.params.fetchCustomerList();
+        await route?.params?.fetchCustomerList();
       }
     } finally {
       dispatch(setLoaderVisibility(false));
@@ -298,21 +301,21 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
       dispatch(setLoaderVisibility(false));
     }
   }
-  function handleUpdateCustomerCode(text: string) {
+  const handleUpdateCustomerCode=(text: string)=>{
     customerCodeToBeUpdated.current = text;
   }
 
-  function updateCustomerCode() {
+  const updateCustomerCode=()=>{
     if (Regex.CUSTOMER_CODE.test(customerCodeToBeUpdated.current)) {
       updateCustomerCodeAPICaliing();
     }
   }
 
-  function handleCustomerDetailChange(text: string | number, id: number) {
+  const  handleCustomerDetailChange=(text: string | number, id: number)=>{
     handleTextOfCustomer(Object.keys(customerDetails)[id], text.toString());
   }
 
-  function removeDropDownItem(id: number, type: string) {
+  const removeDropDownItem=(id: number, type: string)=>{
     if (type == StringConstants.PROCURED_PRODUCT && customer?.editDetails) {
       setCustomer((prev: ICustomerState) => ({
         ...prev,
@@ -328,7 +331,7 @@ const ViewCustomerProfileViewModel = ({ route, navigation }: any) => {
     }
   }
 
-  function removeSelectedImage(item: ISelectedImage) {
+  const removeSelectedImage=(item: ISelectedImage)=>{
     setCustomer((prev: ICustomerState) => ({
       ...prev,
       imageSelected: [

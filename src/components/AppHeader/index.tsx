@@ -29,10 +29,11 @@ interface IHeaderProps {
   isLogoutButton?: boolean;
   onPress?: () => void;
   rightButtonPress?: () => void;
+  style?:ViewStyle;
 }
 const Header = (props: IHeaderProps) => {
   return (
-    <View style={styles.headerContainer}>
+    <View style={[styles.headerContainer,props.style]}>
       <View style={styles.topContainer}>
         <PressableButton
           onPress={() => {

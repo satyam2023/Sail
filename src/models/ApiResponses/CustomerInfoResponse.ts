@@ -127,16 +127,16 @@ export interface IMOU {
 
   export interface ICustomerResponse {
     status: number;
-    data: Data;
+    data: QCData;
   }
   
-  export interface Data {
+  export interface QCData {
     QCReportUrl: string;
     fileName: string;
-    data: Daum[];
+    data: DaumQC[];
   }
 
-  export interface Daum {
+  export interface DaumQC{
     CustomerName: string;
     ManuPlant: string;
     Product: string;

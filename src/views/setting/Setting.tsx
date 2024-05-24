@@ -82,8 +82,9 @@ const SettingScreen = ({
         />
         <KeyboardAvoidingView style={{flex:1}} behavior={isAndroid?'height':'padding'} >
         <ScrollView
-          style={{ paddingHorizontal: 20}}
+          style={{ paddingHorizontal: 20,flex:1}}
           showsVerticalScrollIndicator={false}
+          //  bounces={false}
         >
           <View style={styles.detailContainer}>
             <View style={styles.circle}>
@@ -96,7 +97,7 @@ const SettingScreen = ({
               </TextWrapper>
             </View>
             <View style={styles.infoContainer}>
-              <View style={{ marginLeft: 16,}}>
+              <View style={{ }}>
                 <TextWrapper style={commonStyles.font14RegularBlack}>
                   {userData?.user?.user_name}
                 </TextWrapper>
@@ -145,6 +146,7 @@ const SettingScreen = ({
               backgroundColor: !isDetailsUpdating
                 ? Colors.lightGray
                 : Colors.white,
+                marginBottom:!isDetailsUpdating?70:16
             }}
             defaultValue={dataofInputField[5]}
             isRightDropDownVisible={!isDetailsUpdating}

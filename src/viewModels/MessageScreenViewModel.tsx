@@ -39,12 +39,12 @@ const MessageScreenViewModel = () => {
     (state: RootState) => state?.message?.EscaletedDropDownData?.data,
   );
 
-  function handleMessageBoxClick(msgStatus: boolean, index: number) {
+  const handleMessageBoxClick=(msgStatus: boolean, index: number)=>{
     setmsgOpenStatus(msgStatus);
     setSelectedMessageIndex(index);
   }
 
-  function handleTextChange(text: string, id: number) {
+  const handleTextChange=(text: string, id: number) =>{
     escalatedRemarks[Object.keys(escalatedRemarks)[id]].current = text;
     if(id==0){
       handleSelecteEscalatedTo();
@@ -55,10 +55,10 @@ const MessageScreenViewModel = () => {
 
   const getEscalationId = () => {
     const escalationData = messagedata[selectedMsgIndex]?.allEscalations;
-    const data = escalationData.find(
-      (item: any) => item?.escalated_to?.id === userID,
-    );
-    return data?.id;
+   return escalationData.find(
+      (item: any) => 
+       item?.escalated_by?.id ==userID
+    )?.id;
   };
 
   const handleSelecteEscalatedTo=()=>{

@@ -114,6 +114,7 @@ const EnquiryViewModel = () => {
           const res: IApiResponse<INearbyCustomerResponse> | undefined =
             await getNearbyCustomer(body);
           if (res?.isSuccess) {
+            console.log("Nearby response:::::",res?.data?.data);
             setNearByCustomerList(res?.data?.data);
           }
         } catch (error) {
