@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import {
   Image,
   ImageProps,
@@ -29,10 +29,11 @@ interface IHeaderProps {
   isLogoutButton?: boolean;
   onPress?: () => void;
   rightButtonPress?: () => void;
+  style?:ViewStyle;
 }
 const Header = (props: IHeaderProps) => {
   return (
-    <View style={styles.headerContainer}>
+    <View style={[styles.headerContainer,props.style]}>
       <View style={styles.topContainer}>
         <PressableButton
           onPress={() => {
@@ -64,7 +65,7 @@ const Header = (props: IHeaderProps) => {
   );
 };
 
-export default Header;
+export default memo(Header);
 
 const styles = StyleSheet.create<IAppHeaderStyle>({
   headerContainer: {
@@ -86,7 +87,7 @@ const styles = StyleSheet.create<IAppHeaderStyle>({
   headingContent: {
     color: Colors.white,
     marginLeft: 16,
-    fontFamily: fonts.type.bold,
+    fontFamily: fonts.Poppins.bold,
     fontSize: 16,
   },
   logoutBtn: {

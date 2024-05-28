@@ -52,6 +52,11 @@ const EnquiryViewModel = () => {
     location: useRef<string>(""),
   };
 
+  const resetIssueEnquiryDetails=()=>{
+    issueEnquiryEnteredDetail.customerCodeName.current="";
+    issueEnquiryEnteredDetail.location.current="";
+  }
+
   const [NearByCustomerList, setNearByCustomerList] = useState<
     INearbyCustomer[] | undefined
   >();
@@ -59,9 +64,10 @@ const EnquiryViewModel = () => {
   const userEnquiryApi=async()=>{
     const body = {
       user_name: userEnquiryEnteredDetail.name.current,
-      user_location: userEnquiryEnteredDetail.location.current,
+      user_location: userEnquiryEnteredDetail.location.current
     };
     try{
+      dispatch(setLoaderVisibility(true));
     const userRes: UserEnquiryResponse = await getUserEnquiry(body);
     setsearchresult(userRes);
     }
@@ -69,7 +75,7 @@ const EnquiryViewModel = () => {
      logger(e,"Error in User Enquiry API Calling")
     }
     finally{
-
+      dispatch(setLoaderVisibility(false));
     }
   }
 
@@ -114,6 +120,7 @@ const EnquiryViewModel = () => {
           const res: IApiResponse<INearbyCustomerResponse> | undefined =
             await getNearbyCustomer(body);
           if (res?.isSuccess) {
+            console.log("Nearby response:::::",res?.data?.data);
             setNearByCustomerList(res?.data?.data);
           }
         } catch (error) {
@@ -143,13 +150,16 @@ const EnquiryViewModel = () => {
     }
   }
 
-  function handleIssueEnquiry(type:string){
+  const handleIssueEnquiry=(type:string)=>{
     setIssueEnquiryType(type);
-
+    setIssueSearchResult(undefined);
+    setBtnStatus((prev:IButtonStatus)=>({
+      ...prev,
+      issueBtn:false,
+    }))
   }
 
   function handleTextChangeofUserEnquiry(text:string,id:number){
-  
    userEnquiryEnteredDetail[Object.keys(userEnquiryEnteredDetail)[id]].current=text;
     if(isDetailFilled(userEnquiryEnteredDetail)){
       if(!btnStatus.enquiryBtn){
@@ -168,6 +178,7 @@ const EnquiryViewModel = () => {
       }
     }
   }
+
   function handleTextChangeofIssueEnquiry(text:string,id:number){
    issueEnquiryEnteredDetail[Object.keys(issueEnquiryEnteredDetail)[id]].current=text;
    if(isDetailFilled(issueEnquiryEnteredDetail)){
@@ -187,6 +198,7 @@ const EnquiryViewModel = () => {
     }
   }
    }
+   
 
   return (
     <EnquiryScreen

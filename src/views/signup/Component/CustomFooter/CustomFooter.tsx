@@ -1,7 +1,6 @@
 import React from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image,TouchableOpacity, View } from "react-native";
 import styles from "./Style";
-
 
 import Glyphs from "assets/Glyphs";
 
@@ -12,61 +11,73 @@ import { PressableButton, TextWrapper } from "components";
 import { Colors } from "commonStyles/RNColor.style";
 
 interface Footerprops {
-  setScreen: (currentScreen:number)=>void;
+  setScreen: (currentScreen: number) => void;
   CurrentScreen: number;
-  Submit: ()=>void;
-  buttonStatus:boolean
+  Submit: () => void;
+  buttonStatus: boolean;
 }
 
-const CustomFooter = ({ CurrentScreen, setScreen, Submit,buttonStatus }: Footerprops) => {
+const CustomFooter = ({
+  CurrentScreen,
+  setScreen,
+  Submit,
+  buttonStatus,
+}: Footerprops) => {
   return (
     <View style={styles.footer}>
       <View style={styles.progressbar}>
         <View style={[styles.bar, { width: `${CurrentScreen * 33.4}%` }]} />
       </View>
-
       <View style={styles.footercontainer}>
         <View style={styles.innerFooterContainer}>
           {CurrentScreen >= 2 && (
-            <TouchableOpacity
+            <PressableButton
               style={
                 CurrentScreen == 2 ? styles.circleleft : styles.lastscreencircle
               }
-              onPress={() => {
-                setScreen(CurrentScreen - 1);
-              }}
+              onPress={() => setScreen(CurrentScreen - 1)}
             >
-              <Image style={styles.imgArrow} source={Glyphs.Arrow} />
-            </TouchableOpacity>
+              <Image style={[styles.imgArrow]} source={Glyphs.Arrow} />
+            </PressableButton>
           )}
           {CurrentScreen != 3 ? (
             <TouchableOpacity
               style={CurrentScreen != 2 ? styles.signupbtn : styles.signupboth}
             >
-              <Text style={styles.signuptxt}>{StringConstants.SIGN_UP}</Text>
+              <TextWrapper style={styles.signuptxt}>{StringConstants.SIGN_UP}</TextWrapper>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity
+            <PressableButton
               style={
-                true
-                  ? [
+                 [
                       styles.signupthree,
-                      buttonStatus ? styles.signupbackblue : styles.signupbacknoblue,
+                      buttonStatus
+                        ? styles.signupbackblue
+                        : styles.signupbacknoblue,
                     ]
-                  : styles.signupboth
               }
               onPress={Submit}
             >
-              <Text
-                style={[styles.signuptxt, !buttonStatus ? styles.txte : styles.txet]}
+              <TextWrapper
+                style={[
+                  styles.signuptxt,
+                  !buttonStatus ? styles.txte : styles.txet,
+                ]}
               >
                 {StringConstants.SIGN_UP}
-              </Text>
-            </TouchableOpacity>
+              </TextWrapper>
+            </PressableButton>
           )}
           {CurrentScreen == 1 && (
             <TouchableOpacity
-              style={[styles.bluecircle,{backgroundColor:buttonStatus?Colors.sailBlue:Colors.inputBG}]}
+              style={[
+                styles.bluecircle,
+                {
+                  backgroundColor: buttonStatus
+                    ? Colors.sailBlue
+                    : Colors.inputBG,
+                },
+              ]}
               onPress={Submit}
             >
               {
@@ -75,7 +86,7 @@ const CustomFooter = ({ CurrentScreen, setScreen, Submit,buttonStatus }: Footerp
                     styles.imgArrow,
                     { transform: [{ rotate: "-90deg" }] },
                   ]}
-                  tintColor={buttonStatus?Colors.white:Colors.sailBlue}
+                  tintColor={buttonStatus ? Colors.white : Colors.sailBlue}
                   source={Glyphs.Arrow}
                 />
               }
@@ -84,9 +95,7 @@ const CustomFooter = ({ CurrentScreen, setScreen, Submit,buttonStatus }: Footerp
           {CurrentScreen == 2 && (
             <TouchableOpacity
               style={buttonStatus ? styles.bluecircle : styles.circle}
-              onPress={() => {
-                Submit();
-              }}
+              onPress={Submit}
             >
               {
                 <Image
@@ -94,7 +103,7 @@ const CustomFooter = ({ CurrentScreen, setScreen, Submit,buttonStatus }: Footerp
                     styles.imgArrow,
                     { transform: [{ rotate: "-90deg" }] },
                   ]}
-                  tintColor={buttonStatus?Colors.white:Colors.sailBlue}
+                  tintColor={buttonStatus ? Colors.white : Colors.sailBlue}
                   source={Glyphs.Arrow}
                 />
               }
@@ -107,9 +116,13 @@ const CustomFooter = ({ CurrentScreen, setScreen, Submit,buttonStatus }: Footerp
           </TextWrapper>
 
           <PressableButton
-            onPress={()=>{navigate(SCREENS.SIGNIN)}}
+            onPress={() => {
+              navigate(SCREENS.SIGNIN);
+            }}
           >
-            <TextWrapper style={[styles.signInTxt]}>{StringConstants.SIGN_IN}</TextWrapper>
+            <TextWrapper style={[styles.signInTxt]}>
+              {StringConstants.SIGN_IN}
+            </TextWrapper>
           </PressableButton>
         </View>
       </View>

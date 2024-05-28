@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   markAsResolvedText: {
-    fontFamily: fonts.type.extraBold,
+    fontFamily: fonts.Poppins.bold,
     fontSize: 14,
     color: Colors.blackPeral,
     marginBottom: 16,
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   addDetailText: {
     color: Colors.sailBlue,
     fontSize: 16,
-    fontFamily: fonts.type.regular,
+    fontFamily: fonts.Poppins.regular,
     textAlign: "center",
     marginVertical: 16,
   },
@@ -41,5 +41,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 10,
   },
+  plannedMeetingContainer:{
+    flex: 1,
+    backgroundColor: Colors.background,
+    paddingHorizontal: 20,
+  }
 });
 export default styles;

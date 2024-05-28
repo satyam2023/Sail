@@ -2,26 +2,28 @@ import React from "react";
 import {
   Image,
   ScrollView,
-  TouchableOpacity,
   View,
 } from "react-native";
-import styles from "./Style/Style";
+import styles from "./Style";
 import Glyphs from "assets/Glyphs";
 import VisitCard from "views/visit/component/VisitCard";
 import { Colors } from "commonStyles/RNColor.style";
-import { Category, CustomerInformation, SCREENS } from "@shared-constants";
-import { navigate } from "@navigation";
+import { Category, CustomerInformation} from "@shared-constants";
 import TextWrapper from "components/TextWrapper";
 import StringConstants from "shared/localization";
 import { SignInResponse } from "models/ApiResponses/SignInResponse";
 import { ExtarctTwoLetterName } from "helper/helperFunctions";
 import { HomeResponse } from "models/ApiResponses/HomeResponse";
-import { HorizontalScrollableList, ShimmerPlaceholder, StatusBarComponent } from "components";
+import { HorizontalScrollableList, PressableButton, ShimmerPlaceholder, StatusBarComponent } from "components";
+import fonts from "@fonts";
+import LinearGradient from "react-native-linear-gradient";
+import { ScreenWidth } from "libs";
 interface IHomeScreen {
   userData: SignInResponse;
   homeScreenData: HomeResponse;
   handleHorizontalScrollableClick: (id: number, index: number) => void;
   onClickEventOnUpperTextOfHorizontalList: (id: number) => void;
+  handleMsg_Noti_Setiing:(type:string)=>void;
 }
 
 const HomeScreen = ({
@@ -29,13 +31,14 @@ const HomeScreen = ({
   homeScreenData,
   handleHorizontalScrollableClick,
   onClickEventOnUpperTextOfHorizontalList,
+  handleMsg_Noti_Setiing
 }: IHomeScreen) => {
   const twolettername = ExtarctTwoLetterName(userData.user.user_name);
   return (
     <>
       <StatusBarComponent
         backgroundColor={Colors.sailBlue}
-        conentType={'dark-content'}
+        conentType={'light-content'}
       />
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false} 
       bounces={false}
@@ -43,44 +46,39 @@ const HomeScreen = ({
         <View style={styles.topContainer}>
           <TextWrapper style={styles.welcometext}>
             {StringConstants.WELCOME}
-            {userData?.user?.user_name}
+           <TextWrapper style={{fontFamily:fonts.Poppins.bold}}>{userData?.user?.user_name}</TextWrapper> 
             <TextWrapper style={styles.roleText}>
               {`  (${userData?.user?.user_role_name})`}
             </TextWrapper>
           </TextWrapper>
           <View style={{ flexDirection: "row" }}>
-            <TouchableOpacity
-              onPress={() => {
-                navigate(SCREENS.MESSAGE);
-              }}
+            <PressableButton
+              onPress={() =>handleMsg_Noti_Setiing(StringConstants.MESSAGE_DETAILS)}
             >
               <Image source={Glyphs.Mail} style={styles.img} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                navigate(SCREENS.NOTIFICATION);
-              }}
+            </PressableButton>
+            <PressableButton
+               onPress={() =>handleMsg_Noti_Setiing(StringConstants.NOTIFICATIONS)}
             >
               <Image
                 source={Glyphs.Notification}
                 style={[styles.img, { marginLeft: 16 }]}
               />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                navigate(SCREENS.SETTING);
-              }}
+            </PressableButton>
+            <PressableButton
+               onPress={() =>handleMsg_Noti_Setiing(StringConstants.SETTINGS)}
             >
               <View style={styles.circle}>
                 <TextWrapper style={styles.circleTxt}>
                   {twolettername}
                 </TextWrapper>
               </View>
-            </TouchableOpacity>
+            </PressableButton>
           </View>
         </View>
 
         <View style={styles.visitContainer}>
+    
           <VisitCard
             count={homeScreenData?.AllVisttsCount?.upComingVisitCount}
             title={StringConstants.UPCOMING_VISIT}

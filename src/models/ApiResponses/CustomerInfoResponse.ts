@@ -27,10 +27,21 @@ export interface IMOU {
   export interface DataDD {
     DDorderReportUrl: string;
     fileName: string;
-    data: DDaum;
+    data: DDaum[];
   }
 
-  export interface OutStandingResponseStatus {
+  export interface OutStandingResponse {
+    OutStandingReportUrl: string;
+    fileName: string;
+    data: OutStandingResponseData[];
+  }
+
+  export interface OutStandingAPIResponse{
+    status: number;
+    data: OutStandingResponse;
+  }
+
+  export interface OutStandingResponseData{
     customerID: string;
     customerName: string;
     branch: string;
@@ -39,6 +50,18 @@ export interface IMOU {
     message: string;
   }
 
+
+  export interface IOffTakeAPIResponse{
+    status: number;
+    data: OfftakeData;
+  }
+
+  export interface OfftakeData{
+    OfftakeReportUrl:string;
+    fileName:string;
+    data:DaumOffTake[];
+
+  }
   export interface DaumOffTake {
     FromDate: string;
     ToDate: string;
@@ -104,16 +127,16 @@ export interface IMOU {
 
   export interface ICustomerResponse {
     status: number;
-    data: Data;
+    data: QCData;
   }
   
-  export interface Data {
+  export interface QCData {
     QCReportUrl: string;
     fileName: string;
-    data: Daum[];
+    data: DaumQC[];
   }
 
-  export interface Daum {
+  export interface DaumQC{
     CustomerName: string;
     ManuPlant: string;
     Product: string;

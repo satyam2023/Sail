@@ -108,7 +108,7 @@ const IssueEnquiry = ({
         placeholder={StringConstants.ENTER_NAME}
         maxlength={20}
         containerStyle={{
-          backgroundColor: !issueSearchresult ? Colors.white : Colors.lightGray,
+          backgroundColor: !issueSearchresult ? Colors.white : Colors.lightGray
         }}
         rightIcon={issueSearchresult ? Glyphs.Close : undefined}
         isEditable={!issueSearchresult}
@@ -151,7 +151,12 @@ const IssueEnquiry = ({
       ) : issueSearchresult.length == 0 ? (
         <TextWrapper>{StringConstants.NO_RECORDS_FOUND}</TextWrapper>
       ) : (
-        <FlatList data={issueSearchresult} renderItem={renderSearchResult} />
+        <FlatList
+          data={issueSearchresult}
+          renderItem={renderSearchResult}
+          scrollEnabled={false}
+          style={{marginBottom:60}}
+        />
       )}
     </View>
   );

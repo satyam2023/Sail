@@ -56,7 +56,7 @@ const ExecutedCustomer = ({
         <Image source={Glyphs.Download} style={{ marginHorizontal: 16 }} />
         <TextWrapper
           style={{
-            fontFamily: fonts.type.medium,
+            fontFamily: fonts.Poppins.medium,
             color: Colors.sailBlue,
             textDecorationLine: "underline",
           }}
@@ -74,7 +74,7 @@ const ExecutedCustomer = ({
 
       <CustomButton
         text={StringConstants.SUBMIT}
-        buttonStyle={{ backgroundColor: Colors.sailBlue }}
+        buttonStyle={{ backgroundColor: Colors.sailBlue,marginBottom:20}}
         textStyle={{ color: Colors.white }}
         onPress={() => navigate(SCREENS.MAIN)}
       />

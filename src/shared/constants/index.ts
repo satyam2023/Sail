@@ -578,7 +578,7 @@ export interface IPlannedMeetingInputField {
   maxLength: number;
   rightIcon: ImageURISource | undefined;
   leftIcon: ImageURISource | undefined;
-  key?: string;
+  key: string;
 }
 
 export const PlannedInput = [
@@ -587,6 +587,8 @@ export const PlannedInput = [
     maxLength: 20,
     rightIcon: undefined,
     leftIcon: undefined,
+    key:''
+
   },
 
   {
@@ -594,6 +596,7 @@ export const PlannedInput = [
     maxLength: 20,
     rightIcon: undefined,
     leftIcon: undefined,
+    key:''
   },
 
   {
@@ -601,6 +604,7 @@ export const PlannedInput = [
     maxLength: 20,
     rightIcon: undefined,
     leftIcon: undefined,
+    key:''
   },
 
   {
@@ -608,6 +612,7 @@ export const PlannedInput = [
     maxLength: 20,
     rightIcon: undefined,
     leftIcon: undefined,
+    key:''
   },
 
   {
@@ -615,6 +620,7 @@ export const PlannedInput = [
     maxLength: 20,
     rightIcon: undefined,
     leftIcon: undefined,
+    key:''
   },
 
   {
@@ -622,6 +628,7 @@ export const PlannedInput = [
     maxLength: 20,
     rightIcon: undefined,
     leftIcon: Glyphs.Calender,
+    key:''
   },
 
   {
@@ -637,6 +644,7 @@ export const PlannedInput = [
     maxLength: 20,
     rightIcon: undefined,
     leftIcon: undefined,
+    key:''
   },
 
   {
@@ -644,6 +652,7 @@ export const PlannedInput = [
     maxLength: 20,
     rightIcon: undefined,
     leftIcon: undefined,
+    key:''
   },
 
   {
@@ -658,6 +667,7 @@ export const PlannedInput = [
     maxLength: 20,
     rightIcon: Glyphs.Add,
     leftIcon: undefined,
+    key:'accompying'
   },
 ];
 
@@ -767,12 +777,6 @@ export const CustomerTypeProject: ICustomerProject[] = [
   },
 ];
 
-// export const TextFieldData = [
-//   StringConstants.YOUR_UNIQUE,
-//   StringConstants.NAME,
-//   StringConstants.CONTACT_NUMBER,
-//   StringConstants.EMAIL,
-// ];
 
 export interface ITextField {
   placeholder: string;
@@ -799,7 +803,7 @@ export const TextFieldData = [
 ];
 
 export const filterDropDownData: IdropDown[] = [
-  { id: 1, name: StringConstants.DURATION },
+  { id: 1, name: StringConstants.DURATION},
   { id: 2, name: StringConstants.DATA_RANGE },
 ];
 
@@ -820,3 +824,48 @@ export const createVisitErrorMsg: string[] = [
   StringConstants.PLS_MOC,
   StringConstants.PLS_REMARKS,
 ];
+
+
+
+export const PlannedVisitPlaceHolder = [
+  { 
+    heading: "Customer Code",
+    imagepath: Glyphs.Code,
+  },
+  { 
+    heading: "Visit Date",
+    imagepath: Glyphs.VisitDate,
+  },
+  { 
+    heading: "Reason of Visit",
+    imagepath: Glyphs.VisitDateIcon,
+  },
+  { 
+    heading: "Mode of Contact",
+    imagepath: Glyphs.Note,
+  },
+  { 
+    heading: "Remarks",
+    imagepath: Glyphs.Note,
+  },
+  { 
+    heading: "Visiting Executive",
+    imagepath: Glyphs.SignleUser,
+  },
+  { 
+    heading: "Location",
+    imagepath: Glyphs.blueLocation,
+  },
+  { 
+    heading: "Contact Number",
+    imagepath: Glyphs.BluePhone,
+  },
+  { 
+    heading: "Email ID",
+    imagepath: Glyphs.BlueEmail,
+  },
+  { 
+    heading: "Planned by",
+    imagepath: Glyphs.SignleUser,
+  },
+]

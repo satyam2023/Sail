@@ -27,23 +27,22 @@ const ProductCatalougeViewModel = () => {
 
   const [searchResult, setSearchResult] = useState<IProductCatalogue[]>();
 
-  function handleEnterSearchText(text: string) {
-    // details.searchDetails.current = text;
-    // const res = searchProductList(productData, details.searchDetails.current);
-    // setSearchResult(res);
+  const handleEnterSearchText=(text: string)=>{
+    details.searchDetails.current = text;
+    const res = searchProductList(productData, details.searchDetails.current);
+    setSearchResult(res);
   }
 
-  function handleQrVisibility(param:string) {
+  const handleQrVisibility=(param:string) =>
     setQrStatus(param);
-  }
+  
 
   async function downloadCatalouge(url: string) {
     try {
       await downloadFile(url);
     } catch (e) {
       logger("Error in Download of Product Catalouge Product");
-    } finally {
-    }
+    } 
   }
   
   return (

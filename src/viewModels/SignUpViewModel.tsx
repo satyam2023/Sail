@@ -1,7 +1,10 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { IApiResponse } from "models/ApiResponses/IApiResponse";
-import { setLoaderVisibility } from "redux/actions/LoaderAction";
+import {
+  setLoaderVisibility,
+  setPendingApprovalPopUp,
+} from "redux/actions/LoaderAction";
 import {
   passwordValidationRules,
   personalValidationRules,
@@ -47,18 +50,13 @@ const SignUpScreenViewMOdel = () => {
   const Submit = async () => {
     switch (CurrentScreen) {
       case 1:
-        { 
-        handleContactSubmit();
-        }
+          handleContactSubmit();
         break;
       case 2:
         handleRoleSubmit();
         break;
       case 3:
-       {
-        handlePasswordSubmit();
-       signup();
-       }
+          handlePasswordSubmit();
         break;
       default:
         break;
@@ -66,18 +64,12 @@ const SignUpScreenViewMOdel = () => {
   };
 
   const handleForward = async () => {
-       if(CurrentScreen==1 && await checkSAPUser()){
-        setCurrentScreen(2)
-       }
-      else if(CurrentScreen==2){
-        setCurrentScreen(3);
-      }
-      else {
-        setCurrentScreen(1);
-      }
-   
-
-      setButtonStatus(false);
+    if (CurrentScreen == 1 && (await checkSAPUser())) {
+      setCurrentScreen(2);
+    } else if (CurrentScreen == 2) {
+      setCurrentScreen(3);
+    } 
+    setButtonStatus(false);
   };
 
   const {
@@ -92,7 +84,7 @@ const SignUpScreenViewMOdel = () => {
     errors: passwordErrors,
     handleSubmit: handlePasswordSubmit,
     handleTextChange: handlePasswordTextChange,
-  } = useForm(passwords, passwordValidationRules, handleForward);
+  } = useForm(passwords,passwordValidationRules, signup);
 
   const {
     values: rolenamevalues,
@@ -101,14 +93,14 @@ const SignUpScreenViewMOdel = () => {
     handleTextChange: handleRoleTextChange,
   } = useForm(roleNameDetails, roleValidationRules, handleForward);
 
-  const dispatch =useDispatch();
+  const dispatch = useDispatch();
   const dropdownData = store?.getState()?.masterData?.masterData;
 
   const locationAndRoleDropDown: IdropDown[][] = [
     dropdownData?.data?.LocationData,
     dropdownData?.data?.RolesData,
   ];
-  const signup = async () => {
+  async function signup () {
     dispatch(setLoaderVisibility(true));
     const body = {
       user_upn: values.current.Upn,
@@ -127,32 +119,32 @@ const SignUpScreenViewMOdel = () => {
     try {
       const res: IApiResponse<ISignupBody> = await signupAction(body);
       if (res.isSuccess) {
+        dispatch(setPendingApprovalPopUp(true));
         dispatch(saveUserdata(res.data));
-      } else {
       }
     } catch (error) {
-      logger(error,"Error in SignUp")
+      logger(error, "Error in SignUp");
     } finally {
       dispatch(setLoaderVisibility(false));
     }
   };
 
-  function setScreen(CurrentScreen: number) {
+  const setScreen=(CurrentScreen: number) =>  {
     setCurrentScreen(CurrentScreen);
-  }
+    setButtonStatus(true);
+  };
+  
 
-  function handleOnTextChange(text: string, id: number) {
+  const handleOnTextChange = (text: string, id: number) => {
     if (id < 2) {
       handleTextChange(Object.keys(upn_contact_values)[id], text);
-
     } else if (id >= 2 && id <= 5) {
       handleRoleTextChange(Object.keys(roleNameDetails)[id - 2], text);
-      
     } else if (id > 5) {
       handlePasswordTextChange(Object.keys(passwords)[id - 6], text);
     }
     checkButtonStatus();
-  }
+  };
 
   const checkSAPUser = async () => {
     const body = {
@@ -163,22 +155,20 @@ const SignUpScreenViewMOdel = () => {
       dispatch(setLoaderVisibility(true));
       const res: IApiResponse<SAPResponse> = await SAPUserAlreadyExist(body);
       if (res?.isSuccess) {
+        dispatch(setLoaderVisibility(false));
         if (res?.data?.data?.data?.Status != "1") {
           setAlreadyExist(true);
           return false;
         } else if (alreadyExist) {
           setAlreadyExist(false);
           return true;
-        }
-        else {
+        } else {
           return true;
         }
       }
     } catch (error) {
       logger("CHECK SAP USER");
-    } finally {
       dispatch(setLoaderVisibility(false));
-      return ;
     }
   };
 
@@ -217,11 +207,13 @@ const SignUpScreenViewMOdel = () => {
         CurrentScreen,
         handleOnTextChange,
         locationAndRoleDropDown,
-        alreadyExist, 
+        alreadyExist,
         upn_contact_values,
         roleNameErrors,
         roleNameDetails,
         passwordErrors,
+        values,
+        rolenamevalues
       }}
     />
   );

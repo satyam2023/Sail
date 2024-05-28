@@ -1,5 +1,5 @@
 import commonStyles from "commonStyles/CommonStyle";
-import React from "react";
+import React, { memo } from "react";
 import {
   Image,
   ImageStyle,
@@ -49,7 +49,7 @@ const DescriptionCard = (props: IDescriptionCard) => {
   );
 };
 
-export default DescriptionCard;
+export default memo(DescriptionCard);
 
 const styles = StyleSheet.create<IDescriptionStyle>({
   cardContainer: {

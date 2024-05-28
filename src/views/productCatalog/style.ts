@@ -23,14 +23,14 @@ const styles = StyleSheet.create<IStyle>({
     resizeMode: "contain",
   },
   card: {
-    width: "45%",
+    flex:0.485,
     paddingVertical: 20,
     borderRadius: 15,
     backgroundColor: Colors.white,
     marginBottom: 16,
   },
   txt: {
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 14,
     lineHeight: 20,
     color: Colors.blackPeral,
@@ -39,7 +39,7 @@ const styles = StyleSheet.create<IStyle>({
   },
   dwd: {
     color: Colors.orange,
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 12,
     lineHeight: 20,
     textDecorationLine: "underline",
@@ -51,13 +51,13 @@ const styles = StyleSheet.create<IStyle>({
     resizeMode: "cover",
   },
   qrText: {
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 24,
     color: Colors.black,
     marginTop: 10,
   },
   headingText: {
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 24,
     color: Colors.black,
     marginTop: 10,
@@ -70,7 +70,7 @@ const styles = StyleSheet.create<IStyle>({
     height: "50%",
   },
   productList: {
-    marginBottom: 15,
+    marginBottom: 40,
     flex: 1,
     backgroundColor: Colors.transparent,
   },
@@ -80,5 +80,6 @@ const styles = StyleSheet.create<IStyle>({
     backgroundColor: Colors.lightGray,
     marginTop: 16,
   },
+  
 });
 export default styles;

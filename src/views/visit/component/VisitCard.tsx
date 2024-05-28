@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import { Image, ImageURISource, Pressable, StyleSheet, View } from "react-native";
 import { SCREENS } from "@shared-constants";
 import { navigate } from "@navigation";
 import { useDispatch } from "react-redux";
@@ -8,11 +8,13 @@ import commonStyles from "commonStyles/CommonStyle";
 import TextWrapper from "components/TextWrapper";
 import fonts from "@fonts";
 import StringConstants from "shared/localization";
+import { ShimmerPlaceholder } from "components";
+import LinearGradient from "react-native-linear-gradient";
 
 interface IvisitCard {
   count: number;
   title: string;
-  image: any;
+  image:ImageURISource;
   backgroundcolor: string;
   textColor: string;
 }
@@ -26,7 +28,7 @@ const VisitCard = ({
 }: IvisitCard) => {
   const dispatch = useDispatch();
 
-  function handleVisitClick() {
+  const handleVisitClick = () => {
     if (title == StringConstants.UPCOMING_VISIT) {
       dispatch(VisitType(1));
       navigate(SCREENS.VISIT);
@@ -37,7 +39,7 @@ const VisitCard = ({
       dispatch(VisitType(3));
       navigate(SCREENS.VISIT);
     }
-  }
+  };
 
   return (
     <Pressable
@@ -50,7 +52,12 @@ const VisitCard = ({
           {count}
         </TextWrapper>
       </View>
-      <TextWrapper style={[commonStyles.font14MediumBlack, { marginTop: 8 }]}>
+      <TextWrapper
+        style={[
+          commonStyles.font14MediumBlack,
+          { marginTop: 8, textAlign: "center" },
+        ]}
+      >
         {title}
       </TextWrapper>
     </Pressable>
@@ -61,10 +68,10 @@ export default VisitCard;
 
 const styles = StyleSheet.create({
   visitContainer: {
-    width: "30%",
+    flex: 0.3,
     height: 108,
     borderRadius: 4,
-    paddingHorizontal: 16,
+    paddingHorizontal: 15,
   },
   visitImg: {
     marginTop: 16,
@@ -74,7 +81,7 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   exedcutedNumber: {
-    fontFamily: fonts.type.semiBold,
+    fontFamily: fonts.Poppins.semiBold,
     lineHeight: 36,
     fontSize: 24,
     marginTop: 16,

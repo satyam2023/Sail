@@ -13,14 +13,17 @@ interface IFirstSignUpScreen {
   alreadyExist: boolean;
   errors:MutableRefObject<ValidationError[]>;
   upn_contact_values:FormValues;
+  values:MutableRefObject<FormValues>;
 }
 
 const First = ({
   handleOnTextChange,
   alreadyExist,
   errors,
-  upn_contact_values
+  upn_contact_values,
+  values,
 }: IFirstSignUpScreen) => {
+
   return (
     <SafeAreaContainer>
       <CustomHeader details={StringConstants.ENTER_PERSONAL_INFO} />
@@ -29,6 +32,7 @@ const First = ({
         onChangeText={(text: string) => handleOnTextChange(text, 0)}
         placeholder={StringConstants.YOUR_UNIQUE}
         maxlength={7}
+        defaultValue={values.current.Upn}
         errors={errors.current}
         inputBoxId={Object.keys(upn_contact_values)[0]}
       />
@@ -37,6 +41,7 @@ const First = ({
         onChangeText={(text: string) => handleOnTextChange(text, 1)}
         placeholder={StringConstants.CONTACT_NUMBER}
         maxlength={10}
+        defaultValue={values.current.Contact}
         errors={errors.current}
         inputBoxId={Object.keys(upn_contact_values)[1]}
       />

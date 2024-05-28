@@ -140,7 +140,7 @@ const First = (props: IFirst) => {
           />
         )}
         <>
-          {(index == 4  || index==6) &&
+          {[4,6].includes(index)&&
            array?.map((item: IProcuredProduct|ISupplier) => {
               return (
                 <InputTextField

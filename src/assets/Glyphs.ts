@@ -9,6 +9,7 @@ const Glyphs = {
   blueLocation:require('../assets/images/blueLocation.png'),
   BluePhone:require('../assets/images/bluePhone.png'),
   Calender:require('../assets/images/Calender.png'),
+  Cancel:require('../assets/images/Cancel.png'),
   CellularConnection:require('../assets/images/Cellular Connection.png'),
   Close:require('../assets/images/Close.png'),
   Code:require('../assets/images/code.png'),
