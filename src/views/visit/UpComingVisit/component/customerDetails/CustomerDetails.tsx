@@ -10,13 +10,11 @@ import CustomerCommon from "../../../component/CustomerCommonDetails/CustomerCom
 import styles from "../../Style/Style";
 import Data from "../../mockData/DATA";
 import Glyphs from "assets/Glyphs";
-import CustomerBox from "components/RectangularBox";
 interface CustomerProps {
   handleCustomerClick: Function;
 }
 const CustomerDetails = ({ handleCustomerClick }: CustomerProps) => {
   const renderItem = (item: any) => {
-  
     return (
       <CustomerCommon
         uppertext={item.item.uppertext}

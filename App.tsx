@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import React, { useState } from "react";
-import { useColorScheme, LogBox } from "react-native";
+import { useColorScheme, LogBox} from "react-native";
 import SplashScreen from "react-native-splash-screen";
 import { Provider } from "react-redux";
 import Navigation from "./src/route";
@@ -8,12 +8,11 @@ import { addEventListener, useNetInfo } from "@react-native-community/netinfo";
 import { persistor, store } from "redux/store/Store";
 import { PersistGate } from "redux-persist/integration/react";
 import StatusCode from "core/StatusCode";
-import PleaseWaitLoader from "views/emptyState/PleaseWaitLoader";
 import { getRememberMe } from "shared/constants/accountService";
 import { SCREENS } from "@shared-constants";
 import { navigate } from "@navigation";
 import InternetManager from "components/InternetManager";
-import { sendGetRequest } from "services/network/Network";
+import PopUpBox from "views/emptyState/PopUpBox";
 LogBox.ignoreAllLogs();
 
 if (__DEV__) {
@@ -40,11 +39,11 @@ const App = () => {
   React.useEffect(() => {
     const unsubscribe = addEventListener(async () => {
       try {
-        const res = await sendGetRequest(
+        const res = await fetch(
           "https://cmoccuat.sailcmo.co.in:8000"
         );
-        console.log("Response::::",res);
-        setVpnStatus(true);
+        if(res.status==200)
+         setVpnStatus(true);
       } catch (e) {
         setVpnStatus(false);
       }
@@ -63,11 +62,10 @@ const App = () => {
       SplashScreen.hide();
     }, 2000);
   }, [scheme, isDarkMode]);
-  console.log("Vpn status::::", vpnStatus);
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <PleaseWaitLoader />
+        <PopUpBox/>
         {vpnStatus ? (
           <Navigation />
         ) : (
@@ -75,6 +73,7 @@ const App = () => {
         )}
       </PersistGate>
     </Provider>
+  
   );
 };
 

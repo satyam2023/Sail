@@ -52,6 +52,11 @@ const EnquiryViewModel = () => {
     location: useRef<string>(""),
   };
 
+  const resetIssueEnquiryDetails=()=>{
+    issueEnquiryEnteredDetail.customerCodeName.current="";
+    issueEnquiryEnteredDetail.location.current="";
+  }
+
   const [NearByCustomerList, setNearByCustomerList] = useState<
     INearbyCustomer[] | undefined
   >();
@@ -59,9 +64,10 @@ const EnquiryViewModel = () => {
   const userEnquiryApi=async()=>{
     const body = {
       user_name: userEnquiryEnteredDetail.name.current,
-      user_location: userEnquiryEnteredDetail.location.current,
+      user_location: userEnquiryEnteredDetail.location.current
     };
     try{
+      dispatch(setLoaderVisibility(true));
     const userRes: UserEnquiryResponse = await getUserEnquiry(body);
     setsearchresult(userRes);
     }
@@ -69,7 +75,7 @@ const EnquiryViewModel = () => {
      logger(e,"Error in User Enquiry API Calling")
     }
     finally{
-
+      dispatch(setLoaderVisibility(false));
     }
   }
 
@@ -144,9 +150,13 @@ const EnquiryViewModel = () => {
     }
   }
 
-  function handleIssueEnquiry(type:string){
+  const handleIssueEnquiry=(type:string)=>{
     setIssueEnquiryType(type);
-
+    setIssueSearchResult(undefined);
+    setBtnStatus((prev:IButtonStatus)=>({
+      ...prev,
+      issueBtn:false,
+    }))
   }
 
   function handleTextChangeofUserEnquiry(text:string,id:number){

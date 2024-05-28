@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { View } from "react-native";
 import ExecutedCustomer from "./ExecutedCustomer";
 import StringConstants from "shared/localization";
@@ -78,4 +78,4 @@ const Executed = ({
     </View>
   );
 };
-export default Executed;
+export default memo(Executed);

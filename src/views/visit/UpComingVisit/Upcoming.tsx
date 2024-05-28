@@ -1,13 +1,12 @@
-import React from "react";
-import {View } from "react-native";
+import React, { memo } from "react";
+import { View } from "react-native";
 import CustomerDetails from "components/CustomerDetails";
-import Data from "./mockData/DATA";
 import RectangularBox from "components/RectangularBox";
 import { FlatList } from "react-native-gesture-handler";
 import { VisitResponse } from "models/ApiResponses/VisitResponse";
 import StringConstants from "shared/localization";
 import Glyphs from "assets/Glyphs";
-import { IupcomingVisitField } from "@shared-constants";
+import { IupcomingVisitField} from "@shared-constants";
 
 interface IUpcomingScreen {
   upcomingVisitList: VisitResponse[];
@@ -18,13 +17,19 @@ interface IUpcomingScreen {
   customerDetails: boolean;
   handleCustomerClick: () => void;
   handleUpcomingVisitBoxClick: (index: number) => void;
-  setPaginationPage:()=>void;
+  setPaginationPage: () => void;
   searchResult: VisitResponse[];
 }
 
 const UpcomingVisit = (props: IUpcomingScreen) => {
   const isSearchResult: boolean = props?.searchResult.length > 0 ? true : false;
-  const renderUpcomingVisit = ({item,index}:{item: VisitResponse, index: number}) => {
+  const renderUpcomingVisit = ({
+    item,
+    index,
+  }: {
+    item: VisitResponse;
+    index: number;
+  }) => {
     return (
       <RectangularBox
         leftIcon={Glyphs.multiProfile}
@@ -37,27 +42,26 @@ const UpcomingVisit = (props: IUpcomingScreen) => {
   };
 
   return (
-    <View style={{ paddingHorizontal: 20,flex:1 }} >
+    <View style={{ paddingHorizontal: 20, flex: 1 }}>
       {!props?.customerDetails ? (
         <>
           <FlatList
-            data={isSearchResult?props.searchResult:props.upcomingVisitList}
+            data={isSearchResult ? props.searchResult : props.upcomingVisitList}
             renderItem={renderUpcomingVisit}
-            extraData={Data}
-            onEndReachedThreshold={0.2} 
+            onEndReachedThreshold={0.2}
             onEndReached={props?.setPaginationPage}
             showsVerticalScrollIndicator={false}
           />
         </>
       ) : props.selectedIndexValue >= 0 ? (
-      
         <CustomerDetails
           onPress={props?.handleCustomerClick}
           CustomerData={props?.upcomingFieldData}
           placeholderData={props?.upcomingVisitDetails}
           companyName={
-            (isSearchResult ? props?.searchResult : props?.upcomingVisitList)[props?.selectedIndexValue].customer_data
-              ?.company_name
+            (isSearchResult ? props?.searchResult : props?.upcomingVisitList)[
+              props?.selectedIndexValue
+            ].customer_data?.company_name
           }
         />
       ) : null}
@@ -65,4 +69,4 @@ const UpcomingVisit = (props: IUpcomingScreen) => {
   );
 };
 
-export default UpcomingVisit;
+export default memo(UpcomingVisit);

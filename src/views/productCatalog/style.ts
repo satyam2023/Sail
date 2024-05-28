@@ -23,7 +23,7 @@ const styles = StyleSheet.create<IStyle>({
     resizeMode: "contain",
   },
   card: {
-    flex:0.48,
+    flex:0.485,
     paddingVertical: 20,
     borderRadius: 15,
     backgroundColor: Colors.white,

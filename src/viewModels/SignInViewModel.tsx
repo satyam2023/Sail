@@ -1,4 +1,4 @@
-import { navigate } from "@navigation";
+import { navigate, replace } from "@navigation";
 import { SCREENS } from "@shared-constants";
 import { userSignIn } from "controllers/accountController";
 import { logger } from "helper/helperFunctions";
@@ -7,11 +7,14 @@ import {
   ISignInUserData,
   SignInResponse,
 } from "models/ApiResponses/SignInResponse";
-import { IBiometricStatus} from "models/interface/ISignIn";
-import React, { useEffect,useState } from "react";
+import { IBiometricStatus } from "models/interface/ISignIn";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { saveUserdata } from "redux/actions/AccountAction";
-import { setLoaderVisibility } from "redux/actions/LoaderAction";
+import {
+  setInvalidCredentialsPopUp,
+  setLoaderVisibility,
+} from "redux/actions/LoaderAction";
 import { setRememberMe } from "shared/constants/accountService";
 import SignInScreen from "views/signIn/SignIn";
 import * as Keychain from "react-native-keychain";
@@ -24,7 +27,7 @@ const SignInViewModel = () => {
   const userDetail: FormValues = {
     upn: "",
     password: "",
-    rememberMe: '1',
+    rememberMe: "1",
   };
   const onSubmit = () => {
     handleFormSubmit();
@@ -43,8 +46,6 @@ const SignInViewModel = () => {
     handleTextChange: handleSignInTextChange,
   } = useForm(userDetail, signInValidationRules, loginUser);
 
-  
-
   const [isBiometricsAvl, setBiometric] = useState<IBiometricStatus>({
     faceId: false,
     fingerId: false,
@@ -61,9 +62,11 @@ const SignInViewModel = () => {
       if (res?.isSuccess) {
         dispatch(saveUserdata(res?.data));
         setRememberMe(Number(userDetailValue.current.rememberMe));
-        navigate(SCREENS.TAB);
+        replace(SCREENS.TAB);
         saveCredentails(values);
-      } 
+      } else {
+        dispatch(setInvalidCredentialsPopUp(true));
+      }
     } catch (error) {
       logger(error, "Error in Login Api Calling");
     } finally {
@@ -107,13 +110,15 @@ const SignInViewModel = () => {
     });
   };
 
-  function biometricAuthentication() {
+  const biometricAuthentication=()=> {
     authenticateFingerPrint();
   }
 
   const authenticateFingerPrint = async () => {
     rnBiometrics
-      .simplePrompt({ promptMessage: isAndroid?"Confirm FingerPrint":"Confirm FaceId"})
+      .simplePrompt({
+        promptMessage: isAndroid ? "Confirm FingerPrint" : "Confirm FaceId",
+      })
       .then(async (resultObject) => {
         const { success } = resultObject;
         if (success) {
@@ -123,7 +128,7 @@ const SignInViewModel = () => {
               upn: getCredentials.username,
               password: getCredentials.password,
             };
-  
+
             if (getCredentials) {
               loginAPICAllingHandler(values);
             } else {
@@ -139,7 +144,7 @@ const SignInViewModel = () => {
       });
   };
 
-  function handleOnTextChange(text: string, id: number) {
+  const handleOnTextChange=(text: string, id: number)=> {
     id != 2
       ? handleSignInTextChange(Object.keys(userDetail)[id], text)
       : handleSignInTextChange(Object.keys(userDetail)[id], text);

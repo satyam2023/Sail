@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import {
   Image,
   ImageProps,
@@ -65,7 +65,7 @@ const Header = (props: IHeaderProps) => {
   );
 };
 
-export default Header;
+export default memo(Header);
 
 const styles = StyleSheet.create<IAppHeaderStyle>({
   headerContainer: {

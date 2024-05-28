@@ -94,6 +94,67 @@ const VisitScreen = ({
   handleClearSearchResult,
   plannedVisit,
 }: IVisitScreen) => {
+  const rednerVisitScreens = () => {
+    switch (currentVisit) {
+      case 1:
+        return (
+          <UpcomingVisit
+            {...{
+              upcomingVisitList,
+              upcomingVisitDetails,
+              setSelectedIndexValue,
+              upcomingFieldData,
+              selectedIndexValue,
+              customerDetails,
+              handleCustomerClick,
+              handleUpcomingVisitBoxClick,
+              setPaginationPage,
+              searchResult,
+            }}
+          />
+        );
+      case 2:
+        return (
+          <Planned
+            {...{
+              plannedVisitList,
+              selectedIndexValue,
+              plannedVisitFieldData,
+              plannedVisitEditDetails,
+              plannedVisitEdit,
+              modeOfContactDropData,
+              isVisitEditable,
+              handlePlannedVisitBoxClick,
+              customerDetails,
+              handleCustomerClick,
+              setPaginationPage,
+              searchResult,
+              plannedVisit,
+            }}
+          />
+        );
+      case 3:
+        return (
+          <Executed
+            {...{
+              executedVisitFieldData,
+              setSelectedIndexValue,
+              executedVisitList,
+              selectedIndexValue,
+              customerDetails,
+              handleCustomerClick,
+              handleUpcomingVisitBoxClick,
+              callDownloadPDFApi,
+              setPaginationPage,
+              searchResult,
+            }}
+          />
+        );
+      default:
+        return;
+    }
+  };
+
   return (
     <>
       <StatusBarComponent
@@ -110,7 +171,7 @@ const VisitScreen = ({
               setCurrentVisit(index);
             }}
             countArray={visitCountArray}
-            style={{ backgroundColor: Colors.background}}
+            style={{ backgroundColor: Colors.background }}
           />
           <TextWrapper style={[commonStyles.font12RegularGrey, styles.txt]}>
             {StringConstants.ENTER_CUST_CODE_OR_NAME}
@@ -139,7 +200,6 @@ const VisitScreen = ({
               />
             )}
           </View>
-
           {searchResult.length > 0 && (
             <View style={styles.searchResultText}>
               <TextWrapper
@@ -156,58 +216,7 @@ const VisitScreen = ({
               </PressableButton>
             </View>
           )}
-
-          {currentVisit == 1 && (
-            <UpcomingVisit
-              {...{
-                upcomingVisitList,
-                upcomingVisitDetails,
-                setSelectedIndexValue,
-                upcomingFieldData,
-                selectedIndexValue,
-                customerDetails,
-                handleCustomerClick,
-                handleUpcomingVisitBoxClick,
-                setPaginationPage,
-                searchResult,
-              }}
-            />
-          )}
-          {currentVisit == 2 && (
-            <Planned
-              {...{
-                plannedVisitList,
-                selectedIndexValue,
-                plannedVisitFieldData,
-                plannedVisitEditDetails,
-                plannedVisitEdit,
-                modeOfContactDropData,
-                isVisitEditable,
-                handlePlannedVisitBoxClick,
-                customerDetails,
-                handleCustomerClick,
-                setPaginationPage,
-                searchResult,
-                plannedVisit,
-              }}
-            />
-          )}
-          {currentVisit == 3 && (
-            <Executed
-              {...{
-                executedVisitFieldData,
-                setSelectedIndexValue,
-                executedVisitList,
-                selectedIndexValue,
-                customerDetails,
-                handleCustomerClick,
-                handleUpcomingVisitBoxClick,
-                callDownloadPDFApi,
-                setPaginationPage,
-                searchResult,
-              }}
-            />
-          )}
+          {rednerVisitScreens()}
         </View>
         {currentVisit == 2 &&
           FooterVisibility &&

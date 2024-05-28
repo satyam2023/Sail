@@ -61,9 +61,9 @@ const MessageScreenViewModel = () => {
     )?.id;
   };
 
-  const handleSelecteEscalatedTo=()=>{
+  const handleSelecteEscalatedTo=()=>
     setEscalatedPersonStatus(!escalatedPersonStatus)
-  }
+  
   
 
   async function escalalteToAnotherApiCalling() {

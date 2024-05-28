@@ -1,9 +1,9 @@
 import { BASE_URL } from "@env";
 
 const APIConstants = {
-  axiosCallTimeout: 30000,
-  axiosCallRetryCount: 2,
-  axiosCallRetryTimeout: 5000,
+  AXIOS_CALL_TIMEOUT: 30000,
+  AXIOS_CALL_RETRY_COUNT: 2,
+  AXIOS_CALL_RETRY_TIMEOUT: 5000,
   BaseURL: BASE_URL,
   SIGNUP:'register',
   SIGNIN:'login',

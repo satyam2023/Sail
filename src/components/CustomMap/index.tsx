@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Colors } from "commonStyles/RNColor.style";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { Linking, Platform, StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
@@ -50,7 +50,7 @@ const MapComponent = (Props: InputProps) => {
   );
 };
 
-export default React.memo(MapComponent);
+export default memo(MapComponent);
 
 const styles = StyleSheet.create<IMapStyle>({
   container: {

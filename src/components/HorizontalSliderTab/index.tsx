@@ -1,5 +1,5 @@
 import { Colors } from "commonStyles/RNColor.style";
-import React from "react";
+import React, { memo } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -126,7 +126,7 @@ const HorizontalSlider = (props: IHorizontalSlider) => {
   );
 };
 
-export default HorizontalSlider;
+export default memo(HorizontalSlider);
 
 const styles = (visitNumber?: number) => {
   return StyleSheet.create<IHorizontalSliderStyle>({

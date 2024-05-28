@@ -14,7 +14,6 @@ import { NotificationResponse } from "models/ApiResponses/NotificationResponse";
 import { extractOnlyDate } from "helper/helperFunctions";
 import styles from "./Style";
 
-
 interface INotificationScreen {
   notificationData: NotificationResponse;
 }
@@ -32,11 +31,12 @@ const NotificationScreen = (props: INotificationScreen) => {
           style={{ paddingHorizontal: 20 }}
           showsVerticalScrollIndicator={false}
         >
-          <TextWrapper
-            style={styles.dayText}
-          >
-            {StringConstants.TODAY}
-          </TextWrapper>
+          {props?.notificationData?.length > 0 && (
+            <TextWrapper style={styles.dayText}>
+              {StringConstants.TODAY}
+            </TextWrapper>
+          )}
+
           <FlatList
             data={props.notificationData}
             renderItem={({ item, index }) => (

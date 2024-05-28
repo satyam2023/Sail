@@ -486,7 +486,8 @@ const StringConstants = {
   PLS_REMARKS:'Please Enter Remarks',
   FINGER_PRINT_KEY:'Finger Print Key',
   INVALID_WEBSITE:'Invalid Website',
- 
+  PENDING_APPROVAL_MESSAGE:'Your account is pending for approval with admin.',
+  INVALID_CREDENTIALS:'Invalid Credentials'
 
 
 

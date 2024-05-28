@@ -1,5 +1,5 @@
 import { Colors } from "commonStyles/RNColor.style";
-import React, { useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import {
   Animated,
   Image,
@@ -53,7 +53,6 @@ export interface ITextField {
   defaultValue?: string;
   textStyle?: StyleProp<TextStyle>;
   multiline?: boolean;
-  ref?: any;
   errors?: ValidationError[];
   leftIconActive?: boolean;
   value?: string | undefined;
@@ -213,7 +212,7 @@ const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
   );
 };
 
-export default InputTextField;
+export default memo(InputTextField);
 
 const styles = StyleSheet.create<ITextInputStyle>({
   inputContainer: {

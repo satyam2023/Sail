@@ -24,6 +24,7 @@ export {default as Datepicker} from './Calender';
 export {default as StatusBarComponent} from './StatusBarComponent';
 export {default as KeyboardAvoidingWrapper} from "./KeyBoard";
 export {default as ShimmerPlaceholder} from "./Shimmer";
+export {default as useVoiceToText} from './VoiceToText'
 
 
 

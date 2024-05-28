@@ -13,7 +13,7 @@ const token = () => {
 };
 const instance: AxiosInstance = axios.create({
   baseURL: APIConstants.BaseURL,
-  timeout: APIConstants.axiosCallTimeout,
+  timeout: APIConstants.AXIOS_CALL_TIMEOUT,
   headers: {
     "Content-Type": "application/json",
     Accept: "*/*",
@@ -29,8 +29,8 @@ interface RetryConfig extends AxiosRequestConfig {
 }
 
 const globalConfig: RetryConfig = {
-  retry: APIConstants.axiosCallRetryCount,
-  retryDelay: APIConstants.axiosCallRetryTimeout,
+  retry: APIConstants.AXIOS_CALL_RETRY_COUNT,
+  retryDelay: APIConstants.AXIOS_CALL_RETRY_TIMEOUT,
 };
 
 instance.interceptors.response.use(

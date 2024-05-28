@@ -8,15 +8,16 @@ import styles from "./Style";
 import Glyphs from "assets/Glyphs";
 import VisitCard from "views/visit/component/VisitCard";
 import { Colors } from "commonStyles/RNColor.style";
-import { Category, CustomerInformation, SCREENS } from "@shared-constants";
-import { navigate } from "@navigation";
+import { Category, CustomerInformation} from "@shared-constants";
 import TextWrapper from "components/TextWrapper";
 import StringConstants from "shared/localization";
 import { SignInResponse } from "models/ApiResponses/SignInResponse";
 import { ExtarctTwoLetterName } from "helper/helperFunctions";
 import { HomeResponse } from "models/ApiResponses/HomeResponse";
-import { HorizontalScrollableList, PressableButton, StatusBarComponent } from "components";
+import { HorizontalScrollableList, PressableButton, ShimmerPlaceholder, StatusBarComponent } from "components";
 import fonts from "@fonts";
+import LinearGradient from "react-native-linear-gradient";
+import { ScreenWidth } from "libs";
 interface IHomeScreen {
   userData: SignInResponse;
   homeScreenData: HomeResponse;
@@ -77,6 +78,7 @@ const HomeScreen = ({
         </View>
 
         <View style={styles.visitContainer}>
+    
           <VisitCard
             count={homeScreenData?.AllVisttsCount?.upComingVisitCount}
             title={StringConstants.UPCOMING_VISIT}

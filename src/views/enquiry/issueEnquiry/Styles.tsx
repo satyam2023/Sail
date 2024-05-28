@@ -41,7 +41,6 @@ const styles = StyleSheet.create<IIssueEnquiryStyle>({
   issueType: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 16,
   },
   detailcardContainer: {
     width: "100%",

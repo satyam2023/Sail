@@ -40,7 +40,7 @@ import {
 } from "helper/ValidationRegex";
 import { EscalatedList } from "models/interface/IMessage";
 import useForm, { FormValues } from "core/UseForm";
-import useVoiceToText from "components/VoiceToText";
+import { useVoiceToText } from "components";
 
 const CreateMetingDetailsViewModel = () => {
   const [currentScreen, setCurrentScreen] = useState<number>(1);

@@ -1,6 +1,5 @@
-import React from "react";
+import React, { memo } from "react";
 import { FlatList, View } from "react-native";
-import Data from "../UpComingVisit/mockData/DATA";
 import StringConstants from "shared/localization";
 import Glyphs from "assets/Glyphs";
 import { VisitResponse } from "models/ApiResponses/VisitResponse";
@@ -11,6 +10,7 @@ import {
 } from "models/interface/IVisit";
 import { IdropDown } from "models/interface/ISetting";
 import commonStyles from "commonStyles/CommonStyle";
+import { PlannedVisitPlaceHolder } from "@shared-constants";
 
 interface PlannedProps {
   plannedVisitList: VisitResponse[];
@@ -73,7 +73,7 @@ const Planned = ({
         <CustomerDetails
           CustomerData={plannedVisitFieldData}
           onPress={handleCustomerClick}
-          placeholderData={Data}
+          placeholderData={PlannedVisitPlaceHolder}
           indexofSelectedVisit={selectedIndexValue}
           companyName={
             (isSearchResult ? searchResult :  plannedVisit)[
@@ -95,4 +95,4 @@ const Planned = ({
   );
 };
 
-export default Planned;
+export default memo(Planned);

@@ -37,7 +37,7 @@ const styles = StyleSheet.create<ISettingStyle>({
     fontSize: 16,
     color: Colors.white,
     lineHeight:20,
-    marginLeft: 30,
+    marginLeft: 20,
   },
   circleContent: {
     color: Colors.white,
@@ -64,7 +64,7 @@ const styles = StyleSheet.create<ISettingStyle>({
     flex:1,
   },
   btnStyle: {
-    width: "50%",
+    flex:0.8,
     backgroundColor: Colors.sailBlue,
     height: 40,
   },

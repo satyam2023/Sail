@@ -40,12 +40,12 @@ const VisitScreenViewModel = () => {
   const [selectedIndexValue, setSelectedIndexValue] = useState<number>(-1);
   const [currentVisit, setCurrentVisit] = useState<number>(1);
   const [FooterVisibility, setFooterVisibility] = useState<boolean>(false);
-  const [isVisitEditable, setVisitEditable] = useState<boolean>(false);
+  const [isVisitEditable, _] = useState<boolean>(false);
   const [customerDetails, setCustomerDetails] = useState<boolean>(false);
   const [applyFilterSearch, setApplyFilterSearch] = useState<boolean>(false);
   const [searchResult, setSearchResult] = useState<VisitResponse[]>([]);
   const [plannedVisit, setPlannedVisit] = useState<VisitResponse[]>([]);
- const  handleCustomerClick=()=> setCustomerDetails(!customerDetails);
+  const handleCustomerClick = () => setCustomerDetails(!customerDetails);
 
   const lastPages = {
     upcomingLastPage: useRef<number>(1),
@@ -63,13 +63,12 @@ const VisitScreenViewModel = () => {
     (state: any) => state?.visitDetail?.planned,
   );
   const enteredCustomerCodeToSearch = useRef<string>("");
- 
+
   const pageNumber: IVisitScreenPagination = {
     upcoming: useRef<number>(1),
     planned: useRef<number>(1),
     executed: useRef<number>(1),
   };
-
 
   const [executedVisitList, setExecutedVisitList] = useState<
     ExecutedResponse[]
@@ -81,10 +80,15 @@ const VisitScreenViewModel = () => {
     dispatch(BottomTabVisibility(false));
     return () => dispatch(BottomTabVisibility(true));
   });
-  useEffect(() => {
+
+  const handleVisitApi = () => {
     callUpcomingVisit(pageNumber.upcoming.current);
-    callPlannedVisitApi(1);
+    callPlannedVisitApi(pageNumber.planned.current);
     callExecutedVisit(pageNumber.executed.current);
+  };
+
+  useEffect(() => {
+    handleVisitApi();
     setCurrentVisit(visitType);
   }, []);
 
@@ -193,18 +197,18 @@ const VisitScreenViewModel = () => {
     setExecutedVisits(page);
   }
 
-  const editVisitAPIHandler = async () => {
-    const data = {
-      visit_id: plannedVisitEditDetails?.id?.current || null,
-      visit_date: plannedVisitEditDetails?.visitDate?.current || null,
-      mode_of_contact: plannedVisitEditDetails?.modeOfContact?.current || null,
-    };
-    try {
-      const res = await editVisitAPI(data);
-    } catch (e) {
-      logger(e);
-    }
-  };
+  // const editVisitAPIHandler = async () => {
+  //   const data = {
+  //     visit_id: plannedVisitEditDetails?.id?.current || null,
+  //     visit_date: plannedVisitEditDetails?.visitDate?.current || null,
+  //     mode_of_contact: plannedVisitEditDetails?.modeOfContact?.current || null,
+  //   };
+  //   try {
+  //     const res = await editVisitAPI(data);
+  //   } catch (e) {
+  //     logger(e);
+  //   }
+  // };
 
   function plannedVisitEdit() {
     // if (isVisitEditable) editVisitAPIHandler();
@@ -327,25 +331,26 @@ const VisitScreenViewModel = () => {
     }
   };
 
-  const setPaginationPage=()=> {
-    if (currentVisit == 1) upcomingScreenPagination();
+  const setPaginationPage = () => {
+    if(searchResult.length==0)
+    {
+     if (currentVisit == 1) upcomingScreenPagination();
     else if (currentVisit == 2) plannedScreenPagination();
     else if (currentVisit == 3) executedScreenPagination();
-  }
+    }
+  };
 
-  const handleUpcomingVisitBoxClick=(index: number)=>{
+  const handleUpcomingVisitBoxClick = (index: number) => {
     handleCustomerClick();
     setSelectedIndexValue(index);
-  }
+  };
 
-  const handleFilterSearch=()=> setApplyFilterSearch(true);
-  
+  const handleFilterSearch = () => setApplyFilterSearch(true);
 
-  const handleCustomerCodeNameEntered=(text: string)=> enteredCustomerCodeToSearch.current = text;
-  
+  const handleCustomerCodeNameEntered = (text: string) =>
+    (enteredCustomerCodeToSearch.current = text);
 
-  const handleClearSearchResult=()=> setSearchResult([]);
-  
+  const handleClearSearchResult = () => setSearchResult([]);
 
   return (
     <VisitScreen

@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import { Image, ImageURISource, Pressable, StyleSheet, View } from "react-native";
 import { SCREENS } from "@shared-constants";
 import { navigate } from "@navigation";
 import { useDispatch } from "react-redux";
@@ -8,11 +8,13 @@ import commonStyles from "commonStyles/CommonStyle";
 import TextWrapper from "components/TextWrapper";
 import fonts from "@fonts";
 import StringConstants from "shared/localization";
+import { ShimmerPlaceholder } from "components";
+import LinearGradient from "react-native-linear-gradient";
 
 interface IvisitCard {
   count: number;
   title: string;
-  image: any;
+  image:ImageURISource;
   backgroundcolor: string;
   textColor: string;
 }

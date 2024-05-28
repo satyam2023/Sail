@@ -1,10 +1,11 @@
+import fonts from "@fonts";
 import Glyphs from "assets/Glyphs";
 import commonStyles from "commonStyles/CommonStyle";
 import { Colors } from "commonStyles/RNColor.style";
 import PressableButton from "components/DeBouncePressable";
 import TextWrapper from "components/TextWrapper";
 import { ValidationError } from "core/UseForm";
-import { ScreenWidth } from "libs";
+import { ScreenWidth, isAndroid } from "libs";
 import { useState } from "react";
 import {Image, StyleSheet, View, ViewStyle } from "react-native";
 import DateTimePicker from "react-native-modal-datetime-picker";
@@ -53,12 +54,12 @@ const TimePicker = (props: ITimePicker) => {
           <TextWrapper
             style={[
               commonStyles.font14RegularGray,
-              { bottom: selectedTime ? 2 : 0 },
+              { bottom: selectedTime ?isAndroid?0: 2 : 0 },
             ]}
           >
             {StringConstants.VISIT_TIME}
           </TextWrapper>
-          {selectedTime && <TextWrapper>{selectedTime}</TextWrapper>}
+          {selectedTime && <TextWrapper style={{fontFamily:fonts.Poppins.regular,color:Colors.blackPeral}}>{selectedTime}</TextWrapper>}
         </View>
       </PressableButton>
       {props?.errors?.map(
@@ -97,7 +98,7 @@ export default TimePicker;
 const styles = StyleSheet.create<ITimeStyle>({
   main: {
     borderWidth: 0.5,
-    borderColor: "gray",
+    borderColor: Colors.lightGray,
     width: ScreenWidth * 0.85,
   },
   dateSelector: {

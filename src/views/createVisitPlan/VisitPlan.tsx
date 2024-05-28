@@ -126,9 +126,9 @@ const CreateVisitPlanScreen = ({
         {!isVisitDetailFilled ? (
           <>
             
-            <KeyboardAvoidingWrapper  
-            >
+         
               <Header topheading={StringConstants.CREATE_VISIT_PLAN} />
+              <KeyboardAvoidingWrapper>
               <ScrollView
                 showsVerticalScrollIndicator={false}
                 nestedScrollEnabled
@@ -154,7 +154,7 @@ const CreateVisitPlanScreen = ({
                   />
                 </View>
               </ScrollView>
-            </KeyboardAvoidingWrapper>
+              </KeyboardAvoidingWrapper>
             <CustomFooter
               leftButtonText={StringConstants.CANCEL}
               rightButtonText={StringConstants.SUBMIT}
@@ -167,6 +167,7 @@ const CreateVisitPlanScreen = ({
               }}
               isMovable={isAllFieldHaveData}
             />
+            
           </>
         ) : (
           <>

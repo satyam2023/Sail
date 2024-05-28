@@ -12,12 +12,12 @@ import {
 } from "react-native";
 import TextWrapper from "../TextWrapper";
 import Glyphs from "assets/Glyphs";
-import { useState } from "react";
+import { memo, useState } from "react";
 import commonStyles from "commonStyles/CommonStyle";
 import fonts from "@fonts";
 import { PressableButton } from "components";
 import { IdropDown } from "models/interface/ISetting";
-import {ScreenWidth } from "libs";
+import {ScreenWidth, isAndroid } from "libs";
 import StringConstants from "shared/localization";
 
 interface IDropDownStyle {
@@ -93,12 +93,13 @@ const CustomDropDown = (props: ICustomDropDown) => {
           styles.dropContainer,
           props?.style,
           props?.error ? styles.errorBox : null,
+          { paddingLeft: props?.leftIcon?16:24}
         ]}
         onPress={makeListVisible}
       >
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row" ,alignItems:'center'}}>
           {props?.leftIcon && (
-            <Image source={props.leftIcon} style={commonStyles.leftIcon} />
+            <Image source={props.leftIcon} style={[commonStyles.leftIcon]} />
           )}
           <View>
             {(selectedListItem || props?.defaultValue) && (
@@ -173,16 +174,16 @@ const CustomDropDown = (props: ICustomDropDown) => {
   );
 };
 
-export default CustomDropDown;
+export default memo(CustomDropDown);
 
 const styles = StyleSheet.create<IDropDownStyle>({
   dropContainer: {
     width: "100%",
     height: 56,
     backgroundColor: Colors.white,
-    paddingHorizontal: 24,
     borderRadius: 33,
     marginBottom: 16,
+    paddingRight:24,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -201,7 +202,7 @@ const styles = StyleSheet.create<IDropDownStyle>({
   },
   lable: {
     color: Colors.darkGrey,
-    bottom: 5,
+    bottom: isAndroid?0:5,
     fontFamily: fonts.Poppins.regular,
     fontSize: 12,
   },

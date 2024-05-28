@@ -63,8 +63,6 @@ const Datepicker = ({
       return concatenatedDate;
     }
   };
-
-  const calculate7days: any = returnDate("7");
   const oneYearLater: any = returnDate("1");
   const minDate = addWeeks(new Date(), 1);
 

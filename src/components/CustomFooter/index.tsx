@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import CustomButton from "../CustomButton";
 import fonts from "@fonts";
+import { memo } from "react";
 
 interface ICustomFooter {
   leftButtonText: string;
@@ -94,7 +95,7 @@ const CustomFooter = (props: ICustomFooter) => {
   );
 };
 
-export default CustomFooter;
+export default memo(CustomFooter);
 
 const styles = StyleSheet.create<IFooterStyle>({
   customFooterContainer: {

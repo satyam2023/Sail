@@ -29,6 +29,7 @@ const CustomerProfile = ({
       <RectangularBox
         heading={item.company_name}
         subHeading={item.customer_code}
+        leftIconStyle={{height:24,width:24,resizeMode:'contain'}}
         leftIcon={Glyphs.Profile2userClicked}
         onPress={() => handleSelectedCustomer(index)}
         style={{ marginBottom: 5, borderRadius: 10 }}
@@ -42,7 +43,7 @@ const CustomerProfile = ({
         backgroundColor={Colors.sailBlue}
         conentType={'light-content'}
       />
-      <SafeAreaView style={{ flex: 1,paddingBottom:50 }}>
+      <SafeAreaView style={{ flex: 1,paddingBottom:10}}>
         <Header topheading={StringConstants.CUSTOMER_PROFILE} />
         <View
           style={styles.emptyContainer}

@@ -46,6 +46,7 @@ const SettingViewModel = () => {
     handleTextChange: handleUpdateDetailTextChange,
   } = useForm(detailsToBeUpdated, detailUpdatevalidationRules, updateUser);
 
+
   const dataofInputField = convertToArray(userData);
 
   async function logOutApiCalling() {
