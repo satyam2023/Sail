@@ -6,7 +6,7 @@ import {
   searchCustomerData,
 } from "controllers/viewCustomerController";
 import { Regex } from "helper/ValidationRegex";
-import { logger } from "helper/helperFunctions";
+import { getMemoizedFunction, logger } from "helper/helperFunctions";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -75,7 +75,7 @@ const ViewCustomerListViewModel = () => {
     }
   };
 
-  function handleSelectedCustomer(index: number) {
+  const handleSelectedCustomer=(index: number)=> {
     navigate(SCREENS.VIEW_CUSTOMER_PROFILE, {
       customerList: customerListdata,
       selectedIndexValue: index,

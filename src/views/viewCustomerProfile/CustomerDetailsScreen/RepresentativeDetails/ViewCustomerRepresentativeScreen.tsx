@@ -61,7 +61,7 @@ const ViewCustomerRepresentative = ({
   }: IFlatListRepresentativeList) => {
     return (
       <PressableButton style={styles.btn}>
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row"}}>
           <TextWrapper style={styles.Txt}>{item.name}</TextWrapper>
           <Image source={Glyphs.Mobile} style={styles.img} />
         </View>

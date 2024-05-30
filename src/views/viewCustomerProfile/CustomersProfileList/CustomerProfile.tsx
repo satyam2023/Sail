@@ -62,7 +62,7 @@ const CustomerProfile = ({
             data={customerListdata}
             renderItem={renderCustomerList}
             showsVerticalScrollIndicator={false}
-            style={{flex:1}}
+            style={{flex:1,bottom:27}}
             initialNumToRender={ScreenHeight/56}
           />
         </View>

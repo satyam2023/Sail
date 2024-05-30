@@ -210,12 +210,12 @@ const VisitScreenViewModel = () => {
   //   }
   // };
 
-  function plannedVisitEdit() {
+  const plannedVisitEdit = () => {
     // if (isVisitEditable) editVisitAPIHandler();
     // else {
     //   setVisitEditable(true);
     // }
-  }
+  };
 
   const callDownloadPDFApi = async (id: number) => {
     const sendId = {
@@ -300,15 +300,15 @@ const VisitScreenViewModel = () => {
     }
   };
 
-  function handlePlannedVisitBoxClick(index: number, id: number) {
+  const handlePlannedVisitBoxClick = (index: number, id: number) => {
     handleCustomerClick();
     setSelectedIndexValue(index);
     plannedVisitEditDetails.id.current = id;
-  }
+  };
 
-  function cancelVisit() {
-    if (plannedVisitEditDetails?.id?.current != -1) cancelVisitAPIHandler();
-  }
+  const cancelVisit = () => {
+    plannedVisitEditDetails?.id?.current != -1 && cancelVisitAPIHandler();
+  };
 
   const upcomingScreenPagination = () => {
     if (pageNumber.upcoming.current < lastPages.upcomingLastPage.current) {
@@ -332,11 +332,10 @@ const VisitScreenViewModel = () => {
   };
 
   const setPaginationPage = () => {
-    if(searchResult.length==0)
-    {
-     if (currentVisit == 1) upcomingScreenPagination();
-    else if (currentVisit == 2) plannedScreenPagination();
-    else if (currentVisit == 3) executedScreenPagination();
+    if (searchResult.length == 0) {
+      if (currentVisit == 1) upcomingScreenPagination();
+      else if (currentVisit == 2) plannedScreenPagination();
+      else if (currentVisit == 3) executedScreenPagination();
     }
   };
 
@@ -345,12 +344,17 @@ const VisitScreenViewModel = () => {
     setSelectedIndexValue(index);
   };
 
+
   const handleFilterSearch = () => setApplyFilterSearch(true);
 
   const handleCustomerCodeNameEntered = (text: string) =>
     (enteredCustomerCodeToSearch.current = text);
 
-  const handleClearSearchResult = () => setSearchResult([]);
+  const handleClearSearchResult = () => {
+    setSearchResult([]);
+    setCustomerDetails(false);
+   setSelectedIndexValue(-1);
+  };
 
   return (
     <VisitScreen

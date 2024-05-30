@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity,ViewStyle } from "react-native";
+import { StyleSheet, Text,ViewStyle } from "react-native";
 import commonStyles from "commonStyles/CommonStyle";
 import { Colors } from "commonStyles/RNColor.style";
 import { PressableButton } from "components";
@@ -14,7 +14,7 @@ const UploadDocumnet = (props: IUploadDocument) => {
   return (
     <PressableButton>
       <Text style={[commonStyles.font14MediumDarkGray]}>{props.uploadType}</Text>
-      <TouchableOpacity style={[styles.uploadDocumentContainer,props?.style]} onPress={()=>{if(props.onPress)props.onPress();}}>
+      <PressableButton style={[styles.uploadDocumentContainer,props?.style]} onPress={()=>{if(props.onPress)props.onPress();}}>
         <Text
           style={commonStyles.font14MediumDarkGray}
         >{`+   ${props.uploadType}`}</Text>
@@ -23,7 +23,7 @@ const UploadDocumnet = (props: IUploadDocument) => {
             {props.mediaType}
           </Text>
         )}
-      </TouchableOpacity>
+      </PressableButton>
     </PressableButton>
   );
 };

@@ -58,6 +58,7 @@ const SignUpScreen = ({
                   errors,
                   upn_contact_values,
                   values,
+                  buttonStatus
                 }}
               />
             )}

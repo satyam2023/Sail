@@ -22,21 +22,19 @@ interface RepresenatativeProps {
   enteredCompetitorDetail: IEnteredCompetitorDetail;
   addDetailStatus: boolean;
   competitorList: ICompetitor[];
-  handleTextChangeOfCompetitor:(text: string, id: number) => void;
-  competitorErrors:MutableRefObject<ValidationError[]>;
+  handleTextChangeOfCompetitor: (text: string, id: number) => void;
+  competitorErrors: MutableRefObject<ValidationError[]>;
 }
 const CustomerRepresentative = (props: RepresenatativeProps) => {
   function renderCompetitorList({ item, index }: IFlatlistCompetitorList) {
     return (
-      
-      <View style={styles.representativeListBox}
-      key={index}>
+      <View style={styles.representativeListBox} key={index}>
         <TextWrapper>{item?.company_name}</TextWrapper>
         <Image
           source={Glyphs.Editing}
           tintColor={Colors.sailBlue}
           style={commonStyles.rightIcon}
-        ></Image>
+        />
       </View>
     );
   }

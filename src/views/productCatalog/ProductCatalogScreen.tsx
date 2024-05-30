@@ -57,7 +57,7 @@ const ProductCatalogScreen = (props: IProductScreen) => {
       <SafeAreaView style={{ flex: 1 }}>
         <Header topheading={StringConstants.PRODUCT_CATALOGUE} />
         {!props.qrStatus ? (
-          <View style={{ paddingHorizontal: 20, flex: 1 }}>
+          <View style={{ paddingHorizontal: 20, flex: 1 ,backgroundColor:Colors.transparent}}>
             <InputTextField
               onChangeText={(text: string) =>
                 props?.handleEnterSearchText(text)
@@ -78,7 +78,9 @@ const ProductCatalogScreen = (props: IProductScreen) => {
               style={styles.productList}
               keyExtractor={(_,index) => index.toString()}
               windowSize={5}
+              ListFooterComponent={()=><View style={{height:70}}/>}
             />
+          
           </View>
         ) : (
           <>

@@ -41,6 +41,7 @@ import {
 import { EscalatedList } from "models/interface/IMessage";
 import useForm, { FormValues } from "core/UseForm";
 import { useVoiceToText } from "components";
+import { goBack } from "@navigation";
 
 const CreateMetingDetailsViewModel = () => {
   const [currentScreen, setCurrentScreen] = useState<number>(1);
@@ -578,6 +579,7 @@ const CreateMetingDetailsViewModel = () => {
       dispatch(setLoaderVisibility(true));
       const res = await getPlannedVisitExecution(body);
       if (res?.isSuccess) {
+        goBack();
       }
     } catch (error) {
       logger(error, "Planned Visit Executive Error");

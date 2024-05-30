@@ -1,6 +1,5 @@
 import fonts from "@fonts";
 import { Colors } from "commonStyles/RNColor.style";
-import { isAndroid } from "libs";
 import { StyleSheet, TextStyle, ViewStyle } from "react-native";
 
 interface IStyle {
@@ -60,7 +59,7 @@ const styles = StyleSheet.create<IStyle>({
   },
   dwdReportBtn: {
     backgroundColor: Colors.sailBlue,
-    marginBottom: isAndroid?20:0,
+    marginBottom: 20
   },
 });
 

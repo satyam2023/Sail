@@ -1,20 +1,20 @@
 import Glyphs from "assets/Glyphs";
 import React from "react";
 import { Image, StyleSheet, ViewStyle } from "react-native";
-import { TouchableOpacity } from "react-native";
 import { useDispatch } from "react-redux";
 import { BottomModal } from "redux/actions/UIAction";
 import { Colors } from "commonStyles/RNColor.style";
+import PressableButton from "components/DeBouncePressable";
 
 const TabButton = () => {
   const dispatch = useDispatch();
   return (
-    <TouchableOpacity
+    <PressableButton
       style={styles.conatiner}
       onPress={() => dispatch(BottomModal(true))}
     >
       <Image source={Glyphs.Add} tintColor={Colors.white} />
-    </TouchableOpacity>
+    </PressableButton>
   );
 };
 

@@ -82,7 +82,7 @@ const HomeScreenViewModel = () => {
   const handleMsg_Noti_Setiing = (type: string) => {
     switch (type) {
       case StringConstants.MESSAGE_DETAILS:
-         navigate(SCREENS.MESSAGE);
+        navigate(SCREENS.MESSAGE);
         break;
       case StringConstants.NOTIFICATIONS:
         navigate(SCREENS.NOTIFICATION);

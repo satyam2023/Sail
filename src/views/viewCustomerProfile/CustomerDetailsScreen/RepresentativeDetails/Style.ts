@@ -29,6 +29,8 @@ const styles = StyleSheet.create<IStyle>({
     marginTop: 20,
     paddingHorizontal: 16,
     marginHorizontal: 20,
+    flex:1,
+    marginBottom:20
   },
   showRepresentativeName: {
     flexDirection: "row",

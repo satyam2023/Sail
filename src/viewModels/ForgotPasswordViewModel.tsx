@@ -162,7 +162,7 @@ const ForgotPasswordViewModel = () => {
     id < 4 && inputFieldRef[Object.keys(inputFieldRef)[id + 1]].current.focus();
   };
 
-  function handleResendOTP() {
+  const handleResendOTP=()=>{
     setTimerstatus(false);
     getOTP();
   }

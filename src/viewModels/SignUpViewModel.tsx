@@ -48,7 +48,8 @@ const SignUpScreenViewMOdel = () => {
   };
 
   const Submit = async () => {
-    switch (CurrentScreen) {
+    if(buttonStatus)
+   switch (CurrentScreen) {
       case 1:
           handleContactSubmit();
         break;
@@ -172,7 +173,7 @@ const SignUpScreenViewMOdel = () => {
     }
   };
 
-  function checkButtonStatus() {
+  const checkButtonStatus=()=>{
     if (CurrentScreen == 1) {
       if (values.current.Upn.length > 0 && values.current.Contact.length > 0) {
         setButtonStatus(true);

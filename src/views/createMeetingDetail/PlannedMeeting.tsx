@@ -1,4 +1,4 @@
-import { IPlannedMeetingInputField, PlannedInput } from "@shared-constants";
+import { PlannedInput } from "@shared-constants";
 import { Colors } from "commonStyles/RNColor.style";
 import {
   CustomButton,
@@ -16,6 +16,7 @@ import StringConstants from "shared/localization";
 import IssueDetail from "./addUnplannedVisit/IssueDetail";
 import styles from "./Style";
 import {
+  IFlatListPlannedMeeting,
   IRepresentativeList,
   IUnplannedDropDownList,
   IssueDetails,
@@ -59,10 +60,7 @@ const PlannedMeeting = (props: IPlannedMeeting) => {
   const renderPlanedMeetingDetails = ({
     item,
     index,
-  }: {
-    item: IPlannedMeetingInputField;
-    index: number;
-  }) => {
+  }: IFlatListPlannedMeeting) => {
     return [6, 10].includes(index) ? (
       [6].includes(index) ? (
         <TimePicker

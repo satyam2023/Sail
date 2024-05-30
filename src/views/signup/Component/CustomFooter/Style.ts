@@ -1,9 +1,35 @@
 import fonts from "@fonts";
 import { Colors } from "commonStyles/RNColor.style";
 import { ScreenHeight } from "libs";
-import { StyleSheet } from "react-native";
+import { ImageStyle, StyleSheet, TextStyle, ViewStyle } from "react-native";
 
-const styles = StyleSheet.create({
+interface ISignUpFooterStyle{
+  footer: ViewStyle;
+  footercontainer: ViewStyle;
+  signuptxt:TextStyle;
+  lastscreencircle:ViewStyle;
+  signupbtn:ViewStyle;
+  signupboth:ViewStyle;
+  signupthree:ViewStyle;
+  signupbackblue:ViewStyle;
+  signupbacknoblue:ViewStyle;
+  txet:TextStyle;
+  txte:TextStyle;
+  imgArrow:ImageStyle;
+  circle:ViewStyle;
+  bluecircle:ViewStyle;
+  circleleft:ViewStyle;
+  circleright: ViewStyle;
+  innerFooterContainer:ViewStyle;
+  footerBottomTxt:TextStyle;
+  signInTxt:TextStyle;
+  alreadyAccountTxt:TextStyle;
+  progressbar:ViewStyle;
+  bar:ViewStyle;
+  nobar:ViewStyle;
+}
+
+const styles = StyleSheet.create<ISignUpFooterStyle>({
   footer: {
     position: "absolute",
     left: 0,
@@ -53,7 +79,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.inputBG,
   },
   signupthree: {
-    width: "80%",
+    marginTop:16,
+    marginLeft:16,
+    flex:1,
     alignItems: "center",
     justifyContent: "center",
     height: 56,
@@ -78,7 +106,6 @@ const styles = StyleSheet.create({
     gap: 10,
     transform: [{ rotate: "90deg" }],
   },
-
   circle: {
     height: 56,
     width: 56,

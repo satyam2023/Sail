@@ -57,7 +57,7 @@ const RectangularBox = (props: IRectangularBox) => {
         <View>
           <View style={{ flexDirection: "row" }}>
             <TextWrapper
-              style={[commonStyles.font14RegularDarkGray]}
+              style={[commonStyles.font14RegularDarkGray,{right:3}]}
             >
             {props.heading}
             </TextWrapper>

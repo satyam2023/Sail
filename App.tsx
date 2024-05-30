@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import React, { useState } from "react";
+import React, {useState } from "react";
 import { useColorScheme, LogBox} from "react-native";
 import SplashScreen from "react-native-splash-screen";
 import { Provider } from "react-redux";
@@ -14,6 +14,9 @@ import { navigate } from "@navigation";
 import InternetManager from "components/InternetManager";
 import PopUpBox from "views/emptyState/PopUpBox";
 LogBox.ignoreAllLogs();
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
 
 if (__DEV__) {
   import("./ReactoronConfig").then(() => console.log("Reactotron Configured"));
@@ -26,7 +29,7 @@ const App = () => {
   const netInfo = useNetInfo({
     reachabilityUrl: "https://clients3.google.com/generate_204",
     reachabilityTest: async (response) =>
-      response.status === StatusCode.SuccessNoContent,
+    response.status === StatusCode.SuccessNoContent,
     reachabilityLongTimeout: 60 * 1000,
     reachabilityShortTimeout: 5 * 1000,
     reachabilityRequestTimeout: 15 * 1000,
@@ -40,7 +43,7 @@ const App = () => {
     const unsubscribe = addEventListener(async () => {
       try {
         const res = await fetch(
-          "https://cmoccuat.sailcmo.co.in:8000"
+          "https://cmoccuat.sailcmo.co.in:8000/api"
         );
         if(res.status==200)
          setVpnStatus(true);
@@ -55,6 +58,7 @@ const App = () => {
     };
   }, []);
 
+
   React.useEffect(() => {
     setTimeout(async () => {
       const isRemember = getRememberMe();
@@ -62,6 +66,7 @@ const App = () => {
       SplashScreen.hide();
     }, 2000);
   }, [scheme, isDarkMode]);
+  
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>

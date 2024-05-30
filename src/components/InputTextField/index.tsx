@@ -22,6 +22,7 @@ import StringConstants from "shared/localization";
 import { Platform } from "react-native";
 import TextWrapper from "components/TextWrapper";
 import { ValidationError } from "core/UseForm";
+import { isAndroid } from "libs";
 
 interface ITextInputStyle {
   inputContainer: ViewStyle;
@@ -252,6 +253,7 @@ const styles = StyleSheet.create<ITextInputStyle>({
     color: Colors.darkGrey,
     fontFamily: fonts.Poppins.regular,
     fontSize: 12,
+    left:isAndroid?3:0,
   },
   errorBox: {
     borderWidth: 1,

@@ -10,7 +10,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 20,
     marginTop: 6,
-    
   },
   btn: {
     width: "100%",
@@ -18,36 +17,42 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderRadius: 33,
     flexDirection: "row",
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 16,
-    marginTop:16
+    paddingHorizontal:24,
+    marginTop: 16,
   },
   Txt: {
-    height: 16,
+    lineHeight: 16,
     color: Colors.sailBlue,
     fontFamily: fonts.Poppins.medium,
     fontSize: 14,
   },
-  txt:{
-    lineHeight:20,
+  txt: {
+    lineHeight: 20,
     color: Colors.sailBlue,
     fontFamily: fonts.Poppins.bold,
     fontSize: 16,
   },
-  img: { height: 16, width: 16, resizeMode: "contain" ,marginLeft:20},
-  showRepresentativeBox:{
-      padding: 16,
-      backgroundColor: Colors.white,
-      borderRadius: 33,
-      marginTop:20,
-      paddingHorizontal:16,
-      marginHorizontal:20
+  img: {
+    height: 16,
+    width: 16,
+    resizeMode: "contain",
+    marginLeft: 20,
+    bottom:2
   },
-  showRepresentativeName:{
-      flexDirection: "row",
-      marginVertical: 10,
-      justifyContent: "space-between",
-  }
+  showRepresentativeBox: {
+    padding: 16,
+    backgroundColor: Colors.white,
+    borderRadius: 33,
+    marginTop: 20,
+    paddingHorizontal: 16,
+    marginHorizontal: 20,
+  },
+  showRepresentativeName: {
+    flexDirection: "row",
+    marginVertical: 10,
+    justifyContent: "space-between",
+  },
 });
 export default styles;

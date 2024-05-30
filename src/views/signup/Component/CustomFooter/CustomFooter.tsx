@@ -1,9 +1,7 @@
 import React from "react";
-import { Image,TouchableOpacity, View } from "react-native";
+import { Image, View } from "react-native";
 import styles from "./Style";
-
 import Glyphs from "assets/Glyphs";
-
 import StringConstants from "shared/localization";
 import { navigate } from "@navigation";
 import { SCREENS } from "@shared-constants";
@@ -30,7 +28,7 @@ const CustomFooter = ({
       </View>
       <View style={styles.footercontainer}>
         <View style={styles.innerFooterContainer}>
-          {CurrentScreen >= 2 && (
+          {/* {CurrentScreen >= 2 && (
             <PressableButton
               style={
                 CurrentScreen == 2 ? styles.circleleft : styles.lastscreencircle
@@ -39,13 +37,13 @@ const CustomFooter = ({
             >
               <Image style={[styles.imgArrow]} source={Glyphs.Arrow} />
             </PressableButton>
-          )}
+          )} */}
           {CurrentScreen != 3 ? (
-            <TouchableOpacity
+            <PressableButton
               style={CurrentScreen != 2 ? styles.signupbtn : styles.signupboth}
             >
               <TextWrapper style={styles.signuptxt}>{StringConstants.SIGN_UP}</TextWrapper>
-            </TouchableOpacity>
+            </PressableButton>
           ) : (
             <PressableButton
               style={
@@ -69,7 +67,7 @@ const CustomFooter = ({
             </PressableButton>
           )}
           {CurrentScreen == 1 && (
-            <TouchableOpacity
+            <PressableButton
               style={[
                 styles.bluecircle,
                 {
@@ -90,10 +88,10 @@ const CustomFooter = ({
                   source={Glyphs.Arrow}
                 />
               }
-            </TouchableOpacity>
+            </PressableButton>
           )}
           {CurrentScreen == 2 && (
-            <TouchableOpacity
+            <PressableButton
               style={buttonStatus ? styles.bluecircle : styles.circle}
               onPress={Submit}
             >
@@ -107,7 +105,7 @@ const CustomFooter = ({
                   source={Glyphs.Arrow}
                 />
               }
-            </TouchableOpacity>
+            </PressableButton>
           )}
         </View>
         <View style={styles.footerBottomTxt}>

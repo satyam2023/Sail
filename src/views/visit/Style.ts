@@ -9,6 +9,7 @@ interface IVisitScreenStyle{
     filter:ViewStyle;
     imgContainer:ImageStyle;
     heading:ViewStyle;
+    ellipse:ImageStyle;
 }
 
 const styles = StyleSheet.create<IVisitScreenStyle>({
@@ -54,6 +55,14 @@ const styles = StyleSheet.create<IVisitScreenStyle>({
     justifyContent: "space-between",
     paddingHorizontal:20,
   
+  },
+  ellipse:{
+    height: 12,
+    width: 12,
+    resizeMode: "contain",
+    position: "absolute",
+    top: 3,
+    right: 2,
   }
   
 });

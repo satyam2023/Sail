@@ -7,6 +7,7 @@ import {
   OutStandingResponse,
   QCData,
 } from "models/ApiResponses/CustomerInfoResponse";
+import { ImageURISource } from "react-native";
 
 export interface InformationDetails {
   [key: string]:
@@ -25,4 +26,10 @@ export interface InformationDetails {
   offTakeStatus: OfftakeData|null;
   lcbgReport:DataLCBG|null;
   qcStatus:QCData|null;
+}
+
+export interface ICustomerInformationList {
+  image: ImageURISource;
+  name: string;
+  img_url?: string;
 }

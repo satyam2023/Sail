@@ -155,7 +155,7 @@ const IssueEnquiry = ({
           data={issueSearchresult}
           renderItem={renderSearchResult}
           scrollEnabled={false}
-          style={{marginBottom:60}}
+          ListFooterComponent={()=><View style={{height:70}}/>}
         />
       )}
     </View>

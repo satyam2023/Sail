@@ -54,7 +54,7 @@ const FilterData = ({ isVisible, onPress }: FilterProps) => {
     setBtnStatus(false);
   }
   };
-  function Daterange() {
+  const Daterange=() =>{
     return (
       <View style={styles.dateRangeContainer}>
         <Datepicker
@@ -88,7 +88,7 @@ const FilterData = ({ isVisible, onPress }: FilterProps) => {
     enteredFilterationData.filterType.current = item.name;
   }
 
-  function renderScreen() {
+const renderScreen=()=> {
     switch (currentScreen) {
       case StringConstants.SEARCH_BY:
         return (

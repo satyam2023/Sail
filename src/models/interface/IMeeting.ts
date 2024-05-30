@@ -2,11 +2,7 @@ import { RootData } from "models/ApiResponses/MeetingResponse";
 import { MutableRefObject } from "react";
 import { IdropDown } from "./ISetting";
 import { IFlatlistIndex } from "./IMessage";
-import {
-  IInput,
-  IMeetingRepresentativeDetailInputField,
-} from "@shared-constants";
-import { ImageURISource } from "react-native";
+import { ImageURISource, InputModeOptions } from "react-native";
 import StringConstants from "shared/localization";
 import { Colors } from "commonStyles/RNColor.style";
 import Glyphs from "assets/Glyphs";
@@ -127,7 +123,7 @@ export interface IFlatlistRectangularBox extends IFlatlistIndex {
 }
 
 export interface IUnplannedMeetingField extends IFlatlistIndex {
-  item: IInput;
+  item: IUnplannedInput;
 }
 
 export interface IUnplannedDropDownList {
@@ -177,3 +173,33 @@ export interface VoicDetails {
   type: string;
   index: number;
 }
+
+
+
+export interface IPlannedMeetingInputField {
+    placeHolder: string;
+    maxLength: number;
+    rightIcon: ImageURISource | undefined;
+    leftIcon: ImageURISource | undefined;
+    key: string;
+  }
+
+  export interface IFlatListPlannedMeeting extends IFlatlistIndex{
+     item:IPlannedMeetingInputField;
+  }
+
+  export interface IUnplannedInput {
+    placeholder: string;
+    length?: number;
+    rightIcon?: ImageURISource;
+    leftIcon?: ImageURISource;
+    inputMode?: string;
+    key?: string;
+  }
+
+  export interface IMeetingRepresentativeDetailInputField {
+    placeholder: string;
+    maxlength: number;
+    inputMode: InputModeOptions;
+    key?: string;
+  }

@@ -87,6 +87,7 @@ const StringConstants = {
   DONT_HAVE_ACCOUNT: "Don’t have an account? ",
   REMEMBER_ME: "Remember me",
   FORGOT_PASSWORD: "Forgot password?",
+  PASSWORD:'password',
   OR: "Or",
   SIGNIN_FINGERPRINT: "Sign in with Fingerprint",
   SIGNIN_FACE_RECOGNITION: "Sign in with Face Recognition",

@@ -6,7 +6,8 @@ import { FlatList } from "react-native-gesture-handler";
 import { VisitResponse } from "models/ApiResponses/VisitResponse";
 import StringConstants from "shared/localization";
 import Glyphs from "assets/Glyphs";
-import { IupcomingVisitField} from "@shared-constants";
+import { IupcomingVisitField } from "models/interface/IVisit";
+
 
 interface IUpcomingScreen {
   upcomingVisitList: VisitResponse[];

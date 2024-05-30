@@ -11,19 +11,7 @@ import {
   UpdateCustomerCodeAPIHandler,
   updateCustomerDetailAPIHandler,
 } from "controllers/viewCustomerController";
-import {
-  customerDetailOfViewModel,
-  extarctSupplierData,
-  extractProcuredProductData,
-  formatProcuder_Product_list,
-  formatSupplier_list,
-  getDropDownData,
-  logger,
-  removeSelectedCustomerImage,
-  removeSelectedDropDownItem,
-  traderDealerselectedCustomerDetail,
-  updateCustomerBody,
-} from "helper/helperFunctions";
+
 import {
   CustomerDetails,
   ISelectedImage,
@@ -37,7 +25,7 @@ import { BottomTabVisibility } from "redux/actions/UIAction";
 import { RootState, store } from "redux/store/Store";
 import StringConstants from "shared/localization";
 import ViewProfileScreen from "views/viewCustomerProfile/ViewProfile";
-import { chooseImageVideo } from "helper/helperFunctions";
+
 import {
   ICustomerState,
   SpecialCustomerType,
@@ -52,6 +40,7 @@ import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
 import { navigate } from "@navigation";
 import { SCREENS } from "@shared-constants";
 import useForm from "core/UseForm";
+import { chooseImageVideo,formatProcuder_Product_list, formatSupplier_list, traderDealerselectedCustomerDetail, customerDetailOfViewModel, logger, getDropDownData, updateCustomerBody, removeSelectedDropDownItem, removeSelectedCustomerImage, extractProcuredProductData, extarctSupplierData } from 'helper/helperFunctions'
 
 const ViewCustomerProfileViewModel = ({ route, navigation }:any) => {
   const [indexofSubtype, setIndexofSubType] = useState<IsubType>({
@@ -233,7 +222,7 @@ const ViewCustomerProfileViewModel = ({ route, navigation }:any) => {
     ),
   ];
 
-  function setSubTypes(item: IdropDown, index: number) {
+  const setSubTypes=(item: IdropDown, index: number)=> {
     if (index == 2) {
       setIndexofSubType((prev: any) => ({
         ...prev,
@@ -340,10 +329,10 @@ const ViewCustomerProfileViewModel = ({ route, navigation }:any) => {
     }));
   }
 
-  function handleSpecificCustomerTypeDetailChange(
+  const handleSpecificCustomerTypeDetailChange=(
     text: string | number,
     id: number,
-  ) {
+  )=>{
 
     if (id == 4) {
       setCustomer((prev: ICustomerState) => ({
@@ -400,3 +389,5 @@ const ViewCustomerProfileViewModel = ({ route, navigation }:any) => {
 };
 
 export default ViewCustomerProfileViewModel;
+
+

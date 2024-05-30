@@ -5,6 +5,7 @@ import StringConstants from "shared/localization";
 import { Colors } from "commonStyles/RNColor.style";
 import { ICmsProps } from "./FAQs";
 import RenderHTML from "react-native-render-html";
+import { ScreenWidth } from "libs";
 
 const Privacy = ({ cmsPageData, pagesRenderingController }: ICmsProps) => {
   const source = {
@@ -18,7 +19,7 @@ const Privacy = ({ cmsPageData, pagesRenderingController }: ICmsProps) => {
         onPress={() => pagesRenderingController(StringConstants.CMS)}
       />
       <ScrollView style={{ paddingHorizontal: 20 }}>
-        <RenderHTML source={source} />
+        <RenderHTML source={source} contentWidth={ScreenWidth}  />
       </ScrollView>
     </SafeAreaView>
   );

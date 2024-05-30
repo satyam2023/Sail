@@ -15,7 +15,7 @@ const CMSViewModel = () => {
   const dispatch = useDispatch();
   const cmsPageData = useSelector((state: any) => state?.cmsPages?.data)?.data;
 
-  function pagesRenderingController(pageType: string) {
+  const pagesRenderingController = (pageType: string) => {
     switch (pageType) {
       case StringConstants.CMS:
         setpages(StringConstants.CMS);
@@ -36,24 +36,24 @@ const CMSViewModel = () => {
         setpages(StringConstants.TERMS_AND_CONDITIONS);
         break;
     }
-  }
+  };
+
+  const handleFetchCmsPages = async () => {
+    dispatch(setLoaderVisibility(true));
+    try {
+      const res: IApiResponse<CMSPageResponse> | undefined = await getCMSPage();
+      if (res?.isSuccess) {
+        dispatch(saveCmsPages(res.data));
+      }
+    } catch (error) {
+      logger(error, "Error in fetching cms page data");
+    } finally {
+      dispatch(setLoaderVisibility(false));
+    }
+  };
 
   useEffect(() => {
-    const cmsPage = async () => {
-      dispatch(setLoaderVisibility(true));
-      try {
-        const res: IApiResponse<CMSPageResponse> | undefined =
-          await getCMSPage();
-
-        if (res?.isSuccess) {
-          dispatch(saveCmsPages(res.data));
-        }
-      } catch (error) {
-        logger(error,"Error in fetching cms page data")
-      } finally {
-        dispatch(setLoaderVisibility(false));
-      }
-    };
+    const cmsPage = () => handleFetchCmsPages();
     cmsPage();
   }, []);
 

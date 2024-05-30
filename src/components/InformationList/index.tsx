@@ -5,11 +5,10 @@ import { ScreenWidth } from "libs";
 import { memo } from "react";
 import { StyleSheet, TextStyle, View, ViewStyle } from "react-native";
 
-interface IInformationStyle{
-  text:TextStyle;
-  container:ViewStyle;
+interface IInformationStyle {
+  text: TextStyle;
+  container: ViewStyle;
 }
-
 
 interface IInformationList {
   data: string[];
@@ -20,10 +19,15 @@ interface IInformationList {
 const InformationList = (props: IInformationList) => {
   return (
     <View style={[styles.container, props?.containerStyle]}>
-      {props?.data?.map((item: string) => {
-        return( <TextWrapper style={[styles.text, props?.textStyle]}>
-          {item}
-        </TextWrapper>)
+      {props?.data?.map((item: string, index: number) => {
+        return (
+          <TextWrapper
+            style={[styles.text, props?.textStyle]}
+            key={index.toString()}
+          >
+            {item}
+          </TextWrapper>
+        );
       })}
     </View>
   );
@@ -38,13 +42,13 @@ const styles = StyleSheet.create<IInformationStyle>({
     color: Colors.blackPeral,
     paddingHorizontal: 16,
     lineHeight: 16,
-    width:ScreenWidth/3,
+    width: ScreenWidth / 3,
   },
   container: {
     flexDirection: "row",
     justifyContent: "space-between",
     backgroundColor: Colors.white,
     paddingVertical: 10,
-    alignItems:'center'
+    alignItems: "center",
   },
 });

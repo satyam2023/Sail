@@ -1053,14 +1053,14 @@ export const getPdfurl = (
       return details?.ddReport?.DDorderReportUrl || "";
     case 2:
       return details?.mou?.MouReportUrl || "";
-      case 3:
-      return details?.outstanding?.OutStandingReportUrl|| "";
-      case 5:
-        return details?.offTakeStatus?.OfftakeReportUrl|| "";
-        case 6:
-        return details?.lcbgReport?.LCBGReportUrl|| "";
-        case 7:
-        return details?.qcStatus?.QCReportUrl|| "";
+    case 3:
+      return details?.outstanding?.OutStandingReportUrl || "";
+    case 5:
+      return details?.offTakeStatus?.OfftakeReportUrl || "";
+    case 6:
+      return details?.lcbgReport?.LCBGReportUrl || "";
+    case 7:
+      return details?.qcStatus?.QCReportUrl || "";
     default:
       return "";
   }
@@ -1072,19 +1072,19 @@ export const getCustomername = (
 ) => {
   switch (currentScreen) {
     case 0:
-      return details?.salesOrder?.data[0]?.CustomerName|| "";
+      return details?.salesOrder?.data[0]?.CustomerName || "";
     case 1:
       return details?.ddReport?.data[0]?.CustomerName || "";
     case 2:
       return details?.mou?.data[0]?.CustomerName || "";
-      case 3:
+    case 3:
       return details?.outstanding?.data[0]?.customerName || "";
-      case 5:
+    case 5:
       return details?.offTakeStatus?.data[0]?.Customer || "";
-      case 6:
-        return details?.lcbgReport?.data[0]?.customer || "";
-        case 7:
-          return details?.qcStatus?.data[0]?.CustomerName || "";
+    case 6:
+      return details?.lcbgReport?.data[0]?.customer || "";
+    case 7:
+      return details?.qcStatus?.data[0]?.CustomerName || "";
     default:
       return "";
   }
@@ -1092,8 +1092,37 @@ export const getCustomername = (
 
 export const isAnyInformationHaveData = (details: InformationDetails) => {
   for (let i in details) {
-    console.log("???????????????????", details[i]);
     if (details[i] != null) return true;
   }
   return false;
 };
+
+export const getMemoizedFunction = (() => {
+  const memo = {};
+  let accessKey = 0;
+
+  const get = (key: string, persist?: boolean): Function => {
+    const value = memo[key];
+    !persist && delete memo[key];
+    return value;
+  };
+
+  const set = (callback: Function): string => {
+    memo[accessKey += 1] = callback;
+    return `${accessKey}`;
+  };
+
+  const memoizer = (
+    input: Function | string,
+    persist?: boolean,
+  ): Function | string => {
+    if (typeof input === 'string' && input in memo) {
+      return get(input, persist) ?? input;
+    } else if (typeof input === 'function') {
+      return set(input);
+    }
+    return input;
+  };
+
+  return memoizer;
+})();

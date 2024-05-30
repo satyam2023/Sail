@@ -83,19 +83,19 @@ const styles = StyleSheet.create<IStyle>({
   sapCodeContainer: {
     flexDirection: "row",
     borderRadius: 33,
-    justifyContent: "center",
+    justifyContent: 'space-around',
     alignItems: "center",
     width: "100%",
     paddingHorizontal: 16,
     marginBottom:10,
     backgroundColor: Colors.white,
+    height:56,
   },
   inputContainer: {
     backgroundColor: Colors.white,
     marginTop: 16,
-    borderRadius: 0,
-    width: "70%",
-    height: 30,
+    borderRadius:33,
+    width: "80%",
   },
 });
 

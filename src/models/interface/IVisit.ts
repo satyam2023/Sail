@@ -1,6 +1,7 @@
 import { MutableRefObject } from "react";
 import { IFlatlistIndex } from "./IMessage";
 import { ExecutedResponse, VisitResponse } from "models/ApiResponses/VisitResponse";
+import { ImageURISource } from "react-native";
 
 export interface IPlannedVisitEdit {
   visitDate: MutableRefObject<string>;
@@ -63,4 +64,9 @@ export interface PaginationPages{
     currentpage:number,
     lastPage:number,
   }
+}
+
+export interface IupcomingVisitField {
+  heading: string;
+  imagepath: ImageURISource;
 }

@@ -37,7 +37,6 @@ const useVoiceToText = (): UseVoiceToTextReturn => {
 
   const onSpeechStart = useCallback(() => {
     clearTimeoutRef();
-   
   }, [clearTimeoutRef]);
 
   const onSpeechResults = useCallback((event: any) => {

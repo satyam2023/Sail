@@ -4,7 +4,6 @@ import {
   ImageProps,
   StyleSheet,
   TextProps,
-  TouchableOpacity,
   View,
   ViewStyle,
 } from "react-native";
@@ -50,7 +49,7 @@ const Header = (props: IHeaderProps) => {
       {props?.isLogoutButton && (
         <View style={styles.logoutContainer}>
           <Image source={Glyphs.Logout} style={styles.logoutBtn} />
-          <TouchableOpacity
+          <PressableButton
             onPress={() => {
               if (props.rightButtonPress) props.rightButtonPress();
             }}
@@ -58,7 +57,7 @@ const Header = (props: IHeaderProps) => {
             <TextWrapper style={styles.headingContent}>
               {StringConstants.LOGOUT}
             </TextWrapper>
-          </TouchableOpacity>
+          </PressableButton>
         </View>
       )}
     </View>

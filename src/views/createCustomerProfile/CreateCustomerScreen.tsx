@@ -1,6 +1,6 @@
 import React, { MutableRefObject } from "react";
 import CustomerDetails from "./CustomerDetails";
-import {SafeAreaView, ScrollView } from "react-native";
+import {Alert, SafeAreaView, ScrollView } from "react-native";
 import CustomerRepresentative from "./CustomerRepresentative/CustomerRepresentative";
 import RegistrationCompleted from "./RegistrationCompleted/RegistrationCompleted";
 import StringConstants from "shared/localization";
@@ -63,19 +63,19 @@ const CreateCustomerScreen = (props: ICreateCustomer) => {
     switch (props.CurrentScreen) {
       case 1:
         return <CustomerDetails {...props} />;
-        break;
+
       case 2:
         return <CustomerRepresentative {...props} />;
-        break;
+
       case 3:
         return <Competitor {...props} />;
-        break;
+
       case 4:
         return <RegistrationCompleted />;
-        break;
+
       default:
         return null;
-        break;
+
     }
   }
 
@@ -101,7 +101,7 @@ const CreateCustomerScreen = (props: ICreateCustomer) => {
                   props?.handleScreenChange(StringConstants.BACKWARD)
                 }
                 rightButtonPress={() =>
-                  props?.handleScreenChange(StringConstants.FORWARD)
+                 props?.handleScreenChange(StringConstants.FORWARD)
                 }
                 isTracker={`${props?.CurrentScreen * 34}%`}
                 isMovable={props?.isAllDetailsFilled}

@@ -1,12 +1,12 @@
 import Glyphs from "assets/Glyphs";
 import React, { forwardRef, useState } from "react";
-import { Animated, FlatList, Modal, View } from "react-native";
+import { Animated, FlatList, ImageURISource, Modal, View } from "react-native";
 import { Image } from "react-native";
 import { useDispatch} from "react-redux";
 import { BottomModal } from "redux/actions/UIAction";
 import StringConstants from "shared/localization";
 import { Colors } from "commonStyles/RNColor.style";
-import { BottomModalTab, IBottomModalTab, SCREENS } from "@shared-constants";
+import { BottomModalTab, SCREENS } from "@shared-constants";
 import { DescriptionCard, PressableButton, TextWrapper } from "components";
 import { navigate } from "@navigation";
 import styles from "./Style";
@@ -15,7 +15,7 @@ import commonStyles from "commonStyles/CommonStyle";
 const MoreOptionScreen = forwardRef(() => {
   const [modalVisible, _] = useState<boolean>(true);
   const dispatch = useDispatch();
-  function handleMoreOptions(selectedTab: string) {
+  const handleMoreOptions=(selectedTab: string) =>{
     if (selectedTab == StringConstants.CREATE_VISIT_PLAN) {
       dispatch(BottomModal(false));
       navigate(SCREENS.CREATE_VISIT_PLAN);
@@ -31,7 +31,10 @@ const MoreOptionScreen = forwardRef(() => {
     }
   }
 
-  const renderBottomtab = (item: IBottomModalTab, _: number) => {
+  const renderBottomtab = ({item}:{item: {
+    heading: string;
+    image: ImageURISource;
+  }}) => {
     return (
       <DescriptionCard
         image={item.image}
@@ -58,7 +61,7 @@ const MoreOptionScreen = forwardRef(() => {
         </View>
         <FlatList
           data={BottomModalTab}
-          renderItem={({ item, index }) => renderBottomtab(item, index)}
+          renderItem={renderBottomtab}
           numColumns={2}
           ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
           columnWrapperStyle={{ justifyContent: "space-between" }}

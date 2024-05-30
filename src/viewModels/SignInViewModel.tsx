@@ -1,4 +1,4 @@
-import { navigate, replace } from "@navigation";
+import { replace } from "@navigation";
 import { SCREENS } from "@shared-constants";
 import { userSignIn } from "controllers/accountController";
 import { logger } from "helper/helperFunctions";
@@ -24,6 +24,7 @@ import { signInValidationRules } from "helper/ValidationRegex";
 import { isAndroid } from "libs";
 
 const SignInViewModel = () => {
+  const [isCredentialsTrue,setCredentialsStatus]=useState<boolean>(true);
   const userDetail: FormValues = {
     upn: "",
     password: "",
@@ -65,6 +66,7 @@ const SignInViewModel = () => {
         replace(SCREENS.TAB);
         saveCredentails(values);
       } else {
+        setCredentialsStatus(false);
         dispatch(setInvalidCredentialsPopUp(true));
       }
     } catch (error) {
@@ -148,6 +150,7 @@ const SignInViewModel = () => {
     id != 2
       ? handleSignInTextChange(Object.keys(userDetail)[id], text)
       : handleSignInTextChange(Object.keys(userDetail)[id], text);
+      !isCredentialsTrue && setCredentialsStatus(true);
   }
   return (
     <SignInScreen
@@ -157,6 +160,7 @@ const SignInViewModel = () => {
         biometricAuthentication,
         isBiometricsAvl,
         signinError,
+        isCredentialsTrue
       }}
     />
   );

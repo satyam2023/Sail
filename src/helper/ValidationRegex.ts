@@ -310,6 +310,10 @@ export const forgotValidationRules = {
     },
   ],
   contact:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
    { regex:Regex.CONTACT,
      message:StringConstants.INVALID_CONTACT
    }

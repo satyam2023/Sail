@@ -1,13 +1,10 @@
 import React from "react";
 import { Image, View } from "react-native";
-import styles from "./Style/Style";
+import styles from "./Style";
 import Data from "./Data/Data";
 import Glyphs from "assets/Glyphs";
-
 import { Colors } from "commonStyles/RNColor.style";
 import StringConstants from "shared/localization";
-
-import fonts from "@fonts";
 import { navigate } from "@navigation";
 import { SCREENS } from "@shared-constants";
 import {
@@ -55,11 +52,7 @@ const ExecutedCustomer = ({
       <View style={{ flexDirection: "row", marginVertical: 12 }}>
         <Image source={Glyphs.Download} style={{ marginHorizontal: 16 }} />
         <TextWrapper
-          style={{
-            fontFamily: fonts.Poppins.medium,
-            color: Colors.sailBlue,
-            textDecorationLine: "underline",
-          }}
+          style={styles.dwdPdfText}
           onPress={() =>
             callDownloadPDFApi(
               (searchResult.length > 0 ? searchResult : executedVisitList)[

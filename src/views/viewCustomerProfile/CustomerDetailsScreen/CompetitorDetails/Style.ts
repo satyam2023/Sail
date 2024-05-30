@@ -5,20 +5,20 @@ import { ImageStyle, StyleSheet, TextStyle, ViewStyle } from "react-native";
 interface IStyle {
   btn: ViewStyle;
   img: ImageStyle;
-  Txt: TextStyle;
+  text: TextStyle;
   showCompetitorDetailContainer: ViewStyle;
   showCompetitorDetailUpperContent: ViewStyle;
 }
 const styles = StyleSheet.create<IStyle>({
   btn: {
-    width: "100%",
-    height: 58,
+    flex:1,
+    height: 56,
     backgroundColor: Colors.white,
     borderRadius: 33,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 16,
+    paddingHorizontal: 24,
     marginTop: 16,
   },
   img: {
@@ -27,8 +27,8 @@ const styles = StyleSheet.create<IStyle>({
     resizeMode: "contain",
     marginLeft: 20,
   },
-  Txt: {
-    height: 16,
+  text: {
+    lineHeight:16,
     color: Colors.sailBlue,
     fontFamily: fonts.Poppins.medium,
     fontSize: 14,

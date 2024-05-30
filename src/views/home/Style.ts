@@ -32,7 +32,8 @@ const styles = StyleSheet.create({
     fontFamily: fonts.Poppins.medium,
     fontSize: 14,
     marginLeft: 10,
-    lineHeight:24
+    lineHeight:24,
+    flex:0.8
   },
   circle: {
     marginTop: 15,

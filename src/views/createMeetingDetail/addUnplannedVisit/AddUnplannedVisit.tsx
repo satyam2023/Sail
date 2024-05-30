@@ -144,7 +144,7 @@ function AddUnplannedVisit({
       </>
     );
   };
-  function renderIssueList({ index }: { item: any; index: number }) {
+  const renderIssueList=({ index }: {index: number }) =>{
     return (
       <CustomToggleBox
         heading={`${StringConstants.SELECT_ISSUE} ${index + 1}`}
@@ -178,7 +178,7 @@ function AddUnplannedVisit({
             renderItem={renderUnplannedMeetingField}
             scrollEnabled={false}
           />
-          <FlatList data={plannedissueList} renderItem={renderIssueList} />
+          <FlatList data={plannedissueList} renderItem={renderIssueList} scrollEnabled={false} />
 
           <TextWrapper onPress={addIssue} style={styles.text}>
             {StringConstants.ADD_ANOTHER}

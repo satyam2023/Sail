@@ -49,7 +49,7 @@ const TimePicker = (props: ITimePicker) => {
         ]}
         onPress={handleTimeselectorStatus}
       >
-        <Image source={Glyphs.Calender} style={commonStyles.leftIcon} />
+        <Image source={Glyphs.Clock} style={commonStyles.leftIcon} />
         <View>
           <TextWrapper
             style={[

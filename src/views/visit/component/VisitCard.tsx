@@ -8,8 +8,6 @@ import commonStyles from "commonStyles/CommonStyle";
 import TextWrapper from "components/TextWrapper";
 import fonts from "@fonts";
 import StringConstants from "shared/localization";
-import { ShimmerPlaceholder } from "components";
-import LinearGradient from "react-native-linear-gradient";
 
 interface IvisitCard {
   count: number;

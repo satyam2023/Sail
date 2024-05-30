@@ -14,10 +14,8 @@ import StringConstants from "shared/localization";
 import { SignInResponse } from "models/ApiResponses/SignInResponse";
 import { ExtarctTwoLetterName } from "helper/helperFunctions";
 import { HomeResponse } from "models/ApiResponses/HomeResponse";
-import { HorizontalScrollableList, PressableButton, ShimmerPlaceholder, StatusBarComponent } from "components";
+import { HorizontalScrollableList, PressableButton,StatusBarComponent } from "components";
 import fonts from "@fonts";
-import LinearGradient from "react-native-linear-gradient";
-import { ScreenWidth } from "libs";
 interface IHomeScreen {
   userData: SignInResponse;
   homeScreenData: HomeResponse;
@@ -48,7 +46,7 @@ const HomeScreen = ({
             {StringConstants.WELCOME}
            <TextWrapper style={{fontFamily:fonts.Poppins.bold}}>{userData?.user?.user_name}</TextWrapper> 
             <TextWrapper style={styles.roleText}>
-              {`  (${userData?.user?.user_role_name})`}
+              {` (${userData?.user?.user_role_name})`}
             </TextWrapper>
           </TextWrapper>
           <View style={{ flexDirection: "row" }}>

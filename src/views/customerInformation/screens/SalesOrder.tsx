@@ -9,7 +9,7 @@ interface ISalesOrder {
 }
 
 const SalesOrder = (props: ISalesOrder) => {
-  const renderInformationList = ({ item }: { item: DaumSO }) => {
+  const renderInformationList = ({ item}: { item: DaumSO}) => {
     return (
       <InformationList
         data={[

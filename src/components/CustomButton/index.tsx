@@ -28,7 +28,7 @@ const CustomButton = (props: Ibutton) => {
     <PressableButton
       disabled={props.isDisabled}
       style={[styles.btnContainer, props?.buttonStyle]}
-      onPress={props.onPress}
+      onPress={props?.onPress}
     >
       {props.image && (
         <Image style={[styles.leftIcon,props?.imageStyle]} source={props.image} />
