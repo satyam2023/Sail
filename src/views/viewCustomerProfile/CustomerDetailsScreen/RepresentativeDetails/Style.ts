@@ -29,6 +29,8 @@ const styles = StyleSheet.create<IStyle>({
     marginTop: 20,
     paddingHorizontal: 16,
     marginHorizontal: 20,
+    flex:1,
+    marginBottom:20
   },
   showRepresentativeName: {
     flexDirection: "row",
@@ -38,7 +40,7 @@ const styles = StyleSheet.create<IStyle>({
   txt: {
     lineHeight: 20,
     color: Colors.sailBlue,
-    fontFamily: fonts.type.bold,
+    fontFamily: fonts.Poppins.bold,
     fontSize: 16,
   },
 });

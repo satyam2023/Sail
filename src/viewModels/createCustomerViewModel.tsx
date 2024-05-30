@@ -2,13 +2,7 @@ import Geolocation from "@react-native-community/geolocation";
 import { useFocusEffect } from "@react-navigation/native";
 import {
   checkSAPCustomer,
-  getClusterAPI,
   getCreateCustomerProfile,
-  getCustomerSegmenList,
-  getCustomerStatus,
-  getCustomerType,
-  getProcuredProductAPI,
-  getSupplierAPI,
 } from "controllers/createCustomerController";
 import {
   addRepresentativeOfCreateCustomer,
@@ -56,6 +50,7 @@ import {
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
 import useForm, { FormValues } from "core/UseForm";
 
+
 const CreateCustomerViewModel = () => {
   const [CurrentScreen, setCurrentScreen] = useState<number>(1);
   const [addDetailStatus, setAddDetailsStatus] = useState<boolean>(false);
@@ -85,6 +80,7 @@ const CreateCustomerViewModel = () => {
   const getDropDownListData: IRootCustomerCreate = useSelector(
     (state: RootState) => state?.createCustomer,
   );
+
   useEffect(() => {
     if (CurrentScreen == 2 || CurrentScreen == 3) setAddDetailsStatus(true);
     setIsAllDetailField(false);
@@ -98,28 +94,21 @@ const CreateCustomerViewModel = () => {
   });
   const userID = store?.getState()?.userAccount?.data?.data?.user?.id;
 
-  useEffect(() => {
-       getCustomerSegmenList(dispatch),
-      getCustomerType(dispatch),
-      getCustomerStatus(dispatch),
-      getClusterAPI(dispatch),
-      getProcuredProductAPI(dispatch),
-      getSupplierAPI(dispatch);
-  }, []);
-
   const authCustomerScreen = () => {
     setCurrentScreen(2);
   };
 
   const handleCustomerScreen = () => {
+  
     const typeIndex = indexofSubtype?.customerSubTypeIndex;
-    if (!isAllDetailsFilled) {
+    if (isAllDetailsFilled) {
       handleCustomerSubmited();
       if (typeIndex == 2 || typeIndex == 7 || typeIndex == 6)
         typeIndex == 6 ? handleProjectSubmit() : handleTraderDealerSubmit();
     }
   };
-  async function handleScreenChange(direction: string) {
+
+  const handleScreenChange = (direction: string) => {
     switch (direction) {
       case StringConstants.FORWARD:
         {
@@ -136,7 +125,7 @@ const CreateCustomerViewModel = () => {
           setCurrentScreen(CurrentScreen - 1);
         break;
     }
-  }
+  };
 
   let representativeList = additionalList.representativeList;
   let competitorList = additionalList.competitorList;
@@ -582,6 +571,7 @@ const CreateCustomerViewModel = () => {
     text: string | number,
     id: number,
   ) => {
+
     handleTextOfCustomer(Object.keys(customerDetails)[id], text.toString());
     isAllFieldHaveData();
     if (customerValue?.current?.code.length == 10 && id == 0) {
@@ -627,6 +617,8 @@ const CreateCustomerViewModel = () => {
     handleTextChangeOfProject(Object.keys(customerTypeProjectDetail)[id], text);
     isAllFieldHaveData();
   };
+
+
 
   return (
     <CreateCustomerScreen

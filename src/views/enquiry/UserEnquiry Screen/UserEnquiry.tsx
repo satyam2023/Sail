@@ -1,5 +1,5 @@
 import React from "react";
-import { lightgrey, darkgrey, Colors } from "commonStyles/RNColor.style";
+import {Colors } from "commonStyles/RNColor.style";
 import StringConstants from "shared/localization";
 import { MasterDataResponse } from "models/ApiResponses/MasterDataResponse";
 import { IuserEnquiryEnteredData } from "models/interface/IEnquiry";
@@ -88,12 +88,12 @@ const UserEnquiry = ({
           buttonStyle={
            btnStatus.enquiryBtn
               ? commonStyles.searchButtonStyle
-              : { backgroundColor: lightgrey }
+              : { backgroundColor: Colors.lightGray }
           }
           textStyle={
            btnStatus.enquiryBtn
               ? commonStyles.seachButtonTextStyle
-              : { color: darkgrey }
+              : { color: Colors.darkGrey }
           }
         />
       ) : searchresult.length == 0 ? (
@@ -103,6 +103,7 @@ const UserEnquiry = ({
           data={searchresult.length > 0 ? searchresult : undefined}
           renderItem={({ item, index }) => renderSearchResult(item, index)}
           scrollEnabled={false}
+          ListFooterComponent={()=><View style={{height:70}}/>}
         />
       )}
     </View>

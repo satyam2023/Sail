@@ -25,8 +25,9 @@ interface ISignInScreen {
   onSubmit: () => void;
   handleOnTextChange: (text: string, id: number) => void;
   biometricAuthentication: () => void;
+  isCredentialsTrue: boolean;
   isBiometricsAvl: IBiometricStatus;
-  signinError:MutableRefObject<ValidationError[]>;
+  signinError: MutableRefObject<ValidationError[]>;
 }
 
 const SignInScreen = ({
@@ -34,8 +35,10 @@ const SignInScreen = ({
   handleOnTextChange,
   biometricAuthentication,
   isBiometricsAvl,
-  signinError
+  isCredentialsTrue,
+  signinError,
 }: ISignInScreen) => {
+  
   return (
     <GradientBackground>
       <SafeAreaView style={{ flex: 1 }}>
@@ -47,21 +50,43 @@ const SignInScreen = ({
             {StringConstants.PLEASE_ENTER_INFORMATION}
           </TextWrapper>
           <KeyboardAvoidingView behavior={isAndroid ? "height" : "padding"}>
+          {
+            
+          }
             <InputTextField
               leftIcon={Glyphs.Contact}
               placeholder={StringConstants.YOUR_UNIQUE}
               onChangeText={(text: string) => handleOnTextChange(text, 0)}
-              errors={ signinError.current}
+              errors={signinError.current}
               inputBoxId="upn"
+              key={"upn"}
+              containerStyle={{
+                borderColor: !isCredentialsTrue
+                  ? Colors.red
+                  : Colors.transparent,
+                  borderWidth:1
+              }}
             />
             <InputTextField
               eyeIcon={Glyphs.Eye}
               leftIcon={Glyphs.Key}
               placeholder={StringConstants.YOUR_PASSWOD}
               onChangeText={(text: string) => handleOnTextChange(text, 1)}
-              errors={ signinError.current}
-              inputBoxId='password'
+              errors={signinError.current}
+              inputBoxId="password"
+              key={StringConstants.PASSWORD}
+              containerStyle={{
+                borderColor: !isCredentialsTrue
+                  ? Colors.red
+                  : Colors.transparent,
+                  borderWidth:1
+              }}
             />
+            {!isCredentialsTrue && (
+              <TextWrapper style={commonStyles.errorText}>
+                {StringConstants.INVALID_CREDENTIALS}
+              </TextWrapper>
+            )}
           </KeyboardAvoidingView>
           <View style={styles.switchAreaContainer}>
             <View style={{ flexDirection: "row" }}>

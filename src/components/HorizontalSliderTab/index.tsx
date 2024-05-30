@@ -1,5 +1,5 @@
 import { Colors } from "commonStyles/RNColor.style";
-import React from "react";
+import React, { memo } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -120,20 +120,19 @@ const HorizontalSlider = (props: IHorizontalSlider) => {
         }
         horizontal
         showsHorizontalScrollIndicator={false}
-        style={styles().horizontalContainer}
+        style={{marginBottom:10}}
       />
     </View>
   );
 };
 
-export default HorizontalSlider;
+export default memo(HorizontalSlider);
 
 const styles = (visitNumber?: number) => {
   return StyleSheet.create<IHorizontalSliderStyle>({
     horizontalContainer: {
       paddingHorizontal:20,
       marginBottom:10,
-      
     },
     clickableContainer: {
       marginTop: 16,
@@ -146,10 +145,9 @@ const styles = (visitNumber?: number) => {
       paddingVertical:10
     },
     text: {
-      fontFamily: fonts.type.medium,
+      fontFamily: fonts.Poppins.medium,
       fontSize: 14,
     },
-
     circle: {
       borderRadius: 100,
       paddingHorizontal:10,

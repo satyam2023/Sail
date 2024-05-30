@@ -41,7 +41,7 @@ const NotificationToggleBoxContent = ({
     index: number;
   }) => {
     return (
-      <View style={{ width: "50%", marginBottom: 24 }}>
+      <View style={{flex:0.48, marginBottom: 24}}>
         <TextWrapper
           style={[commonStyles.font14RegularTextGray, { marginBottom: 5 }]}
         >

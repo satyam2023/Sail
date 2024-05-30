@@ -3,13 +3,13 @@ import { FlatList, Image, ScrollView,View } from "react-native";
 import StringConstants from "shared/localization";
 import { Colors } from "commonStyles/RNColor.style";
 import {
+  IFlatListCustomerField,
   ISelectedImage,
 } from "models/interface/ICreateCustomer";
 import { IdropDown } from "models/interface/ISetting";
 import {
   CustomerDetailInputField,
   CustomerTypeTraderDealer,
-  ICustomerDetailInputField,
 } from "@shared-constants";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
 import {
@@ -21,7 +21,7 @@ import {
 } from "components";
 import {
   ICustomerState,
-  IFlatListInputField,
+  IFlatlistTrader,
 } from "models/interface/IViewCustomerProfile";
 import {
   IProcuredProduct,
@@ -56,7 +56,7 @@ interface IFirst {
 const First = (props: IFirst) => {
   const customerType = props?.customerList[props?.selectedIndexValue].type?.id;
   const isEditing = props?.customer?.editDetails;
-  const renderCustomerInputField = ({ item, index }: {item:ICustomerDetailInputField,index:number}) => {
+  const renderCustomerInputField = ({ item, index }: IFlatListCustomerField) => {
     const notEditable: boolean = index == 0 || index == 1 || index == 4;
     return (
       <>
@@ -71,6 +71,7 @@ const First = (props: IFirst) => {
               backgroundColor:
                 !isEditing || notEditable ? Colors.disabledGrey : Colors.white,
             }}
+            key={item?.placeholder}
             defaultValue={props?.customerDetail[index]}
             errors={props?.customerErrors.current}
             isEditable={notEditable || !isEditing ? false : true}
@@ -104,7 +105,7 @@ const First = (props: IFirst) => {
     );
   };
 
-  const renderTraderTypeList = ({ item, index }: IFlatListInputField) => {
+  const renderTraderTypeList = ({ item, index }: IFlatlistTrader) => {
     const array=(index==4)?props?.customer.procuredProduct:props?.customer?.supplier;
     return (
       <>
@@ -134,13 +135,14 @@ const First = (props: IFirst) => {
             containerStyle={{
               backgroundColor: !isEditing ? Colors.disabledGrey : Colors.white,
             }}
+            key={item?.placeholder}
             isEditable={!isEditing ? false : true}
             errors={props?.customerTypeErrors?.current}
             defaultValue={props?.traderDealerTypeDetail[index]}
           />
         )}
         <>
-          {(index == 4  || index==6) &&
+          {[4,6].includes(index)&&
            array?.map((item: IProcuredProduct|ISupplier) => {
               return (
                 <InputTextField
@@ -158,6 +160,7 @@ const First = (props: IFirst) => {
                       index==4?StringConstants.PROCURED_PRODUCT:StringConstants.SUPPLIER,
                     )
                   }
+                  key={item?.name}
                   errors={props?.customerErrors?.current}
                   inputBoxId={index==4?'procured_products':'supplier'}
                   rightIconTintColor={!isEditing?Colors.darkGrey:Colors.sailBlue}
@@ -193,6 +196,7 @@ const First = (props: IFirst) => {
         defaultValue={
           props?.customerDetail[11] 
         }
+        key={"-2"}
         isEditable={isEditing}
       />
       {(customerType == 2 || customerType == 6 || customerType == 7) && (
@@ -206,6 +210,7 @@ const First = (props: IFirst) => {
                 ]
           }
           renderItem={renderTraderTypeList}
+          scrollEnabled={false}
         />
       )}
 
@@ -215,9 +220,9 @@ const First = (props: IFirst) => {
       />
       <View style={styles.imgContainer}>
         {props?.customer?.imageSelected.map(
-          (item: ISelectedImage, _: number) => {
+          (item: ISelectedImage, index: number) => {
             return (
-              <View style={{ marginRight: 10 }}>
+              <View style={{ marginRight: 10 }} key={index.toString()}>
                 <PressableButton>
                   <Image source={item} style={styles.selectedImage} />
                 </PressableButton >

@@ -7,9 +7,7 @@ import {
   updateRepresentativeAPIHandler,
 } from "controllers/viewCustomerController";
 import useForm from "core/UseForm";
-import {
-  representativeValidationRules,
-} from "helper/ValidationRegex";
+import { representativeValidationRules } from "helper/ValidationRegex";
 import {
   chooseImageVideo,
   isAllInputFieldHaveData,
@@ -24,7 +22,7 @@ import {
   RepresentativeDetails,
 } from "models/interface/ICreateCustomer";
 import { IViewCustomerRepresentative } from "models/interface/IViewCustomerProfile";
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
 import { BottomTabVisibility } from "redux/actions/UIAction";
@@ -54,9 +52,9 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
       customerList,
       selectedIndexValue,
       representative,
-    )
+    ),
   ];
- 
+
   const representativeDetails: RepresentativeDetails = {
     name: representative?.editDetails ? representativeDetail[0] : "",
     designation: representative?.editDetails ? representativeDetail[1] : "",
@@ -67,7 +65,7 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
     whatsApp: representative?.editDetails ? representativeDetail[6] : "",
     id: "-1",
   };
- 
+
   const {
     values: representativeValue,
     errors: representativeErrors,
@@ -77,9 +75,8 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
     representativeDetails,
     representativeValidationRules,
     representative.editDetails ? handleEditRepresentative : addRepresentative,
-    representative?.editDetails
+    representative?.editDetails,
   );
-
 
   const resetRepresentativeDetail = () => {
     for (let i = 0; i < 7; i++) {
@@ -104,29 +101,29 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
     dispatch(BottomTabVisibility(false));
   });
 
-  async function handleUploadDocument() {
+  const handleUploadDocument = async () => {
     const res: ISelectedImage = await chooseImageVideo();
     setRepresentativeImage(res);
-  }
+  };
 
-  async function handleTextChangeOfRepresentative(text: string, id: number) {
+  const handleTextChangeOfRepresentative = (text: string, id: number) => {
     handleTextOfRepresentative(Object.keys(representativeDetails)[id], text);
     handleIsAllInputFieldHaveData();
-  }
+  };
 
-  function handleIsAllInputFieldHaveData() {
+  const handleIsAllInputFieldHaveData = () => {
     if (isAllInputFieldHaveData(representativeValue)) {
       if (!btnStatus) setBtnStatus(true);
     } else {
       if (btnStatus) setBtnStatus(false);
     }
-  }
+  };
 
-  function handleAddStatus() {
+  const handleAddStatus = () => {
     addDetailStatus
       ? add_edit_Representative()
       : setAddDetailsStatus(!addDetailStatus);
-  }
+  };
 
   const updateRepresentativeAPI = async (active: string) => {
     const value = active ? "1" : "0";
@@ -190,7 +187,6 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
     resetRepresentativeDetail();
   }
 
-  
   async function handleEditRepresentative() {
     if (isAnyFieldUpdated(representativeValue, representativeDetails)) {
       await updateRepresentativeAPI("Active");
@@ -203,9 +199,9 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
     setAddDetailsStatus(!addDetailStatus);
   }
 
-  async function add_edit_Representative() {
+  const add_edit_Representative = () => {
     btnStatus && handleRepresentativeSubmit();
-  }
+  };
 
   const handleRepresetativeSelected = (id: number) => {
     setRepresentativeDetail((prev: IViewCustomerRepresentative) => ({

@@ -1,6 +1,6 @@
-import { MutableRefObject,useRef, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 
-export type FormValues= {
+export type FormValues = {
   [key: string]: string;
 };
 
@@ -30,11 +30,11 @@ const useForm = (
   initialValues: FormValues,
   validationRules: ValidationRules,
   onSubmit: (values: FormValues) => void,
-  isEditingEnabled:boolean=false
+  isEditingEnabled: boolean = false,
 ): UseFormReturn => {
   const valuesRef = useRef<FormValues>(initialValues);
   const errorsRef = useRef<ValidationError[]>([]);
-  const [showError,setShowErrorStatus]=useState<boolean>(false);
+  const [showError, setShowErrorStatus] = useState<boolean>(false);
   const validateFields = (): boolean => {
     const validationErrors: ValidationError[] = [];
     for (const field in validationRules) {
@@ -47,7 +47,7 @@ const useForm = (
             isValidated: false,
           });
           break;
-        } 
+        }
       }
     }
     errorsRef.current = validationErrors.filter((error, index, array) => {
@@ -59,31 +59,28 @@ const useForm = (
   const handleSubmit = (): void => {
     if (validateFields()) {
       onSubmit(valuesRef.current);
-    }
-    else{
-       setShowErrorStatus(true);
+    } else {
+      setShowErrorStatus(true);
     }
   };
 
-  if (isEditingEnabled) {
-    // Alert.alert("Editing Enabelled::::");
-    for (const key in initialValues) {
-      const value = initialValues[key];
-      valuesRef.current[key] = value;
+  useEffect(() => {
+    if (isEditingEnabled) {
+      for (const key in initialValues) {
+        const value = initialValues[key];
+        valuesRef.current[key] = value;
+      }
     }
-  }
-
+  }, [isEditingEnabled]);
 
   const handleTextChange = (field: string, value: string): void => {
     valuesRef.current[field] = value;
     errorsRef.current = [];
-    if(showError){
-      errorsRef.current=[];
+    if (showError) {
+      errorsRef.current = [];
       setShowErrorStatus(false);
     }
   };
-
-
 
   return {
     values: valuesRef,
@@ -94,7 +91,3 @@ const useForm = (
 };
 
 export default useForm;
-
-
-
- 

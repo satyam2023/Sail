@@ -26,10 +26,11 @@ interface FilterProps {
 }
 
 const FilterData = ({ isVisible, onPress }: FilterProps) => {
-  const [modalVisibility, setModalVisibility] = useState<boolean>(isVisible as boolean);
+  const [modalVisibility,_] = useState<boolean>(isVisible as boolean);
   const [currentScreen, setCurrentScreen] = useState<string>(
     StringConstants.SEARCH_BY,
   );
+  const [btnStatus,setBtnStatus]=useState<boolean>(false);
   const [selectedDropDownSearch, setSelectedDropDownSearch] =
     useState<string>("");
   const enteredFilterationData: IFilterDataDetails = {
@@ -40,6 +41,7 @@ const FilterData = ({ isVisible, onPress }: FilterProps) => {
   };
 
   const onApplyFilterButtonPress = () => {
+    if(btnStatus){
     if (currentScreen == StringConstants.SEARCH_BY) {
       if (selectedDropDownSearch == StringConstants.DURATION) {
         setCurrentScreen(StringConstants.DURATION);
@@ -49,8 +51,10 @@ const FilterData = ({ isVisible, onPress }: FilterProps) => {
     } else {
       onPress(enteredFilterationData);
     }
+    setBtnStatus(false);
+  }
   };
-  function Daterange() {
+  const Daterange=() =>{
     return (
       <View style={styles.dateRangeContainer}>
         <Datepicker
@@ -73,12 +77,18 @@ const FilterData = ({ isVisible, onPress }: FilterProps) => {
     );
   }
 
-  function handleSearchSelected(item: IdropDown) {
+  const handleSelectedDuration=(item:IdropDown)=>{
+    enteredFilterationData.durationRange.current = item.name;
+    setBtnStatus(true);
+  }
+
+  const handleSearchSelected=(item: IdropDown)=>{
+    setBtnStatus(true);
     setSelectedDropDownSearch(item.name);
     enteredFilterationData.filterType.current = item.name;
   }
 
-  function renderScreen() {
+const renderScreen=()=> {
     switch (currentScreen) {
       case StringConstants.SEARCH_BY:
         return (
@@ -92,9 +102,8 @@ const FilterData = ({ isVisible, onPress }: FilterProps) => {
         return (
           <CustomDropDown
             ArrayOfData={filterDropDownDuration}
-            topheading={currentScreen}
-            onPress={(item: IdropDown) =>
-              (enteredFilterationData.durationRange.current = item.name)
+            topheading={StringConstants.DURATION}
+            onPress={(item: IdropDown) =>handleSelectedDuration(item)
             }
           />
         );
@@ -107,13 +116,13 @@ const FilterData = ({ isVisible, onPress }: FilterProps) => {
 
   return (
    
-      <Modal transparent={true} visible={modalVisibility} style={{backgroundColor:'red',flex:1}}>
+      <Modal transparent={true} visible={modalVisibility} style={{flex:1}}>
         <View style={styles.container}>
           {renderScreen()}
           <CustomButton
             text={StringConstants.APPLY_FILTERS}
-            buttonStyle={styles.btnStyle}
-            textStyle={{ color: Colors.white }}
+            buttonStyle={[styles.btnStyle,{backgroundColor:btnStatus?Colors.sailBlue:Colors.white}]}
+            textStyle={{ color: btnStatus?Colors.white:Colors.darkGrey}}
             onPress={onApplyFilterButtonPress}
           />
         </View>
@@ -136,8 +145,8 @@ const styles = StyleSheet.create<IFilterDataStyle>({
     
   },
   btnStyle: {
-    width: "50%",
-    backgroundColor: Colors.sailBlue,
+     width:'50%',
+    
   },
   dateRangeContainer: {
     flexDirection: "row",

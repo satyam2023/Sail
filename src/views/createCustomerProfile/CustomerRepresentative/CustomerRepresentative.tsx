@@ -5,11 +5,7 @@ import StringConstants from "shared/localization";
 import { Colors } from "commonStyles/RNColor.style";
 import fonts from "@fonts";
 import RepresentativeDetails from "./RepresentativeDetails";
-import { IRepresentativeError } from "helper/ValidationRegex";
-import {
-  IRepresentativeEnteredDetail,
-  ISelectedImage,
-} from "models/interface/ICreateCustomer";
+import { ISelectedImage } from "models/interface/ICreateCustomer";
 import { CustomButton, TextWrapper } from "components";
 import Glyphs from "assets/Glyphs";
 import commonStyles from "commonStyles/CommonStyle";
@@ -23,10 +19,14 @@ interface RepresenatativeProps {
   addDetailStatus: boolean;
   selectRepresentativeImage: ISelectedImage | undefined;
   handleTextChangeOfRepresentative: (text: string, id: number) => void;
-  representativeErrors:MutableRefObject<ValidationError[]>;
+  representativeErrors: MutableRefObject<ValidationError[]>;
 }
 const CustomerRepresentative = (props: RepresenatativeProps) => {
-  const renderRepresentativeList = (item: IRepresentative, _: number) => {
+  const renderRepresentativeList = ({
+    item,
+  }: {
+    item: IRepresentative;
+  }) => {
     return (
       <View style={style.representativeListBox}>
         <TextWrapper>{item.name}</TextWrapper>
@@ -34,7 +34,7 @@ const CustomerRepresentative = (props: RepresenatativeProps) => {
           source={Glyphs.Editing}
           tintColor={Colors.sailBlue}
           style={commonStyles.rightIcon}
-        ></Image>
+        />
       </View>
     );
   };
@@ -51,9 +51,7 @@ const CustomerRepresentative = (props: RepresenatativeProps) => {
           <View style={{ paddingHorizontal: 20 }}>
             <FlatList
               data={props?.representativeList}
-              renderItem={({ item, index }) =>
-                renderRepresentativeList(item, index)
-              }
+              renderItem={renderRepresentativeList}
               scrollEnabled={false}
             />
             <CustomButton
@@ -62,7 +60,7 @@ const CustomerRepresentative = (props: RepresenatativeProps) => {
                 backgroundColor: Colors.dashed,
                 justifyContent: "flex-start",
               }}
-              textStyle={{ fontFamily: fonts.type.regular }}
+              textStyle={{ fontFamily: fonts.Poppins.regular }}
               onPress={() => props?.addDetails(true)}
             />
           </View>

@@ -4,6 +4,7 @@ import Header from "components/AppHeader";
 import StringConstants from "shared/localization";
 import { ICmsProps } from "./FAQs";
 import RenderHTML from "react-native-render-html";
+import { ScreenWidth } from "libs";
 
 const Terms = ({ cmsPageData, pagesRenderingController }: ICmsProps) => {
   const source = {
@@ -16,7 +17,7 @@ const Terms = ({ cmsPageData, pagesRenderingController }: ICmsProps) => {
         onPress={() => pagesRenderingController(StringConstants.CMS)}
       />
       <ScrollView style={{ paddingHorizontal: 20 }}>
-        <RenderHTML source={source} />
+        <RenderHTML source={source} contentWidth={ScreenWidth} />
       </ScrollView>
     </>
   );

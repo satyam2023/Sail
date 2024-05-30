@@ -25,6 +25,7 @@ const styles = StyleSheet.create<ICreateCustomerStyle>({
   imgContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
+    marginTop:10
   },
   representativeListBox:{
     width:'100%',

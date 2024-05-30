@@ -4,6 +4,7 @@ import StringConstants from "shared/localization";
 import { Header } from "components";
 import { ICmsProps } from "./FAQs";
 import RenderHtml from "react-native-render-html";
+import { ScreenWidth } from "libs";
 
 const About = ({ cmsPageData, pagesRenderingController }: ICmsProps) => {
   const source = {
@@ -16,8 +17,8 @@ const About = ({ cmsPageData, pagesRenderingController }: ICmsProps) => {
         topheading={StringConstants.ABOUT_US}
         onPress={() => pagesRenderingController(StringConstants.CMS)}
       />
-      <View style={{ flex: 1 ,paddingHorizontal:20}}>
-        <RenderHtml source={source} />
+      <View style={{ flex: 1, paddingHorizontal: 20 }}>
+        <RenderHtml source={source} contentWidth={ScreenWidth} />
       </View>
     </ScrollView>
   );

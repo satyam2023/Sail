@@ -10,6 +10,7 @@ import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
 import { SafeAreaView } from "react-native";
 import StatusBarComponent from "components/StatusBarComponent";
 import styles from "./Style";
+import { ScreenHeight } from "libs";
 
 interface ICustomerProfile {
   customerListdata: IViewCustomerBody[];
@@ -28,6 +29,7 @@ const CustomerProfile = ({
       <RectangularBox
         heading={item.company_name}
         subHeading={item.customer_code}
+        leftIconStyle={{height:24,width:24,resizeMode:'contain'}}
         leftIcon={Glyphs.Profile2userClicked}
         onPress={() => handleSelectedCustomer(index)}
         style={{ marginBottom: 5, borderRadius: 10 }}
@@ -41,7 +43,7 @@ const CustomerProfile = ({
         backgroundColor={Colors.sailBlue}
         conentType={'light-content'}
       />
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1,paddingBottom:10}}>
         <Header topheading={StringConstants.CUSTOMER_PROFILE} />
         <View
           style={styles.emptyContainer}
@@ -60,7 +62,8 @@ const CustomerProfile = ({
             data={customerListdata}
             renderItem={renderCustomerList}
             showsVerticalScrollIndicator={false}
-            style={{ bottom: 26 }}
+            style={{flex:1,bottom:27}}
+            initialNumToRender={ScreenHeight/56}
           />
         </View>
       </SafeAreaView>

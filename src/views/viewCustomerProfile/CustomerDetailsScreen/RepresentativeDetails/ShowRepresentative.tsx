@@ -3,9 +3,9 @@ import { InputTextField, PressableButton, TextWrapper } from "components";
 import Glyphs from "assets/Glyphs";
 import StringConstants from "shared/localization";
 import { RepresentativeDetailData } from "@shared-constants";
-import { IFlatListInputField } from "models/interface/IViewCustomerProfile";
 import { Colors } from "commonStyles/RNColor.style";
 import styles from "./Style";
+import { IFlatListInputField } from "models/interface/IViewCustomerProfile";
 
 interface IshowRepresentative {
   handleRepresetativeSelected: (index: number) => void;
@@ -13,7 +13,7 @@ interface IshowRepresentative {
 }
 
 const ShowRepresentative = (props: IshowRepresentative) => {
-  const showRepresentativeDetail = ({ item, index }: IFlatListInputField) => {
+  const showRepresentativeDetail = ({ item,index}:IFlatListInputField) => {
     return (
       <InputTextField
         onChangeText={() => {}}
@@ -42,6 +42,7 @@ const ShowRepresentative = (props: IshowRepresentative) => {
       <FlatList
         data={RepresentativeDetailData}
         renderItem={showRepresentativeDetail}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );

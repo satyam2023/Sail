@@ -67,6 +67,7 @@ const CreateCustomerDetails = (props: ICust) => {
               maxlength={item?.maxlength}
               containerStyle={{ backgroundColor: Colors.white }}
               errors={props?.customerErrors?.current}
+              key={item?.key}
               inputBoxId={item?.key}
             />
             {index == 0 && props.sapUserExist && (
@@ -86,11 +87,12 @@ const CreateCustomerDetails = (props: ICust) => {
     );
   };
 
-  const renderSelectedItemList = (item: IdropDown, _: number, type: string) => {
+  const renderSelectedItemList = (item: IdropDown, index: number, type: string) => {
     return (
       <InputTextField
         onChangeText={() => {}}
         placeholder={item.name}
+        key={index.toString()}
         rightIcon={Glyphs.Close}
         containerStyle={{ backgroundColor: Colors.white }}
         isEditable={false}
@@ -168,6 +170,7 @@ const CreateCustomerDetails = (props: ICust) => {
             placeholder={item?.placeholder}
             maxlength={item?.length}
             inputMode={item?.input}
+            key={item?.key}
             inputBoxId={item?.key}
             containerStyle={{ backgroundColor: Colors.white }}
           />
@@ -243,6 +246,7 @@ const CreateCustomerDetails = (props: ICust) => {
           }
           placeholder={StringConstants.ADD_TAG_LOCATION}
           errors={props?.customerErrors?.current}
+          key={"location"}
           inputBoxId="location"
           containerStyle={{ backgroundColor: Colors.white }}
         />
@@ -254,9 +258,9 @@ const CreateCustomerDetails = (props: ICust) => {
         <View style={styles.imgContainer}>
           {props?.customerDetailSelectedImage &&
             props?.customerDetailSelectedImage.map(
-              (item: ISelectedImage, _: number) => {
+              (item: ISelectedImage, index: number) => {
                 return (
-                  <View style={{ marginRight: 10 }}>
+                  <View style={{ marginRight: 10 }} key={index.toString()}>
                     <PressableButton>
                       <Image source={item} style={styles.selectedImage} />
                     </PressableButton>

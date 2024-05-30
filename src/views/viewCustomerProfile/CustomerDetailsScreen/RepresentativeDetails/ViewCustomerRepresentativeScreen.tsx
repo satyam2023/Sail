@@ -61,7 +61,7 @@ const ViewCustomerRepresentative = ({
   }: IFlatListRepresentativeList) => {
     return (
       <PressableButton style={styles.btn}>
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row"}}>
           <TextWrapper style={styles.Txt}>{item.name}</TextWrapper>
           <Image source={Glyphs.Mobile} style={styles.img} />
         </View>
@@ -106,7 +106,7 @@ const ViewCustomerRepresentative = ({
                   backgroundColor: Colors.dashed,
                   justifyContent: "center",
                 }}
-                textStyle={{ fontFamily: fonts.type.regular }}
+                textStyle={{ fontFamily: fonts.Poppins.regular }}
                 onPress={handleAddStatus}
               />
             </ScrollView>

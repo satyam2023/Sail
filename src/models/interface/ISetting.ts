@@ -1,6 +1,6 @@
 import { MutableRefObject } from "react";
 import { IFlatlistIndex } from "./IMessage";
-import { ITextField } from "@shared-constants";
+
 
 
 
@@ -19,6 +19,11 @@ export interface IdropDown{
      user_upn?:string,
      user_name?:string,
 }
+
+export interface ITextField {
+    placeholder: string;
+    key: string;
+  }
 
 export interface IFlalistSetting extends IFlatlistIndex{
     item:ITextField

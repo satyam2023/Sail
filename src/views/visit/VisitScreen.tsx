@@ -1,6 +1,6 @@
 import { Colors } from "commonStyles/RNColor.style";
 import React, { Dispatch, SetStateAction } from "react";
-import { SafeAreaView, TouchableOpacity, View } from "react-native";
+import { SafeAreaView,View } from "react-native";
 import Executed from "views/visit/ExecutedVisit/Executed";
 import Planned from "views/visit/PlannedVisit/Planned";
 import UpcomingVisit from "views/visit/UpComingVisit/Upcoming";
@@ -8,19 +8,18 @@ import Glyphs from "assets/Glyphs";
 import { Image } from "react-native";
 import StringConstants from "shared/localization";
 import commonStyles from "commonStyles/CommonStyle";
-import { IupcomingVisitField, VisitHeaderData } from "@shared-constants";
+import {  VisitHeaderData } from "@shared-constants";
 import {
   ExecutedResponse,
   VisitResponse,
 } from "models/ApiResponses/VisitResponse";
-import { IFilterDataDetails, IPlannedVisitEdit } from "models/interface/IVisit";
+import { IFilterDataDetails, IPlannedVisitEdit, IupcomingVisitField } from "models/interface/IVisit";
 import { IdropDown } from "models/interface/ISetting";
 import {
   CustomFooter,
   Header,
   HorizontalSlider,
   InputTextField,
-  KeyboardAvoidingWrapper,
   PressableButton,
   TextWrapper,
 } from "components";
@@ -95,6 +94,67 @@ const VisitScreen = ({
   handleClearSearchResult,
   plannedVisit,
 }: IVisitScreen) => {
+  const rednerVisitScreens = () => {
+    switch (currentVisit) {
+      case 1:
+        return (
+          <UpcomingVisit
+            {...{
+              upcomingVisitList,
+              upcomingVisitDetails,
+              setSelectedIndexValue,
+              upcomingFieldData,
+              selectedIndexValue,
+              customerDetails,
+              handleCustomerClick,
+              handleUpcomingVisitBoxClick,
+              setPaginationPage,
+              searchResult,
+            }}
+          />
+        );
+      case 2:
+        return (
+          <Planned
+            {...{
+              plannedVisitList,
+              selectedIndexValue,
+              plannedVisitFieldData,
+              plannedVisitEditDetails,
+              plannedVisitEdit,
+              modeOfContactDropData,
+              isVisitEditable,
+              handlePlannedVisitBoxClick,
+              customerDetails,
+              handleCustomerClick,
+              setPaginationPage,
+              searchResult,
+              plannedVisit,
+            }}
+          />
+        );
+      case 3:
+        return (
+          <Executed
+            {...{
+              executedVisitFieldData,
+              setSelectedIndexValue,
+              executedVisitList,
+              selectedIndexValue,
+              customerDetails,
+              handleCustomerClick,
+              handleUpcomingVisitBoxClick,
+              callDownloadPDFApi,
+              setPaginationPage,
+              searchResult,
+            }}
+          />
+        );
+      default:
+        return;
+    }
+  };
+
   return (
     <>
       <StatusBarComponent
@@ -107,9 +167,7 @@ const VisitScreen = ({
           <HorizontalSlider
             sliderData={VisitHeaderData}
             currentScreen={currentVisit}
-            selectedTab={(index: number) => {
-              setCurrentVisit(index);
-            }}
+            selectedTab={(index: number) => setCurrentVisit(index)}
             countArray={visitCountArray}
             style={{ backgroundColor: Colors.background }}
           />
@@ -127,12 +185,15 @@ const VisitScreen = ({
               containerStyle={{ backgroundColor: Colors.white, width: "80%" }}
               onRighIconPress={callApplyFilter}
             />
-            <TouchableOpacity
-              style={styles.filter}
-              onPress={handleFilterSearch}
-            >
+            <PressableButton style={styles.filter} onPress={handleFilterSearch}>
+              {searchResult.length > 0 && (
+                <Image
+                  source={Glyphs.Ellipse}
+                  style={styles.ellipse}
+                />
+              )}
               <Image source={Glyphs.Filter} style={styles.imgContainer} />
-            </TouchableOpacity>
+            </PressableButton>
             {applyFilterSearch && (
               <FilterData
                 isVisible={true}
@@ -140,7 +201,6 @@ const VisitScreen = ({
               />
             )}
           </View>
-
           {searchResult.length > 0 && (
             <View style={styles.searchResultText}>
               <TextWrapper
@@ -157,58 +217,7 @@ const VisitScreen = ({
               </PressableButton>
             </View>
           )}
-
-          {currentVisit == 1 && (
-            <UpcomingVisit
-              {...{
-                upcomingVisitList,
-                upcomingVisitDetails,
-                setSelectedIndexValue,
-                upcomingFieldData,
-                selectedIndexValue,
-                customerDetails,
-                handleCustomerClick,
-                handleUpcomingVisitBoxClick,
-                setPaginationPage,
-                searchResult,
-              }}
-            />
-          )}
-          {currentVisit == 2 && (
-            <Planned
-              {...{
-                plannedVisitList,
-                selectedIndexValue,
-                plannedVisitFieldData,
-                plannedVisitEditDetails,
-                plannedVisitEdit,
-                modeOfContactDropData,
-                isVisitEditable,
-                handlePlannedVisitBoxClick,
-                customerDetails,
-                handleCustomerClick,
-                setPaginationPage,
-                searchResult,
-                plannedVisit,
-              }}
-            />
-          )}
-          {currentVisit == 3 && (
-            <Executed
-              {...{
-                executedVisitFieldData,
-                setSelectedIndexValue,
-                executedVisitList,
-                selectedIndexValue,
-                customerDetails,
-                handleCustomerClick,
-                handleUpcomingVisitBoxClick,
-                callDownloadPDFApi,
-                setPaginationPage,
-                searchResult,
-              }}
-            />
-          )}
+          {rednerVisitScreens()}
         </View>
         {currentVisit == 2 &&
           FooterVisibility &&
