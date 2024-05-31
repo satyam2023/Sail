@@ -108,6 +108,7 @@ export interface EscalatedToOtherApiResponse {
 }
 
 export interface EscalatedToOtherBody{
+  
   escalation_id: number|undefined,
   vissit_issue_id:number|undefined,
   escalated_to: number|undefined,

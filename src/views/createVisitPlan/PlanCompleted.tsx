@@ -26,7 +26,7 @@ const PlanCompleted = () => {
         buttonStyle={{ backgroundColor: Colors.sailBlue, width: "40%" }}
         textStyle={{
           color: Colors.white,
-          fontFamily: fonts.type.regular,
+          fontFamily: fonts.Poppins.regular,
           fontSize: 16,
         }}
       />
@@ -38,7 +38,7 @@ export default PlanCompleted;
 const styles=StyleSheet.create({
   text:{
     width: 253,
-    fontFamily:fonts.type.medium,
+    fontFamily:fonts.Poppins.medium,
     fontSize: 20,
     textAlign: "center",
     color: Colors.sailBlue,

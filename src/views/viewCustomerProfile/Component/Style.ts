@@ -46,7 +46,7 @@ const styles = StyleSheet.create<IStyle>({
     borderColor: Colors.white,
   },
   numberstyle: {
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 16,
     color: Colors.white,
     textAlign: "center",
@@ -59,7 +59,7 @@ const styles = StyleSheet.create<IStyle>({
     flexGrow:1,
   },
   circleBottomText: {
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 10,
     color: Colors.blackPeral,
     marginTop: 7,
@@ -75,7 +75,7 @@ const styles = StyleSheet.create<IStyle>({
 
   plsText: {
     color: Colors.red,
-    fontFamily: fonts.type.regular,
+    fontFamily: fonts.Poppins.regular,
     fontSize: 14,
     marginLeft: 16,
     marginBottom: 5,
@@ -83,19 +83,19 @@ const styles = StyleSheet.create<IStyle>({
   sapCodeContainer: {
     flexDirection: "row",
     borderRadius: 33,
-    justifyContent: "center",
+    justifyContent: 'space-around',
     alignItems: "center",
     width: "100%",
     paddingHorizontal: 16,
     marginBottom:10,
     backgroundColor: Colors.white,
+    height:56,
   },
   inputContainer: {
     backgroundColor: Colors.white,
     marginTop: 16,
-    borderRadius: 0,
-    width: "70%",
-    height: 30,
+    borderRadius:33,
+    width: "80%",
   },
 });
 

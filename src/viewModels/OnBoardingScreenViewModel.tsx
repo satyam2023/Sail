@@ -8,7 +8,7 @@ const OnBoardingScreenViewModel = () => {
   const dispatch = useDispatch();
   useEffect(() => handleSetMasterData(), []);
 
-  function handleSetMasterData() {
+  const handleSetMasterData=()=>{
     const callMasterDataAPI = () => {
       try {
         dispatch(setLoaderVisibility(true));

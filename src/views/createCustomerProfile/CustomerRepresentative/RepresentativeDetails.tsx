@@ -6,33 +6,33 @@ import { Colors } from "commonStyles/RNColor.style";
 import InputTextField from "components/InputTextField";
 import { FlatList } from "react-native";
 import {
-  IMeetingRepresentativeDetailInputField,
   MeetingRepresentativeDetailInputField,
 } from "@shared-constants";
 import { PressableButton } from "components";
 import { WindowWidth } from "libs";
-import {
-  ISelectedImage,
-} from "models/interface/ICreateCustomer";
+import { ISelectedImage } from "models/interface/ICreateCustomer";
 import { ValidationError } from "core/UseForm";
+import { IFlatListRepresentative } from "models/interface/IViewCustomerProfile";
+import styles from "./Style";
 
 interface IRepresentative {
   handleSelectImageVideo: () => void;
   selectRepresentativeImage: ISelectedImage | undefined;
   handleTextChangeOfRepresentative: (text: string, id: number) => void;
-  representativeErrors:MutableRefObject<ValidationError[]>;
+  representativeErrors: MutableRefObject<ValidationError[]>;
 }
 
 const RepresentativeDetails = (props: IRepresentative) => {
-  const renderCustomerRepresentativeInputField = (
-    item: IMeetingRepresentativeDetailInputField,
-    index: number,
-  ) => {
+  const renderCustomerRepresentativeInputField = ({
+    item,
+    index,
+  }:IFlatListRepresentative) => {
     return (
       <InputTextField
         onChangeText={(text: string) =>
           props?.handleTextChangeOfRepresentative(text, index)
         }
+        key={item?.key}
         placeholder={item?.placeholder}
         maxlength={item?.maxlength}
         inputBoxId={item?.key}
@@ -42,31 +42,30 @@ const RepresentativeDetails = (props: IRepresentative) => {
     );
   };
   return (
-    <ScrollView style={{ flex: 1, paddingHorizontal: 20, paddingTop: 10 }}>
-      {props?.selectRepresentativeImage && (
-        <View style={{ width: WindowWidth / 4 }}>
-          <PressableButton>
-            <Image
-              source={props.selectRepresentativeImage}
-              style={{ height: 100, width: 100, resizeMode: "contain" }}
-            />
-          </PressableButton>
-        </View>
-      )}
+    <ScrollView style={styles.repreDetailContainer}>
+      
       <UploadDocumnet
         uploadType={StringConstants.UPLOAD_VISITING_CARD}
         style={{ backgroundColor: Colors.dashed }}
         onPress={props?.handleSelectImageVideo}
       />
-      <View style={{ marginTop: 16 }}>
+      {props?.selectRepresentativeImage && (
+        <View style={styles.imageViewConatiner}>
+          <PressableButton>
+            <Image
+              source={props.selectRepresentativeImage}
+              style={styles.repreImage}
+            />
+          </PressableButton>
+        </View>
+      )}
         <FlatList
           data={MeetingRepresentativeDetailInputField}
-          renderItem={({ item, index }) =>
-            renderCustomerRepresentativeInputField(item, index)
-          }
+          renderItem={renderCustomerRepresentativeInputField}
+          keyExtractor={(_,index)=>index.toString()}
           scrollEnabled={false}
+          style={{marginTop: 16 }}
         />
-      </View>
     </ScrollView>
   );
 };

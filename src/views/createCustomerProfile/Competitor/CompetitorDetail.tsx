@@ -2,11 +2,12 @@ import React, { MutableRefObject } from "react";
 import { FlatList, SafeAreaView, View } from "react-native";
 import StringConstants from "shared/localization";
 import commonStyles from "commonStyles/CommonStyle";
-import { CompetitorDetailData, CompetitorDetailInputField } from "@shared-constants";
+import { CompetitorDetailData } from "@shared-constants";
 import { InputTextField, TextWrapper } from "components";
 import { Colors } from "commonStyles/RNColor.style";
-import { IEnteredCompetitorDetail } from "models/interface/ICreateCustomer";
+import { ICompetitorFlatList, IEnteredCompetitorDetail } from "models/interface/ICreateCustomer";
 import { ValidationError } from "core/UseForm";
+
 
 interface ICompetitorDetail {
   enteredCompetitorDetail: IEnteredCompetitorDetail;
@@ -18,15 +19,13 @@ const CompetitorDetail = (props: ICompetitorDetail) => {
   const renderCompettorInputField = ({
     item,
     index,
-  }: {
-    item: CompetitorDetailInputField;
-    index: number;
-  }) => {
+  }:ICompetitorFlatList) => {
     return (
       <InputTextField
         onChangeText={(text: string) =>
           props?.handleTextChangeOfCompetitor(text,index)
         }
+        key={item?.key}
         placeholder={item?.placeholder}
         maxlength={item?.length}
         inputBoxId={item?.key}
@@ -46,6 +45,7 @@ const CompetitorDetail = (props: ICompetitorDetail) => {
         <FlatList
           data={CompetitorDetailData}
           renderItem={renderCompettorInputField}
+          keyExtractor={(_,index)=>index.toString()}
         />
       </View>
     </SafeAreaView>

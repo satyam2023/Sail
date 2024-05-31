@@ -14,12 +14,8 @@ import {
   setUpdateCompetitorBody,
 } from "helper/helperFunctions";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
-import {
-  CompetitorDetail,
-} from "models/interface/ICreateCustomer";
-import {
-  IViewCustomerCompetitor,
-} from "models/interface/IViewCustomerProfile";
+import { CompetitorDetail } from "models/interface/ICreateCustomer";
+import { IViewCustomerCompetitor } from "models/interface/IViewCustomerProfile";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
@@ -42,12 +38,11 @@ const ViewCustomerCompetitorViewModel = ({ route, navigation }: any) => {
     showcompetitorDetail: false,
     editDetails: false,
   });
- 
+
   const selectedCompetitorDetail: string[] = [
     ...selectedCompetitor(customerList, selectedIndexValue, competitor),
   ];
 
-  
   const addCompetitor = async () => {
     await addCompetitorApiCall();
     setAddDetailsStatus(false);
@@ -71,7 +66,6 @@ const ViewCustomerCompetitorViewModel = ({ route, navigation }: any) => {
     competitor?.editDetails ? handleUpdateCompetitor : addCompetitor,
     competitor?.editDetails,
   );
-
 
   useFocusEffect(() => {
     dispatch(BottomTabVisibility(false));
@@ -100,19 +94,18 @@ const ViewCustomerCompetitorViewModel = ({ route, navigation }: any) => {
     });
   }, [customerListdata]);
 
-  async function handleAddStatus() {
-    if (addDetailStatus) add_edit_Competitor();
-    else if (!addDetailStatus) setAddDetailsStatus(!addDetailStatus);
-  }
+  const handleAddStatus = () => {
+    addDetailStatus
+      ? add_edit_Competitor()
+      : setAddDetailsStatus(!addDetailStatus);
+  };
 
-  async function add_edit_Competitor() {
-    competitor.editDetails? handleUpdateCompetitor():handleCompetitorSubmited();
-  }
- 
-  
+  const add_edit_Competitor = () => handleCompetitorSubmited();
+
   async function handleUpdateCompetitor() {
-    if(isAnyFieldUpdated(competitorValue,competitorDetails))
-     {await updateCompatitorAPICaliing();}
+    if (isAnyFieldUpdated(competitorValue, competitorDetails)) {
+      await updateCompatitorAPICaliing();
+    }
     setcompetitor((prev: IViewCustomerCompetitor) => ({
       ...prev,
       selectedCompetitorIndex: -1,
@@ -121,7 +114,7 @@ const ViewCustomerCompetitorViewModel = ({ route, navigation }: any) => {
     setAddDetailsStatus(false);
   }
 
-  async function addCompetitorApiCall() {
+   const addCompetitorApiCall=async() =>{
     try {
       dispatch(setLoaderVisibility(true));
       const body = {
@@ -159,43 +152,39 @@ const ViewCustomerCompetitorViewModel = ({ route, navigation }: any) => {
     }
   };
 
-  function setEditing(id: number) {
+  const setEditing = (id: number) => {
     setcompetitor((prev: IViewCustomerCompetitor) => ({
       ...prev,
       editDetails: true,
       selectedCompetitorIndex: id,
     }));
     setAddDetailsStatus(true);
-  }
+  };
 
-  function handleCompetiotorTextChange(text: string, id: number) {
+  const handleCompetiotorTextChange = (text: string, id: number) => {
     handleTextOfCompetitor(Object.keys(competitorDetails)[id], text);
     handleAddCompetitorBtnStatus();
-  }
+  };
 
-  function handleAddCompetitorBtnStatus() {
+  const handleAddCompetitorBtnStatus = () => {
     if (isAllInputFieldHaveData(competitorValue)) {
       if (!addCompetitorBtnStatus) setAddCompetitorButtonStatus(true);
     } else {
       if (addCompetitorBtnStatus) setAddCompetitorButtonStatus(false);
     }
-  }
+  };
 
-  function handleCompetitorSelected(id: number) {
+  const handleCompetitorSelected = (id: number) => {
     setcompetitor((prev: IViewCustomerCompetitor) => ({
       ...prev,
       selectedCompetitorIndex: id,
       showcompetitorDetail: !competitor.showcompetitorDetail,
     }));
-  }
+  };
 
-  function handleFooterButtonClick(type: string) {
-    if (type == StringConstants.BACKWARD) {
-      goBack();
-    } else if (type == StringConstants.FORWARD) {
-      setSubmitStatus(true);
-    }
-  }
+  const handleFooterButtonClick = (type: string) => {
+    type == StringConstants.BACKWARD ? goBack() : setSubmitStatus(true);
+  };
 
   return (
     <CompetitorDetailScreenOfViewCustomer
@@ -212,7 +201,6 @@ const ViewCustomerCompetitorViewModel = ({ route, navigation }: any) => {
         handleFooterButtonClick,
         submitSuccess,
         addCompetitorBtnStatus,
-
         competitorErrors,
       }}
     />

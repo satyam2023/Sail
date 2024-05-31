@@ -1,13 +1,14 @@
 import APIConstants from "core/ApiConstants";
 import { logger } from "helper/helperFunctions";
 import {
-  DaumOffTake,
   ICustomerResponse,
   IDDCustomerResponse,
   ILCBG,
   IMOU,
+  IOffTakeAPIResponse,
   IOrderStatus,
-  OutStandingResponseStatus,
+  OutStandingAPIResponse,
+  
 } from "models/ApiResponses/CustomerInfoResponse";
 import { ICustomerBody } from "models/interface/ICustomerInfo";
 
@@ -43,7 +44,7 @@ export const ddreportStatus = async (body: ICustomerBody) => {
 
 export const outStandingStatus = async (body: ICustomerBody) => {
   try {
-    return await sendPostRequest<OutStandingResponseStatus>(
+    return await sendPostRequest<OutStandingAPIResponse>(
       APIConstants.OUTSTANDING_REPORT,
       body,
     );
@@ -63,7 +64,7 @@ export const lastvisitedStatus = async (body: ICustomerBody) => {
 export const offTakeStatus = async (
   body: ICustomerBody,
 ) => {
-  return await sendPostRequest<DaumOffTake>(
+  return await sendPostRequest<IOffTakeAPIResponse>(
     APIConstants.OFF_TAKE_REPORT,
     body,
   );

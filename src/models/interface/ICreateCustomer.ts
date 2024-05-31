@@ -6,8 +6,7 @@ import {
 } from "models/ApiResponses/CreateCustomer";
 import { MutableRefObject } from "react";
 import { IFlatlistIndex } from "./IMessage";
-import { ICustomerDetailInputField, ICustomerTrader } from "@shared-constants";
-import { FormValues } from "core/UseForm";
+import { InputModeOptions } from "react-native";
 
 export interface IExample {
   [key: string | number]: MutableRefObject<string | number|undefined>;
@@ -120,6 +119,14 @@ export interface IadditionalList {
   competitorList: ICompetitor[];
 }
 
+export interface ICustomerTrader {
+  placeholder: string;
+  length?: number;
+  key?: string;
+  input?: InputModeOptions;
+}
+
+
 export interface IFlatListExtraItem {
   item: ICustomerTrader ;
   index: number;
@@ -157,11 +164,6 @@ procured_products:string,
 tentative_quality_procured:string,
 supplier:string,
 }
-
-
-
-
-
 export interface ICustomerTypeProject {
   [key:string|number]:MutableRefObject<string|number|number[]>
   procured_products: MutableRefObject<number[]>,
@@ -186,4 +188,25 @@ export interface IRenderSelectedSupplierAndProcured{
   item: string,
   index: number,
   type: string,
+}
+
+export interface ICustomerDetailInputField {
+  placeholder: string;
+  maxlength?: number;
+  key?: string;
+}
+
+export interface CompetitorDetailInputField {
+  placeholder: string;
+  length: number;
+  key: string;
+}
+
+
+export interface ICompetitorFlatList extends IFlatlistIndex{
+  item:CompetitorDetailInputField
+}
+
+export interface IRepresentativeFlatList extends IFlatlistIndex{
+ item:IRepresentative
 }

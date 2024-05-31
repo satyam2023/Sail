@@ -1,7 +1,8 @@
-import React from "react";
+import React, { memo } from "react";
 import { Colors } from "commonStyles/RNColor.style";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
-import { Linking, Platform, StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
+import { Linking, Platform, StyleSheet, ViewStyle } from "react-native";
+import PressableButton from "components/DeBouncePressable";
 
 
 interface IMapStyle{
@@ -18,7 +19,7 @@ interface InputProps {
 
 const MapComponent = (Props: InputProps) => {
   return (
-    <TouchableOpacity
+    <PressableButton
       onPress={() => {
         const scheme = Platform.OS === "ios" ? "maps:" : "geo:";
         const url = scheme + `${Props.latitude},${Props.longitude}`;
@@ -46,11 +47,11 @@ const MapComponent = (Props: InputProps) => {
           pinColor={Colors.sailBlue}
         />
       </MapView>
-    </TouchableOpacity>
+    </PressableButton>
   );
 };
 
-export default MapComponent;
+export default memo(MapComponent);
 
 const styles = StyleSheet.create<IMapStyle>({
   container: {

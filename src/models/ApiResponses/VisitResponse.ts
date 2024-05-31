@@ -2,6 +2,9 @@
 
 // export interface ExecutedVistAPIResponse{
 //   data:VisitResponse[]
+
+import { Allissue } from "./IEnquiryResponses";
+
 // }
 export interface VisitResponse {
     added_by: string;
@@ -69,6 +72,7 @@ export interface VisitResponse {
     executed: string;
     id: number;
     issue: any;
+    myissues:Allissue[];
     issue_date: any;
     mode_of_contact: string;
     reason: string;
@@ -93,4 +97,6 @@ export interface VisitResponse {
     id: number;
     user_name: string;
   }
+
+
   

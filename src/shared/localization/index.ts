@@ -87,6 +87,7 @@ const StringConstants = {
   DONT_HAVE_ACCOUNT: "Don’t have an account? ",
   REMEMBER_ME: "Remember me",
   FORGOT_PASSWORD: "Forgot password?",
+  PASSWORD:'password',
   OR: "Or",
   SIGNIN_FINGERPRINT: "Sign in with Fingerprint",
   SIGNIN_FACE_RECOGNITION: "Sign in with Face Recognition",
@@ -329,10 +330,10 @@ const StringConstants = {
   To_Date: "Pending PO To Date",
   Product: "Pending PO Product",
   Total_Offtake: "Pending PO Total Offtake",
-  Manufacturing_Plant: "Manufacturing Plant",
-  Final_Return_Quantity: "Final Return Quantity",
-  Complaint_Status: "Complaint Status",
-  Defect_Type: "Defect Type",
+  MANUFACTURING_PLANT: "Manufacturing Plant",
+  FINAL_RETURN_QUANTITY: "Final Return Quantity",
+  COMPLAIN_STATUS: "Complaint Status",
+  DEFECT_TYPE: "Defect Type",
   ONLY_BRANCH: "Branch",
   ONLY_CUSTOMER: "Customer",
   ONLY_Total_Due: "Total Due",
@@ -362,10 +363,10 @@ const StringConstants = {
   SAP_CODE_UPDATE_MSG: "The customer code must be 10 digits.",
   ENTER_PAN_GST: "Please enter PAN and GST number",
   BACK_TO_HOME:"Back to Home",
-  UPCOMING_VISIT:"Upcoming Visit",
+  UPCOMING_VISIT:"Upcoming Visits",
   SARANSH:"SARANSH VERMA",
-  PLANNED_VISIT:"Planned Visit",
-  EXECUTED_VISIT:"Executed Visit",
+  PLANNED_VISIT:"Planned Visits",
+  EXECUTED_VISIT:"Executed Visits",
   STAINLESS:"Stainless Steel Products",
   COLD_ROLLED:"Cold Rolled Products",
   EMPTY:"",
@@ -485,11 +486,11 @@ const StringConstants = {
   PLS_MOC:'Please Select Mode of Contact',
   PLS_REMARKS:'Please Enter Remarks',
   FINGER_PRINT_KEY:'Finger Print Key',
-  INVALID_WEBSITE:'Invalid Website'
-
-  
-  
-
+  INVALID_WEBSITE:'Invalid Website',
+  PENDING_APPROVAL_MESSAGE:'Your account is pending for approval with admin.',
+  INVALID_CREDENTIALS:'Invalid Credentials',
+  RESOLVED:'Resolved',
+  NOT_RESOLVED:'Not Resolved'
 };
 
 export default StringConstants;

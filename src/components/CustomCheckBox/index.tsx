@@ -1,7 +1,7 @@
 import Glyphs from "assets/Glyphs";
 import { Colors } from "commonStyles/RNColor.style";
 import { PressableButton } from "components";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Image, ImageStyle, ViewStyle } from "react-native";
 import { StyleSheet, View } from "react-native";
 
@@ -47,7 +47,7 @@ const CustomCheckBox = (props: ICustomSwitch) => {
   );
 };
 
-export default CustomCheckBox;
+export default memo(CustomCheckBox);
 const styles = StyleSheet.create<ICheckBoxStyle>({
   switchContainer: {
     height: 17,

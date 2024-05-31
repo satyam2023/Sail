@@ -1,10 +1,9 @@
-import React from "react";
+import React, { memo } from "react";
 import {
   Image,
   ImageProps,
   StyleSheet,
   TextProps,
-  TouchableOpacity,
   View,
   ViewStyle,
 } from "react-native";
@@ -29,10 +28,11 @@ interface IHeaderProps {
   isLogoutButton?: boolean;
   onPress?: () => void;
   rightButtonPress?: () => void;
+  style?:ViewStyle;
 }
 const Header = (props: IHeaderProps) => {
   return (
-    <View style={styles.headerContainer}>
+    <View style={[styles.headerContainer,props.style]}>
       <View style={styles.topContainer}>
         <PressableButton
           onPress={() => {
@@ -49,7 +49,7 @@ const Header = (props: IHeaderProps) => {
       {props?.isLogoutButton && (
         <View style={styles.logoutContainer}>
           <Image source={Glyphs.Logout} style={styles.logoutBtn} />
-          <TouchableOpacity
+          <PressableButton
             onPress={() => {
               if (props.rightButtonPress) props.rightButtonPress();
             }}
@@ -57,14 +57,14 @@ const Header = (props: IHeaderProps) => {
             <TextWrapper style={styles.headingContent}>
               {StringConstants.LOGOUT}
             </TextWrapper>
-          </TouchableOpacity>
+          </PressableButton>
         </View>
       )}
     </View>
   );
 };
 
-export default Header;
+export default memo(Header);
 
 const styles = StyleSheet.create<IAppHeaderStyle>({
   headerContainer: {
@@ -86,7 +86,7 @@ const styles = StyleSheet.create<IAppHeaderStyle>({
   headingContent: {
     color: Colors.white,
     marginLeft: 16,
-    fontFamily: fonts.type.bold,
+    fontFamily: fonts.Poppins.bold,
     fontSize: 16,
   },
   logoutBtn: {

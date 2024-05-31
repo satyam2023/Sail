@@ -12,7 +12,6 @@ import {
   Header,
   InputTextField,
   RectangularBox,
-  SafeAreaContainer,
 } from "components";
 import { MessageDetailField } from "@shared-constants";
 import {
@@ -35,8 +34,6 @@ interface IMsg {
 }
 
 const MsgDetails = (props: IMsg) => {
-
-  console.log("Default value:::::",props?.escalatedRemarks?.escalated_to?.current);
   const renderMessageDetail = ({ item, index }: IFlatlistMessageDetail) => {
     return (
       <RectangularBox
@@ -62,11 +59,12 @@ const MsgDetails = (props: IMsg) => {
   return (
     <>
       <Header topheading={StringConstants.MESSAGE_DETAILS} />
-      <SafeAreaContainer>
+     <View style={{paddingHorizontal:20,flex:1,marginBottom:20}}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={styles.container}
           nestedScrollEnabled
+          
         >
           <FlatList
             data={[
@@ -85,11 +83,10 @@ const MsgDetails = (props: IMsg) => {
             data={props?.msgData?.allEscalations}
             renderItem={renderEscalatedCard}
             scrollEnabled={false}
-            style={{ paddingHorizontal: 20 }}
+            style={{ paddingHorizontal: 20 ,marginBottom:20}}
           />
           {props?.msgData?.escalated_to != null ? (
             <View style={styles.escalaltedInputContainer}>
-
                 <InputTextField
                   onChangeText={() => {}}
                   placeholder={StringConstants.ESCALATED_TO}
@@ -114,7 +111,8 @@ const MsgDetails = (props: IMsg) => {
             </View>
           ) : null}
         </ScrollView>
-      </SafeAreaContainer>
+        </View>
+   
     </>
   );
 };

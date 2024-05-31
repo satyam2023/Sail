@@ -1,6 +1,6 @@
 import { Colors } from "commonStyles/RNColor.style";
 import React, { Dispatch, SetStateAction } from "react";
-import { SafeAreaView, TouchableOpacity, View } from "react-native";
+import { SafeAreaView,View } from "react-native";
 import Executed from "views/visit/ExecutedVisit/Executed";
 import Planned from "views/visit/PlannedVisit/Planned";
 import UpcomingVisit from "views/visit/UpComingVisit/Upcoming";
@@ -8,19 +8,18 @@ import Glyphs from "assets/Glyphs";
 import { Image } from "react-native";
 import StringConstants from "shared/localization";
 import commonStyles from "commonStyles/CommonStyle";
-import { IupcomingVisitField, VisitHeaderData } from "@shared-constants";
+import {  VisitHeaderData } from "@shared-constants";
 import {
   ExecutedResponse,
   VisitResponse,
 } from "models/ApiResponses/VisitResponse";
-import { IFilterDataDetails, IPlannedVisitEdit } from "models/interface/IVisit";
+import { IFilterDataDetails, IPlannedVisitEdit, IupcomingVisitField } from "models/interface/IVisit";
 import { IdropDown } from "models/interface/ISetting";
 import {
   CustomFooter,
   Header,
   HorizontalSlider,
   InputTextField,
-  KeyboardAvoidingWrapper,
   PressableButton,
   TextWrapper,
 } from "components";
@@ -60,6 +59,7 @@ interface IVisitScreen {
   searchResult: VisitResponse[];
   handleClearSearchResult: () => void;
   plannedVisit: VisitResponse[];
+  searchStatus:boolean
 }
 
 const VisitScreen = ({
@@ -94,12 +94,77 @@ const VisitScreen = ({
   searchResult,
   handleClearSearchResult,
   plannedVisit,
+  searchStatus,
 }: IVisitScreen) => {
+  const rednerVisitScreens = () => {
+    switch (currentVisit) {
+      case 1:
+        return (
+          <UpcomingVisit
+            {...{
+              upcomingVisitList,
+              upcomingVisitDetails,
+              setSelectedIndexValue,
+              upcomingFieldData,
+              selectedIndexValue,
+              customerDetails,
+              handleCustomerClick,
+              handleUpcomingVisitBoxClick,
+              setPaginationPage,
+              searchResult,
+              searchStatus,
+            }}
+          />
+        );
+      case 2:
+        return (
+          <Planned
+            {...{
+              plannedVisitList,
+              selectedIndexValue,
+              plannedVisitFieldData,
+              plannedVisitEditDetails,
+              plannedVisitEdit,
+              modeOfContactDropData,
+              isVisitEditable,
+              handlePlannedVisitBoxClick,
+              customerDetails,
+              handleCustomerClick,
+              setPaginationPage,
+              searchResult,
+              plannedVisit,
+              searchStatus,
+            }}
+          />
+        );
+      case 3:
+        return (
+          <Executed
+            {...{
+              executedVisitFieldData,
+              setSelectedIndexValue,
+              executedVisitList,
+              selectedIndexValue,
+              customerDetails,
+              handleCustomerClick,
+              handleUpcomingVisitBoxClick,
+              callDownloadPDFApi,
+              setPaginationPage,
+              searchResult,
+              searchStatus,
+            }}
+          />
+        );
+      default:
+        return;
+    }
+  };
+
   return (
     <>
       <StatusBarComponent
         backgroundColor={Colors.sailBlue}
-        conentType={"dark-content"}
+        conentType={'light-content'}
       />
       <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }}>
         <Header topheading={StringConstants.VISITS} />
@@ -107,9 +172,7 @@ const VisitScreen = ({
           <HorizontalSlider
             sliderData={VisitHeaderData}
             currentScreen={currentVisit}
-            selectedTab={(index: number) => {
-              setCurrentVisit(index);
-            }}
+            selectedTab={(index: number) => setCurrentVisit(index)}
             countArray={visitCountArray}
             style={{ backgroundColor: Colors.background }}
           />
@@ -126,13 +189,17 @@ const VisitScreen = ({
               rightIcon={Glyphs.Search}
               containerStyle={{ backgroundColor: Colors.white, width: "80%" }}
               onRighIconPress={callApplyFilter}
+              isLabelNotMovingUp={true}
             />
-            <TouchableOpacity
-              style={styles.filter}
-              onPress={handleFilterSearch}
-            >
+            <PressableButton style={styles.filter} onPress={handleFilterSearch}>
+              {searchStatus && (
+                <Image
+                  source={Glyphs.Ellipse}
+                  style={styles.ellipse}
+                />
+              )}
               <Image source={Glyphs.Filter} style={styles.imgContainer} />
-            </TouchableOpacity>
+            </PressableButton>
             {applyFilterSearch && (
               <FilterData
                 isVisible={true}
@@ -140,8 +207,7 @@ const VisitScreen = ({
               />
             )}
           </View>
-
-          {searchResult.length > 0 && (
+          {searchStatus && (
             <View style={styles.searchResultText}>
               <TextWrapper
                 style={commonStyles.font14BoldBlue}
@@ -157,58 +223,13 @@ const VisitScreen = ({
               </PressableButton>
             </View>
           )}
-
-          {currentVisit == 1 && (
-            <UpcomingVisit
-              {...{
-                upcomingVisitList,
-                upcomingVisitDetails,
-                setSelectedIndexValue,
-                upcomingFieldData,
-                selectedIndexValue,
-                customerDetails,
-                handleCustomerClick,
-                handleUpcomingVisitBoxClick,
-                setPaginationPage,
-                searchResult,
-              }}
-            />
-          )}
-          {currentVisit == 2 && (
-            <Planned
-              {...{
-                plannedVisitList,
-                selectedIndexValue,
-                plannedVisitFieldData,
-                plannedVisitEditDetails,
-                plannedVisitEdit,
-                modeOfContactDropData,
-                isVisitEditable,
-                handlePlannedVisitBoxClick,
-                customerDetails,
-                handleCustomerClick,
-                setPaginationPage,
-                searchResult,
-                plannedVisit,
-              }}
-            />
-          )}
-          {currentVisit == 3 && (
-            <Executed
-              {...{
-                executedVisitFieldData,
-                setSelectedIndexValue,
-                executedVisitList,
-                selectedIndexValue,
-                customerDetails,
-                handleCustomerClick,
-                handleUpcomingVisitBoxClick,
-                callDownloadPDFApi,
-                setPaginationPage,
-                searchResult,
-              }}
-            />
-          )}
+          {
+            (searchStatus && searchResult.length==0) &&
+            <TextWrapper  style={styles.noRecordFoundText}>
+              {StringConstants.NO_MATCHING_RECORD_FOUND}
+            </TextWrapper> 
+          }
+          {rednerVisitScreens()}
         </View>
         {currentVisit == 2 &&
           FooterVisibility &&

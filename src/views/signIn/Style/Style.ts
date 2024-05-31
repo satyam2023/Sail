@@ -15,7 +15,7 @@ interface ISignInStyle {
 }
 const styles = StyleSheet.create<ISignInStyle>({
   signinText: {
-    fontFamily: fonts.type.bold,
+    fontFamily: fonts.Poppins.bold,
     color: Colors.sailBlue,
     fontSize: 24,
     lineHeight: 31.2,
@@ -24,7 +24,7 @@ const styles = StyleSheet.create<ISignInStyle>({
   },
   pleaseText: {
     marginTop: "2%",
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 16,
     lineHeight: 20,
     color: Colors.blackPeral,
@@ -39,7 +39,7 @@ const styles = StyleSheet.create<ISignInStyle>({
   },
 
   signupText: {
-    fontFamily: fonts.type.semiBold,
+    fontFamily: fonts.Poppins.semiBold,
     fontSize: 14,
     lineHeight: 17.5,
     color: Colors.sailBlue,

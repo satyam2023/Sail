@@ -21,17 +21,16 @@ const Third = ({
       <CustomHeader details={StringConstants.CHOOSE_PASSWORD} />
       <InputTextField
         eyeIcon={Glyphs.Eye}
-        leftIcon={Glyphs.Key}
+        leftIcon={buttonStatus?Glyphs.ActiveKey:Glyphs.Key}
         placeholder={StringConstants.CREATE_PASSWORD}
         onChangeText={(text: string) => handleOnTextChange(text, 6)}
         maxlength={20}
-        leftIconActive={buttonStatus}
         errors={passwordErrors.current}
         inputBoxId="Password"
       />
       <InputTextField
         eyeIcon={Glyphs.Eye}
-        leftIcon={Glyphs.Key}
+        leftIcon={buttonStatus?Glyphs.ActiveKey:Glyphs.Key}
         placeholder={StringConstants.CONFIRM_PASSWORD}
         onChangeText={(text: string) => handleOnTextChange(text, 7)}
         maxlength={20}

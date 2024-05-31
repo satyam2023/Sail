@@ -17,7 +17,7 @@ const KeyboardAvoidingWrapper = (props: KeyboardAvoidingWrapperProps) => {
   return (
     <KeyboardAvoidingView
       style={[styles.container, props.style]}
-      behavior={isAndroid ? "height" : "padding"}
+      behavior={'padding'}
       keyboardVerticalOffset={
         isAndroid ? StatusBar.currentHeight : ScreenHeight * 0.08
       }

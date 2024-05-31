@@ -1,6 +1,5 @@
-import React from "react";
+import React, { memo } from "react";
 import { FlatList, View } from "react-native";
-import Data from "../UpComingVisit/mockData/DATA";
 import StringConstants from "shared/localization";
 import Glyphs from "assets/Glyphs";
 import { VisitResponse } from "models/ApiResponses/VisitResponse";
@@ -11,6 +10,7 @@ import {
 } from "models/interface/IVisit";
 import { IdropDown } from "models/interface/ISetting";
 import commonStyles from "commonStyles/CommonStyle";
+import { PlannedVisitPlaceHolder } from "@shared-constants";
 
 interface PlannedProps {
   plannedVisitList: VisitResponse[];
@@ -26,6 +26,7 @@ interface PlannedProps {
   setPaginationPage: () => void;
   searchResult: VisitResponse[];
   plannedVisit:VisitResponse[];
+  searchStatus:boolean;
 }
 
 const Planned = ({
@@ -40,16 +41,17 @@ const Planned = ({
   customerDetails,
   setPaginationPage,
   searchResult,
-  plannedVisit
+  plannedVisit,
+  searchStatus
+
 }: PlannedProps) => {
 
-  console.log("Planned List :::::",plannedVisit);
-  const isSearchResult: boolean = searchResult.length > 0 ? true : false;
+  const isSearchResult: boolean = searchStatus;
   const renderPlannedVisit = ({ item, index }: IFlatListPlannedVisit) => {
     return (
       <RectangularBox
         onPress={() => handlePlannedVisitBoxClick(index, item.id)}
-        leftIcon={Glyphs.Profile2userClicked}
+        leftIcon={Glyphs.multiProfile}
         heading={`${StringConstants.CUSTOMER_VISIT} ${index + 1}`}
         subHeading={item?.customer_data?.company_name}
         cancelled={item.visit_status == "0" ? false : true}
@@ -61,19 +63,19 @@ const Planned = ({
   return (
     <View style={{ paddingHorizontal: 20, flex: 1 }}>
       {!customerDetails ? (
-        <>
           <FlatList
             data={isSearchResult?searchResult: plannedVisit}
             renderItem={renderPlannedVisit}
-            onMomentumScrollEnd={setPaginationPage}
+            onEndReachedThreshold={0.2} 
+            onEndReached={setPaginationPage}
             showsVerticalScrollIndicator={false}
           />
-        </>
+ 
       ) : (
         <CustomerDetails
           CustomerData={plannedVisitFieldData}
           onPress={handleCustomerClick}
-          placeholderData={Data}
+          placeholderData={PlannedVisitPlaceHolder}
           indexofSelectedVisit={selectedIndexValue}
           companyName={
             (isSearchResult ? searchResult :  plannedVisit)[
@@ -95,4 +97,4 @@ const Planned = ({
   );
 };
 
-export default Planned;
+export default memo(Planned);
