@@ -488,13 +488,9 @@ const StringConstants = {
   FINGER_PRINT_KEY:'Finger Print Key',
   INVALID_WEBSITE:'Invalid Website',
   PENDING_APPROVAL_MESSAGE:'Your account is pending for approval with admin.',
-  INVALID_CREDENTIALS:'Invalid Credentials'
-
-
-
-  
-  
-
+  INVALID_CREDENTIALS:'Invalid Credentials',
+  RESOLVED:'Resolved',
+  NOT_RESOLVED:'Not Resolved'
 };
 
 export default StringConstants;

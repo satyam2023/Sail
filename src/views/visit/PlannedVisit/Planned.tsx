@@ -26,6 +26,7 @@ interface PlannedProps {
   setPaginationPage: () => void;
   searchResult: VisitResponse[];
   plannedVisit:VisitResponse[];
+  searchStatus:boolean;
 }
 
 const Planned = ({
@@ -40,10 +41,12 @@ const Planned = ({
   customerDetails,
   setPaginationPage,
   searchResult,
-  plannedVisit
+  plannedVisit,
+  searchStatus
+
 }: PlannedProps) => {
 
-  const isSearchResult: boolean = searchResult.length > 0 ? true : false;
+  const isSearchResult: boolean = searchStatus;
   const renderPlannedVisit = ({ item, index }: IFlatListPlannedVisit) => {
     return (
       <RectangularBox
@@ -60,7 +63,6 @@ const Planned = ({
   return (
     <View style={{ paddingHorizontal: 20, flex: 1 }}>
       {!customerDetails ? (
-        <>
           <FlatList
             data={isSearchResult?searchResult: plannedVisit}
             renderItem={renderPlannedVisit}
@@ -68,7 +70,7 @@ const Planned = ({
             onEndReached={setPaginationPage}
             showsVerticalScrollIndicator={false}
           />
-        </>
+ 
       ) : (
         <CustomerDetails
           CustomerData={plannedVisitFieldData}

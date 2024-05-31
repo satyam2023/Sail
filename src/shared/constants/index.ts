@@ -140,12 +140,12 @@ export const CustomerDetailInputField: ICustomerDetailInputField[] = [
     maxlength: 20,
     key: "company",
   },
-  { placeholder: StringConstants.CUSTOMER_SEG },
-  { placeholder: StringConstants.CUSTOMER_SUB_SEG },
-  { placeholder: StringConstants.CUSTOMER_TYPE },
-  { placeholder: StringConstants.CUSTOMER_SUB_TYPE },
-  { placeholder: StringConstants.CUSTOMER_STATUS },
-  { placeholder: StringConstants.CUSTOMER_REGION },
+  { placeholder: StringConstants.CUSTOMER_SEG,key:'cust_seg' },
+  { placeholder: StringConstants.CUSTOMER_SUB_SEG,key:'cust_sub_seg' },
+  { placeholder: StringConstants.CUSTOMER_TYPE ,key:'cust_type'},
+  { placeholder: StringConstants.CUSTOMER_SUB_TYPE ,key:'cust_sub_type'},
+  { placeholder: StringConstants.CUSTOMER_STATUS ,key:'cust_status'},
+  { placeholder: StringConstants.CUSTOMER_REGION,key:'cust_region' },
   { placeholder: StringConstants.ENTER_PAN_CARD, maxlength: 10, key: "pan" },
   { placeholder: StringConstants.ENTER_GST, maxlength: 15, key: "gst" },
   { placeholder: StringConstants.WEBSITE_LINK, maxlength: 20, key: "website" },
@@ -593,6 +593,7 @@ export const CustomerTypeTraderFields: ICustomerTrader[] = [
   },
   {
     placeholder: StringConstants.PROCURED_PRODUCT,
+    key:'supply'
   },
   {
     placeholder: StringConstants.TENTATIVE_QUALITY_PROCURED,
@@ -600,7 +601,8 @@ export const CustomerTypeTraderFields: ICustomerTrader[] = [
     key: "tentative_quality_procured",
     input: "text",
   },
-  { placeholder: StringConstants.SUPPLIER },
+  { placeholder: StringConstants.SUPPLIER,
+    key:'procured' },
 ];
 
 export interface ICustomerProject {

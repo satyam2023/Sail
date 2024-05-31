@@ -44,6 +44,7 @@ const VisitScreenViewModel = () => {
   const [customerDetails, setCustomerDetails] = useState<boolean>(false);
   const [applyFilterSearch, setApplyFilterSearch] = useState<boolean>(false);
   const [searchResult, setSearchResult] = useState<VisitResponse[]>([]);
+  const [searchStatus,setSearchStatus]=useState<boolean>(false);
   const [plannedVisit, setPlannedVisit] = useState<VisitResponse[]>([]);
   const handleCustomerClick = () => setCustomerDetails(!customerDetails);
 
@@ -291,6 +292,7 @@ const VisitScreenViewModel = () => {
       const res = await applyFilterAPI(dispatch, data);
       if (res?.isSuccess) {
         setCustomerDetails(false);
+        setSearchStatus(true)
         setSearchResult(res?.data?.data?.data);
       }
     } catch (e) {
@@ -352,6 +354,7 @@ const VisitScreenViewModel = () => {
 
   const handleClearSearchResult = () => {
     setSearchResult([]);
+    setSearchStatus(false);
     setCustomerDetails(false);
    setSelectedIndexValue(-1);
   };
@@ -391,6 +394,7 @@ const VisitScreenViewModel = () => {
         searchResult,
         handleClearSearchResult,
         plannedVisit,
+        searchStatus,
       }}
     />
   );

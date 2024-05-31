@@ -14,6 +14,12 @@ const styles = StyleSheet.create({
     fontFamily: fonts.Poppins.medium,
     color: Colors.sailBlue,
     textDecorationLine: "underline",
+  },
+  escalatedManagerComment:{
+    height: 100,
+    backgroundColor: Colors.disabledGrey,
+    marginHorizontal: 16,
+    padding:20
   }
 });
 

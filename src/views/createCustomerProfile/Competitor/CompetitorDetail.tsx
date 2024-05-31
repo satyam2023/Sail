@@ -45,6 +45,7 @@ const CompetitorDetail = (props: ICompetitorDetail) => {
         <FlatList
           data={CompetitorDetailData}
           renderItem={renderCompettorInputField}
+          keyExtractor={(_,index)=>index.toString()}
         />
       </View>
     </SafeAreaView>

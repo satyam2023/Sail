@@ -65,7 +65,7 @@ const ProductCatalogScreen = (props: IProductScreen) => {
               placeholder={StringConstants.SEARCH}
               rightIcon={Glyphs.Search}
               containerStyle={{ backgroundColor: Colors.white, marginTop: 16 }}
-              value={props?.details?.searchDetails?.current}
+              isLabelNotMovingUp={true}
             />
             <FlatList
               data={

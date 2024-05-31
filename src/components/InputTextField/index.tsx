@@ -58,14 +58,16 @@ export interface ITextField {
   leftIconActive?: boolean;
   value?: string | undefined;
   placeholderColor?: string;
+  isLabelNotMovingUp?:boolean;
   inputBoxId?: string;
+  key?:string;
 }
 
 const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
   const [secureText, setSecuretext] = useState<boolean>(false);
   const [textFocusStatus, setTextFocusStatus] = useState<boolean>(false);
   const enteredValue = useRef<string>(StringConstants.EMPTY);
-  const inputRef = useRef<TextInput>(null);
+  const inputRef = useRef<any>(null);
   const translateY = useRef(new Animated.Value(0)).current;
   const isShowLabel=useRef<boolean>(true);
   useEffect(() => {
@@ -90,8 +92,14 @@ const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
     }
   };
 
+  
+
+
   const textFocus = () => {
-    setTextFocusStatus(true);
+    if(props?.isLabelNotMovingUp)
+    { }
+    else
+    setTextFocusStatus(true)
   };
 
   const textBlur = () => {
@@ -197,9 +205,9 @@ const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
         )}
       </View>
       {props?.errors?.map(
-        (error) =>
+        (error,index) =>
           error?.field == props?.inputBoxId && (
-            <TextWrapper style={[commonStyles.errorText, { bottom: 12 }]}>
+            <TextWrapper style={[commonStyles.errorText, { bottom: 12 }]} key={index.toString()}>
               {error?.message}
             </TextWrapper>
           ),
@@ -263,3 +271,6 @@ const styles = StyleSheet.create<ITextInputStyle>({
     color: Colors.black,
   },
 });
+
+
+

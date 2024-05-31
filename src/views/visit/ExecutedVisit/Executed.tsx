@@ -23,6 +23,7 @@ interface IExecuted {
   callDownloadPDFApi: (id: number) => void;
   setPaginationPage: () => void;
   searchResult: VisitResponse[];
+  searchStatus:boolean;
 }
 
 const Executed = ({
@@ -36,6 +37,7 @@ const Executed = ({
   callDownloadPDFApi,
   setPaginationPage,
   searchResult,
+  searchStatus,
 }: IExecuted) => {
   const isSearchResult: boolean = searchResult.length > 0 ? true : false;
 
@@ -72,6 +74,7 @@ const Executed = ({
             selectedIndexValue,
             callDownloadPDFApi,
             searchResult,
+            searchStatus,
           }}
         />
       )}

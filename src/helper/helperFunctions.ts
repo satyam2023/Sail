@@ -438,8 +438,6 @@ export const unplannedVisitMeeting = (
   const selectedIndex = Number(
     unplannedVisitValue?.current?.selectedRepresentative,
   );
-
-  console.log("Slected representative::idex", selectedIndex);
   const body = {
     customer_code: unplannedVisitValue?.current?.code || null,
     company_name: unplannedVisitValue?.current?.name || null,
@@ -665,7 +663,7 @@ export const setUpcomingFieldData = (
   selectedIndexValue: number,
   searchResult: any,
 ) => {
-  const tempData = searchResult.length > 0 ? searchResult : upcomingVisitList;
+  const tempData = searchResult?.length > 0 ? searchResult : upcomingVisitList;
   const ans =
     selectedIndexValue >= 0
       ? [
@@ -688,7 +686,7 @@ export const setExecutedFieldData = (
   selectedIndexValue: number,
   searchResult: any,
 ) => {
-  const tempData = searchResult.length > 0 ? searchResult : executedVisitList;
+  const tempData = searchResult?.length > 0 ? searchResult : executedVisitList;
   const ans =
     selectedIndexValue >= 0
       ? [
@@ -1097,32 +1095,3 @@ export const isAnyInformationHaveData = (details: InformationDetails) => {
   return false;
 };
 
-export const getMemoizedFunction = (() => {
-  const memo = {};
-  let accessKey = 0;
-
-  const get = (key: string, persist?: boolean): Function => {
-    const value = memo[key];
-    !persist && delete memo[key];
-    return value;
-  };
-
-  const set = (callback: Function): string => {
-    memo[accessKey += 1] = callback;
-    return `${accessKey}`;
-  };
-
-  const memoizer = (
-    input: Function | string,
-    persist?: boolean,
-  ): Function | string => {
-    if (typeof input === 'string' && input in memo) {
-      return get(input, persist) ?? input;
-    } else if (typeof input === 'function') {
-      return set(input);
-    }
-    return input;
-  };
-
-  return memoizer;
-})();

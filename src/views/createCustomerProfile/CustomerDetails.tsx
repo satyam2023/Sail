@@ -80,6 +80,7 @@ const CreateCustomerDetails = (props: ICust) => {
           <CustomDropDown
             ArrayOfData={props?.dropdownDataList[index - 2]}
             topheading={item.placeholder}
+            key={item.key}
             onPress={(item: IdropDown) => props?.setSubTypes(item, index)}
           />
         )}
@@ -157,11 +158,9 @@ const CreateCustomerDetails = (props: ICust) => {
   };
 
   const renderExtratypeField = ({ item, index }: IFlatListExtraItem) => {
-    const isTextField: boolean =
-      index == 1 || index == 2 || index == 3 || index == 5;
     return (
       <>
-        {isTextField ? (
+        {[1,2,3,5].includes(index)? (
           <InputTextField
             onChangeText={(text: string) =>
               props?.handleTraderDealerTypeTextChange(text, index)
@@ -186,6 +185,7 @@ const CreateCustomerDetails = (props: ICust) => {
                   StringConstants.CUSTOMER_TYPE_TRADER_DEFENCE,
                 );
               }}
+              key={item?.key}
               isSelectedItemNotVisible={index == 6 || index == 4 ? true : false}
             />
             {index == 6 &&
@@ -258,9 +258,9 @@ const CreateCustomerDetails = (props: ICust) => {
         <View style={styles.imgContainer}>
           {props?.customerDetailSelectedImage &&
             props?.customerDetailSelectedImage.map(
-              (item: ISelectedImage, index: number) => {
+              (item: ISelectedImage) => {
                 return (
-                  <View style={{ marginRight: 10 }} key={index.toString()}>
+                  <View style={{ marginRight: 10 }} key={item.fileSize.toString()}>
                     <PressableButton>
                       <Image source={item} style={styles.selectedImage} />
                     </PressableButton>

@@ -6,7 +6,6 @@ import {
 } from "controllers/enquiryController";
 import { checkOnlyNumber } from "helper/ValidationRegex";
 import { isDetailFilled, logger } from "helper/helperFunctions";
-import { isAndroid } from "libs";
 import { IApiResponse } from "models/ApiResponses/IApiResponse";
 import {
   IssueEnquiryBody,
@@ -122,13 +121,12 @@ const EnquiryViewModel = () => {
           lat: pos.coords.latitude,
           long: pos.coords.longitude,
         };
-        isAndroid?console.log("Body in Abdroid::::::",body):console.log("Body in IOS::::::",body);
+       
         try {
           dispatch(setLoaderVisibility(true));
           const res: IApiResponse<INearbyCustomerResponse> | undefined =
             await getNearbyCustomer(body);
           if (res?.isSuccess) {
-            console.log("Nearby response:::::", res?.data?.data);
             setNearByCustomerList(res?.data?.data);
           }
         } catch (error) {

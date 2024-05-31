@@ -174,8 +174,10 @@ const CreateCustomerViewModel = () => {
       ],
     }));
     resetRepresentativeDetail();
+    setRepresentativeImage(undefined);
     setIsAllDetailField(false);
     addDetails(false);
+    
   };
   const representativeDetails: RepresentativeDetails = {
     name: "",
@@ -410,7 +412,7 @@ const CreateCustomerViewModel = () => {
       }));
   }
 
-  function removeSelectedImage(item: ISelectedImage) {
+  const removeSelectedImage=(item: ISelectedImage)=> {
     setCustomerSelectedImage([
       ...removeSelectedCustomerImage(
         item.fileName,

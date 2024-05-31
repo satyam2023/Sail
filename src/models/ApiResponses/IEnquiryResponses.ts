@@ -123,6 +123,7 @@ export interface INearbyCustomerBody {
     created_at: string;
     updated_at: string;
     issue_name: IssueName;
+    escalation_byme:AllsEscalation[];
     alls_escalation: AllsEscalation[];
     alls_escalation_oldest: AllsEscalation[];
   }

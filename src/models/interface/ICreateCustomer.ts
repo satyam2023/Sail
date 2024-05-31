@@ -206,3 +206,7 @@ export interface CompetitorDetailInputField {
 export interface ICompetitorFlatList extends IFlatlistIndex{
   item:CompetitorDetailInputField
 }
+
+export interface IRepresentativeFlatList extends IFlatlistIndex{
+ item:IRepresentative
+}

@@ -1,5 +1,5 @@
 import { getCurrentDate1 } from "helper/helperFunctions";
-import { ScreenHeight, ScreenWidth } from "libs";
+import { ScreenHeight, ScreenWidth, isAndroid } from "libs";
 import React, { memo, useState } from "react";
 import { Image, StyleSheet, View, ViewStyle } from "react-native";
 import { Calendar } from "react-native-calendars";
@@ -11,12 +11,11 @@ import TextWrapper from "components/TextWrapper";
 import StringConstants from "shared/localization";
 import { ValidationError } from "core/UseForm";
 
-interface ICalenderStyle{
-main:ViewStyle;
-dateSelector:ViewStyle;
-fromToCalender:ViewStyle;
-toCalender:ViewStyle;
-
+interface ICalenderStyle {
+  main: ViewStyle;
+  dateSelector: ViewStyle;
+  fromToCalender: ViewStyle;
+  toCalender: ViewStyle;
 }
 
 const Datepicker = ({
@@ -35,9 +34,7 @@ const Datepicker = ({
 }: any) => {
   const [disableMonth, setDisableMonth] = useState<boolean>(false);
   const [isCalenderVisible, setCalenderVisibility] = useState<boolean>(false);
-  const [selectedDate,setSelectedDate]=useState<string>(defaultValue);
-
-
+  const [selectedDate, setSelectedDate] = useState<string>(defaultValue);
 
   function addWeeks(date: Date, weeks: number) {
     date.setDate(date.getDate() + 6 * weeks);
@@ -129,44 +126,57 @@ const Datepicker = ({
           />
         );
     }
-
   };
 
   return (
     <>
-
       <PressableButton
-        style={[styles.dateSelector,style,{borderColor:error?Colors.red:Colors.transparent}]}
+        style={[
+          styles.dateSelector,
+          style,
+          { borderColor: error ? Colors.red : Colors.transparent },
+        ]}
         onPress={() => setCalenderVisibility(!isCalenderVisible)}
       >
         <Image source={Glyphs.Calender} style={commonStyles.leftIcon} />
         <View>
-          { !text?
-        <TextWrapper style={[commonStyles.font14RegularGray,{bottom:selectedDate?5:0}]}>
-          {StringConstants.VISIT_DATE}
-        </TextWrapper>
-        :
-        <TextWrapper style={[commonStyles.font14RegularGray,{bottom:selectedDate?5:0}]}>
-        {text}
-      </TextWrapper>
-}
-        {
-          selectedDate &&
-          <TextWrapper>
-            {selectedDate}
-          </TextWrapper>
-        }
+          {!text ? (
+            <TextWrapper
+              style={[
+                commonStyles.font14RegularGray,
+                { bottom: selectedDate ? (isAndroid ? 0 : 5) : 0 },
+              ]}
+            >
+              {StringConstants.VISIT_DATE}
+            </TextWrapper>
+          ) : (
+            <TextWrapper
+              style={[
+                commonStyles.font14RegularGray,
+                { bottom: selectedDate ? (isAndroid ? 0 : 5) : 0 },
+              ]}
+            >
+              {text}
+            </TextWrapper>
+          )}
+          {selectedDate && (
+            <TextWrapper style={{ color: Colors.blackPeral }}>
+              {selectedDate}
+            </TextWrapper>
+          )}
         </View>
       </PressableButton>
       {errors?.map(
-          (error:ValidationError) =>
+        (error: ValidationError) =>
           error?.field == dateBoxId && (
-              <TextWrapper style={[commonStyles.errorText, { bottom: 12 }]}>
-                {error?.message}
-              </TextWrapper>
-            )
-        )}
-      { error && <TextWrapper style={commonStyles.errorText}>{error}</TextWrapper>}
+            <TextWrapper style={[commonStyles.errorText, { bottom: 12 }]}>
+              {error?.message}
+            </TextWrapper>
+          ),
+      )}
+      {error && (
+        <TextWrapper style={commonStyles.errorText}>{error}</TextWrapper>
+      )}
       {isCalenderVisible && renderCalender()}
     </>
   );
@@ -189,24 +199,24 @@ const styles = StyleSheet.create<ICalenderStyle>({
     paddingHorizontal: 16,
     marginBottom: 16,
     flexDirection: "row",
-    borderWidth:1,
+    borderWidth: 1,
   },
   fromToCalender: {
     borderWidth: 0.5,
-    width:ScreenWidth*0.8,
+    width: ScreenWidth * 0.8,
     borderColor: "gray",
-    zIndex:2,
-    position:'absolute',
-    top:ScreenHeight/5,
-     alignSelf:'center'
+    zIndex: 2,
+    position: "absolute",
+    top: ScreenHeight / 5,
+    alignSelf: "center",
   },
   toCalender: {
     borderWidth: 0.5,
-    width:ScreenWidth*0.8,
+    width: ScreenWidth * 0.8,
     borderColor: "gray",
-    position:'absolute',
-    top:ScreenHeight/5,
-    alignSelf:'center',
-    right:'45%'
+    position: "absolute",
+    top: ScreenHeight / 5,
+    alignSelf: "center",
+    right: "45%",
   },
 });

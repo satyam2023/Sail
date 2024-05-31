@@ -20,10 +20,11 @@ interface IUpcomingScreen {
   handleUpcomingVisitBoxClick: (index: number) => void;
   setPaginationPage: () => void;
   searchResult: VisitResponse[];
+  searchStatus:boolean
 }
 
 const UpcomingVisit = (props: IUpcomingScreen) => {
-  const isSearchResult: boolean = props?.searchResult.length > 0 ? true : false;
+  const isSearchResult: boolean = props?.searchStatus;
   const renderUpcomingVisit = ({
     item,
     index,

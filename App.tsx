@@ -14,9 +14,7 @@ import { navigate } from "@navigation";
 import InternetManager from "components/InternetManager";
 import PopUpBox from "views/emptyState/PopUpBox";
 LogBox.ignoreAllLogs();
-LogBox.ignoreLogs([
-  'Non-serializable values were found in the navigation state',
-]);
+
 
 if (__DEV__) {
   import("./ReactoronConfig").then(() => console.log("Reactotron Configured"));
@@ -45,9 +43,11 @@ const App = () => {
         const res = await fetch(
           "https://cmoccuat.sailcmo.co.in:8000/api"
         );
+        console.error("VPN res:::",res);
         if(res.status==200)
          setVpnStatus(true);
       } catch (e) {
+        console.error("VPN Error:::",e);
         setVpnStatus(false);
       }
     });
@@ -65,6 +65,7 @@ const App = () => {
       isRemember == "1" ? navigate(SCREENS.TAB) : navigate(SCREENS.ONBOARDING);
       SplashScreen.hide();
     }, 2000);
+    
   }, [scheme, isDarkMode]);
   
   return (

@@ -1,4 +1,6 @@
+import fonts from "@fonts";
 import { Colors } from "commonStyles/RNColor.style";
+import { ScreenHeight } from "libs";
 import { ImageStyle, StyleSheet, TextStyle, ViewStyle } from "react-native";
 
 interface IVisitScreenStyle{
@@ -10,6 +12,7 @@ interface IVisitScreenStyle{
     imgContainer:ImageStyle;
     heading:ViewStyle;
     ellipse:ImageStyle;
+    noRecordFoundText:TextStyle;
 }
 
 const styles = StyleSheet.create<IVisitScreenStyle>({
@@ -63,6 +66,15 @@ const styles = StyleSheet.create<IVisitScreenStyle>({
     position: "absolute",
     top: 3,
     right: 2,
+  },
+  noRecordFoundText:{
+    flex:1,
+    color:Colors.sailBlue,
+    fontFamily:fonts.Poppins.medium,
+    fontSize:16,
+    position:'absolute',
+    marginTop:ScreenHeight/2.5,
+    alignSelf:'center'
   }
   
 });

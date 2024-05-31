@@ -2,8 +2,6 @@ import APIConstants from "core/ApiConstants";
 import { logger } from "helper/helperFunctions";
 import { IApiResponse } from "models/ApiResponses/IApiResponse";
 import { PlannedVisitResponse } from "models/ApiResponses/MeetingResponse";
-import { Dispatch } from "react";
-import { AnyAction } from "redux";
 import { sendGetRequest, sendPostRequest } from "services/network/Network";
 
 export const getUnplannedVisitExecution = async (body: object) => {

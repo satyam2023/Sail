@@ -59,6 +59,7 @@ interface IVisitScreen {
   searchResult: VisitResponse[];
   handleClearSearchResult: () => void;
   plannedVisit: VisitResponse[];
+  searchStatus:boolean
 }
 
 const VisitScreen = ({
@@ -93,6 +94,7 @@ const VisitScreen = ({
   searchResult,
   handleClearSearchResult,
   plannedVisit,
+  searchStatus,
 }: IVisitScreen) => {
   const rednerVisitScreens = () => {
     switch (currentVisit) {
@@ -110,6 +112,7 @@ const VisitScreen = ({
               handleUpcomingVisitBoxClick,
               setPaginationPage,
               searchResult,
+              searchStatus,
             }}
           />
         );
@@ -130,6 +133,7 @@ const VisitScreen = ({
               setPaginationPage,
               searchResult,
               plannedVisit,
+              searchStatus,
             }}
           />
         );
@@ -147,6 +151,7 @@ const VisitScreen = ({
               callDownloadPDFApi,
               setPaginationPage,
               searchResult,
+              searchStatus,
             }}
           />
         );
@@ -159,7 +164,7 @@ const VisitScreen = ({
     <>
       <StatusBarComponent
         backgroundColor={Colors.sailBlue}
-        conentType={"dark-content"}
+        conentType={'light-content'}
       />
       <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }}>
         <Header topheading={StringConstants.VISITS} />
@@ -184,9 +189,10 @@ const VisitScreen = ({
               rightIcon={Glyphs.Search}
               containerStyle={{ backgroundColor: Colors.white, width: "80%" }}
               onRighIconPress={callApplyFilter}
+              isLabelNotMovingUp={true}
             />
             <PressableButton style={styles.filter} onPress={handleFilterSearch}>
-              {searchResult.length > 0 && (
+              {searchStatus && (
                 <Image
                   source={Glyphs.Ellipse}
                   style={styles.ellipse}
@@ -201,7 +207,7 @@ const VisitScreen = ({
               />
             )}
           </View>
-          {searchResult.length > 0 && (
+          {searchStatus && (
             <View style={styles.searchResultText}>
               <TextWrapper
                 style={commonStyles.font14BoldBlue}
@@ -217,6 +223,12 @@ const VisitScreen = ({
               </PressableButton>
             </View>
           )}
+          {
+            (searchStatus && searchResult.length==0) &&
+            <TextWrapper  style={styles.noRecordFoundText}>
+              {StringConstants.NO_MATCHING_RECORD_FOUND}
+            </TextWrapper> 
+          }
           {rednerVisitScreens()}
         </View>
         {currentVisit == 2 &&

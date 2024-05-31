@@ -53,6 +53,7 @@ const CustomerRepresentative = (props: RepresenatativeProps) => {
             <FlatList
               data={props?.competitorList}
               renderItem={renderCompetitorList}
+              keyExtractor={(_,index)=>index.toString()}
             />
             <CustomButton
               text={StringConstants.PLUS_COMPETITOR}
