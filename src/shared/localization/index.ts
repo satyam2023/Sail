@@ -474,7 +474,7 @@ const StringConstants = {
   PLEASE_ADD_COMMENT:'Please Add Cmment',
   SEARCH_BY:'Search by',
   DURATION:'Duration',
-  DATA_RANGE:'Data Range',
+  DATA_RANGE:'Date Range',
   SEVEN_DAYS:'7 Days',
   FIFTEEN_DAYS:'15 Days',
   THIRTY_DAYS:'30 Days',

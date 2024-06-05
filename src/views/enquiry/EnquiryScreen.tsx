@@ -105,7 +105,7 @@ const EnquiryScreen = ({
     <>
       <StatusBarComponent
         backgroundColor={Colors.sailBlue}
-        conentType={"dark-content"}
+        conentType={'light-content'}
       />
       <SafeAreaContainer style={{ paddingHorizontal: 0 }}>
         <Header topheading={StringConstants.ENQUIRY} />

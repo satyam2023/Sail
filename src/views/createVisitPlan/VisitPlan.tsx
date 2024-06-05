@@ -122,7 +122,7 @@ const CreateVisitPlanScreen = ({
         backgroundColor={Colors.sailBlue}
         conentType={'light-content'}
       />
-      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }}>
+      <SafeAreaView style={styles.container}>
         {!isVisitDetailFilled ? (
           <>
             
@@ -145,10 +145,7 @@ const CreateVisitPlanScreen = ({
                   <InputTextField
                     onChangeText={(text: string) => handleTextChange(text, 8)}
                     placeholder={StringConstants.ENTER_REMARKS}
-                    containerStyle={{
-                      backgroundColor: Colors.white,
-                      height: 90,
-                    }}
+                    containerStyle={styles.textConatiner}
                     inputMode='text'
                     key={'remarks'}
                   />

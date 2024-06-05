@@ -13,12 +13,17 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     padding: 20,
-    paddingBottom:30
+    paddingBottom: 30,
   },
   img: {
     height: 24,
     width: 24,
     resizeMode: "contain",
+  },
+  descriptionCardStyle: {
+    backgroundColor: Colors.white,
+    width: "48%",
+    borderRadius: 5,
   },
 });
 

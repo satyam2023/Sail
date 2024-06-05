@@ -32,7 +32,6 @@ import { ValidationError } from "core/UseForm";
 interface ICust {
   dropdownDataList: IdropDown[][];
   setSubTypes: Function;
-  isAllFieldHaveData: () => void;
   handleLocateMe: () => void;
   handleSelectImageVideo: () => void;
   indexofSubtype: IsubType;
@@ -106,7 +105,7 @@ const CreateCustomerDetails = (props: ICust) => {
   const renderProjectFields = ({ item, index }: IFlatListExtraItem) => {
     return (
       <>
-        {index == 1 || index == 3 ? (
+        {[1,3].includes(index) ? (
           <InputTextField
             onChangeText={(text: string) =>
               props?.handleProjectTypeTextChange(text, index)
@@ -118,7 +117,7 @@ const CreateCustomerDetails = (props: ICust) => {
             errors={props?.projectErrors?.current}
           />
         ) : (
-          (index == 0 || index == 2) && (
+          [0,2].includes(index)  && (
             <>
               <CustomDropDown
                 ArrayOfData={props?.dropdownDataList[10 + index]}
@@ -215,15 +214,14 @@ const CreateCustomerDetails = (props: ICust) => {
         CurrentScreen={1}
         topheading={StringConstants.CREATE_CUSTOMER_PROFILE}
       />
-      <View style={{ paddingHorizontal: 20, marginBottom: 16 }}>
+      <View style={styles.customerDetailContainer}>
         <FlatList
           data={CustomerDetailInputField}
           renderItem={renderCustomerInputField}
           scrollEnabled={false}
           keyExtractor={(_, index) => index.toString()}
         />
-        {(props?.indexofSubtype.customerSubTypeIndex == 2 ||
-          props?.indexofSubtype.customerSubTypeIndex == 7) && (
+        {([2,7].includes(props?.indexofSubtype.customerSubTypeIndex )) && (
           <FlatList
             data={CustomerTypeTraderFields}
             renderItem={renderExtratypeField}

@@ -9,7 +9,7 @@ import { IFlatListInputField } from "models/interface/IViewCustomerProfile";
 
 interface IshowRepresentative {
   handleRepresetativeSelected: (index: number) => void;
-  representativeDetail: any;
+  representativeDetail: string[];
 }
 
 const ShowRepresentative = (props: IshowRepresentative) => {

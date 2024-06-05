@@ -54,6 +54,7 @@ const CustomerRepresentative = (props: RepresenatativeProps) => {
               data={props?.competitorList}
               renderItem={renderCompetitorList}
               keyExtractor={(_,index)=>index.toString()}
+              scrollEnabled={false}
             />
             <CustomButton
               text={StringConstants.PLUS_COMPETITOR}

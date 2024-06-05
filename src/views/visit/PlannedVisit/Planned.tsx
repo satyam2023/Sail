@@ -17,7 +17,6 @@ interface PlannedProps {
   selectedIndexValue: number;
   plannedVisitFieldData: string[];
   plannedVisitEditDetails: IPlannedVisitEdit;
-  plannedVisitEdit: () => void;
   modeOfContactDropData: IdropDown[];
   isVisitEditable: boolean;
   handlePlannedVisitBoxClick: (index: number, id: number) => void;

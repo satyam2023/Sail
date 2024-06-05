@@ -5,10 +5,11 @@ import { Header } from "components";
 import { ICmsProps } from "./FAQs";
 import RenderHtml from "react-native-render-html";
 import { ScreenWidth } from "libs";
+import styles from "../Style";
 
 const About = ({ cmsPageData, pagesRenderingController }: ICmsProps) => {
   const source = {
-    html: cmsPageData[0].content,
+    html: cmsPageData && cmsPageData[0].content,
   };
 
   return (
@@ -17,7 +18,7 @@ const About = ({ cmsPageData, pagesRenderingController }: ICmsProps) => {
         topheading={StringConstants.ABOUT_US}
         onPress={() => pagesRenderingController(StringConstants.CMS)}
       />
-      <View style={{ flex: 1, paddingHorizontal: 20 }}>
+      <View style={styles.cmsPageDetailContainer}>
         <RenderHtml source={source} contentWidth={ScreenWidth} />
       </View>
     </ScrollView>

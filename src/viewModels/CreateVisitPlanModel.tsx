@@ -115,9 +115,9 @@ const CreateVisitPlanViewModel = () => {
 
   const isAllDataFilled = () => {
     if (isAllInputFieldHaveData(visitPlanValue)) {
-      if (!isAllFieldHaveData) setAllFieldData(true);
+      !isAllFieldHaveData && setAllFieldData(true);
     } else {
-      if (isAllFieldHaveData) setAllFieldData(false);
+      isAllFieldHaveData && setAllFieldData(false);
     }
   };
 

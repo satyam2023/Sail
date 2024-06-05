@@ -121,7 +121,7 @@ const SignUpScreenViewMOdel = () => {
       const res: IApiResponse<ISignupBody> = await signupAction(body);
       if (res.isSuccess) {
         dispatch(setPendingApprovalPopUp(true));
-        dispatch(saveUserdata(res.data));
+        dispatch(saveUserdata(res?.data));
       }
     } catch (error) {
       logger(error, "Error in SignUp");

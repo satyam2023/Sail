@@ -103,7 +103,7 @@ const UserEnquiry = ({
           data={searchresult.length > 0 ? searchresult : undefined}
           renderItem={({ item, index }) => renderSearchResult(item, index)}
           scrollEnabled={false}
-          ListFooterComponent={()=><View style={{height:70}}/>}
+          ListFooterComponent={()=><View style={commonStyles.flatlistFooterStyle}/>}
         />
       )}
     </View>

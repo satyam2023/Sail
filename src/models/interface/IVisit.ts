@@ -70,3 +70,7 @@ export interface IupcomingVisitField {
   heading: string;
   imagepath: ImageURISource;
 }
+
+export interface IFlatlistUpcomingVist extends IFlatlistIndex{
+    item: VisitResponse;
+}

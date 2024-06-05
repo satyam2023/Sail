@@ -30,6 +30,7 @@ interface ICommonStyle{
   rectangularBoxRadius:ViewStyle;
   font14RegularTextGray:TextStyle;
   detailLeftIcon:ImageStyle;
+  flatlistFooterStyle:ViewStyle;
 
 }
 
@@ -163,6 +164,9 @@ const commonStyles = StyleSheet.create<ICommonStyle>({
     width:38,
     resizeMode:'contain',
     marginRight:16
+  },
+  flatlistFooterStyle:{
+    height:70
   }
   
 });

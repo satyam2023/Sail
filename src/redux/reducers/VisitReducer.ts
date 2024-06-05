@@ -4,15 +4,26 @@ import {
     SET_PLANNED_VISITS,
     SET_UPCOMING_VISITS,
   } from "../actionConstants";
+import { IBaseReducerInterface } from "./IBaseReducerInterface";
+
+
+  interface IVisitReducer{
+    upcoming: VisitResponse[],
+    planned: VisitResponse[],
+    executed: VisitResponse[],
+    visitedExecutiveList: VisitResponse[],
+  }
+
+  type Action=IBaseReducerInterface<VisitResponse[]>;
   
-  const INITIAL_STATE = {
+  const INITIAL_STATE:IVisitReducer = {
     upcoming: [],
     planned: [],
     executed: [],
     visitedExecutiveList: [],
   };
   
-  const visitsReducer = (state = INITIAL_STATE, action:{type:string,payload:VisitResponse[]}) => {
+  const visitsReducer = (state = INITIAL_STATE, action:Action):IVisitReducer => {
     switch (action.type) {
       case SET_UPCOMING_VISITS: {
         const data=[...state.upcoming,...action.payload];

@@ -5,6 +5,9 @@ interface IMessageStyle {
   img: ImageStyle;
   inputField: ViewStyle;
   escalaltedInputContainer: ViewStyle;
+  msgContainer: ViewStyle;
+  msgListConatiner: ViewStyle;
+  escalatedContainer: ViewStyle;
 }
 
 const styles = StyleSheet.create<IMessageStyle>({
@@ -12,7 +15,7 @@ const styles = StyleSheet.create<IMessageStyle>({
     backgroundColor: Colors.white,
     width: "100%",
     marginTop: 24,
-    borderRadius: 10,  
+    borderRadius: 10,
   },
   img: {
     transform: [{ rotate: "0deg" }],
@@ -24,7 +27,20 @@ const styles = StyleSheet.create<IMessageStyle>({
   escalaltedInputContainer: {
     paddingHorizontal: 20,
     marginTop: 16,
-    marginBottom:20,
+    marginBottom: 20,
+  },
+  msgContainer: {
+    backgroundColor: Colors.background,
+    flex: 1,
+  },
+  msgListConatiner: {
+    paddingHorizontal: 20,
+    marginTop: 20,
+    flex: 1,
+  },
+  escalatedContainer: {
+    paddingHorizontal: 20,
+    marginTop: 20,
   },
 });
 export default styles;

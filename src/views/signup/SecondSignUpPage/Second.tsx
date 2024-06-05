@@ -19,7 +19,7 @@ interface SecondProps {
 }
 const Second = ({handleOnTextChange,locationAndRoleDropDown,roleNameErrors,roleNameDetails,  buttonStatus,rolenamevalues}: SecondProps,) => {
   return (
-    <View style={{flex:1,marginBottom:ScreenHeight*(0.21)}}>
+    <View style={{flex:1,marginBottom:ScreenHeight*(0.21),paddingHorizontal:20}}>
       <CustomHeader details={StringConstants.ENTER_YOUR_PERSONAL_INFO} />
       <InputTextField
         onChangeText={(text:string)=>handleOnTextChange(text,2)}

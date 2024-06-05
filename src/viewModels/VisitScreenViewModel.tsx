@@ -32,7 +32,7 @@ import {
   IFilterDataDetails,
   IVisitScreenPagination,
 } from "models/interface/IVisit";
-import { store } from "redux/store/Store";
+import { RootState, store } from "redux/store/Store";
 import { Regex } from "helper/ValidationRegex";
 import { isAndroid } from "libs";
 
@@ -40,13 +40,16 @@ const VisitScreenViewModel = () => {
   const [selectedIndexValue, setSelectedIndexValue] = useState<number>(-1);
   const [currentVisit, setCurrentVisit] = useState<number>(1);
   const [FooterVisibility, setFooterVisibility] = useState<boolean>(false);
-  const [isVisitEditable, _] = useState<boolean>(false);
+  const [isVisitEditable, setVisitEditable] = useState<boolean>(false);
   const [customerDetails, setCustomerDetails] = useState<boolean>(false);
   const [applyFilterSearch, setApplyFilterSearch] = useState<boolean>(false);
   const [searchResult, setSearchResult] = useState<VisitResponse[]>([]);
-  const [searchStatus,setSearchStatus]=useState<boolean>(false);
+  const [searchStatus, setSearchStatus] = useState<boolean>(false);
   const [plannedVisit, setPlannedVisit] = useState<VisitResponse[]>([]);
-  const handleCustomerClick = () => setCustomerDetails(!customerDetails);
+  const handleCustomerClick = () => {
+    setCustomerDetails(!customerDetails);
+    isVisitEditable && setVisitEditable(false);
+  };
 
   const lastPages = {
     upcomingLastPage: useRef<number>(1),
@@ -61,7 +64,7 @@ const VisitScreenViewModel = () => {
     [],
   );
   const plannedVisitList = useSelector(
-    (state: any) => state?.visitDetail?.planned,
+    (state:RootState) => state?.visitDetail?.planned,
   );
   const enteredCustomerCodeToSearch = useRef<string>("");
 
@@ -75,7 +78,7 @@ const VisitScreenViewModel = () => {
     ExecutedResponse[]
   >([]);
 
-  const visitType = useSelector((state: any) => state?.UIReducer?.visitType);
+  const visitType = useSelector((state:RootState) => state?.UIReducer?.visitType);
   const dispatch = useDispatch();
   useFocusEffect(() => {
     dispatch(BottomTabVisibility(false));
@@ -93,10 +96,13 @@ const VisitScreenViewModel = () => {
     setCurrentVisit(visitType);
   }, []);
 
+  const handleVisitChange = () => {
+    searchStatus ? handleClearSearchResult() : setCustomerDetails(false);
+    currentVisit == 2 && setFooterVisibility(true);
+  };
+
   useEffect(() => {
-    setSearchResult([]);
-    setCustomerDetails(false);
-    if (currentVisit == 2) setFooterVisibility(true);
+    handleVisitChange();
   }, [currentVisit]);
 
   const visitCountArray = [
@@ -198,24 +204,25 @@ const VisitScreenViewModel = () => {
     setExecutedVisits(page);
   }
 
-  // const editVisitAPIHandler = async () => {
-  //   const data = {
-  //     visit_id: plannedVisitEditDetails?.id?.current || null,
-  //     visit_date: plannedVisitEditDetails?.visitDate?.current || null,
-  //     mode_of_contact: plannedVisitEditDetails?.modeOfContact?.current || null,
-  //   };
-  //   try {
-  //     const res = await editVisitAPI(data);
-  //   } catch (e) {
-  //     logger(e);
-  //   }
-  // };
+  const editVisitAPIHandler = async () => {
+    const data = {
+      visit_id: plannedVisitEditDetails?.id?.current || null,
+      visit_date: plannedVisitEditDetails?.visitDate?.current || null,
+      mode_of_contact: plannedVisitEditDetails?.modeOfContact?.current || null,
+    };
+    try {
+      const res = await editVisitAPI(data);
+
+      if (res?.isSuccess) {
+        setVisitEditable(true);
+      }
+    } catch (e) {
+      logger(e);
+    }
+  };
 
   const plannedVisitEdit = () => {
-    // if (isVisitEditable) editVisitAPIHandler();
-    // else {
-    //   setVisitEditable(true);
-    // }
+    isVisitEditable ? editVisitAPIHandler() : setVisitEditable(true);
   };
 
   const callDownloadPDFApi = async (id: number) => {
@@ -292,7 +299,7 @@ const VisitScreenViewModel = () => {
       const res = await applyFilterAPI(dispatch, data);
       if (res?.isSuccess) {
         setCustomerDetails(false);
-        setSearchStatus(true)
+        setSearchStatus(true);
         setSearchResult(res?.data?.data?.data);
       }
     } catch (e) {
@@ -335,9 +342,9 @@ const VisitScreenViewModel = () => {
 
   const setPaginationPage = () => {
     if (searchResult.length == 0) {
-      if (currentVisit == 1) upcomingScreenPagination();
-      else if (currentVisit == 2) plannedScreenPagination();
-      else if (currentVisit == 3) executedScreenPagination();
+      currentVisit == 1 && upcomingScreenPagination();
+      currentVisit == 2 && plannedScreenPagination();
+      currentVisit == 3 && executedScreenPagination();
     }
   };
 
@@ -345,7 +352,6 @@ const VisitScreenViewModel = () => {
     handleCustomerClick();
     setSelectedIndexValue(index);
   };
-
 
   const handleFilterSearch = () => setApplyFilterSearch(true);
 
@@ -356,7 +362,7 @@ const VisitScreenViewModel = () => {
     setSearchResult([]);
     setSearchStatus(false);
     setCustomerDetails(false);
-   setSelectedIndexValue(-1);
+    setSelectedIndexValue(-1);
   };
 
   return (

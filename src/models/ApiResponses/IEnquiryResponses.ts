@@ -77,6 +77,7 @@ export interface INearbyCustomerBody {
   
 
   export interface IButtonStatus{
+    [key:string]:boolean;
     enquiryBtn:boolean,
     issueBtn:boolean
   }

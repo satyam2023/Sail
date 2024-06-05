@@ -32,7 +32,7 @@ const CustomerProfile = ({
         leftIconStyle={{height:24,width:24,resizeMode:'contain'}}
         leftIcon={Glyphs.Profile2userClicked}
         onPress={() => handleSelectedCustomer(index)}
-        style={{ marginBottom: 5, borderRadius: 10 }}
+        style={styles.cutomerBoxStyle}
         rightIconStyle={{ transform: [{ rotate: "270deg" }] }}
       />
     );
@@ -43,7 +43,7 @@ const CustomerProfile = ({
         backgroundColor={Colors.sailBlue}
         conentType={'light-content'}
       />
-      <SafeAreaView style={{ flex: 1,paddingBottom:10}}>
+      <SafeAreaView style={styles.customerProfileContainer}>
         <Header topheading={StringConstants.CUSTOMER_PROFILE} />
         <View
           style={styles.emptyContainer}
@@ -62,7 +62,7 @@ const CustomerProfile = ({
             data={customerListdata}
             renderItem={renderCustomerList}
             showsVerticalScrollIndicator={false}
-            style={{flex:1,bottom:27}}
+            style={styles.customerListConatiner}
             initialNumToRender={ScreenHeight/56}
           />
         </View>

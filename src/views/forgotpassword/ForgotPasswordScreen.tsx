@@ -24,10 +24,10 @@ interface IForgetScreen {
   timerEnd: boolean;
   handleResendOTP: () => void;
   forgotPasswordErrors: MutableRefObject<ValidationError[]>;
-  handleOtpEntered: (text:string,id:number) => void;
-  handleEnteredPassword :(text:string,id:number)=>void;
-  createPasswordError:MutableRefObject<ValidationError[]>;
-  inputFieldRef:IOTPFields
+  handleOtpEntered: (text: string, id: number) => void;
+  handleEnteredPassword: (text: string, id: number) => void;
+  createPasswordError: MutableRefObject<ValidationError[]>;
+  inputFieldRef: IOTPFields;
 }
 
 const ForgotPasswordScreen = ({
@@ -40,10 +40,24 @@ const ForgotPasswordScreen = ({
   handleResendOTP,
   forgotPasswordErrors,
   handleOtpEntered,
-  handleEnteredPassword ,
+  handleEnteredPassword,
   createPasswordError,
   inputFieldRef,
 }: IForgetScreen) => {
+
+const renderScreen=()=>{
+  switch (currentScreen){
+    case 1:
+      return <GetOTP {...{ handleUpnContactEntered, forgotPasswordErrors }} />;
+      case 2 : 
+        return  <EnterOTP {...{ handleOtpEntered, inputFieldRef }} />;
+        case 3:
+          return <ResetPassword {...{ handleEnteredPassword, createPasswordError }}/>;
+        default:
+          return null;
+  }
+}
+
   return (
     <GradientBackground>
       <SafeAreaView style={{ flex: 1, paddingHorizontal: 20 }}>
@@ -55,11 +69,7 @@ const ForgotPasswordScreen = ({
           {StringConstants.RESET_PASSWORD}
         </TextWrapper>
         <View style={{ paddingHorizontal: 20 }}>
-          {currentScreen == 1 && (
-            <GetOTP {...{ handleUpnContactEntered, forgotPasswordErrors}} />
-          )}
-          {currentScreen == 2 && <EnterOTP {...{ handleOtpEntered,inputFieldRef }} />}
-          {currentScreen == 3 && <ResetPassword {...{handleEnteredPassword,createPasswordError }}/>}
+          {renderScreen()}
           <CustomButton
             text={buttonText[currentScreen - 1]}
             buttonStyle={{ backgroundColor: Colors.sailBlue }}

@@ -32,6 +32,7 @@ import ViewCustomerListViewModel from "viewModels/CustomerProfileListViewModel";
 import ViewCustomerRepressentativeViewModel from "viewModels/ViewCustomerRepresentativeViewModel";
 import ViewCustomerCompetitorViewModel from "viewModels/ViewCustomerCompetitorViewModel";
 import CreateCustomerViewModel from "viewModels/CreateCustomerViewModel";
+import { RootState } from "redux/store/Store";
 
 
 
@@ -135,10 +136,10 @@ const HomeStackNavigator = () => {
 
 const RenderTabNavigation = () => {
   const isModalVisible: boolean = useSelector(
-    (state: any) => state.UIReducer.modalVisibility,
+    (state: RootState) => state.UIReducer.modalVisibility,
   );
   const isTabVisible: boolean = useSelector(
-    (state: any) => state.UIReducer.tabVisibiity,
+    (state: RootState) => state.UIReducer.tabVisibiity,
   );
   return (
     <>

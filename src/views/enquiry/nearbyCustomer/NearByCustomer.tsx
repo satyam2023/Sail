@@ -17,7 +17,7 @@ interface INearby {
 }
 
 const NearbyCustomer = (props: INearby) => {
-  function renderitem({ item }: Iuser) {
+  const renderitem=({ item }: Iuser) =>{
     return (
       <View style={styles.mapCOnatiner}>
         <RectangularBox
@@ -25,7 +25,7 @@ const NearbyCustomer = (props: INearby) => {
           subHeading={item?.address}
           leftIcon={Glyphs.Customer}
           isRightNotIconRequired
-          style={{ marginBottom: 0, paddingHorizontal: 0 }}
+          style={styles.customerBox}
           leftIconStyle={styles.leftIconStyle}
         />
         <MapComponent
@@ -43,7 +43,7 @@ const NearbyCustomer = (props: INearby) => {
         <FlatList
           data={props?.NearByCustomerList}
           renderItem={renderitem}
-          style={{ paddingHorizontal: 20, flex: 1 }}
+          style={styles.nearbyListContainer}
           scrollEnabled={false}
         />
       ) : (

@@ -6,6 +6,9 @@ interface ICustomerProfileListStyle {
   floatingTextInput: ViewStyle;
   emptyContainer?: ViewStyle;
   renderListStyle: ViewStyle;
+  customerListConatiner:ViewStyle;
+  customerProfileContainer:ViewStyle;
+  cutomerBoxStyle:ViewStyle;
 }
 
 const styles = StyleSheet.create<ICustomerProfileListStyle>({
@@ -36,6 +39,18 @@ const styles = StyleSheet.create<ICustomerProfileListStyle>({
     width: 24,
     resizeMode: "contain",
   },
+  customerListConatiner:{
+    flex:1,
+    bottom:27
+  },
+  customerProfileContainer:{ 
+    flex: 1,
+    paddingBottom:10
+  },
+  cutomerBoxStyle:{ 
+    marginBottom: 5,
+     borderRadius: 10
+     }
 });
 
 export default styles;

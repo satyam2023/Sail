@@ -9,11 +9,14 @@ import { IApiResponse } from "models/ApiResponses/IApiResponse";
 import { CMSPageResponse } from "models/ApiResponses/CMSPageResponse";
 import { getCMSPage } from "controllers/cmsController";
 import { logger } from "helper/helperFunctions";
+import { RootState } from "redux/store/Store";
 
 const CMSViewModel = () => {
   const [pages, setpages] = useState<string>(StringConstants.CMS);
   const dispatch = useDispatch();
-  const cmsPageData = useSelector((state: any) => state?.cmsPages?.data)?.data;
+  const cmsPageData = useSelector((state: RootState) => state?.cmsPages?.data);
+
+
 
   const pagesRenderingController = (pageType: string) => {
     switch (pageType) {

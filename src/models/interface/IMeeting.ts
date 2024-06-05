@@ -81,6 +81,7 @@ export interface PlannedMeetingUpdate {
 }
 
 export interface IBtnStatus {
+  [key: string | number]: boolean;
   submitBtn: boolean;
   representativeBtn: boolean;
 }

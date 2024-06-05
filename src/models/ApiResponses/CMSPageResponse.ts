@@ -14,6 +14,4 @@ export interface CMSRoot {
 export interface ICmsdispatch{
   payload:any,
   type:string
-
-
 }

@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
-import React, {useState } from "react";
-import { useColorScheme, LogBox} from "react-native";
+import React, { useEffect, useState } from "react";
+import { useColorScheme, LogBox } from "react-native";
 import SplashScreen from "react-native-splash-screen";
 import { Provider } from "react-redux";
 import Navigation from "./src/route";
@@ -15,7 +15,6 @@ import InternetManager from "components/InternetManager";
 import PopUpBox from "views/emptyState/PopUpBox";
 LogBox.ignoreAllLogs();
 
-
 if (__DEV__) {
   import("./ReactoronConfig").then(() => console.log("Reactotron Configured"));
 }
@@ -27,7 +26,7 @@ const App = () => {
   const netInfo = useNetInfo({
     reachabilityUrl: "https://clients3.google.com/generate_204",
     reachabilityTest: async (response) =>
-    response.status === StatusCode.SuccessNoContent,
+      response.status === StatusCode.SuccessNoContent,
     reachabilityLongTimeout: 60 * 1000,
     reachabilityShortTimeout: 5 * 1000,
     reachabilityRequestTimeout: 15 * 1000,
@@ -37,19 +36,19 @@ const App = () => {
   });
   console.log(netInfo);
 
+
   React.useEffect(() => {
-    const unsubscribe = addEventListener(async () => {
-      try {
-        const res = await fetch(
-          "https://cmoccuat.sailcmo.co.in:8000/api"
-        );
-        console.error("VPN res:::",res);
-        if(res.status==200)
-         setVpnStatus(true);
-      } catch (e) {
-        console.error("VPN Error:::",e);
-        setVpnStatus(false);
-      }
+    const unsubscribe = addEventListener(() => {
+      fetch("https://cmoccuat.sailcmo.co.in:8000/api")
+        .then((response: any) => {
+          if (response.status == 404) {
+            setVpnStatus(true);
+          }
+        })
+        .catch((e) => {
+          setVpnStatus(false);
+          
+        });
     });
     return () => {
       if (unsubscribe) {
@@ -58,28 +57,27 @@ const App = () => {
     };
   }, []);
 
-
   React.useEffect(() => {
     setTimeout(async () => {
       const isRemember = getRememberMe();
       isRemember == "1" ? navigate(SCREENS.TAB) : navigate(SCREENS.ONBOARDING);
       SplashScreen.hide();
     }, 2000);
-    
   }, [scheme, isDarkMode]);
-  
+
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <PopUpBox/>
         {vpnStatus ? (
-          <Navigation />
+          <>
+            <PopUpBox />
+            <Navigation />
+          </>
         ) : (
           <InternetManager isVpnConected={vpnStatus} />
         )}
       </PersistGate>
     </Provider>
-  
   );
 };
 

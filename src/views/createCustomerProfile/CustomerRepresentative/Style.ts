@@ -1,7 +1,8 @@
 import fonts from "@fonts";
+import { Colors } from "commonStyles/RNColor.style";
 import { WindowWidth } from "libs";
 import { ImageStyle, StyleSheet, TextStyle, ViewStyle } from "react-native";
-import { Colors } from "react-native/Libraries/NewAppScreen";
+
 
 interface IStyle {
   repreImage: ImageStyle;

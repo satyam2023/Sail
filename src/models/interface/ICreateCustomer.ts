@@ -96,11 +96,13 @@ export interface CompetitorDetail{
 }
 
 export interface IsubType {
+  [key:number|string]:number;
   customerSegmentIndex: number;
   customerSubTypeIndex: number;
 }
 
 export interface IselecteddropDown {
+  [key:number|string]:IProcuredProduct[]|ISupplier[];
   selectedProcuredProduct: IProcuredProduct[];
   selectedSupplier:ISupplier[];
 }
@@ -209,4 +211,18 @@ export interface ICompetitorFlatList extends IFlatlistIndex{
 
 export interface IRepresentativeFlatList extends IFlatlistIndex{
  item:IRepresentative
+}
+
+export interface IGeoPosition{
+  coords: {
+    accuracy:number,
+    altitude: number,
+    altitudeAccuracy: number,
+    heading: number,
+    latitude: string,
+    longitude: string,
+    speed: number
+  },
+  mocked: boolean,
+  timestamp: number
 }

@@ -5,10 +5,11 @@ import StringConstants from "shared/localization";
 import { ICmsProps } from "./FAQs";
 import RenderHTML from "react-native-render-html";
 import { ScreenWidth } from "libs";
+import styles from "../Style";
 
 const Terms = ({ cmsPageData, pagesRenderingController }: ICmsProps) => {
   const source = {
-    html: cmsPageData[4].content,
+    html: cmsPageData &&  cmsPageData[4].content,
   };
   return (
     <>
@@ -16,7 +17,7 @@ const Terms = ({ cmsPageData, pagesRenderingController }: ICmsProps) => {
         topheading={StringConstants.TERMS_AND_CONDITIONS}
         onPress={() => pagesRenderingController(StringConstants.CMS)}
       />
-      <ScrollView style={{ paddingHorizontal: 20 }}>
+      <ScrollView style={styles.cmsPageDetailContainer}>
         <RenderHTML source={source} contentWidth={ScreenWidth} />
       </ScrollView>
     </>

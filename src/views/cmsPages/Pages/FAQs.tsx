@@ -5,15 +5,16 @@ import StringConstants from "shared/localization";
 import { CMSPageResponse } from "models/ApiResponses/CMSPageResponse";
 import RenderHTML from "react-native-render-html";
 import { ScreenWidth } from "libs";
+import styles from "../Style";
 
 export interface ICmsProps {
   pagesRenderingController: (arg: string) => void;
-  cmsPageData: CMSPageResponse;
+  cmsPageData: CMSPageResponse|undefined;
 }
 
 const FAQs = ({ pagesRenderingController, cmsPageData }: ICmsProps) => {
   const source = {
-    html: cmsPageData[3].content,
+    html: cmsPageData && cmsPageData[3].content,
   };
   return (
     <>
@@ -21,7 +22,7 @@ const FAQs = ({ pagesRenderingController, cmsPageData }: ICmsProps) => {
         topheading={StringConstants.FAQS}
         onPress={() => pagesRenderingController(StringConstants.CMS)}
       />
-      <ScrollView style={{paddingHorizontal:20}}>
+      <ScrollView style={styles.cmsPageDetailContainer}>
         <RenderHTML source={source} contentWidth={ScreenWidth}  />
       </ScrollView>
     </>

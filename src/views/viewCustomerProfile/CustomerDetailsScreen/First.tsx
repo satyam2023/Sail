@@ -37,7 +37,7 @@ interface IFirst {
   setIndexofSubType: Function;
   setSubTypes: Function;
   selectedIndexValue: number;
-  customerDetail: any[];
+  customerDetail: string[];
   customer: ICustomerState;
   traderDealerTypeDetail: (string | undefined)[];
   handleCustomerDetailChange: (text: string | number, id: number) => void;
@@ -54,7 +54,10 @@ interface IFirst {
 }
 
 const First = (props: IFirst) => {
-  const customerType = props?.customerList[props?.selectedIndexValue].type?.id;
+
+
+
+  const customerType = props?.customerList[props?.selectedIndexValue]?.type?.id;
   const isEditing = props?.customer?.editDetails;
   const renderCustomerInputField = ({ item, index }: IFlatListCustomerField) => {
     const notEditable: boolean = index == 0 || index == 1 || index == 4;

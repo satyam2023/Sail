@@ -38,6 +38,8 @@ const ExecutedCustomer = ({
   searchResult,
   searchStatus,
 }: executedCustomerProps) => {
+
+  console.log("Selected index value inside Executed Customer>>>>",selectedIndexValue)
   const renderIssueList = ({
     item
   }: {
@@ -120,7 +122,7 @@ const ExecutedCustomer = ({
         indexofSelectedVisit={selectedIndexValue}
       />
       <FlatList
-        data={executedVisitList[selectedIndexValue].myissues}
+        data={executedVisitList[selectedIndexValue]?.myissues}
         renderItem={renderIssueList}
         scrollEnabled={false}
         keyExtractor={(_, index) => index.toString()}

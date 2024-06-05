@@ -123,6 +123,7 @@ const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
               )
             : {},
         ]}
+       
       >
         {props?.leftIcon && (
           <Image
@@ -144,9 +145,9 @@ const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
               {props.placeholder}
             </Animated.Text>
           )}
-
           <TextInput
             ref={inputRef}
+            disableFullscreenUI={true}
             editable={props.isEditable}
             placeholder={
               !textFocusStatus ? props?.placeholder : StringConstants.EMPTY
@@ -166,10 +167,9 @@ const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
             maxLength={maxlength}
             secureTextEntry={secureText}
             defaultValue={props?.defaultValue}
-            style={[props.textStyle, styles.text]}
+            style={[styles.text,props.textStyle]}
             multiline={props.multiline}
             contextMenuHidden={true}
-            removeClippedSubviews={true}
             value={props?.value ? props?.value : undefined}
           />
         </PressableButton>
@@ -269,6 +269,7 @@ const styles = StyleSheet.create<ITextInputStyle>({
   },
   text: {
     color: Colors.black,
+    overflow:'hidden'
   },
 });
 

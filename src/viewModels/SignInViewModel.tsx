@@ -24,7 +24,7 @@ import { signInValidationRules } from "helper/ValidationRegex";
 import { isAndroid } from "libs";
 
 const SignInViewModel = () => {
-  const [isCredentialsTrue,setCredentialsStatus]=useState<boolean>(true);
+  const [isCredentialsTrue, setCredentialsStatus] = useState<boolean>(true);
   const userDetail: FormValues = {
     upn: "",
     password: "",
@@ -90,31 +90,28 @@ const SignInViewModel = () => {
     allowDeviceCredentials: true,
   });
 
+  const handleBiometricStatus = (key: string) => {
+    setBiometric((prev: IBiometricStatus) => ({
+      ...prev,
+      [key]: true,
+    }));
+  };
+
   const isDeviceSupportBiometrics = async () => {
     rnBiometrics.isSensorAvailable().then((resultObject) => {
       const { available, biometryType } = resultObject;
-      if (available && biometryType === BiometryTypes.TouchID) {
-        setBiometric((prev: IBiometricStatus) => ({
-          ...prev,
-          fingerId: true,
-        }));
-      } else if (available && biometryType === BiometryTypes.FaceID) {
-        setBiometric((prev: IBiometricStatus) => ({
-          ...prev,
-          faceId: true,
-        }));
-      } else if (available && biometryType === BiometryTypes.Biometrics) {
-        setBiometric((prev: IBiometricStatus) => ({
-          ...prev,
-          fingerId: true,
-        }));
-      }
+      if (available && biometryType === BiometryTypes.TouchID)
+        handleBiometricStatus("fingerId");
+      else if (available && biometryType === BiometryTypes.FaceID)
+        handleBiometricStatus("faceId");
+      else if (available && biometryType === BiometryTypes.Biometrics)
+        handleBiometricStatus("fingerId");
     });
   };
 
-  const biometricAuthentication=()=> {
+  const biometricAuthentication = () => {
     authenticateFingerPrint();
-  }
+  };
 
   const authenticateFingerPrint = async () => {
     rnBiometrics
@@ -125,7 +122,8 @@ const SignInViewModel = () => {
         const { success } = resultObject;
         if (success) {
           try {
-            const getCredentials: any = await Keychain.getGenericPassword();
+            const getCredentials: any= await Keychain.getGenericPassword();
+           
             const values = {
               upn: getCredentials.username,
               password: getCredentials.password,
@@ -146,12 +144,12 @@ const SignInViewModel = () => {
       });
   };
 
-  const handleOnTextChange=(text: string, id: number)=> {
+  const handleOnTextChange = (text: string, id: number) => {
     id != 2
       ? handleSignInTextChange(Object.keys(userDetail)[id], text)
       : handleSignInTextChange(Object.keys(userDetail)[id], text);
-      !isCredentialsTrue && setCredentialsStatus(true);
-  }
+    !isCredentialsTrue && setCredentialsStatus(true);
+  };
   return (
     <SignInScreen
       {...{
@@ -160,7 +158,7 @@ const SignInViewModel = () => {
         biometricAuthentication,
         isBiometricsAvl,
         signinError,
-        isCredentialsTrue
+        isCredentialsTrue,
       }}
     />
   );

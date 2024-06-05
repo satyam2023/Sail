@@ -57,7 +57,7 @@ const ViewCustomerProfileViewModel = ({ route, navigation }:any) => {
       ),
     ],
     supplier: [
-      ...formatSupplier_list(customerList[selectedIndexValue].supplier_data),
+      ...formatSupplier_list(customerList[selectedIndexValue]?.supplier_data),
     ],
     imageSelected: [],
   });
@@ -75,7 +75,7 @@ const ViewCustomerProfileViewModel = ({ route, navigation }:any) => {
     ...traderDealerselectedCustomerDetail(customerList, selectedIndexValue),
   ];
 
-
+  console.log("View PRofile:::::::: View Model");
   useEffect(() => {
     navigation.setParams({
       customerList: customerListdata,
@@ -87,7 +87,7 @@ const ViewCustomerProfileViewModel = ({ route, navigation }:any) => {
 
   const detailToBeSearch = useRef<string>("");
   const customerCodeToBeUpdated = useRef<string>("");
-  const customerDetail = [
+  const customerDetail:string[] = [
     ...customerDetailOfViewModel(customerList, selectedIndexValue),
   ];
 
@@ -147,14 +147,17 @@ const ViewCustomerProfileViewModel = ({ route, navigation }:any) => {
     true,
   );
 
-  useEffect(() => {
-      getCustomerSegmenList(dispatch),
-      getCustomerType(dispatch),
-      getCustomerStatus(dispatch),
-      getClusterAPI(dispatch),
-      getProcuredProductAPI(dispatch),
-      getSupplierAPI(dispatch);
-  }, []);
+  // useEffect(() => {
+  //     getCustomerSegmenList(dispatch),
+  //     getCustomerType(dispatch),
+  //     getCustomerStatus(dispatch),
+  //     getClusterAPI(dispatch),
+  //     getProcuredProductAPI(dispatch),
+  //     getSupplierAPI(dispatch);
+  // }, []);
+
+
+
 
   async function handleUploadDocument() {
     const res: ISelectedImage = await chooseImageVideo();

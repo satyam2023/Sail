@@ -9,7 +9,6 @@ import {
   MeetingRepresentativeDetailInputField,
 } from "@shared-constants";
 import { PressableButton } from "components";
-import { WindowWidth } from "libs";
 import { ISelectedImage } from "models/interface/ICreateCustomer";
 import { ValidationError } from "core/UseForm";
 import { IFlatListRepresentative } from "models/interface/IViewCustomerProfile";

@@ -1,7 +1,22 @@
 import fonts from "@fonts";
 import { Colors } from "commonStyles/RNColor.style";
-import { StyleSheet } from "react-native";
-const styles = StyleSheet.create({
+import { ImageStyle, StyleSheet, TextStyle, ViewStyle } from "react-native";
+
+interface IHomeStyle{
+  visitContainer: ViewStyle;
+  topContainer:ViewStyle;
+  welcometext:TextStyle;
+  roleText:TextStyle;
+  circle:ViewStyle;
+  circleTxt:TextStyle;
+  topTxt:TextStyle;
+  container:ViewStyle;
+  img:ImageStyle;
+  horizontalListConatiner:ViewStyle;
+}
+
+
+const styles = StyleSheet.create<IHomeStyle>({
   visitContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -67,5 +82,8 @@ const styles = StyleSheet.create({
     width: 20,
     resizeMode: "contain",
   },
+  horizontalListConatiner:{ 
+    position: "relative",
+     bottom: 60 }
 });
 export default styles;

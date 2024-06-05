@@ -16,6 +16,7 @@ import {
   INearbyCustomer,
   IButtonStatus,
 } from "models/ApiResponses/IEnquiryResponses";
+import { IGeoPosition } from "models/interface/ICreateCustomer";
 import {
   IissueEnquiryEnteredData,
   IuserEnquiryEnteredData,
@@ -23,7 +24,7 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
-import { store } from "redux/store/Store";
+import { RootState, store } from "redux/store/Store";
 import StringConstants from "shared/localization";
 import EnquiryScreen from "views/enquiry/EnquiryScreen";
 
@@ -40,7 +41,7 @@ const EnquiryViewModel = () => {
   });
 
   const selectedEnquiry = useSelector(
-    (state: any) => state?.UIReducer?.enquiryType,
+    (state: RootState) => state?.UIReducer?.enquiryType,
   );
   useEffect(() => {
     nearbyCustomer();
@@ -102,7 +103,6 @@ const EnquiryViewModel = () => {
     try {
       const res: IApiResponse<IssueEnquiryResponse> | undefined =
         await getIssueEnquiry(body);
-
       if (res?.isSuccess) {
         setIssueSearchResult(
           res?.data?.data[0]?.message ? [] : res?.data?.data,
@@ -116,10 +116,10 @@ const EnquiryViewModel = () => {
 
   const nearbyCustomer = async () => {
     Geolocation.getCurrentPosition(
-      async (pos: any) => {
+      async (pos: IGeoPosition) => {
         const body = {
-          lat: pos.coords.latitude,
-          long: pos.coords.longitude,
+          lat: Number(pos.coords.latitude),
+          long: Number(pos.coords.longitude),
         };
        
         try {
@@ -153,13 +153,17 @@ const EnquiryViewModel = () => {
     }
   }
 
+  const handleBtnStatus=(status:boolean,key:string)=>{
+    setBtnStatus((prev: IButtonStatus) => ({
+      ...prev,
+      [key]: status,
+    }));
+  }
+
   const handleIssueEnquiry = (type: string) => {
     setIssueEnquiryType(type);
     setIssueSearchResult(undefined);
-    setBtnStatus((prev: IButtonStatus) => ({
-      ...prev,
-      issueBtn: false,
-    }));
+    handleBtnStatus(false,'issueBtn')
   };
 
   const handleTextChangeofUserEnquiry = (text: string, id: number) => {
@@ -167,19 +171,12 @@ const EnquiryViewModel = () => {
       Object.keys(userEnquiryEnteredDetail)[id]
     ].current = text;
     if (isDetailFilled(userEnquiryEnteredDetail)) {
-      if (!btnStatus.enquiryBtn) {
-        setBtnStatus((prev: IButtonStatus) => ({
-          ...prev,
-          enquiryBtn: true,
-        }));
-      }
+      !btnStatus.enquiryBtn &&
+        handleBtnStatus(true,'enquiryBtn') 
     } else {
-      if (btnStatus.enquiryBtn) {
-        setBtnStatus((prev: IButtonStatus) => ({
-          ...prev,
-          enquiryBtn: false,
-        }));
-      }
+      btnStatus.enquiryBtn &&
+        handleBtnStatus(false,'enquiryBtn')
+        
     }
   };
 
@@ -188,19 +185,11 @@ const EnquiryViewModel = () => {
       Object.keys(issueEnquiryEnteredDetail)[id]
     ].current = text;
     if (isDetailFilled(issueEnquiryEnteredDetail)) {
-      if (!btnStatus.issueBtn) {
-        setBtnStatus((prev: IButtonStatus) => ({
-          ...prev,
-          issueBtn: true,
-        }));
-      }
+      btnStatus.issueBtn &&
+        handleBtnStatus(true,'issueBtn')
     } else {
-      if (btnStatus.issueBtn) {
-        setBtnStatus((prev: IButtonStatus) => ({
-          ...prev,
-          issueBtn: false,
-        }));
-      }
+      btnStatus.issueBtn &&
+        handleBtnStatus(false,'issueBtn')
     }
   };
 

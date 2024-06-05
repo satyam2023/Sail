@@ -4,8 +4,7 @@ import {
   getInboxData,
 } from "controllers/messageController";
 import { getEscalatedId, logger } from "helper/helperFunctions";
-import { IApiResponse } from "models/ApiResponses/IApiResponse";
-import { EscalatedToOtherApiResponse, EscalatedToOtherBody } from "models/ApiResponses/MessageResponse";
+import { EscalatedToOtherBody } from "models/ApiResponses/MessageResponse";
 import { EscalatedList, IEscalatedToAndComment } from "models/interface/IMessage";
 import React, {useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -64,8 +63,6 @@ const MessageScreenViewModel = () => {
   const handleSelecteEscalatedTo=()=>
     setEscalatedPersonStatus(!escalatedPersonStatus)
   
-  
-
   async function escalalteToAnotherApiCalling() {
     try {
       dispatch(setLoaderVisibility(true));
@@ -79,7 +76,7 @@ const MessageScreenViewModel = () => {
         escalation_comment: escalatedRemarks?.comment?.current,
         resolving_comment: null,
       };
-      const res:IApiResponse<EscalatedToOtherApiResponse> =
+      const res:any =
         await escalateToAnotherAPI(body);
       if (res?.isSuccess) {
          getInboxData(dispatch);

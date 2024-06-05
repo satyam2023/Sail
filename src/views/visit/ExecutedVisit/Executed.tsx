@@ -39,7 +39,6 @@ const Executed = ({
   searchResult,
   searchStatus,
 }: IExecuted) => {
-  const isSearchResult: boolean = searchResult.length > 0 ? true : false;
 
   const renderExecutedVisit = ({ item, index }: IFlatlistExecuted) => {
     return (
@@ -56,7 +55,7 @@ const Executed = ({
     <View style={{ paddingHorizontal: 20, flex: 1 }}>
       {!customerDetails ? (
         <FlatList
-          data={isSearchResult ? searchResult : executedVisitList}
+          data={searchStatus ? searchResult : executedVisitList}
           renderItem={renderExecutedVisit}
           onEndReachedThreshold={0.2}
           onEndReached={setPaginationPage}

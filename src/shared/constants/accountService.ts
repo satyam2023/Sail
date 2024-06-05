@@ -20,3 +20,13 @@ export const getRememberMe = () =>
   
   export const getFingerPrint = () =>
   Storage.getString(StringConstants.FINGER_PRINT_KEY);
+
+  export const setNotifyLength = async (notifyLength: number) => {
+    await Storage.set(
+      StringConstants.NOTIFY_LENGTH,
+      JSON.stringify(notifyLength),
+    );
+  };
+  
+  export const getNotifyLength = () =>
+    Storage.getString(StringConstants.NOTIFY_LENGTH);

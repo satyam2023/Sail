@@ -17,6 +17,8 @@ import {
   IFlatlistMessageBox,
 } from "models/interface/IMessage";
 import commonStyles from "commonStyles/CommonStyle";
+import { ScreenHeight } from "libs";
+import styles from "./Style/Style";
 interface IMessageScreen {
   msgOpenStatus: boolean;
   messagedata: MessageResponse;
@@ -56,9 +58,7 @@ const MessageScreen = ({
   };
   const renderEscalationPersonList = ({ item }: IFlatListEscalation) => {
     return (
-      <PressableButton
-        onPress={() =>handleTextChange(item?.user_name, 0) }
-      >
+      <PressableButton onPress={() => handleTextChange(item?.user_name, 0)}>
         <RectangularBox
           heading={item?.user_name}
           subHeading={item?.user_upn}
@@ -73,20 +73,21 @@ const MessageScreen = ({
         backgroundColor={Colors.sailBlue}
         conentType={"light-content"}
       />
-      <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
+      <SafeAreaView style={styles.msgContainer}>
         {!msgOpenStatus ? (
-          <View style={{flex:1}}>
+          <View style={{ flex: 1 }}>
             <Header topheading={StringConstants.INBOX} />
             <FlatList
               data={messagedata}
               renderItem={renderMessageBox}
               showsVerticalScrollIndicator={false}
-              style={{ paddingHorizontal: 20,marginTop:20,flex:1}}
+              keyExtractor={(_, index) => index.toString()}
+              initialNumToRender={ScreenHeight / 56}
+              style={styles.msgListConatiner}
             />
           </View>
         ) : selectedMsgIndex >= 0 ? (
           !escalatedPersonStatus ? (
-            
             <MsgDetails
               {...{
                 msgData,
@@ -97,12 +98,14 @@ const MessageScreen = ({
                 escalatedRemarks,
               }}
             />
-         
           ) : (
             <FlatList
               data={escalatedCustomerList}
               renderItem={renderEscalationPersonList}
-              style={{ paddingHorizontal: 20, marginTop: 20 }}
+              showsVerticalScrollIndicator={false}
+              initialNumToRender={ScreenHeight / 56}
+              style={styles.escalatedContainer}
+              keyExtractor={(_, index) => index.toString()}
             />
           )
         ) : null}

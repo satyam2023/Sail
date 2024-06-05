@@ -19,7 +19,7 @@ import StatusBarComponent from "components/StatusBarComponent";
 interface ICmsPageScreen {
   pagesRenderingController: (arg: string) => void;
   pages: string;
-  cmsPageData: CMSPageResponse;
+  cmsPageData: CMSPageResponse|undefined;
 }
 
 const CMSPagesScreen = ({
@@ -27,7 +27,7 @@ const CMSPagesScreen = ({
   pages,
   cmsPageData,
 }: ICmsPageScreen) => {
-  function renderItem(item: CMSRoot, _: number) {
+  const renderItem=({item}:{item:CMSRoot}) =>{
     return (
       <View style={styles.container}>
         <TextWrapper style={commonStyles.font14MediumBlackpearl}>
@@ -60,18 +60,18 @@ const CMSPagesScreen = ({
     <>
       <StatusBarComponent
         backgroundColor={Colors.sailBlue}
-        conentType={"dark-content"}
+        conentType={'light-content'}
       />
-      <SafeAreaView style={{ backgroundColor: Colors.background2, flex: 1 }}>
+      <SafeAreaView style={styles.screenConatiner}>
         <>
           {pages == StringConstants.CMS && (
             <>
               <Header topheading={StringConstants.CMS_PAGES} />
               <FlatList
                 data={cmsPageData}
-                renderItem={({ item, index }) => renderItem(item, index)}
+                renderItem={renderItem}
                 showsVerticalScrollIndicator={false}
-                style={{ paddingHorizontal: 20, marginTop: 20 }}
+                style={styles.cmsOptionStyle}
               />
             </>
           )}

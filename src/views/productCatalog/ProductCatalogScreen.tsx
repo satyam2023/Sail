@@ -52,7 +52,7 @@ const ProductCatalogScreen = (props: IProductScreen) => {
     <>
       <StatusBarComponent
         backgroundColor={Colors.sailBlue}
-        conentType={"dark-content"}
+        conentType={'light-content'}
       />
       <SafeAreaView style={{ flex: 1 }}>
         <Header topheading={StringConstants.PRODUCT_CATALOGUE} />
@@ -78,7 +78,7 @@ const ProductCatalogScreen = (props: IProductScreen) => {
               style={styles.productList}
               keyExtractor={(_,index) => index.toString()}
               windowSize={5}
-              ListFooterComponent={()=><View style={{height:70}}/>}
+              ListFooterComponent={()=><View style={commonStyles.flatlistFooterStyle}/>}
             />
           
           </View>

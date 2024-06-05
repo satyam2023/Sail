@@ -2,14 +2,13 @@ import {
   COMPEITITOR_BUTTON_TYPE,
   CUSTOMER_INFO_TYPE_TAB,
   ENQUIRY_TYPE,
-  IS_VISIT_FOCUS_FIRST_TIME,
   MODAL_TYPE,
   PROFILE_BUTTON_TYPE,
   TAB_TYPE,
   VISIT_TYPE,
 } from "redux/actionConstants";
 
-export const VisitType = (data: any) => {
+export const VisitType = (data: number) => {
   return { type: VISIT_TYPE, payload: data };
 };
 
@@ -37,9 +36,3 @@ export const setCustomerInformationTab = (data: number) => {
   return { type: CUSTOMER_INFO_TYPE_TAB, payload: data };
 };
 
-export const setIsVisitFocusStatus = (data: boolean) => {
-  return {
-    type: IS_VISIT_FOCUS_FIRST_TIME,
-    payload: data,
-  };
-};

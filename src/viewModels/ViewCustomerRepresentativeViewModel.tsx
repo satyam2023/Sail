@@ -1,5 +1,6 @@
 import { goBack, navigate } from "@navigation";
-import { useFocusEffect } from "@react-navigation/native";
+import { NavigationAction, NavigationProp, useFocusEffect } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { SCREENS } from "@shared-constants";
 import {
   addCustomerRepresentativeAPI,
@@ -30,7 +31,7 @@ import { RootState } from "redux/store/Store";
 import StringConstants from "shared/localization";
 import ViewCustomerRepresentative from "views/viewCustomerProfile/CustomerDetailsScreen/RepresentativeDetails/ViewCustomerRepresentativeScreen";
 
-const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
+const ViewCustomerRepressentativeViewModel = ({ route, navigation }:any) => {
   const [selectRepresentativeImage, setRepresentativeImage] = useState<
     ISelectedImage | undefined
   >();

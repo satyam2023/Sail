@@ -1,9 +1,16 @@
 import fonts from '@fonts';
 import { Colors } from 'commonStyles/RNColor.style';
-import {StyleSheet} from 'react-native';
+import {ImageStyle, StyleSheet, TextStyle, ViewStyle} from 'react-native';
 
-const styles = StyleSheet.create({
+interface IOnBoardingStyle{
+  imghand:ViewStyle;
+  toptxt: TextStyle;
+  imgsail:ImageStyle;
+  lowertxt:TextStyle;
+  toptxtcontainer:ViewStyle;
+}
 
+const styles = StyleSheet.create<IOnBoardingStyle>({
   imghand: {
     alignSelf: 'center',
     flex:0.3,

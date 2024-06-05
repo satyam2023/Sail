@@ -26,7 +26,7 @@ interface IViewProfile {
   handleLocation: () => void;
   handleUpdateCustomerCode: (text: string) => void;
   updateCustomerCode: () => void;
-  customerDetail: any[];
+  customerDetail: string[];
   customer: ICustomerState;
   traderDealerTypeDetail: (string | undefined)[];
   handleCustomerDetailChange: (text: string | number, id: number) => void;

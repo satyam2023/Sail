@@ -99,7 +99,7 @@ const HomeScreen = ({
             textColor={Colors.green}
           />
         </View>
-        <View style={{ position: "relative", bottom: 60 }}>
+        <View style={styles.horizontalListConatiner}>
           <HorizontalScrollableList
             Data={homeScreenData?.ProductData}
             onPress={(id: number, index: number) => {

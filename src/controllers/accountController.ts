@@ -24,7 +24,7 @@ export const userSignIn = async (data: ISignInUserData) => {
   }
 };
 
-export const saveUserToken = async (_: any, body: any) => {
+export const saveUserToken = async ( body: any) => {
   try {
     const res: IApiResponse<SignInResponse> =
       await sendPostRequest<SignInResponse>(APIConstants.SAVE_TOKEN, body);

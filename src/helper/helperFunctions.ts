@@ -789,7 +789,7 @@ export const representativeDetailsofViewCustomerProfile = (
   selectedIndexValue: number,
   representative: IViewCustomerRepresentative,
 ) => {
-  const data = [
+  const data:Array<string> = [
     customerList[selectedIndexValue]?.representatives[
       representative.selectedRepresentativeIndex
     ]?.name,
@@ -821,7 +821,7 @@ export const customerDetailOfViewModel = (
   customerList: IViewCustomerBody[],
   selectedIndexValue: number,
 ) => {
-  const data = [
+  const data:string[]= [
     customerList[selectedIndexValue]?.customer_code,
     customerList[selectedIndexValue]?.company_name,
     customerList[selectedIndexValue]?.segment?.segment_name,

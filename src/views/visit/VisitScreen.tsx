@@ -1,6 +1,6 @@
 import { Colors } from "commonStyles/RNColor.style";
 import React, { Dispatch, SetStateAction } from "react";
-import { SafeAreaView,View } from "react-native";
+import { SafeAreaView, View } from "react-native";
 import Executed from "views/visit/ExecutedVisit/Executed";
 import Planned from "views/visit/PlannedVisit/Planned";
 import UpcomingVisit from "views/visit/UpComingVisit/Upcoming";
@@ -8,12 +8,16 @@ import Glyphs from "assets/Glyphs";
 import { Image } from "react-native";
 import StringConstants from "shared/localization";
 import commonStyles from "commonStyles/CommonStyle";
-import {  VisitHeaderData } from "@shared-constants";
+import { VisitHeaderData } from "@shared-constants";
 import {
   ExecutedResponse,
   VisitResponse,
 } from "models/ApiResponses/VisitResponse";
-import { IFilterDataDetails, IPlannedVisitEdit, IupcomingVisitField } from "models/interface/IVisit";
+import {
+  IFilterDataDetails,
+  IPlannedVisitEdit,
+  IupcomingVisitField,
+} from "models/interface/IVisit";
 import { IdropDown } from "models/interface/ISetting";
 import {
   CustomFooter,
@@ -59,7 +63,7 @@ interface IVisitScreen {
   searchResult: VisitResponse[];
   handleClearSearchResult: () => void;
   plannedVisit: VisitResponse[];
-  searchStatus:boolean
+  searchStatus: boolean;
 }
 
 const VisitScreen = ({
@@ -164,7 +168,7 @@ const VisitScreen = ({
     <>
       <StatusBarComponent
         backgroundColor={Colors.sailBlue}
-        conentType={'light-content'}
+        conentType={"light-content"}
       />
       <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }}>
         <Header topheading={StringConstants.VISITS} />
@@ -193,16 +197,14 @@ const VisitScreen = ({
             />
             <PressableButton style={styles.filter} onPress={handleFilterSearch}>
               {searchStatus && (
-                <Image
-                  source={Glyphs.Ellipse}
-                  style={styles.ellipse}
-                />
+                <Image source={Glyphs.Ellipse} style={styles.ellipse} />
               )}
               <Image source={Glyphs.Filter} style={styles.imgContainer} />
             </PressableButton>
             {applyFilterSearch && (
               <FilterData
                 isVisible={true}
+                searchType={currentVisit == 1 ? StringConstants.DATA_RANGE : ""}
                 onPress={(data: IFilterDataDetails) => callApplyFilter(data)}
               />
             )}
@@ -223,12 +225,11 @@ const VisitScreen = ({
               </PressableButton>
             </View>
           )}
-          {
-            (searchStatus && searchResult.length==0) &&
-            <TextWrapper  style={styles.noRecordFoundText}>
+          {searchStatus && searchResult.length == 0 && (
+            <TextWrapper style={styles.noRecordFoundText}>
               {StringConstants.NO_MATCHING_RECORD_FOUND}
-            </TextWrapper> 
-          }
+            </TextWrapper>
+          )}
           {rednerVisitScreens()}
         </View>
         {currentVisit == 2 &&
@@ -236,7 +237,16 @@ const VisitScreen = ({
           customerDetails &&
           (searchResult.length > 0 ? searchResult : plannedVisit)[
             selectedIndexValue
-          ]?.visit_status == "0" && (
+          ]?.visit_status == "0" &&
+          (isVisitEditable ? (
+            <CustomFooter
+              singleButtonOnFooter
+              leftButtonText={StringConstants.UPDATE_DETAILS}
+              leftButtonPress={() => {}}
+              leftButtonStyle={{backgroundColor:Colors.sailBlue}}
+              leftButtonTextStyle={{color:Colors.white}}
+            />
+          ) : (
             <CustomFooter
               leftButtonText={StringConstants.CANCEL_VISIT}
               rightButtonText={StringConstants.EDIT_VISIT}
@@ -244,7 +254,7 @@ const VisitScreen = ({
               rightButtonPress={plannedVisitEdit}
               isMovable={true}
             />
-          )}
+          ))}
       </SafeAreaView>
     </>
   );

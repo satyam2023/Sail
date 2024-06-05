@@ -2,24 +2,12 @@ import {
   COMPEITITOR_BUTTON_TYPE,
   CUSTOMER_INFO_TYPE_TAB,
   ENQUIRY_TYPE,
-  IS_VISIT_FOCUS_FIRST_TIME,
   MODAL_TYPE,
   PROFILE_BUTTON_TYPE,
   TAB_TYPE,
   VISIT_TYPE,
 } from "../actionConstants";
 import { IBaseReducerInterface } from "./IBaseReducerInterface";
-
-const INITIAL_STATE = {
-  visitType: 1,
-  enquiryType: 1,
-  modalVisibility: false,
-  tabVisibiity: true,
-  CompetitorButtonStatus: false,
-  CustomerProfileButton: false,
-  CustomerInformationTab: 1,
-  isVisitFocusFirstTime:true,
-};
 
 interface IUIReducer {
   visitType: number;
@@ -28,13 +16,31 @@ interface IUIReducer {
   CompetitorButtonStatus: boolean;
   CustomerProfileButton: boolean;
   CustomerInformationTab: number;
-  isVisitFocusFirstTime:boolean
+  isVisitFocusFirstTime: boolean;
+  tabVisibiity: boolean;
 }
 
-const UIReducer = (
-  state = INITIAL_STATE,
-  action: any,
-) => {
+type Action =
+  | IBaseReducerInterface<number, typeof VISIT_TYPE>
+  | IBaseReducerInterface<number, typeof ENQUIRY_TYPE>
+  | IBaseReducerInterface<boolean, typeof MODAL_TYPE>
+  | IBaseReducerInterface<boolean, typeof TAB_TYPE>
+  | IBaseReducerInterface<boolean, typeof COMPEITITOR_BUTTON_TYPE>
+  | IBaseReducerInterface<boolean, typeof PROFILE_BUTTON_TYPE>
+  | IBaseReducerInterface<number, typeof CUSTOMER_INFO_TYPE_TAB>;
+
+const INITIAL_STATE: IUIReducer = {
+  visitType: 1,
+  enquiryType: 1,
+  modalVisibility: false,
+  tabVisibiity: true,
+  CompetitorButtonStatus: false,
+  CustomerProfileButton: false,
+  CustomerInformationTab: 1,
+  isVisitFocusFirstTime: true,
+};
+
+const UIReducer = (state = INITIAL_STATE, action: Action): IUIReducer => {
   switch (action.type) {
     case VISIT_TYPE: {
       return {
@@ -77,12 +83,6 @@ const UIReducer = (
         ...state,
         CustomerInformationTab: action.payload,
       };
-    }
-    case IS_VISIT_FOCUS_FIRST_TIME:{
-      return{
-        ...state,
-        isVisitFocusFirstTime:action.payload,
-      }
     }
     default:
       return state;

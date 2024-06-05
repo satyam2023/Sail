@@ -13,6 +13,7 @@ import {
   setInvalidCredentialsPopUp,
   setPendingApprovalPopUp,
 } from "redux/actions/LoaderAction";
+import { RootState } from "redux/store/Store";
 import StringConstants from "shared/localization";
 
 interface IPopUpMessage {
@@ -23,12 +24,12 @@ interface IPopUpMessage {
 
 const PopUpBox = () => {
   const dispatch = useDispatch();
-  const loader = useSelector((state: any) => state.LoaderReducer.visible);
+  const loader = useSelector((state: RootState) => state.LoaderReducer.visible);
   const invalidCred = useSelector(
-    (state: any) => state.LoaderReducer.invalidCredentials
+    (state: RootState) => state.LoaderReducer.invalidCredentials
   );
   const pendingApproval = useSelector(
-    (state: any) => state.LoaderReducer.pendingApprovalVisible
+    (state: RootState) => state.LoaderReducer.pendingApprovalVisible
   );
 
   const handleCancelPendingPopUp = () => {

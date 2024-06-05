@@ -26,6 +26,7 @@ import {
   CustomertypeProject,
   CustomertypeTrader,
   IEnteredCompetitorDetail,
+  IGeoPosition,
   ISelectedImage,
   IadditionalList,
   IselecteddropDown,
@@ -50,7 +51,6 @@ import {
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
 import useForm, { FormValues } from "core/UseForm";
 
-
 const CreateCustomerViewModel = () => {
   const [CurrentScreen, setCurrentScreen] = useState<number>(1);
   const [addDetailStatus, setAddDetailsStatus] = useState<boolean>(false);
@@ -69,7 +69,7 @@ const CreateCustomerViewModel = () => {
 
   const [isAllDetailsFilled, setIsAllDetailField] = useState<boolean>(false);
   const [indexofSubtype, setIndexofSubType] = useState<IsubType>({
-    customerSegmentIndex: 2,
+    customerSegmentIndex: -1,
     customerSubTypeIndex: -1,
   });
   const [selectedDropdownItemList, setSelectedDropDownItemList] =
@@ -99,11 +99,10 @@ const CreateCustomerViewModel = () => {
   };
 
   const handleCustomerScreen = () => {
-  
     const typeIndex = indexofSubtype?.customerSubTypeIndex;
     if (isAllDetailsFilled) {
       handleCustomerSubmited();
-      if (typeIndex == 2 || typeIndex == 7 || typeIndex == 6)
+      if ([2,6,7].includes(typeIndex))
         typeIndex == 6 ? handleProjectSubmit() : handleTraderDealerSubmit();
     }
   };
@@ -115,7 +114,7 @@ const CreateCustomerViewModel = () => {
           if (CurrentScreen == 1) handleCustomerScreen();
           else if (CurrentScreen == 2) setCurrentScreen(3);
           else if (CurrentScreen == 3) {
-            setCurrentScreen(4);
+            
             createCustomer();
           }
         }
@@ -177,7 +176,6 @@ const CreateCustomerViewModel = () => {
     setRepresentativeImage(undefined);
     setIsAllDetailField(false);
     addDetails(false);
-    
   };
   const representativeDetails: RepresentativeDetails = {
     name: "",
@@ -321,11 +319,9 @@ const CreateCustomerViewModel = () => {
     } else if (CurrentScreen == 2) setRepresentativeImage(selectedAsset);
   }
 
-  function isAllFieldHaveData() {
+  const isAllFieldHaveData=() =>{
     const subTypeIndex = indexofSubtype?.customerSubTypeIndex;
-    const isSpecialCustomerType: boolean =
-      subTypeIndex == 2 || subTypeIndex == 7 || subTypeIndex == 6;
-
+    const isSpecialCustomerType: boolean =[2,7,6].includes(subTypeIndex);
     if (
       isAllInputFieldHaveData(customerValue) &&
       (isSpecialCustomerType
@@ -334,116 +330,82 @@ const CreateCustomerViewModel = () => {
           )
         : true)
     ) {
-      if (!isAllDetailsFilled) setIsAllDetailField(true);
+      !isAllDetailsFilled && setIsAllDetailField(true);
     } else {
-      if (isAllDetailsFilled) setIsAllDetailField(false);
+      isAllDetailsFilled && setIsAllDetailField(false);
     }
   }
 
-  function extraListDropDownset(item: IdropDown, index: number, type: string) {
-    if (type == StringConstants.CUSTOMER_TYPE_TRADER_DEFENCE) {
-      handleTextChangeOfTrader(
-        Object.keys(customerTypeTraderDealerDetail)[index],
-        item?.id.toString(),
-      );
-      if (index == 4) {
-        procured_supplier_list.procured_products.current?.push(item.id);
-        setSelectedDropDownItemList((prev: any) => ({
-          ...prev,
-          selectedProcuredProduct: [
-            ...selectedDropdownItemList.selectedProcuredProduct,
-            item,
-          ],
-        }));
-      } else if (index == 6) {
-        procured_supplier_list.supplier.current?.push(item.id);
-        setSelectedDropDownItemList((prev: any) => ({
-          ...prev,
-          selectedSupplier: [
-            ...selectedDropdownItemList.selectedSupplier,
-            item,
-          ],
-        }));
-      }
-    } else if (type == StringConstants.CUSTOMER_TYPE_PROJECT) {
-      handleTextChangeOfProject(
-        Object.keys(customerTypeProjectDetail)[index],
-        item?.id.toString(),
-      );
-      if (index == 0) {
-        procured_supplier_list.procured_products.current?.push(item.id);
-        setSelectedDropDownItemList((prev: any) => ({
-          ...prev,
-          selectedProcuredProduct: [
-            ...selectedDropdownItemList.selectedProcuredProduct,
-            item,
-          ],
-        }));
-      } else if (index == 2) {
-        procured_supplier_list.supplier.current?.push(item.id);
-        setSelectedDropDownItemList((prev: any) => ({
-          ...prev,
-          selectedSupplier: [
-            ...selectedDropdownItemList.selectedSupplier,
-            item,
-          ],
-        }));
-      }
-    }
+  const extraListDropDownset=(item: IdropDown, index: number, type: string) =>{
+    const isTraderType: boolean =
+      type == StringConstants.CUSTOMER_TYPE_TRADER_DEFENCE ? true : false;
+    const procuredIndex: number = isTraderType ? 4 : 0;
+    const isProcured: boolean = index == procuredIndex ? true : false;
+    const key = isProcured ? "selectedProcuredProduct" : "selectedSupplier";
+    isTraderType
+      ? handleTextChangeOfTrader(
+          Object.keys(customerTypeTraderDealerDetail)[index],
+          item?.id.toString(),
+        )
+      : handleTextChangeOfProject(
+          Object.keys(customerTypeProjectDetail)[index],
+          item?.id.toString(),
+        );
+    isProcured
+      ? procured_supplier_list.procured_products.current?.push(item?.id)
+      : procured_supplier_list.supplier.current?.push(item?.id);
+    setSelectedDropDownItemList((prev: IselecteddropDown) => ({
+      ...prev,
+      [key]: [
+        ...(isProcured
+          ? selectedDropdownItemList.selectedProcuredProduct
+          : selectedDropdownItemList.selectedSupplier),
+        item,
+      ],
+    }));
     isAllFieldHaveData();
   }
 
-  function removeSelectedItem(index: number, type: string) {
-    if (type == StringConstants.PROCURED_PRODUCT)
-      setSelectedDropDownItemList((prev: IselecteddropDown) => ({
-        ...prev,
-        selectedProcuredProduct: removeSelectedDropDownItem(
-          index,
-          selectedDropdownItemList?.selectedProcuredProduct,
-        ),
-      }));
-    else if (type == StringConstants.SUPPLIER)
-      setSelectedDropDownItemList((prev: IselecteddropDown) => ({
-        ...prev,
-        selectedSupplier: removeSelectedDropDownItem(
-          index,
-          selectedDropdownItemList?.selectedSupplier,
-        ),
-      }));
-  }
+  const removeSelectedItem = (index: number, type: string) => {
+    const isProcured: boolean =
+      type == StringConstants.PROCURED_PRODUCT ? true : false;
+    const key = isProcured ? "selectedProcuredProduct" : "selectedSupplier";
+    setSelectedDropDownItemList((prev: IselecteddropDown) => ({
+      ...prev,
+      [key]: removeSelectedDropDownItem(
+        index,
+        isProcured
+          ? selectedDropdownItemList?.selectedProcuredProduct
+          : selectedDropdownItemList?.selectedSupplier,
+      ),
+    }));
+  };
 
-  const removeSelectedImage=(item: ISelectedImage)=> {
+  const removeSelectedImage = (item: ISelectedImage) => {
     setCustomerSelectedImage([
       ...removeSelectedCustomerImage(
         item.fileName,
         customerDetailSelectedImage,
       ),
     ]);
-  }
+  };
 
   const setSubTypes = (item: IdropDown, index: number) => {
-    if (index == 2) {
-      setIndexofSubType((prev: IsubType) => ({
-        ...prev,
-        customerSegmentIndex: item.id,
-      }));
-    } else if (index == 4) {
-      setIndexofSubType((prev: IsubType) => ({
-        ...prev,
-        customerSubTypeIndex: item?.id,
-      }));
-    }
+    const key = index == 2 ? "customerSegmentIndex" : "customerSubTypeIndex";
+    setIndexofSubType((prev: IsubType) => ({
+      ...prev,
+      [key]: item.id,
+    }));
     handleTextOfCustomer(
       Object.keys(customerDetails)[index],
       index != 7 ? item.id.toString() : item.name,
     );
-
     isAllFieldHaveData();
   };
 
   const handleLocateMe = () => {
     Geolocation.getCurrentPosition(
-      async (pos: any) => {
+      async (pos: IGeoPosition) => {
         handleTextOfCustomer(
           Object.keys(customerDetails)[12],
           pos.coords.latitude,
@@ -454,7 +416,7 @@ const CreateCustomerViewModel = () => {
         );
         isAllFieldHaveData();
       },
-      (error: any) => logger(error, "getCurrentPosition", "error"),
+      (error: Error) => logger(error, "getCurrentPosition", "error"),
       {
         enableHighAccuracy: false,
         timeout: 10000,
@@ -463,15 +425,15 @@ const CreateCustomerViewModel = () => {
   };
 
   const createCustomer = async () => {
-    dispatch(setLoaderVisibility(true));
+
     try {
+      dispatch(setLoaderVisibility(true));
       const appendFormData = new FormData();
       const repVideoData = {
-        uri: selectRepresentativeImage?.uri,
-        type: selectRepresentativeImage?.type,
-        name: selectRepresentativeImage?.fileName,
+        uri: selectRepresentativeImage?.uri || null,
+        type: selectRepresentativeImage?.type || null,
+        name: selectRepresentativeImage?.fileName || null,
       };
-
       const custImageVideoData = customerDetailSelectedImage?.map(
         (item: ISelectedImage, index: number) => {
           appendFormData.append(`Cust${index + 1}`, {
@@ -505,8 +467,7 @@ const CreateCustomerViewModel = () => {
         competitor: competitorList,
       };
       if (
-        indexofSubtype.customerSubTypeIndex == 2 ||
-        indexofSubtype.customerSubTypeIndex == 7
+        [2,7].includes(indexofSubtype.customerSubTypeIndex)
       ) {
         const traderTypeDetail = traderDealerValue.current;
         body = {
@@ -520,6 +481,7 @@ const CreateCustomerViewModel = () => {
             traderTypeDetail.tentative_quality_procured,
           supplier: procured_supplier_list.supplier.current,
         };
+     
       } else if (indexofSubtype.customerSubTypeIndex == 6) {
         const projectTypeDetails: FormValues = projectValue.current;
         body = {
@@ -531,16 +493,17 @@ const CreateCustomerViewModel = () => {
           project_details: projectTypeDetails?.project_details,
         };
       }
-
       appendFormData.append("data", JSON.stringify(body));
-
       const res = await getCreateCustomerProfile(appendFormData);
       if (res?.isSuccess) {
+      setCurrentScreen(4);
       }
     } catch (error) {
       logger(error, "CreateCustomerErrors");
     }
+    finally{
     dispatch(setLoaderVisibility(false));
+    }
   };
 
   const checkSapCustomerExistAPI = async (code: string) => {
@@ -552,7 +515,7 @@ const CreateCustomerViewModel = () => {
         if (res?.data?.data?.company_name) {
           setSapUserExist(true);
         } else {
-          if (sapUserExist) setSapUserExist(false);
+          sapUserExist && setSapUserExist(false);
         }
       }
     } catch (e) {
@@ -573,7 +536,6 @@ const CreateCustomerViewModel = () => {
     text: string | number,
     id: number,
   ) => {
-
     handleTextOfCustomer(Object.keys(customerDetails)[id], text.toString());
     isAllFieldHaveData();
     if (customerValue?.current?.code.length == 10 && id == 0) {
@@ -583,17 +545,17 @@ const CreateCustomerViewModel = () => {
 
   const checkAllRepresentativeFieldHaveData = () => {
     if (isAllInputFieldHaveData(representativeValue)) {
-      if (!isAllDetailsFilled) setIsAllDetailField(true);
+      !isAllDetailsFilled && setIsAllDetailField(true);
     } else {
-      if (isAllDetailsFilled) setIsAllDetailField(false);
+      isAllDetailsFilled && setIsAllDetailField(false);
     }
   };
 
   const checkAllCompetitorFieldHaveData = () => {
     if (isAllInputFieldHaveData(competitorValue)) {
-      if (!isAllDetailsFilled) setIsAllDetailField(true);
+      !isAllDetailsFilled && setIsAllDetailField(true);
     } else {
-      if (isAllDetailsFilled) setIsAllDetailField(false);
+      isAllDetailsFilled && setIsAllDetailField(false);
     }
   };
 
@@ -619,8 +581,6 @@ const CreateCustomerViewModel = () => {
     handleTextChangeOfProject(Object.keys(customerTypeProjectDetail)[id], text);
     isAllFieldHaveData();
   };
-
-
 
   return (
     <CreateCustomerScreen

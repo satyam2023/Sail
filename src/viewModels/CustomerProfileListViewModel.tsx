@@ -6,7 +6,7 @@ import {
   searchCustomerData,
 } from "controllers/viewCustomerController";
 import { Regex } from "helper/ValidationRegex";
-import { getMemoizedFunction, logger } from "helper/helperFunctions";
+import {  logger } from "helper/helperFunctions";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -82,6 +82,8 @@ const ViewCustomerListViewModel = () => {
       fetchCustomerList: fetchCustomerList,
     });
   }
+
+
 
   return (
     <CustomerProfile

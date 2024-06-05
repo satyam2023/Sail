@@ -1,18 +1,18 @@
 import React from "react";
 import Header from "components/AppHeader";
-import { Image, StyleSheet, View } from "react-native";
+import { Image,View } from "react-native";
 import { SCREENS } from "@shared-constants";
 import { navigate } from "@navigation";
 import Glyphs from "assets/Glyphs";
 import StringConstants from "shared/localization";
 import { CustomButton, TextWrapper } from "components";
-import fonts from "@fonts";
 import { Colors } from "commonStyles/RNColor.style";
 import { WindowHeight } from "libs";
+import styles from "./Style";
 
 const RegistrationCompleted = () => {
   return (
-    <View style={{ height:WindowHeight }}>
+    <View style={{ height:WindowHeight*(0.92) }}>
       <Header topheading={StringConstants.CREATE_CUSTOMER_PROFILE} />
       <View style={styles.container}>
         <Image source={Glyphs.Frame} />
@@ -22,7 +22,7 @@ const RegistrationCompleted = () => {
         <CustomButton
           text={StringConstants.BACK_TO_HOME}
           onPress={() => navigate(SCREENS.MAIN)}
-          buttonStyle={{ backgroundColor: Colors.sailBlue, width: "40%" }}
+          buttonStyle={styles.btnStyle}
           textStyle={{ color: Colors.white }}
         />
       </View>
@@ -31,17 +31,3 @@ const RegistrationCompleted = () => {
 };
 export default RegistrationCompleted;
 
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-    flex:1,
-    
-  },
-  txt: {
-    fontFamily: fonts.Poppins.medium,
-    fontSize: 20,
-    color: Colors.sailBlue,
-    marginTop:20
-  },
-});

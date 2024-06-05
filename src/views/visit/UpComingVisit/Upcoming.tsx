@@ -6,7 +6,7 @@ import { FlatList } from "react-native-gesture-handler";
 import { VisitResponse } from "models/ApiResponses/VisitResponse";
 import StringConstants from "shared/localization";
 import Glyphs from "assets/Glyphs";
-import { IupcomingVisitField } from "models/interface/IVisit";
+import { IFlatlistUpcomingVist, IupcomingVisitField } from "models/interface/IVisit";
 
 
 interface IUpcomingScreen {
@@ -28,10 +28,7 @@ const UpcomingVisit = (props: IUpcomingScreen) => {
   const renderUpcomingVisit = ({
     item,
     index,
-  }: {
-    item: VisitResponse;
-    index: number;
-  }) => {
+  }: IFlatlistUpcomingVist) => {
     return (
       <RectangularBox
         leftIcon={Glyphs.multiProfile}
@@ -45,8 +42,7 @@ const UpcomingVisit = (props: IUpcomingScreen) => {
 
   return (
     <View style={{ paddingHorizontal: 20, flex: 1 }}>
-      {!props?.customerDetails ? (
-        <>
+      {!props.customerDetails ? (
           <FlatList
             data={isSearchResult ? props.searchResult : props.upcomingVisitList}
             renderItem={renderUpcomingVisit}
@@ -54,7 +50,7 @@ const UpcomingVisit = (props: IUpcomingScreen) => {
             onEndReached={props?.setPaginationPage}
             showsVerticalScrollIndicator={false}
           />
-        </>
+ 
       ) : props.selectedIndexValue >= 0 ? (
         <CustomerDetails
           onPress={props?.handleCustomerClick}
@@ -63,7 +59,7 @@ const UpcomingVisit = (props: IUpcomingScreen) => {
           companyName={
             (isSearchResult ? props?.searchResult : props?.upcomingVisitList)[
               props?.selectedIndexValue
-            ].customer_data?.company_name
+            ]?.customer_data?.company_name
           }
         />
       ) : null}
@@ -71,4 +67,4 @@ const UpcomingVisit = (props: IUpcomingScreen) => {
   );
 };
 
-export default memo(UpcomingVisit);
+export default UpcomingVisit;

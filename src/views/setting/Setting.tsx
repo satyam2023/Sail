@@ -93,7 +93,6 @@ const SettingScreen = ({
           <ScrollView
             style={{ paddingHorizontal: 20, flex: 1 }}
             showsVerticalScrollIndicator={false}
-            //  bounces={false}
           >
             <View style={styles.detailContainer}>
               <View style={styles.circle}>

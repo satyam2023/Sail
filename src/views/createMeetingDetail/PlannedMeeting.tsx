@@ -95,7 +95,7 @@ const PlannedMeeting = (props: IPlannedMeeting) => {
                   backgroundColor: Colors.disabledGrey,
                   marginBottom: 10,
                 }}
-                textStyle={{ position: "absolute", left: 20, fontSize: 14 }}
+                textStyle={styles.btnStyle}
               />
             );
           })}

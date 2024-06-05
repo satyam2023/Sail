@@ -2,6 +2,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import {
   getPlannedVisit,
   getPlannedVisitExecution,
+  getPlannedVisitSearch,
   getUnplannedVisitExecution,
 } from "controllers/meetingController";
 import {
@@ -35,6 +36,7 @@ import { RootState, store } from "redux/store/Store";
 import StringConstants from "shared/localization";
 import MeetingScreen from "views/createMeetingDetail/MeetingScreen";
 import {
+  checkOnlyNumber,
   representativeValidationRules,
   unplannedVisitValidationRule,
 } from "helper/ValidationRegex";
@@ -57,7 +59,7 @@ const CreateMetingDetailsViewModel = () => {
     index: -1,
     type: "",
   });
-
+  const userID = store?.getState()?.userAccount?.data?.data?.user?.id;
   const getRegionData = store?.getState()?.home?.data?.data?.CustomerRegion;
   const [btnStatus, setBtnStatus] = useState<IBtnStatus>({
     submitBtn: false,
@@ -72,6 +74,7 @@ const CreateMetingDetailsViewModel = () => {
       escalation: false,
       accompying: false,
     });
+  const plannedVisitSearchEnteredText = useRef<string>("");
   const issueDropDownList = store?.getState()?.dropdown?.issue?.data;
   const unPlannedVisitMeetingDetails: FormValues = {
     code: "",
@@ -176,8 +179,7 @@ const CreateMetingDetailsViewModel = () => {
     (state: RootState) => state?.dropdown,
   );
 
-  const {startRecording } =
-    useVoiceToText();
+  const { startRecording } = useVoiceToText();
 
   const [representativeList] = useState<IRepresentativeList>({
     representativeList: [StringConstants.EMPTY],
@@ -256,7 +258,6 @@ const CreateMetingDetailsViewModel = () => {
     issueDetail: IssueDetails,
     issueIndex: number,
   ) => {
-   
     setVoiceIndex({
       index: issueIndex,
       type: key,
@@ -284,7 +285,8 @@ const CreateMetingDetailsViewModel = () => {
 
   const fetchPlannedVisitData = async (pagenumber: number) => {
     try {
-      const res:any= await getPlannedVisit(pagenumber);
+      setLoaderVisibility(true)
+      const res: any = await getPlannedVisit(pagenumber);
       if (res) {
         paginationPage.lastPage.current = res.data.data.last_page;
         setplannedMeetingList(res.data.data.data);
@@ -292,6 +294,7 @@ const CreateMetingDetailsViewModel = () => {
     } catch (error) {
       logger(error, "Error in Fetching Planned Visit data");
     } finally {
+      setLoaderVisibility(false)
     }
   };
 
@@ -416,43 +419,30 @@ const CreateMetingDetailsViewModel = () => {
       Object.keys(unPlannedVisitMeetingDetails)[id],
       text.toString(),
     );
-
     handleSubmitButtonStatus();
   };
 
   const handleSubmitButtonStatus = () => {
     if (isAllInputFieldHaveData(unplannedVisitValue)) {
-      if (!btnStatus.submitBtn) {
-        setBtnStatus((prev: IBtnStatus) => ({
-          ...prev,
-          submitBtn: true,
-        }));
-      }
+      !btnStatus.submitBtn && setButtonStatus(true,'submitBtn')
     } else {
-      if (btnStatus.submitBtn) {
-        setBtnStatus((prev: any) => ({
-          ...prev,
-          submitBtn: false,
-        }));
-      }
+      btnStatus.submitBtn &&
+        setButtonStatus(false,'submitBtn')
     }
+  };
+
+  const setButtonStatus = (status: boolean,key:string='representativeBtn') => {
+    setBtnStatus((prev: IBtnStatus) => ({
+      ...prev,
+     [key]: status,
+    }));
   };
 
   const handleRepresentativeButtonStatus = () => {
     if (isAllInputFieldHaveData(representativeDetailValue)) {
-      if (!btnStatus.representativeBtn) {
-        setBtnStatus((prev: IBtnStatus) => ({
-          ...prev,
-          representativeBtn: true,
-        }));
-      }
+      !btnStatus.representativeBtn && setButtonStatus(true);
     } else {
-      if (btnStatus.representativeBtn) {
-        setBtnStatus((prev: any) => ({
-          ...prev,
-          representativeBtn: false,
-        }));
-      }
+      btnStatus.representativeBtn && setButtonStatus(false);
     }
   };
 
@@ -499,9 +489,8 @@ const CreateMetingDetailsViewModel = () => {
   const handlePlannedVisitSubmit = () => callPlannedVisitExecution();
 
   const handleEscalationAccompying = (selectedIssueIndex: number) => {
-    escalation_accompying_Status?.escalation
-      ? {}
-      : setIssueIndex(selectedIssueIndex);
+    !escalation_accompying_Status.escalation &&
+      setIssueIndex(selectedIssueIndex);
     setEscalationAccompyStatus((prev: Escalation_Accompying) => ({
       ...prev,
       escalation: !escalation_accompying_Status.escalation,
@@ -588,6 +577,29 @@ const CreateMetingDetailsViewModel = () => {
     }
   };
 
+  const callPlannedVisitSearch = async () => {
+    const enteredvalue = plannedVisitSearchEnteredText.current;
+    const body = {
+      user_id: userID,
+      customer_code: checkOnlyNumber(enteredvalue) ? enteredvalue : null,
+      company_name: checkOnlyNumber(enteredvalue) ? null : enteredvalue,
+    };
+    try {
+      dispatch(setLoaderVisibility(true));
+      const res = await getPlannedVisitSearch(body);
+      if (res?.isSuccess) {
+        setplannedMeetingList(res?.data?.data);
+      }
+    } catch (error) {
+      logger(error, "Planned Visit Search Error");
+    } finally {
+      dispatch(setLoaderVisibility(false));
+    }
+  };
+
+  const handlePlannedVisitSearchEnteredText = (text: string) =>
+    (plannedVisitSearchEnteredText.current = text);
+
   return (
     <MeetingScreen
       {...{
@@ -626,6 +638,8 @@ const CreateMetingDetailsViewModel = () => {
         unplannedVisitValue,
         recordDiscussionVoice,
         voiceIndex,
+        handlePlannedVisitSearchEnteredText,
+        callPlannedVisitSearch,
       }}
     />
   );

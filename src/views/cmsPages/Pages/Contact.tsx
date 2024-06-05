@@ -7,16 +7,17 @@ import StringConstants from "shared/localization";
 import { ICmsProps } from "./FAQs";
 import RenderHTML from "react-native-render-html";
 import { ScreenWidth } from "libs";
+import styles from "../Style";
 
 
 const Contact = ({ cmsPageData,pagesRenderingController }: ICmsProps) => {
   const source={
-    html:cmsPageData[1].content
+    html:cmsPageData && cmsPageData[1].content
   }
   return (
       <View>
         <Header topheading={StringConstants.CONTACT_US} onPress={()=>{pagesRenderingController(StringConstants.CMS)}}/>
-        <View style={{paddingHorizontal:20}}>
+        <View style={styles.cmsPageDetailContainer}>
         <RenderHTML source={source} contentWidth={ScreenWidth} />
         </View>
       </View>

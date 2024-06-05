@@ -11,12 +11,15 @@ import {
 } from "controllers/customerInformationController";
 import { Regex } from "helper/ValidationRegex";
 import { downloadFile, logger } from "helper/helperFunctions";
+import { IGenerealCustomerInformationResponse } from "models/ApiResponses/CustomerInfoResponse";
+import { IApiResponse } from "models/ApiResponses/IApiResponse";
 import { ICustomerBody } from "models/interface/ICustomerInfo";
 import { InformationDetails } from "models/interface/ICustomerInformation";
 import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
 import { BottomTabVisibility } from "redux/actions/UIAction";
+import { RootState } from "redux/store/Store";
 import StringConstants from "shared/localization";
 import CustomerInformationScreen from "views/customerInformation/CustomerInformationScreen";
 
@@ -38,7 +41,7 @@ const CustomerInformationViewModel = () => {
   });
   const detailToBeSearch = useRef<string>("");
   const currentInformationTab = useSelector(
-    (state: any) => state?.UIReducer?.CustomerInformationTab,
+    (state: RootState) => state?.UIReducer?.CustomerInformationTab,
   );
   const dispatch = useDispatch();
   const handleEnteredCode_Name = (text: string) => {
@@ -61,6 +64,17 @@ const CustomerInformationViewModel = () => {
     }));
   };
 
+  const handleSearchResult=(res:IApiResponse<IGenerealCustomerInformationResponse>,type:string)=>{
+            setSearchStatus(true);
+            res?.data?.data?.data[0].message ==
+            StringConstants.NO_DATA_FETCHED
+              ? setDetailsToIntialState()
+              : setDetails((prev: InformationDetails) => ({
+                  ...prev,
+                  [type]: res?.data?.data,
+                }));
+  }
+
   const handleCustomerInformationAPICalling = async () => {
     const isNumber: boolean = Regex.CONTACT.test(detailToBeSearch?.current);
     const body: ICustomerBody = {
@@ -69,66 +83,34 @@ const CustomerInformationViewModel = () => {
     };
     try {
       dispatch(setLoaderVisibility(true));
-      let res:any;
+      let res:IApiResponse<IGenerealCustomerInformationResponse>;
       switch (currentInformationTab) {
         case 0:
           {
             res = await orderStatusAPI(body);
-            if (res?.isSuccess) {
-              setSearchStatus(true);
-              res?.data?.data?.data[0].message ==
-              StringConstants.NO_DATA_FETCHED
-                ? setDetailsToIntialState()
-                : setDetails((prev: InformationDetails) => ({
-                    ...prev,
-                    salesOrder: res?.data?.data,
-                  }));
-            }
+            if (res?.isSuccess) 
+              handleSearchResult(res,'salesOrder') 
           }
           break;
         case 1:
           {
             res = await ddreportStatus(body);
-            if (res?.isSuccess) {
-              setSearchStatus(true);
-              res?.data?.data?.data[0].message ==
-              StringConstants.NO_DATA_FETCHED
-                ? setDetailsToIntialState()
-                : setDetails((prev: InformationDetails) => ({
-                    ...prev,
-                    ddReport: res?.data?.data,
-                  }));
-            }
+            if (res?.isSuccess)
+              handleSearchResult(res,'ddReport')
           }
           break;
         case 2:
           {
             res = await mouStatusAPI(body);
-            if (res?.isSuccess) {
-              setSearchStatus(true);
-              res?.data?.data?.data[0].message ==
-              StringConstants.NO_DATA_FETCHED
-                ? setDetailsToIntialState()
-                : setDetails((prev: InformationDetails) => ({
-                    ...prev,
-                    mou: res?.data?.data,
-                  }));
-            }
+            if (res?.isSuccess) 
+              handleSearchResult(res,'mou')
           }
           break;
         case 3:
           {
             res = await outStandingStatus(body);
-            if (res?.isSuccess) {
-              setSearchStatus(true);
-              res?.data?.data?.data[0].message ==
-              StringConstants.NO_DATA_FETCHED
-                ? setDetailsToIntialState()
-                : setDetails((prev: InformationDetails) => ({
-                    ...prev,
-                    outstanding: res?.data?.data,
-                  }));
-            }
+            if (res?.isSuccess)
+              handleSearchResult(res,'outstanding')
           }
           break;
         case 4:
@@ -136,51 +118,28 @@ const CustomerInformationViewModel = () => {
             res = await lastvisitedStatus(body);
 
             if (res?.isSuccess) {
+              
             }
           }
           break;
         case 5:
           {
             res = await offTakeStatus(body);
-            if (res?.isSuccess) {
-              setSearchStatus(true);
-              res?.data?.data?.data[0].message ==
-              StringConstants.NO_DATA_FETCHED
-                ? setDetailsToIntialState()
-                : setDetails((prev: InformationDetails) => ({
-                    ...prev,
-                    offTakeStatus: res?.data?.data,
-                  }));
-            }
+            if (res?.isSuccess) 
+              handleSearchResult(res,'offTakeStatus')
           }
           break;
         case 6:
          { res = await lgbcStatus(body);
-          if (res?.isSuccess) {
-            setSearchStatus(true);
-            res?.data?.data?.data[0].message ==
-            StringConstants.NO_DATA_FETCHED
-              ? setDetailsToIntialState()
-              : setDetails((prev: InformationDetails) => ({
-                  ...prev,
-                  lcbgReport: res?.data?.data,
-                }));
-          }
+          if (res?.isSuccess) 
+            handleSearchResult(res,'lcbgReport')
          }
           break;
         case 7:
           {
           res = await qcStatus(body);
-          if (res?.isSuccess) {
-            setSearchStatus(true);
-            res?.data?.data?.data[0].message ==
-            StringConstants.NO_DATA_FETCHED
-              ? setDetailsToIntialState()
-              : setDetails((prev: InformationDetails) => ({
-                  ...prev,
-                  qcStatus: res?.data?.data,
-                }));
-          }
+          if (res?.isSuccess) 
+            handleSearchResult(res,'qcStatus')
           }
           break;
         default:
@@ -207,7 +166,7 @@ const CustomerInformationViewModel = () => {
     try {
       downloadFile(url);
     } catch (e) {
-      logger(e, "Error in DownLoadung file");
+      logger(e, "Error in DownLoading file");
     }
   };
 

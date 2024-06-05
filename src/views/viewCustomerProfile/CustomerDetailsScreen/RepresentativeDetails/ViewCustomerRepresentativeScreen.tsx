@@ -31,7 +31,7 @@ interface SecondProps {
   selectRepresentativeImage: ISelectedImage | undefined;
   addDetailStatus: boolean;
   handleAddStatus: () => void;
-  representativeDetail: any;
+  representativeDetail: string[];
   handleRepresetativeSelected: (index: number) => void;
   representative: IViewCustomerRepresentative;
   setEditing: (id: number) => void;
@@ -55,6 +55,8 @@ const ViewCustomerRepresentative = ({
   btnStatus,
   representativeErrors
 }: SecondProps) => {
+
+  console.log("Representative Details::::::::",representativeDetail);
   const renderRepresentativeList = ({
     item,
     index,

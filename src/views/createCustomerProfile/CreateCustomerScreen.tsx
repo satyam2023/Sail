@@ -63,16 +63,12 @@ const CreateCustomerScreen = (props: ICreateCustomer) => {
     switch (props.CurrentScreen) {
       case 1:
         return <CustomerDetails {...props} />;
-
       case 2:
         return <CustomerRepresentative {...props} />;
-
       case 3:
         return <Competitor {...props} />;
-
       case 4:
         return <RegistrationCompleted />;
-
       default:
         return null;
 
@@ -100,11 +96,12 @@ const CreateCustomerScreen = (props: ICreateCustomer) => {
                 leftButtonPress={() =>
                   props?.handleScreenChange(StringConstants.BACKWARD)
                 }
+
                 rightButtonPress={() =>
                  props?.handleScreenChange(StringConstants.FORWARD)
                 }
                 isTracker={`${props?.CurrentScreen * 34}%`}
-                isMovable={props?.isAllDetailsFilled}
+                isMovable={props.CurrentScreen==1?props?.isAllDetailsFilled:true}
               />
             ) : (
               <CustomFooter

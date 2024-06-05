@@ -31,6 +31,7 @@ import Representative from "./addUnplannedVisit/AddRepresentative";
 import { IdropDown } from "models/interface/ISetting";
 import { FormValues, ValidationError } from "core/UseForm";
 import { EscalatedList, IFlatListEscalation } from "models/interface/IMessage";
+import styles from "./Style";
 
 interface IMeetingScreen {
   currentScreen: number;
@@ -78,6 +79,9 @@ interface IMeetingScreen {
   unplannedVisitValue:MutableRefObject<FormValues>;
   recordDiscussionVoice:()=>void;
   voiceIndex:VoicDetails;
+  handlePlannedVisitSearchEnteredText:(text:string)=>void;
+  callPlannedVisitSearch:()=>void;
+
 }
 
 const MeetingScreen = ({
@@ -116,10 +120,9 @@ const MeetingScreen = ({
   unplannedVisitValue,
   recordDiscussionVoice,
   voiceIndex,
+  handlePlannedVisitSearchEnteredText,
+  callPlannedVisitSearch 
 }: IMeetingScreen) => {
-
-
-
 
   const renderRectangularBox = ({ item, index }: IFlatlistRectangularBox) => {
     return (
@@ -166,7 +169,7 @@ const MeetingScreen = ({
         <>
           {!successStatus ? (
             <SafeAreaView
-              style={{ backgroundColor: Colors.background2, flex: 1 }}
+              style={styles.meetingScreenContainer}
             >
               <Header topheading={StringConstants.CREATE_MEETING_DETAILS} />
               {escalation_accompying_Status.accompying ||
@@ -174,7 +177,7 @@ const MeetingScreen = ({
                 <FlatList
                   data={escalatedCustomerList}
                   renderItem={renderEscalationPersonList}
-                  style={{ paddingHorizontal: 20, marginTop: 20 }}
+                  style={styles.escalatedPersonListContainer}
                   keyExtractor={(_,index)=>index.toString()}
                 />
               ) : (
@@ -213,17 +216,14 @@ const MeetingScreen = ({
                         }}
                       />
                     ) : (
-                      <View style={{ paddingHorizontal: 20, flex: 1 }}>
+                      <View style={styles.plannedContainer}>
                         <InputTextField
-                          onChangeText={() => {}}
+                          onChangeText={(text:string) => handlePlannedVisitSearchEnteredText(text)}
                           placeholder={StringConstants.ENTER_CUST_CODE_OR_NAME}
                           rightIcon={Glyphs.Search}
-                          containerStyle={{
-                            backgroundColor: Colors.white,
-                            marginTop: 16,
-                          }}
+                          onRighIconPress={callPlannedVisitSearch}
+                          containerStyle={styles.searchTextBox}
                         />
-
                         <FlatList
                           data={plannedMeetingList}
                           renderItem={renderRectangularBox}
