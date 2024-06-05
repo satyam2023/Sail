@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Image, ImageStyle, ImageURISource, StyleSheet } from "react-native";
 
 interface IBottomTabIconStyle{
@@ -18,7 +18,7 @@ const BottomTabIcon = (props: IbottomTabIcon) => {
     />
   );
 };
-export default BottomTabIcon;
+export default memo(BottomTabIcon);
 
 const styles = StyleSheet.create<IBottomTabIconStyle>({
   img: {

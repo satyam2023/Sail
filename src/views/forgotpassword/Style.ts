@@ -1,9 +1,19 @@
 import fonts from "@fonts";
 import { Colors } from "commonStyles/RNColor.style";
+import { ImageStyle, TextStyle, ViewStyle } from "react-native";
 import { StyleSheet } from "react-native";
 
+interface IForgotPasswordStyle{
+  arrowImage:ImageStyle;
+  forgotImage:ImageStyle;
+  resetText:TextStyle;
+  infoText:TextStyle;
+  conatiner:ViewStyle;
+  resendText:TextStyle;
+}
 
-const styles=StyleSheet.create({
+
+const styles=StyleSheet.create<IForgotPasswordStyle>({
     arrowImage:{
         height: 18,
         width: 12,
@@ -20,7 +30,7 @@ const styles=StyleSheet.create({
       },
       resetText:{
         textAlign: "center",
-        fontFamily: fonts.type.bold,
+        fontFamily: fonts.Poppins.bold,
         fontSize: 24,
         lineHeight: 32,
         color: Colors.sailBlue,
@@ -28,13 +38,30 @@ const styles=StyleSheet.create({
       },
       infoText:{
         textAlign: "center",
-        fontFamily: fonts.type.bold,
+        fontFamily: fonts.Poppins.bold,
         fontSize: 16,
         lineHeight: 20,
         color: Colors.darkGrey,
         marginBottom:25
         
       },
+      conatiner:{
+        width: "15%",
+        height: 56,
+        backgroundColor: Colors.background,
+        borderRadius: 33,
+        alignSelf: "center",
+        color:Colors.blackPeral,
+        fontFamily:fonts.Poppins.regular,
+        fontSize:24
+      },
+      resendText:{
+        marginTop: 10,
+        textAlign: "center",
+        color: Colors.sailBlue,
+        fontFamily: fonts.Poppins.regular,
+        fontSize: 14,
+      }
 });
 
 export default styles;

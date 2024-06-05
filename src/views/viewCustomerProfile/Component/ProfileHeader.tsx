@@ -92,14 +92,11 @@ const ProfileHeader = ({
                 buttonStyle={styles.updatebtnStyle}
                 textStyle={{
                   color: Colors.white,
-                  fontFamily: fonts.type.medium,
+                  fontFamily: fonts.Poppins.medium,
                 }}
                 onPress={updateCustomerCode}
               />
             </View>
-            <TextWrapper style={styles.plsText}>
-              {StringConstants.PLS_ENTER_GST_PAN}
-            </TextWrapper>
           </View>
         )}
       </View>

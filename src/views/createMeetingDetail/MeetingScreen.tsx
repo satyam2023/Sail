@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import { SafeAreaView, View } from "react-native";
 import Header from "components/AppHeader";
 import AddUnplannedVisit from "./addUnplannedVisit/AddUnplannedVisit";
@@ -8,50 +8,80 @@ import { Colors } from "commonStyles/RNColor.style";
 import StringConstants from "shared/localization";
 import InputTextField from "components/InputTextField";
 import HorizontalSlider from "components/HorizontalSliderTab";
-import { RectangularBox } from "components";
+import {
+  PressableButton,
+  RectangularBox,
+  StatusBarComponent,
+} from "components";
 import { FlatList } from "react-native-gesture-handler";
 import { MeetingHeaderData } from "@shared-constants";
 import {
+  Escalation_Accompying,
   IBtnStatus,
   IFlatlistRectangularBox,
-  IIisueList,
   IPlannedMeetingData,
   IRepresentativeList,
   IUnplannedDropDownList,
-  IissueDetail,
+  IssueDetails,
+  PlannedMeetingUpdate,
+  VoicDetails,
 } from "models/interface/IMeeting";
 import PlannedMeeting from "./PlannedMeeting";
-import { IRepresentativeEnteredDetail } from "models/interface/ICreateCustomer";
 import Representative from "./addUnplannedVisit/AddRepresentative";
-import { IRepresentativeError } from "helper/ValidationRegex";
 import { IdropDown } from "models/interface/ISetting";
+import { FormValues, ValidationError } from "core/UseForm";
+import { EscalatedList, IFlatListEscalation } from "models/interface/IMessage";
+import styles from "./Style";
 
 interface IMeetingScreen {
   currentScreen: number;
   successStatus: boolean;
   setCurrentScreen: (currentScreen: number) => void;
-  plannedMeetingList: IPlannedMeetingData;
+  plannedMeetingList: IPlannedMeetingData[];
   selectedIndexValue: number;
   setSelectedIndexValue: (selectedIndexValue: number) => void;
   plannedMeetingDetail: string[];
   addIssue: () => void;
-  issueList: IIisueList;
   handlePagination: () => void;
   unplannedDropDownList: IUnplannedDropDownList;
   representativeList: IRepresentativeList;
   handleAddRepresentative: () => void;
-  enteredRepresentativeDetails: IRepresentativeEnteredDetail;
   addUnPlannedRepresentative: boolean;
-  representativeError: IRepresentativeError;
   handleRepresentativeOnTextChange: (text: string | number, id: number) => void;
   handleUnplannedVisitDetail: (text: string | number, id: number) => void;
-  issueDetail: IissueDetail;
   handleSubmitButtonClick: () => void;
   btnStatus: IBtnStatus;
-  plannedissueList:IIisueList,
-        plannedrepresentativeList:IRepresentativeList;
-        selectIssuesDropDown:IdropDown[][];
-        handleIssueDetailChange:(text:string|number,id:number)=>void;
+  plannedissueList: IssueDetails[];
+  plannedrepresentativeList: IRepresentativeList;
+  selectIssuesDropDown: IdropDown[][];
+  handleIssueDetailChange: (
+    text: string,
+    id: number,
+    key: string,
+    issueDetails: IssueDetails,
+    IssueIndex: number,
+  ) => void;
+  recordVoice:  (
+    key: string,
+    IssueDetail: IssueDetails,
+    IssueIndex: number,
+  ) => void;
+  handlePlannedVisitTextChange: (text: string, id: number, key: string) => void;
+  handlePlannedVisitSubmit: () => void;
+  unPlannedVisitError: MutableRefObject<ValidationError[]>;
+  representativeErrors: MutableRefObject<ValidationError[]>;
+  escalation_accompying_Status: Escalation_Accompying;
+  escalatedCustomerList: EscalatedList[];
+  handleEscalationAccompying: (selectedIssueIndex: number) => void;
+  updatePlannedVisit: PlannedMeetingUpdate;
+  issueDetails: IssueDetails;
+  selectedIssueIndex: number;
+  unplannedVisitValue:MutableRefObject<FormValues>;
+  recordDiscussionVoice:()=>void;
+  voiceIndex:VoicDetails;
+  handlePlannedVisitSearchEnteredText:(text:string)=>void;
+  callPlannedVisitSearch:()=>void;
+
 }
 
 const MeetingScreen = ({
@@ -64,23 +94,36 @@ const MeetingScreen = ({
   setSelectedIndexValue,
   plannedMeetingDetail,
   addIssue,
-  issueList,
   handlePagination,
   representativeList,
   handleAddRepresentative,
-  enteredRepresentativeDetails,
   addUnPlannedRepresentative,
-  representativeError,
   handleRepresentativeOnTextChange,
   handleUnplannedVisitDetail,
-  issueDetail,
   handleSubmitButtonClick,
   btnStatus,
   plannedissueList,
   plannedrepresentativeList,
   selectIssuesDropDown,
-  handleIssueDetailChange
+  handleIssueDetailChange,
+  recordVoice,
+  handlePlannedVisitTextChange,
+  handlePlannedVisitSubmit,
+  unPlannedVisitError,
+  representativeErrors,
+  escalation_accompying_Status,
+  escalatedCustomerList,
+  handleEscalationAccompying,
+  updatePlannedVisit,
+  issueDetails,
+  selectedIssueIndex,
+  unplannedVisitValue,
+  recordDiscussionVoice,
+  voiceIndex,
+  handlePlannedVisitSearchEnteredText,
+  callPlannedVisitSearch 
 }: IMeetingScreen) => {
+
   const renderRectangularBox = ({ item, index }: IFlatlistRectangularBox) => {
     return (
       <RectangularBox
@@ -88,80 +131,131 @@ const MeetingScreen = ({
         subHeading={item?.customer_data?.company_name}
         leftIcon={Glyphs.CreateVisit}
         onPress={() => setSelectedIndexValue(index)}
+        rightIconStyle={{ transform: [{ rotate: "270deg" }] }}
       />
     );
   };
 
+  const renderEscalationPersonList = ({ item }: IFlatListEscalation) => {
+    return (
+      <PressableButton
+        onPress={() =>
+          handleIssueDetailChange(
+            item?.user_name,
+            2,
+            "escalatedTo",
+            plannedissueList[selectedIssueIndex],
+            selectedIssueIndex,
+          )
+        }
+      >
+        <RectangularBox
+          heading={item?.user_name}
+          subHeading={item?.user_upn}
+          isRightNotIconRequired
+        />
+      </PressableButton>
+    );
+  };
+
+
   return (
     <>
+      <StatusBarComponent
+        backgroundColor={Colors.sailBlue}
+        conentType={"light-content"}
+      />
       {!addUnPlannedRepresentative ? (
         <>
           {!successStatus ? (
             <SafeAreaView
-              style={{ backgroundColor: Colors.background2, flex: 1 }}
+              style={styles.meetingScreenContainer}
             >
               <Header topheading={StringConstants.CREATE_MEETING_DETAILS} />
-              <HorizontalSlider
-                sliderData={MeetingHeaderData}
-                currentScreen={currentScreen}
-                selectedTab={(index: number) => {
-                  setCurrentScreen(index);
-                }}
-              />
-              {currentScreen == 1 ? (
-                selectedIndexValue >= 0 ? (
-                  <PlannedMeeting
-                    {...{
-                      issueList,
-                      representativeList,
-                      plannedMeetingDetail,
-                      handleRepresentativeOnTextChange,
-                      handleAddRepresentative,
-                      addIssue,
-                      plannedissueList,
-                      plannedrepresentativeList,
-                      selectIssuesDropDown,
-                      issueDetail,
-                      handleIssueDetailChange
+              {escalation_accompying_Status.accompying ||
+              escalation_accompying_Status.escalation ? (
+                <FlatList
+                  data={escalatedCustomerList}
+                  renderItem={renderEscalationPersonList}
+                  style={styles.escalatedPersonListContainer}
+                  keyExtractor={(_,index)=>index.toString()}
+                />
+              ) : (
+                <>
+                  <HorizontalSlider
+                    sliderData={MeetingHeaderData}
+                    currentScreen={currentScreen}
+                    selectedTab={(index: number) => {
+                      setCurrentScreen(index);
                     }}
+                    isBorder={true}
                   />
-                ) : (
-                  <View style={{ paddingHorizontal: 20, flex: 1 }}>
-                    <InputTextField
-                      onChangeText={() => {}}
-                      placeholder={StringConstants.ENTER_CUST_CODE_OR_NAME}
-                      rightIcon={Glyphs.Search}
-                      containerStyle={{
-                        backgroundColor: Colors.white,
-                        marginTop: 16,
+
+                  {currentScreen == 1 ? (
+                    selectedIndexValue >= 0 ? (
+                      <PlannedMeeting
+                        {...{
+                          representativeList,
+                          plannedMeetingDetail,
+                          handleRepresentativeOnTextChange,
+                          handleAddRepresentative,
+                          addIssue,
+                          recordVoice,
+                          plannedissueList,
+                          plannedrepresentativeList,
+                          selectIssuesDropDown,
+                          handleIssueDetailChange,
+                          handlePlannedVisitTextChange,
+                          handlePlannedVisitSubmit,
+                          handleEscalationAccompying,
+                          unplannedDropDownList,
+                          updatePlannedVisit,
+                          issueDetails,
+                          recordDiscussionVoice,
+                          voiceIndex,
+                        }}
+                      />
+                    ) : (
+                      <View style={styles.plannedContainer}>
+                        <InputTextField
+                          onChangeText={(text:string) => handlePlannedVisitSearchEnteredText(text)}
+                          placeholder={StringConstants.ENTER_CUST_CODE_OR_NAME}
+                          rightIcon={Glyphs.Search}
+                          onRighIconPress={callPlannedVisitSearch}
+                          containerStyle={styles.searchTextBox}
+                        />
+                        <FlatList
+                          data={plannedMeetingList}
+                          renderItem={renderRectangularBox}
+                          onEndReachedThreshold={0.2}
+                          onEndReached={handlePagination}
+                        />
+                      </View>
+                    )
+                  ) : (
+                    <AddUnplannedVisit
+                      {...{
+                        addIssue,
+                        representativeList,
+                        handleAddRepresentative,
+                        unplannedDropDownList,
+                        handleUnplannedVisitDetail,
+                        handleSubmitButtonClick,
+                        btnStatus,
+                        selectIssuesDropDown,
+                        handleIssueDetailChange,
+                        recordVoice,
+                        unPlannedVisitError,
+                        handleEscalationAccompying,
+                        selectedIssueIndex,
+                        plannedissueList,
+                        unplannedVisitValue,
+                        recordDiscussionVoice,
+                        voiceIndex,
                       }}
                     />
-                    <FlatList
-                      data={plannedMeetingList?.data}
-                      renderItem={renderRectangularBox}
-                      onEndReachedThreshold={0.5}
-                      onEndReached={handlePagination}
-
-                    />
-                  </View>
-                )
-              ) : (
-                <AddUnplannedVisit
-                  {...{
-                    addIssue,
-                    issueList,
-                    representativeList,
-                    handleAddRepresentative,
-                    unplannedDropDownList,
-                    handleUnplannedVisitDetail,
-                    issueDetail,
-                    handleRepresentativeOnTextChange,
-                    handleSubmitButtonClick,
-                    btnStatus,
-                    selectIssuesDropDown,
-                    handleIssueDetailChange
-                  }}
-                />
+                  )}
+                </>
               )}
             </SafeAreaView>
           ) : (
@@ -171,12 +265,10 @@ const MeetingScreen = ({
       ) : (
         <Representative
           {...{
-            enteredRepresentativeDetails,
-            representativeError,
             handleAddRepresentative,
             handleRepresentativeOnTextChange,
             btnStatus,
-            
+            representativeErrors,
           }}
         />
       )}

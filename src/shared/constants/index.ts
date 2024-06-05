@@ -1,10 +1,22 @@
 import Glyphs from "assets/Glyphs";
 import { Colors } from "commonStyles/RNColor.style";
+import {
+  CompetitorDetailInputField,
+  ICustomerDetailInputField,
+  ICustomerTrader,
+} from "models/interface/ICreateCustomer";
+import { ICreateVisitPlaneField } from "models/interface/ICreateVisit";
+import { ICustomerInformationList } from "models/interface/ICustomerInformation";
+import {
+  IMeetingRepresentativeDetailInputField,
+  IPlannedMeetingInputField,
+  IUnplannedInput,
+} from "models/interface/IMeeting";
 import { IdropDown } from "models/interface/ISetting";
-import { ImageURISource } from "react-native";
+import { IupcomingVisitField } from "models/interface/IVisit";
+import { InputModeOptions } from "react-native";
 
 import StringConstants from "shared/localization";
-
 
 export const SCREENS = {
   ONBOARDING: "OnBoarding",
@@ -31,69 +43,87 @@ export const SCREENS = {
   CREATE_MEETING_DETAILS: "Create_Meeting_Details",
   VIEW_CUSTOMER_PROFILE: "View_Customer_Profile",
   FORGOT_PASSWORD_SCREEN: "Forgot Password",
-  CUSTOMER_INFO:"Customer Information",
-  CUSTOMER_PROFILE:'CustomerProfile',
-  SHOW_VIEW_CUSTOMER_REPRESTATIVE:'Representative of View Customer',
-  SHOW_VIEW_CUSTOMER_COMPETITOR:"Competitor detail of View Customer",
+  CUSTOMER_INFO: "Customer Information",
+  CUSTOMER_PROFILE: "CustomerProfile",
+  SHOW_VIEW_CUSTOMER_REPRESTATIVE: "Representative of View Customer",
+  SHOW_VIEW_CUSTOMER_COMPETITOR: "Competitor detail of View Customer",
 };
 
-export interface ICMSPageData {
-  pageName: string;
-}
-export const CMSPageData = [
-  { pageName: StringConstants.ABOUT_US },
-  { pageName: StringConstants.CONTACT_US },
-  { pageName: StringConstants.PRIVACY },
-  { pageName: StringConstants.FAQS },
-  { pageName: StringConstants.TERMS_AND_CONDITIONS },
-];
-
-export interface IFaqData {
-  faq: string;
-}
-
-export const FAQSData = [
-  { faq: StringConstants.HOW_I_GET_ENLISTED },
-  { faq: StringConstants.THIRD_PARTIES },
-  { faq: StringConstants.INFORMATION_MEANS },
-  { faq: StringConstants.THIRD_PARTIES },
-  { faq: StringConstants.INFORMATION_MEANS },
-  { faq: StringConstants.HOW_I_GET_ENLISTED },
-  { faq: StringConstants.NOT_DISCOSURE },
-  { faq: StringConstants.INFORMATION_MEANS },
-];
-
-export const CompetitorDetailData = [
-  StringConstants.ENTER_COMPANY_NAME,
-  StringConstants.ENTER_ADDRESS,
-  StringConstants.ENTER_COMMENTS,
-];
 
 
-export const ViewCustomerCompetitorInputField=[
+
+export const CompetitorDetailData: CompetitorDetailInputField[] = [
   {
-    placeholder:StringConstants.ENTER_COMPANY_NAME,
-    inputMode:''
-  }
-]
-
-export const CompetitorErrorMsg=[
-  StringConstants.INVALID_NAME,
-  StringConstants.INVALID_ADDRESS,
-  StringConstants.PLEASE_ADD_COMMENT,
-]
-
-export const RepresentativeDetailInputFieldData = [
-  StringConstants.ENTER_NAME,
-  StringConstants.ENTER_DESIGNATION,
-  StringConstants.ENTER_DEPARTMENT,
-  StringConstants.ENTER_ADDRESS,
-  StringConstants.ENTER_EMAIL_ADDRESS,
-  StringConstants.ENETR_CONTACTNO,
-  StringConstants.ENETR_WHATSAPP_NO,
+    placeholder: StringConstants.ENTER_COMPANY_NAME,
+    length: 20,
+    key: "company",
+  },
+  {
+    placeholder: StringConstants.ENTER_ADDRESS,
+    length: 20,
+    key: "address",
+  },
+  {
+    placeholder: StringConstants.ENTER_COMMENTS,
+    length: 20,
+    key: "comment",
+  },
 ];
 
-export const RepresentativeDetailData = [
+export const ViewCustomerCompetitorInputField = [
+  {
+    placeholder: StringConstants.ENTER_COMPANY_NAME,
+    inputMode: "",
+  },
+];
+
+export const MeetingRepresentativeDetailInputField: IMeetingRepresentativeDetailInputField[] =
+  [
+    {
+      placeholder: StringConstants.ENTER_NAME,
+      maxlength: 20,
+      inputMode: "text",
+      key: "name",
+    },
+    {
+      placeholder: StringConstants.ENTER_DESIGNATION,
+      maxlength: 20,
+      inputMode: "text",
+      key: "designation",
+    },
+    {
+      placeholder: StringConstants.ENTER_DEPARTMENT,
+      maxlength: 20,
+      inputMode: "text",
+      key: "dept",
+    },
+    {
+      placeholder: StringConstants.ADDRESS,
+      maxlength: 30,
+      inputMode: "text",
+      key: "address",
+    },
+    {
+      placeholder: StringConstants.ENTER_EMAIL_ADDRESS,
+      maxlength: 20,
+      inputMode: "email",
+      key: "email",
+    },
+    {
+      placeholder: StringConstants.ENETR_CONTACTNO,
+      maxlength: 10,
+      inputMode: "numeric",
+      key: "contact",
+    },
+    {
+      placeholder: StringConstants.ENETR_WHATSAPP_NO,
+      maxlength: 10,
+      inputMode: "numeric",
+      key: "whatsApp",
+    },
+  ];
+
+export const RepresentativeDetailData: string[] = [
   StringConstants.NAME,
   StringConstants.DESIGNATION,
   StringConstants.DEPARTMENT,
@@ -103,51 +133,22 @@ export const RepresentativeDetailData = [
   StringConstants.WHATSAPPNO,
 ];
 
-export const RepresentativeErrorMsgOfViewCustomer:string[]=[
-    StringConstants.ENTER_NAME,
-    StringConstants.ENTER_DESIGNATION,
-    StringConstants.ENTER_DEPARTMENT,
-    StringConstants.ENTER_ADDRESS,
-    StringConstants.EMAIL_ERROR_MSG,
-    StringConstants.CONTACT_ERROR_MSG,
-    StringConstants.CONTACT_ERROR_MSG,
-]
-
-export const CustomerDetailInputField = [
-  StringConstants.CUSTOMER_CODE,
-  StringConstants.ENTER_COMPANY_NAME,
-  StringConstants.CUSTOMER_SEG,
-  StringConstants.CUSTOMER_SUB_SEG,
-  StringConstants.CUSTOMER_TYPE,
-  StringConstants.CUSTOMER_SUB_TYPE,
-  StringConstants.CUSTOMER_STATUS,
-  StringConstants.CUSTOMER_REGION,
-  StringConstants.ENTER_PAN_CARD,
-  StringConstants.ENTER_GST,
-  StringConstants.WEBSITE_LINK,
-];
-
-export const ErrorMsgOfCustomerInput = [
-  StringConstants.INVALID_CUST_CODE,
-  StringConstants.ERROR_MESSAGE,
-  StringConstants.ERROR_MESSAGE,
-  StringConstants.ERROR_MESSAGE,
-  StringConstants.ERROR_MESSAGE,
-  StringConstants.ERROR_MESSAGE,
-  StringConstants.ERROR_MESSAGE,
-  StringConstants.ERROR_MESSAGE,
-  StringConstants.INVALID_PAN,
-  StringConstants.INVALID_GST,
-];
-
-export const ErrorMsgOfRepresentative = [
-  StringConstants.INVALID_NAME,
-  StringConstants.INVALID_DESIGNATION,
-  StringConstants.INVALID_DEPARTEMENT,
-  StringConstants.INVALID_ADDRESS,
-  StringConstants.INVALID_EMAIL,
-  StringConstants.INVALID_CONTACT,
-  StringConstants.ENETR_WHATSAPP_NO,
+export const CustomerDetailInputField: ICustomerDetailInputField[] = [
+  { placeholder: StringConstants.CUSTOMER_CODE, maxlength: 10, key: "code" },
+  {
+    placeholder: StringConstants.ENTER_COMPANY_NAME,
+    maxlength: 20,
+    key: "company",
+  },
+  { placeholder: StringConstants.CUSTOMER_SEG,key:'cust_seg' },
+  { placeholder: StringConstants.CUSTOMER_SUB_SEG,key:'cust_sub_seg' },
+  { placeholder: StringConstants.CUSTOMER_TYPE ,key:'cust_type'},
+  { placeholder: StringConstants.CUSTOMER_SUB_TYPE ,key:'cust_sub_type'},
+  { placeholder: StringConstants.CUSTOMER_STATUS ,key:'cust_status'},
+  { placeholder: StringConstants.CUSTOMER_REGION,key:'cust_region' },
+  { placeholder: StringConstants.ENTER_PAN_CARD, maxlength: 10, key: "pan" },
+  { placeholder: StringConstants.ENTER_GST, maxlength: 15, key: "gst" },
+  { placeholder: StringConstants.WEBSITE_LINK, maxlength: 20, key: "website" },
 ];
 
 export const MeetingHeaderData = [
@@ -155,10 +156,14 @@ export const MeetingHeaderData = [
     heading: StringConstants.FOR_PLANNED_VISIT,
     backgroundColor: {
       focus: Colors.sailBlue,
-      notfocus: Colors.aquaHaze,
+      notfocus: Colors.white,
     },
     textColor: {
       focus: Colors.white,
+      notfocus: Colors.sailBlue,
+    },
+    borderColor: {
+      focus: Colors.white3,
       notfocus: Colors.sailBlue,
     },
   },
@@ -166,10 +171,14 @@ export const MeetingHeaderData = [
     heading: StringConstants.FOR_UNPLANNED_VISIT,
     backgroundColor: {
       focus: Colors.sailBlue,
-      notfocus: Colors.aquaHaze,
+      notfocus: Colors.white,
     },
     textColor: {
       focus: Colors.white,
+      notfocus: Colors.sailBlue,
+    },
+    borderColor: {
+      focus: Colors.white3,
       notfocus: Colors.sailBlue,
     },
   },
@@ -211,22 +220,19 @@ export const EnquiryHeaderData = [
   },
 ];
 
-export interface IInput{
-  placeholder:string,
-  length?:number,
-  rightIcon?:ImageURISource,
-  leftIcon?:ImageURISource,
-  inputMode?:string
-
-}
-
-export const UnplannedMeetingInputField = [
+export const UnplannedMeetingInputField: IUnplannedInput[] = [
   {
     placeholder: StringConstants.CUSTOMER_CODE,
     length: 10,
     inputMode: "numeric",
+    key: "code",
   },
-  { placeholder: StringConstants.CUSTOMER_NAME, length: 10, inputMode: "text" },
+  {
+    placeholder: StringConstants.CUSTOMER_NAME,
+    length: 10,
+    inputMode: "text",
+    key: "name",
+  },
   { placeholder: StringConstants.CUSTOMER_STATUS },
   { placeholder: StringConstants.CUSTOMER_TYPE },
   { placeholder: StringConstants.CUSTOMER_REGION },
@@ -235,10 +241,12 @@ export const UnplannedMeetingInputField = [
   {
     placeholder: StringConstants.VISIT_DATE,
     leftIcon: Glyphs.Calender,
+    key: "visit_date",
   },
   {
     placeholder: StringConstants.VISIT_TIME,
     leftIcon: Glyphs.Calender,
+    key: "visit_time",
   },
   {
     placeholder: StringConstants.REASON,
@@ -249,27 +257,40 @@ export const UnplannedMeetingInputField = [
   {
     placeholder: StringConstants.SPEAK_POINTS,
     rightIcon: Glyphs.Mic,
+    key: "discussion_point",
   },
   {
     placeholder: StringConstants.ADD_ACCOMPANYING_EXECUTIVES,
   },
 ];
 
-export const CreateVisitPlanField = [
-  StringConstants.ENTER_CUSTOMER,
-  StringConstants.ENTER_NAME,
-  StringConstants.ENTER_NICK_NAME,
-  StringConstants.CUSTOMER_REGION,
-  StringConstants.SELECT_VISITING_EXECUTIVE,
-  StringConstants.VISIT_DATE,
-  StringConstants.SELECT_REASON,
-  StringConstants.SELECT_MODE_OF_CONTACT,
+export const CreateVisitPlanField: ICreateVisitPlaneField[] = [
+  {
+    placeholder: StringConstants.ENTER_CUSTOMER,
+    maxlength: 10,
+    inputMode: "numeric",
+    key: "customerCode",
+  },
+  {
+    placeholder: StringConstants.ENTER_NAME,
+    maxlength: 20,
+    inputMode: "text",
+    key: "name",
+  },
+  {
+    placeholder: StringConstants.ENTER_NICK_NAME,
+    maxlength: 20,
+    inputMode: "text",
+    key: "nickName",
+  },
+  { placeholder: StringConstants.CUSTOMER_REGION },
+  { placeholder: StringConstants.SELECT_VISITING_EXECUTIVE },
+  { placeholder: StringConstants.VISIT_DATE },
+  { placeholder: StringConstants.SELECT_REASON },
+  {
+    placeholder: StringConstants.SELECT_MODE_OF_CONTACT,
+  },
 ];
-
-export interface IBottomModalTab {
-  heading: string;
-  image: ImageURISource;
-}
 
 export const BottomModalTab = [
   { heading: StringConstants.CREATE_VISIT_PLAN, image: Glyphs.CreateVisit },
@@ -330,13 +351,7 @@ export const VisitHeaderData = [
   },
 ];
 
-export interface ICustomerInformationList {
-  image: ImageURISource;
-  name: string;
-  img_url?: string;
-}
-
-export const CustomerInformation = [
+export const CustomerInformation: ICustomerInformationList[] = [
   {
     image: Glyphs.Customer,
     name: StringConstants.SALES_ORDER,
@@ -382,46 +397,41 @@ export const Category = [
   },
 ];
 
-export interface IupcomingVisitField {
-  heading: string;
-  imagepath: ImageURISource;
-}
-
-export const upcomingVisitDetails = [
+export const upcomingVisitDetails: IupcomingVisitField[] = [
   {
-    heading: "Customer Code",
+    heading: StringConstants.CUSTOMER_CODE,
     imagepath: Glyphs.Code,
   },
   {
-    heading: "Visit Date",
+    heading: StringConstants.VISIT_DATE,
     imagepath: Glyphs.VisitDate,
   },
   {
-    heading: "Contact Number",
+    heading: StringConstants.CONTACT_NUMBER,
     imagepath: Glyphs.BluePhone,
   },
   {
-    heading: "Reason of Visit",
+    heading: StringConstants.REASON,
     imagepath: Glyphs.VisitDateIcon,
   },
   {
-    heading: "Mode of Meeting",
+    heading: StringConstants.MODE_OF_MEETING,
     imagepath: Glyphs.Note,
   },
   {
-    heading: "Visiting Executive",
+    heading: StringConstants.VISITING_EXE,
     imagepath: Glyphs.SignleUser,
   },
   {
-    heading: "Location",
+    heading: StringConstants.LOCATION,
     imagepath: Glyphs.blueLocation,
   },
   {
-    heading: "Email ID",
+    heading: StringConstants.EMAIL_ID,
     imagepath: Glyphs.BlueEmail,
   },
   {
-    heading: "Planned by",
+    heading: StringConstants.PLANNED_BY,
     imagepath: Glyphs.SignleUser,
   },
 ];
@@ -435,155 +445,209 @@ export const MessageDetailField = [
   StringConstants.ISSUE_CMNT,
 ];
 
-export const LocationData = [
-  { value: "Agra" },
-  { value: "Ahmedabad" },
-  { value: "Banglore" },
-  { value: "Baroda" },
+export const PlannedInput: IPlannedMeetingInputField[] = [
+  {
+    placeHolder: StringConstants.CUSTOMER_CODE,
+    maxLength: 20,
+    rightIcon: undefined,
+    leftIcon: undefined,
+    key: "",
+  },
+
+  {
+    placeHolder: StringConstants.CUSTOMER_NAME,
+    maxLength: 20,
+    rightIcon: undefined,
+    leftIcon: undefined,
+    key: "",
+  },
+
+  {
+    placeHolder: StringConstants.CUSTOMER_TYPE,
+    maxLength: 20,
+    rightIcon: undefined,
+    leftIcon: undefined,
+    key: "",
+  },
+
+  {
+    placeHolder: StringConstants.CUSTOMER_STATUS,
+    maxLength: 20,
+    rightIcon: undefined,
+    leftIcon: undefined,
+    key: "",
+  },
+
+  {
+    placeHolder: StringConstants.MODE_OF_MEETING,
+    maxLength: 20,
+    rightIcon: undefined,
+    leftIcon: undefined,
+    key: "",
+  },
+
+  {
+    placeHolder: StringConstants.VISIT_DATE,
+    maxLength: 20,
+    rightIcon: undefined,
+    leftIcon: Glyphs.Calender,
+    key: "",
+  },
+
+  {
+    placeHolder: StringConstants.VISIT_TIME,
+    maxLength: 20,
+    rightIcon: undefined,
+    leftIcon: Glyphs.VisitDateandTime,
+    key: "visitTime",
+  },
+
+  {
+    placeHolder: StringConstants.REASON,
+    maxLength: 20,
+    rightIcon: undefined,
+    leftIcon: undefined,
+    key: "",
+  },
+
+  {
+    placeHolder: StringConstants.OTHER_REASON,
+    maxLength: 20,
+    rightIcon: undefined,
+    leftIcon: undefined,
+    key: "",
+  },
+
+  {
+    placeHolder: StringConstants.SPEAK_POINTS,
+    maxLength: 20,
+    rightIcon: Glyphs.Mic,
+    leftIcon: undefined,
+    key: "discussionPoint",
+  },
+  {
+    placeHolder: StringConstants.ADD_ACCOMPANYING_EXECUTIVES,
+    maxLength: 20,
+    rightIcon: Glyphs.Add,
+    leftIcon: undefined,
+    key: "accompying",
+  },
 ];
 
-export const RoleData = [
-  { value: "A" },
-  { value: "B" },
-  { value: "C" },
-  { value: "D" },
-];
-
-export const PlannedMeetingField = [
-  StringConstants.CUSTOMER_CODE,
-  StringConstants.CUSTOMER_NAME,
-  StringConstants.CUSTOMER_TYPE,
-  StringConstants.CUSTOMER_STATUS,
-  StringConstants.MODE_OF_MEETING,
-  StringConstants.VISIT_DATE,
-  StringConstants.VISIT_TIME,
-  StringConstants.REASON,
-  StringConstants.OTHER_REASON,
-  StringConstants.SPEAK_POINTS,
-  StringConstants.ADD_ACCOMPANYING_EXECUTIVES
-];
-
-export interface IPlannedMeetingInputField{
-    placeHolder:string,
-    maxLength:number,
-    rightIcon:ImageURISource|undefined,
-    leftIcon:ImageURISource|undefined,
+export interface CustomerTraderFields {
+  placeholder: string;
+  length?: number;
+  inputMode?: InputModeOptions;
+  key?: string;
 }
 
-export const PlannedInput=[
-  
+export const CustomerTypeTraderDealer: CustomerTraderFields[] = [
+  { placeholder: StringConstants.SELECT_CLUSTER },
   {
-    placeHolder:StringConstants.CUSTOMER_CODE,
-    maxLength:20,
-    rightIcon:undefined,
-    leftIcon:undefined,
-    
-  },
-
-  {
-    placeHolder:StringConstants.CUSTOMER_NAME,
-    maxLength:20,
-    rightIcon:undefined,
-    leftIcon:undefined
-  },
-
-  {
-    placeHolder:StringConstants.CUSTOMER_TYPE,
-    maxLength:20,
-    rightIcon:undefined,
-    leftIcon:undefined
-  },
-
-  {
-    placeHolder:StringConstants.CUSTOMER_STATUS,
-    maxLength:20,
-    rightIcon:undefined,
-    leftIcon:undefined
-  },
-
-  {
-    placeHolder:StringConstants.MODE_OF_MEETING,
-    maxLength:20,
-    rightIcon:undefined,
-    leftIcon:undefined
-  },
-
-  {
-    placeHolder:StringConstants.VISIT_DATE,
-    maxLength:20,
-    rightIcon:undefined,
-    leftIcon:Glyphs.Calender
-  },
-
-  {
-    placeHolder:StringConstants.VISIT_TIME,
-    maxLength:20,
-    rightIcon:undefined,
-    leftIcon:Glyphs.VisitDateandTime
-  },
-
-  {
-    placeHolder:StringConstants.REASON,
-    maxLength:20,
-    rightIcon:undefined,
-    leftIcon:undefined
-  },
-
-  {
-    placeHolder:StringConstants.OTHER_REASON,
-    maxLength:20,
-    rightIcon:undefined,
-    leftIcon:undefined
-  },
-
-  {
-    placeHolder:StringConstants.SPEAK_POINTS,
-    maxLength:20,
-    rightIcon:Glyphs.Mic,
-    leftIcon:undefined
+    placeholder: StringConstants.CONTACT_NUMBER,
+    length: 10,
+    inputMode: "numeric",
+    key: "contact_number",
   },
   {
-    placeHolder:StringConstants.ADD_ACCOMPANYING_EXECUTIVES,
-    maxLength:20,
-    rightIcon:Glyphs.Add,
-    leftIcon:undefined
+    placeholder: StringConstants.DAY_WISE_STOCK,
+    length: 10,
+    inputMode: "text",
+    key: "day_wise_stock",
   },
-
-
-]
-
-export const SelectIssueField = [
-  StringConstants.SELECT_ISSUE,
-  StringConstants.COMMENT,
-  StringConstants.ESCALATED_TO,
-  StringConstants.ESCALATED_COMMENT,
+  {
+    placeholder: StringConstants.PRICE_FEEDBACK_COMPETITOR,
+    length: 10,
+    inputMode: "text",
+    key: "price_feedback_competitor",
+  },
+  { placeholder: StringConstants.PROCURED_PRODUCT, length: 10 },
+  {
+    placeholder: StringConstants.TENTATIVE_QUALITY_PROCURED,
+    length: 10,
+    inputMode: "text",
+    key: "tentative_quality_procured",
+  },
+  { placeholder: StringConstants.SUPPLIER, length: 10 },
 ];
 
-export const customerTypeTraderDealerField = [
-  StringConstants.SELECT_CLUSTER,
-  StringConstants.CONTACT_NUMBER,
-  StringConstants.DAY_WISE_STOCK,
-  StringConstants.PRICE_FEEDBACK_COMPETITOR,
-  StringConstants.PROCURED_PRODUCT,
-  StringConstants.TENTATIVE_QUALITY_PROCURED,
-  StringConstants.SUPPLIER,
+export const CustomerTypeTraderFields: ICustomerTrader[] = [
+  { placeholder: StringConstants.SELECT_CLUSTER },
+  {
+    placeholder: StringConstants.CONTACT_NUMBER,
+    length: 10,
+    key: "contact_number",
+    input: "tel",
+  },
+  {
+    placeholder: StringConstants.DAY_WISE_STOCK,
+    length: 20,
+    key: "day_wise_stock",
+    input: "text",
+  },
+  {
+    placeholder: StringConstants.PRICE_FEEDBACK_COMPETITOR,
+    length: 20,
+    key: "price_feedback_competitor",
+    input: "text",
+  },
+  {
+    placeholder: StringConstants.PROCURED_PRODUCT,
+    key:'supply'
+  },
+  {
+    placeholder: StringConstants.TENTATIVE_QUALITY_PROCURED,
+    length: 20,
+    key: "tentative_quality_procured",
+    input: "text",
+  },
+  { placeholder: StringConstants.SUPPLIER,
+    key:'procured' },
 ];
 
-export const CustomerTypeProjectField = [
-  StringConstants.PROCURED_PRODUCT,
-  StringConstants.TENTATIVE_QUALITY_PROCURED,
-  StringConstants.SUPPLIER,
-  StringConstants.PROJECT_DETAILS,
-];
+export interface ICustomerProject {
+  placeholder: string;
+  length?: number;
+  key?: string;
+  input?: InputModeOptions;
+}
 
+export const CustomerTypeProject: ICustomerProject[] = [
+  {
+    placeholder: StringConstants.PROCURED_PRODUCT,
+  },
+  {
+    placeholder: StringConstants.TENTATIVE_QUALITY_PROCURED,
+    length: 20,
+    key: "tentative_quality_procured",
+    input: "text",
+  },
+  { placeholder: StringConstants.SUPPLIER },
+  {
+    placeholder: StringConstants.PROJECT_DETAILS,
+    length: 20,
+    key: "project_details",
+    input: "text",
+  },
+];
 
 export const TextFieldData = [
-
-   "Unique Personal Number",
-   "Name",
-   "Contact Name",
-   "Email Id",
-
+  {
+    placeholder: StringConstants.YOUR_UNIQUE,
+    key: "upn",
+  },
+  {
+    placeholder: StringConstants.NAME,
+    key: "name",
+  },
+  {
+    placeholder: StringConstants.CONTACT_NUMBER,
+    key: "contact",
+  },
+  {
+    placeholder: StringConstants.EMAIL,
+    key: "email",
+  },
 ];
 
 export const filterDropDownData: IdropDown[] = [
@@ -597,4 +661,45 @@ export const filterDropDownDuration: IdropDown[] = [
   { id: 3, name: StringConstants.THIRTY_DAYS },
 ];
 
-
+export const PlannedVisitPlaceHolder = [
+  {
+    heading: StringConstants.CUSTOMER_CODE,
+    imagepath: Glyphs.Code,
+  },
+  {
+    heading: StringConstants.VISIT_DATE,
+    imagepath: Glyphs.VisitDate,
+  },
+  {
+    heading: StringConstants.REASON,
+    imagepath: Glyphs.VisitDateIcon,
+  },
+  {
+    heading: StringConstants.MODE_OF_CONDUCT,
+    imagepath: Glyphs.Note,
+  },
+  {
+    heading: StringConstants.REMARKS,
+    imagepath: Glyphs.Note,
+  },
+  {
+    heading: StringConstants.VISITING_EXE,
+    imagepath: Glyphs.SignleUser,
+  },
+  {
+    heading: StringConstants.LOCATION,
+    imagepath: Glyphs.blueLocation,
+  },
+  {
+    heading: StringConstants.CONTACT_NUMBER,
+    imagepath: Glyphs.BluePhone,
+  },
+  {
+    heading: StringConstants.EMAIL_ID,
+    imagepath: Glyphs.BlueEmail,
+  },
+  {
+    heading: StringConstants.PLANNED_BY,
+    imagepath: Glyphs.SignleUser,
+  },
+];

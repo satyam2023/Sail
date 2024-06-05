@@ -1,100 +1,174 @@
 import { useFocusEffect } from "@react-navigation/native";
 import {
-  getCustomerStatus,
-  getCustomerType,
-} from "controllers/createCustomerController";
-import {
-  getAccompanying,
-  getReasonContact,
-} from "controllers/dropDownDataController";
-import {
   getPlannedVisit,
+  getPlannedVisitExecution,
+  getPlannedVisitSearch,
   getUnplannedVisitExecution,
 } from "controllers/meetingController";
 import {
   convertAccomToDropData,
   convertCustomerToDropData,
+  filterAccompyingExecutive,
+  getEscalationId,
+  getdropDownsId,
+  isAllInputFieldHaveData,
   logger,
   plannedMeeting,
-  setInputFieldToIntialValue,
+  setFormDataToIntialValue,
   unplannedVisitMeeting,
 } from "helper/helperFunctions";
 import { IRootCustomerCreate } from "models/ApiResponses/CreateCustomer";
-import { IRepresentativeEnteredDetail } from "models/interface/ICreateCustomer";
 import {
+  Escalation_Accompying,
   IBtnStatus,
-  IIisueList,
   IPlannedMeetingData,
   IRepresentativeList,
-  IUnplannedMeetingEnteredDetail,
-  Iissue,
-  IissueDetail,
+  IssueDetails,
+  PlannedMeetingUpdate,
+  VoicDetails,
 } from "models/interface/IMeeting";
 import { IdropDown } from "models/interface/ISetting";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
 import { BottomTabVisibility } from "redux/actions/UIAction";
 import { RootState, store } from "redux/store/Store";
 import StringConstants from "shared/localization";
 import MeetingScreen from "views/createMeetingDetail/MeetingScreen";
+import {
+  checkOnlyNumber,
+  representativeValidationRules,
+  unplannedVisitValidationRule,
+} from "helper/ValidationRegex";
+import { EscalatedList } from "models/interface/IMessage";
+import useForm, { FormValues } from "core/UseForm";
+import { useVoiceToText } from "components";
+import { goBack } from "@navigation";
 
 const CreateMetingDetailsViewModel = () => {
   const [currentScreen, setCurrentScreen] = useState<number>(1);
   const [successStatus, setSuccessStatus] = useState<boolean>(false);
   const [addUnPlannedRepresentative, setAddUnplannedRepresentative] =
     useState<boolean>(false);
-  const paginationPage = useRef<number>(1);
+  const [selectedIssueIndex, setIssueIndex] = useState<number>(-1);
+  const [plannedMeetingList, setplannedMeetingList] = useState<
+    IPlannedMeetingData[]
+  >([]);
   const [selectedIndexValue, setSelectedIndexValue] = useState<number>(-1);
+  const [voiceIndex, setVoiceIndex] = useState<VoicDetails>({
+    index: -1,
+    type: "",
+  });
+  const userID = store?.getState()?.userAccount?.data?.data?.user?.id;
   const getRegionData = store?.getState()?.home?.data?.data?.CustomerRegion;
   const [btnStatus, setBtnStatus] = useState<IBtnStatus>({
     submitBtn: false,
     representativeBtn: false,
   });
-
+  const paginationPage = {
+    currentPage: useRef<number>(1),
+    lastPage: useRef<number>(1),
+  };
+  const [escalation_accompying_Status, setEscalationAccompyStatus] =
+    useState<Escalation_Accompying>({
+      escalation: false,
+      accompying: false,
+    });
+  const plannedVisitSearchEnteredText = useRef<string>("");
   const issueDropDownList = store?.getState()?.dropdown?.issue?.data;
-  const unPlannedVisitDetail: IUnplannedMeetingEnteredDetail = {
-    code: useRef<string>(),
-    name: useRef<string>(),
-    customer_status: useRef<number>(),
-    customer_type: useRef<number>(),
-    customer_region: useRef<string>(),
-    mode_of_meeting: useRef<number>(),
-    visit_date: useRef<string>(),
-    visit_time: useRef<string>(),
-    visit_reason: useRef<number>(),
-    other_issue: useRef<string>(),
-    discussion_point: useRef<string>(),
-    accompying_executive: useRef<string>(),
-  };
-  const issueDetail: IissueDetail = {
-    issueName: useRef<string>(),
-    comment: useRef<string>(),
-    escalatedTo: useRef<number>(),
-    escalated_comment: useRef<string>(),
-    resolved_status: useRef<number>(0),
+  const unPlannedVisitMeetingDetails: FormValues = {
+    code: "",
+    name: "",
+    customer_status: "",
+    customer_type: "",
+    customer_region: "",
+    mode_of_meeting: "",
+    visit_date: "",
+    visit_time: "",
+    visit_reason: "",
+    other_issue: "",
+    discussion_point: "",
+    accompying_executive: "",
+    selectedRepresentative: "",
   };
 
-  const [representativeError, _] = useState({
-    name: null,
-    designation: null,
-    departement: null,
-    address: null,
-    email: null,
-    contact: null,
-    whatsApp: null,
-  });
+  const callunplannedVisitExecution = async () => {
+    dispatch(setLoaderVisibility(true));
+    const selectedIssueArr = plannedissueList
+      .map((selectedIssue: IssueDetails) => {
+        const hasNonEmptyValues =
+          selectedIssue.issueName !== "" ||
+          selectedIssue.comment !== "" ||
+          selectedIssue.escalatedTo ||
+          selectedIssue.escalated_comment !== "" ||
+          selectedIssue.resolved_status !== "";
+        const escalatedToId = getEscalationId(
+          escalatedCustomerList,
+          selectedIssue?.escalatedTo,
+        );
+        return hasNonEmptyValues
+          ? {
+              issue: getdropDownsId(issueDropDownList, selectedIssue.issueName),
+              comment: selectedIssue.comment,
+              escalated_to: escalatedToId,
+              escalation_comment: selectedIssue.escalated_comment,
+              resolved: selectedIssue.resolved_status == "false" ? 0 : 1,
+            }
+          : null;
+      })
+      .filter((selectedIssue) => selectedIssue !== null);
+    const body = unplannedVisitMeeting(
+      unplannedVisitValue,
+      representativeList,
+      selectedIssueArr,
+      unplannedDropDownList,
+    );
+    try {
+      const res = await getUnplannedVisitExecution(body);
+      if (res?.isSuccess) {
+        setSuccessStatus(true);
+      }
+    } catch (error) {
+      logger(error, "Unplanned Visit Executive Error");
+    } finally {
+      dispatch(setLoaderVisibility(false));
+    }
+  };
+
+  const {
+    values: unplannedVisitValue,
+    errors: unPlannedVisitError,
+    handleSubmit: handleUnplannedVisitSubmit,
+    handleTextChange: handleTextChangeUnPlannedVisit,
+  } = useForm(
+    unPlannedVisitMeetingDetails,
+    unplannedVisitValidationRule,
+    callunplannedVisitExecution,
+  );
+
+  const [updatePlannedVisit, setPlannedUpdateVisit] =
+    useState<PlannedMeetingUpdate>({
+      visitTime: "",
+      discussionPoint: "",
+      accompying: [],
+    });
 
   useEffect(() => {
-    getCustomerType(dispatch),
-      getCustomerStatus(dispatch),
-      getReasonContact(dispatch),
-      getAccompanying(dispatch);
+    fetchPlannedVisitData(1);
   }, []);
 
-  useEffect(() => {
-    setInputFieldToIntialValue(issueDetail);
-    setInputFieldToIntialValue(enteredRepresentativeDetails);
+  useCallback(() => {
+    setPlannedIssueList([
+      {
+        issueName: "",
+        comment: "",
+        escalatedTo: "",
+        escalated_comment: "",
+        resolved_status: "false",
+      },
+    ]);
+    resetIssueForm();
+    resetRepresentativeDetail();
   }, [currentScreen]);
 
   const getDropDownListData: IRootCustomerCreate = useSelector(
@@ -104,45 +178,59 @@ const CreateMetingDetailsViewModel = () => {
   const accompy_modeOfContact = useSelector(
     (state: RootState) => state?.dropdown,
   );
-  const [issueList, setIssueList] = useState<IIisueList>({
-    issueList: [{}],
-    issueListDetail: [],
+
+  const { startRecording } = useVoiceToText();
+
+  const [representativeList] = useState<IRepresentativeList>({
+    representativeList: [StringConstants.EMPTY],
+    representativeListDetail: [],
+    representativeDropDown: [],
   });
 
-  const [plannedissueList, setPlannedIssueList] = useState<IIisueList>({
-    issueList: [{}],
-    issueListDetail: [],
+  const [plannedrepresentativeList] = useState<IRepresentativeList>({
+    representativeList: [StringConstants.EMPTY],
+    representativeListDetail: [],
+    representativeDropDown: [],
   });
 
-  const [representativeList, setRepresentativeList] =
-    useState<IRepresentativeList>({
-      representativeList: [StringConstants.EMPTY],
-      representativeListDetail: [],
-      representativeDropDown: [],
-    });
-
-  const [plannedrepresentativeList, setPlannedRepresentativeList] =
-    useState<IRepresentativeList>({
-      representativeList: [StringConstants.EMPTY],
-      representativeListDetail: [],
-      representativeDropDown: [],
-    });
-
-  const enteredRepresentativeDetails: IRepresentativeEnteredDetail = {
-    name: useRef(""),
-    designation: useRef(""),
-    dept: useRef(""),
-    address: useRef(""),
-    email: useRef(""),
-    contact: useRef(""),
-    whatsApp: useRef(""),
-    id: useRef(-1),
+  const resetRepresentativeDetail = () => {
+    for (let i = 0; i < 7; i++) {
+      handleTextChangeOfRepresentativeDetail(
+        Object.keys(representativeDetail)[i],
+        StringConstants.EMPTY,
+      );
+    }
   };
 
-  const plannedMeetingList: IPlannedMeetingData = useSelector(
-    (state: RootState) => state?.craeteMeeting,
+  const representativeDetail: FormValues = {
+    name: "",
+    designation: "",
+    dept: "",
+    address: "",
+    email: "",
+    contact: "",
+    whatsApp: "",
+  };
+  const addRepresentativeTemporary = () => {
+    if (btnStatus.representativeBtn) {
+      currentScreen == 1
+        ? storeDetailsOfPlannedRepresentative()
+        : storeDetailsOfUnplannedRepresentative();
+    }
+    resetRepresentativeDetail();
+  };
+  const {
+    values: representativeDetailValue,
+    errors: representativeErrors,
+    handleSubmit: handleRepresentativeSubmit,
+    handleTextChange: handleTextChangeOfRepresentativeDetail,
+  } = useForm(
+    representativeDetail,
+    representativeValidationRules,
+    addRepresentativeTemporary,
   );
 
+  const selectedRepresentativeIndex = useRef<number>(-1);
   const plannedMeetingDetail =
     selectedIndexValue >= 0
       ? [...plannedMeeting(plannedMeetingList, selectedIndexValue)]
@@ -154,90 +242,106 @@ const CreateMetingDetailsViewModel = () => {
     return () => dispatch(BottomTabVisibility(true));
   });
 
-  useEffect(() => {
-    if (plannedMeetingList.data.length == 0)
-      fetchPlannedVisitData(paginationPage.current);
-  }, []);
+  const escalatedCustomerList: EscalatedList[] = useSelector(
+    (state: RootState) => state?.message?.EscaletedDropDownData?.data,
+  );
+
+  // const resetVoiceIndex = () => {
+  //   setVoiceIndex({
+  //     index: -1,
+  //     type: "",
+  //   });
+  // };
+
+  const recordVoice = async (
+    key: string,
+    issueDetail: IssueDetails,
+    issueIndex: number,
+  ) => {
+    setVoiceIndex({
+      index: issueIndex,
+      type: key,
+    });
+
+    const onSpeechResultCallback = (text: string) => {
+      handleIssueDetailChange(text, 1, key, issueDetail, issueIndex);
+    };
+
+    startRecording(onSpeechResultCallback);
+  };
+
+  const recordDiscussionVoice = async () => {
+    setVoiceIndex({
+      index: -2,
+      type: currentScreen == 1 ? "plannedDiscussion" : "unplannedDiscussion",
+    });
+    const onSpeechResultCallback = (text: string) => {
+      currentScreen == 1
+        ? handlePlannedVisitTextChange(text, -1, "discussionPoint")
+        : handleUnplannedVisitDetail(text, 10);
+    };
+    startRecording(onSpeechResultCallback);
+  };
 
   const fetchPlannedVisitData = async (pagenumber: number) => {
     try {
-      const res = await getPlannedVisit(dispatch, pagenumber);
+      setLoaderVisibility(true)
+      const res: any = await getPlannedVisit(pagenumber);
       if (res) {
+        paginationPage.lastPage.current = res.data.data.last_page;
+        setplannedMeetingList(res.data.data.data);
       }
     } catch (error) {
+      logger(error, "Error in Fetching Planned Visit data");
     } finally {
+      setLoaderVisibility(false)
     }
   };
 
-  const callunplannedVisitExecution = async () => {
-    dispatch(setLoaderVisibility(true));
-    const selectedIssueArr = issueList?.issueListDetail
-      .map((selectedIssue: Iissue) => {
-        const hasNonEmptyValues =
-          selectedIssue.issueName !== "" ||
-          selectedIssue.comment !== "" ||
-          selectedIssue.escalatedTo ||
-          selectedIssue.escalated_comment !== "" ||
-          selectedIssue.resolved_status !== 0;
-        const escalatedToId = selectedIssue?.escalatedTo;
-        return hasNonEmptyValues
-          ? {
-              issue: selectedIssue.issueName,
-              comment: selectedIssue.comment,
-              escalated_to: escalatedToId,
-              escalation_comment: selectedIssue.escalated_comment,
-              resolved: selectedIssue.resolved_status,
-            }
-          : null;
-      })
-      .filter((selectedIssue) => selectedIssue !== null);
-    const body = unplannedVisitMeeting(
-      unPlannedVisitDetail,
-      enteredRepresentativeDetails,
-      representativeList,
-      selectedIssueArr,
-    );
-    try {
-      const res = await getUnplannedVisitExecution(body);
-      if (res?.isSuccess) {
-      }
-    } catch (error) {
-      logger(error, "Unplanned Visit Executive Error");
+  const handlePagination = () => {
+    if (paginationPage.lastPage.current > paginationPage.currentPage.current) {
+      paginationPage.currentPage.current += 1;
+      fetchPlannedVisitData(paginationPage.currentPage.current);
     }
-    dispatch(setLoaderVisibility(false));
   };
 
-  function handlePagination() {
-    if (plannedMeetingList?.last_page > paginationPage.current) {
-      paginationPage.current += 1;
-      fetchPlannedVisitData(paginationPage.current);
-    } else {
+  const resetIssueForm = () => {
+    for (let i in issueDetails) {
+      issueDetails[i] = "";
     }
-  }
-
-  function addIssue() {
-    const temp = {
-      issueName: issueDetail?.issueName?.current,
-      comment: issueDetail?.comment?.current,
-      escalatedTo: issueDetail?.comment?.current,
-      escalated_comment: issueDetail?.comment?.current,
-      resolved_status: issueDetail?.resolved_status?.current,
+  };
+  const [plannedissueList, setPlannedIssueList] = useState<IssueDetails[]>([
+    {
+      issueName: "",
+      comment: "",
+      escalatedTo: "",
+      escalated_comment: "",
+      resolved_status: "false",
+    },
+  ]);
+  const updateIssue = (updatedIssue: IssueDetails, index: number) => {
+    const updatedIssues = [...plannedissueList];
+    updatedIssues[index] = updatedIssue;
+    setPlannedIssueList(updatedIssues);
+  };
+  const [issueDetails, setIssueDetails] = useState<IssueDetails>({
+    issueName: "",
+    comment: "",
+    escalatedTo: "",
+    escalated_comment: "",
+    resolved_status: "",
+  });
+  const addIssue = () => {
+    const newIssue: IssueDetails = {
+      issueName: "",
+      comment: "",
+      escalatedTo: "",
+      escalated_comment: "",
+      resolved_status: "false",
     };
-    if (currentScreen == 1) {
-      setPlannedIssueList((prev: any) => ({
-        ...prev,
-        issueList: [...plannedissueList?.issueList, {}],
-        issueListDetail: [...plannedissueList?.issueListDetail, issueDetail],
-      }));
-    } else if (currentScreen == 2) {
-      setIssueList((prev: any) => ({
-        ...prev,
-        issueList: [...issueList?.issueList, {}],
-        issueListDetail: [...issueList?.issueListDetail, temp],
-      }));
-      setInputFieldToIntialValue(issueDetail);
-    }
-  }
+    setPlannedIssueList([...plannedissueList, newIssue]);
+  };
+
   const unplannedDropDownList = {
     2: getDropDownListData?.customerStatus,
     3: convertCustomerToDropData(getDropDownListData?.customerType),
@@ -249,109 +353,252 @@ const CreateMetingDetailsViewModel = () => {
 
   const selectIssuesDropDown: IdropDown[][] = [issueDropDownList, undefined];
 
-  const handleAddRepresentative = () => {
-    console.log(
-      "Representative Btn Status::::",
-      btnStatus.representativeBtn,
-      "Unplanned Representative:::",
-      addUnPlannedRepresentative,
-    );
-
-    if (btnStatus.representativeBtn) {
-      setAddUnplannedRepresentative(false);
-      btnStatus.representativeBtn = false;
-    }
-
+  const handleAddRepresentative = async () => {
     if (!addUnPlannedRepresentative) {
       setAddUnplannedRepresentative(true);
     } else if (addUnPlannedRepresentative) {
-      if (currentScreen == 1) {
-        plannedrepresentativeList.representativeListDetail.push(
-          enteredRepresentativeDetails,
-        );
-        plannedrepresentativeList.representativeDropDown.push({
-          name: enteredRepresentativeDetails?.name?.current,
-          id: plannedrepresentativeList.representativeDropDown.length,
-        });
-      } else {
-        representativeList.representativeListDetail.push(
-          enteredRepresentativeDetails,
-        );
-        representativeList.representativeDropDown.push({
-          name: enteredRepresentativeDetails?.name?.current,
-          id: representativeList.representativeDropDown.length,
-        });
-      }
-      setAddUnplannedRepresentative(false);
+      handleRepresentativeSubmit();
     }
   };
 
-  function handleRepresentativeOnTextChange(text: string | number, id: number) {
-    enteredRepresentativeDetails[
-      Object.keys(enteredRepresentativeDetails)[id]
-    ].current = text;
-    handleSubmitButtonStatus();
+  const storeDetailsOfPlannedRepresentative = () => {
+    const representative = representativeDetailValue.current;
+    setAddUnplannedRepresentative(false);
+    btnStatus.representativeBtn = false;
+    plannedrepresentativeList.representativeListDetail.push({
+      address: representative?.address,
+      contact: representative?.contact,
+      dept: representative?.dept,
+      designation: representative?.designation,
+      email: representative?.email,
+      name: representative?.name,
+      whatsApp: representative?.whatsApp,
+    });
+    plannedrepresentativeList.representativeDropDown.push({
+      name: representative.name,
+      id: plannedrepresentativeList.representativeDropDown.length,
+    });
+  };
+
+  const storeDetailsOfUnplannedRepresentative = () => {
+    const representative = representativeDetailValue.current;
+    representativeList.representativeListDetail.push({
+      address: representative?.address,
+      contact: representative?.contact,
+      dept: representative?.dept,
+      designation: representative?.designation,
+      email: representative?.email,
+      name: representative?.name,
+      whatsApp: representative?.whatsApp,
+    });
+    representativeList.representativeDropDown.push({
+      name: representative?.name,
+      id: representativeList.representativeDropDown.length,
+    });
+    setAddUnplannedRepresentative(false);
+    btnStatus.representativeBtn = false;
+    setFormDataToIntialValue(representativeDetail);
+    resetRepresentativeDetail();
+  };
+
+  const handleRepresentativeOnTextChange = (
+    text: string | number,
+    id: number,
+  ) => {
+    id != 7
+      ? handleTextChangeOfRepresentativeDetail(
+          Object.keys(representativeDetail)[id],
+          text.toString(),
+        )
+      : (selectedRepresentativeIndex.current = Number(text));
     handleRepresentativeButtonStatus();
-  }
+  };
 
-  function handleUnplannedVisitDetail(text: string | number, id: number) {
-    unPlannedVisitDetail[Object.keys(unPlannedVisitDetail)[id]].current = text;
+  const handleUnplannedVisitDetail = (text: string | number, id: number) => {
+    handleTextChangeUnPlannedVisit(
+      Object.keys(unPlannedVisitMeetingDetails)[id],
+      text.toString(),
+    );
     handleSubmitButtonStatus();
-  }
+  };
 
-  function handleSubmitButtonStatus() {
-    for (let i in unPlannedVisitDetail) {
-      if (
-        unPlannedVisitDetail[i].current?.toString()?.length == 0 ||
-        unPlannedVisitDetail[i].current?.toString()?.length == undefined
-      ) {
-        if (btnStatus.submitBtn == true)
-          setBtnStatus((prev: any) => ({
-            ...prev,
-            submitBtn: false,
-          }));
-        return;
-      }
+  const handleSubmitButtonStatus = () => {
+    if (isAllInputFieldHaveData(unplannedVisitValue)) {
+      !btnStatus.submitBtn && setButtonStatus(true,'submitBtn')
+    } else {
+      btnStatus.submitBtn &&
+        setButtonStatus(false,'submitBtn')
     }
-    if (enteredRepresentativeDetails.id.current != undefined) {
-      setBtnStatus((prev: any) => ({
-        ...prev,
-        submitBtn: true,
-      }));
-    }
-  }
+  };
 
-  function handleRepresentativeButtonStatus() {
-    for (let i in enteredRepresentativeDetails) {
-      if (
-        enteredRepresentativeDetails[i].current?.toString()?.length == 0 ||
-        enteredRepresentativeDetails[i].current?.toString()?.length == undefined
-      ) {
-        if (btnStatus.representativeBtn == true)
-          setBtnStatus((prev: any) => ({
-            ...prev,
-            representativeBtn: false,
-          }));
-
-        return;
-      }
-    }
-    setBtnStatus((prev: any) => ({
+  const setButtonStatus = (status: boolean,key:string='representativeBtn') => {
+    setBtnStatus((prev: IBtnStatus) => ({
       ...prev,
-      representativeBtn: true,
+     [key]: status,
     }));
-  }
+  };
 
-  function handleSubmitButtonClick() {
-    if (btnStatus.submitBtn) {
-      callunplannedVisitExecution();
-      setSuccessStatus(true);
+  const handleRepresentativeButtonStatus = () => {
+    if (isAllInputFieldHaveData(representativeDetailValue)) {
+      !btnStatus.representativeBtn && setButtonStatus(true);
+    } else {
+      btnStatus.representativeBtn && setButtonStatus(false);
     }
-  }
+  };
 
-  function handleIssueDetailChange(text: string | number, id: number) {
-    issueDetail[Object.keys(issueDetail)[id]].current = text;
-  }
+  const handleSubmitButtonClick = () =>
+    btnStatus.submitBtn && handleUnplannedVisitSubmit();
+
+  const handleIssueDetailChange = (
+    text: string,
+    id: number,
+    key: string,
+    IssueDetail: IssueDetails,
+    IssueIndex: number,
+  ) => {
+    setIssueDetails((prev: IssueDetails) => ({
+      ...prev,
+      [key]: text.toString(),
+    }));
+    if (id == 2) {
+      handleEscalationAccompying(selectedIssueIndex);
+    }
+    updateIssue({ ...IssueDetail, [key]: text }, IssueIndex);
+  };
+
+  const handlePlannedVisitTextChange = (
+    text: string,
+    index: number,
+    key: string,
+  ) => {
+    setPlannedUpdateVisit((prev: PlannedMeetingUpdate) => ({
+      ...prev,
+      [key]:
+        index == 10
+          ? [
+              ...updatePlannedVisit.accompying,
+              filterAccompyingExecutive(
+                Number(text),
+                unplannedDropDownList[11],
+              ),
+            ]
+          : text,
+    }));
+  };
+
+  const handlePlannedVisitSubmit = () => callPlannedVisitExecution();
+
+  const handleEscalationAccompying = (selectedIssueIndex: number) => {
+    !escalation_accompying_Status.escalation &&
+      setIssueIndex(selectedIssueIndex);
+    setEscalationAccompyStatus((prev: Escalation_Accompying) => ({
+      ...prev,
+      escalation: !escalation_accompying_Status.escalation,
+    }));
+  };
+
+  const callPlannedVisitExecution = async () => {
+    const selectedIssueArr = plannedissueList
+      .map((selectedIssue: IssueDetails) => {
+        const hasNonEmptyValues =
+          selectedIssue.issueName != "" ||
+          selectedIssue.comment != "" ||
+          selectedIssue.escalatedTo ||
+          selectedIssue.escalated_comment !== "" ||
+          selectedIssue.resolved_status !== "";
+        const escalatedToId = getEscalationId(
+          escalatedCustomerList,
+          selectedIssue?.escalatedTo,
+        );
+        return hasNonEmptyValues
+          ? {
+              issue: getdropDownsId(issueDropDownList, selectedIssue.issueName),
+              comment: selectedIssue.comment,
+              escalated_to: escalatedToId,
+              escalation_comment: selectedIssue.escalated_comment,
+              resolved: selectedIssue.resolved_status == "false" ? 0 : 1,
+            }
+          : null;
+      })
+      .filter((selectedIssue) => selectedIssue !== null);
+
+    const body = {
+      visit_id: plannedMeetingList[selectedIndexValue]?.id || null,
+      customer_id:
+        Number(plannedMeetingList[selectedIndexValue]?.customer_id) || null,
+      visit_time: updatePlannedVisit.visitTime || null,
+      visit_discussion: updatePlannedVisit.discussionPoint || null,
+      accompanying_executive:
+        getdropDownsId(
+          unplannedDropDownList[11],
+          updatePlannedVisit.accompying[0]?.name,
+        ) || null,
+      visit_issues: selectedIssueArr.length > 0 ? selectedIssueArr : null,
+      visit_representative_id: selectedRepresentativeIndex.current || null,
+      representative_name:
+        plannedrepresentativeList.representativeListDetail[
+          selectedRepresentativeIndex.current
+        ].name || null,
+      representative_designation:
+        plannedrepresentativeList.representativeListDetail[
+          selectedRepresentativeIndex.current
+        ].designation || null,
+      representative_department:
+        plannedrepresentativeList.representativeListDetail[
+          selectedRepresentativeIndex.current
+        ].dept || null,
+      representative_address:
+        plannedrepresentativeList.representativeListDetail[
+          selectedRepresentativeIndex.current
+        ].address || null,
+      representative_email:
+        plannedrepresentativeList.representativeListDetail[
+          selectedRepresentativeIndex.current
+        ].email || null,
+      representative_contact_number:
+        plannedrepresentativeList.representativeListDetail[
+          selectedRepresentativeIndex.current
+        ].contact || null,
+      representative_whatsapp_number:
+        plannedrepresentativeList.representativeListDetail[
+          selectedRepresentativeIndex.current
+        ].whatsApp || null,
+    };
+    try {
+      dispatch(setLoaderVisibility(true));
+      const res = await getPlannedVisitExecution(body);
+      if (res?.isSuccess) {
+        goBack();
+      }
+    } catch (error) {
+      logger(error, "Planned Visit Executive Error");
+    } finally {
+      dispatch(setLoaderVisibility(false));
+    }
+  };
+
+  const callPlannedVisitSearch = async () => {
+    const enteredvalue = plannedVisitSearchEnteredText.current;
+    const body = {
+      user_id: userID,
+      customer_code: checkOnlyNumber(enteredvalue) ? enteredvalue : null,
+      company_name: checkOnlyNumber(enteredvalue) ? null : enteredvalue,
+    };
+    try {
+      dispatch(setLoaderVisibility(true));
+      const res = await getPlannedVisitSearch(body);
+      if (res?.isSuccess) {
+        setplannedMeetingList(res?.data?.data);
+      }
+    } catch (error) {
+      logger(error, "Planned Visit Search Error");
+    } finally {
+      dispatch(setLoaderVisibility(false));
+    }
+  };
+
+  const handlePlannedVisitSearchEnteredText = (text: string) =>
+    (plannedVisitSearchEnteredText.current = text);
 
   return (
     <MeetingScreen
@@ -364,23 +611,35 @@ const CreateMetingDetailsViewModel = () => {
         setSelectedIndexValue,
         plannedMeetingDetail,
         addIssue,
-        issueList,
         handlePagination,
         representativeList,
         handleAddRepresentative,
-        enteredRepresentativeDetails,
         addUnPlannedRepresentative,
-        representativeError,
         handleRepresentativeOnTextChange,
         unplannedDropDownList,
         handleUnplannedVisitDetail,
-        issueDetail,
         handleSubmitButtonClick,
         btnStatus,
         plannedissueList,
         plannedrepresentativeList,
         selectIssuesDropDown,
         handleIssueDetailChange,
+        recordVoice,
+        handlePlannedVisitTextChange,
+        handlePlannedVisitSubmit,
+        unPlannedVisitError,
+        representativeErrors,
+        escalation_accompying_Status,
+        escalatedCustomerList,
+        handleEscalationAccompying,
+        updatePlannedVisit,
+        issueDetails,
+        selectedIssueIndex,
+        unplannedVisitValue,
+        recordDiscussionVoice,
+        voiceIndex,
+        handlePlannedVisitSearchEnteredText,
+        callPlannedVisitSearch,
       }}
     />
   );

@@ -1,5 +1,5 @@
 import { Colors } from "commonStyles/RNColor.style";
-import React from "react";
+import React, { memo } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -22,6 +22,11 @@ interface ITabArray {
     notfocus: string;
     focus: string;
   };
+  borderColor?:{
+    focus:string,
+    notfocus:string,
+  }
+  
 }
 
 interface IHorizontalSliderStyle{
@@ -37,7 +42,8 @@ interface IHorizontalSlider {
   selectedTab: (index: number) => void;
   onlyTwoColor?:boolean;
   countArray?:string[];
-  style?:ViewStyle
+  style?:ViewStyle;
+  isBorder?:boolean;
 }
 
 const HorizontalSlider = (props: IHorizontalSlider) => {
@@ -47,7 +53,7 @@ const HorizontalSlider = (props: IHorizontalSlider) => {
     selectedTab: Function,
   ) => {
     
-   const isMatched=index+1==props.currentScreen;
+   const isMatched=index+1==props?.currentScreen;
     return (
       <PressableButton
         style={[
@@ -56,6 +62,8 @@ const HorizontalSlider = (props: IHorizontalSlider) => {
             backgroundColor:
               isMatched  ? item.backgroundColor?.focus
                 : item.backgroundColor?.notfocus,
+            borderWidth:props?.isBorder?1.25:0,
+            borderColor:props?.isBorder?isMatched?item?.borderColor?.focus:item?.borderColor?.notfocus:undefined
           },
         ]}
         onPress={() => selectedTab(index + 1)}
@@ -112,13 +120,13 @@ const HorizontalSlider = (props: IHorizontalSlider) => {
         }
         horizontal
         showsHorizontalScrollIndicator={false}
-        style={styles().horizontalContainer}
+        style={{marginBottom:10}}
       />
     </View>
   );
 };
 
-export default HorizontalSlider;
+export default memo(HorizontalSlider);
 
 const styles = (visitNumber?: number) => {
   return StyleSheet.create<IHorizontalSliderStyle>({
@@ -137,10 +145,9 @@ const styles = (visitNumber?: number) => {
       paddingVertical:10
     },
     text: {
-      fontFamily: fonts.type.medium,
+      fontFamily: fonts.Poppins.medium,
       fontSize: 14,
     },
-
     circle: {
       borderRadius: 100,
       paddingHorizontal:10,

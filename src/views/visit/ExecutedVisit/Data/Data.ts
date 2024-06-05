@@ -1,7 +1,4 @@
 import Glyphs from "assets/Glyphs";
-
-
-
 const Data = [
   {  
     heading: "Customer Code",
@@ -59,33 +56,11 @@ const Data = [
     lowertext: "Server Issue",
     imagepath: Glyphs.IssueIcon,
   },
-
-  // {
-  //   heading: "Comment on Selected Issue",
-  //   lowertext: "Investigation under Progress",
-  //   imagepath: Glyphs.CommentIcon,
-  // },
-  // {
-  //   heading: "Escalation Details",
-  //   lowertext: "Raised to Manager",
-  //   imagepath: Glyphs.Escalation,
-  // },
-  // {
-  //   heading: "Escalation Status",
-  //   lowertext: "Pending",
-  //   imagepath: Glyphs.IssueIcon,
-  // },
   {
     heading: "CustomerRepresentative",
     lowertext: "In-Person",
     imagepath: Glyphs.Note,
   },
-  // {
-  //   heading: "Customer Conatct Details",
-  //   lowertext: "9999999999",
-  //   imagepath: Glyphs.ContactDetails,
-  // },
-
   {
     heading: "Planned by",
     lowertext: "John Doe",

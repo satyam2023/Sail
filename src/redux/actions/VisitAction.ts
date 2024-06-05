@@ -3,7 +3,6 @@ import { ExecutedResponse, VisitResponse } from "models/ApiResponses/VisitRespon
 import { SET_EXECUTED_VISITS, SET_PLANNED_VISITS, SET_UPCOMING_VISITS } from "redux/actionConstants";
 
 export const saveUpcomingVisits = (data: VisitResponse[]|undefined) => {
-  console.log("upcoming visit in action:::::::::",data);
   return {
     type: SET_UPCOMING_VISITS,
     payload: data,

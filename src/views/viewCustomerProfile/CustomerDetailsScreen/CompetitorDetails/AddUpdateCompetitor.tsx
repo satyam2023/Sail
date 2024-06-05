@@ -1,43 +1,39 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import { FlatList, SafeAreaView, View } from "react-native";
 import StringConstants from "shared/localization";
 import commonStyles from "commonStyles/CommonStyle";
-import { CompetitorDetailData, CompetitorErrorMsg } from "@shared-constants";
+import { CompetitorDetailData } from "@shared-constants";
 import { InputTextField, TextWrapper } from "components";
 import { Colors } from "commonStyles/RNColor.style";
-import {
-  ICompetitorError,
-  IViewCustomerCompetitor,
-} from "models/interface/IViewCustomerProfile";
+import { IViewCustomerCompetitor } from "models/interface/IViewCustomerProfile";
+import { ValidationError } from "core/UseForm";
+import { ICompetitorFlatList } from "models/interface/ICreateCustomer";
 
 interface IAddUpdateCompetitor {
   competitor: IViewCustomerCompetitor;
   selectedCompetitorDetail: string[];
   handleCompetiotorTextChange: (text: string, id: number) => void;
-  competitorError: ICompetitorError;
+  competitorErrors: MutableRefObject<ValidationError[]>;
 }
 
 const AddUpdateCompetitor = (props: IAddUpdateCompetitor) => {
-  const renderCompettorInputField = (item: string, index: number) => {
+  const renderCompettorInputField = ({ item, index }: ICompetitorFlatList) => {
     const isEditing: boolean = props?.competitor?.editDetails;
     return (
       <InputTextField
         onChangeText={(text: string) =>
           props?.handleCompetiotorTextChange(text, index)
         }
-        placeholder={item}
+        placeholder={item?.placeholder}
+        maxlength={item?.length}
+        inputBoxId={item?.key}
         containerStyle={{ backgroundColor: Colors.white }}
         defaultValue={
           isEditing
-            ? props.selectedCompetitorDetail[index]
+            ? props?.selectedCompetitorDetail[index]
             : StringConstants.EMPTY
         }
-        error={
-          props?.competitorError[Object.keys(props?.competitorError)[index]] ==
-          false
-            ? CompetitorErrorMsg[index]
-            : StringConstants.EMPTY
-        }
+        errors={props?.competitorErrors?.current}
       />
     );
   };
@@ -55,9 +51,7 @@ const AddUpdateCompetitor = (props: IAddUpdateCompetitor) => {
       <View style={{ paddingHorizontal: 20 }}>
         <FlatList
           data={CompetitorDetailData}
-          renderItem={({ item, index }) =>
-            renderCompettorInputField(item, index)
-          }
+          renderItem={renderCompettorInputField}
         />
       </View>
     </SafeAreaView>

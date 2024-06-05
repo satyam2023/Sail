@@ -8,7 +8,6 @@ export {default as CustomFooter } from "./CustomFooter";
 export {default as CustomToggleBox } from "./CustomToggleBox";
 export {default as PressableButton } from "./DeBouncePressable";
 export {default as DescriptionCard } from "./DescriptionCard";
-export {default as EnquiryButton } from "../views/enquiry/component/EnquiryButton/EnquiryButton";
 export {default as HorizontalSlider } from "./HorizontalSliderTab";
 export {default as InputTextField } from "./InputTextField";
 export {default as LocateMe } from "./LocateMe";
@@ -19,6 +18,13 @@ export {default as UploadDocumnet } from "./UploadDocument";
 export {default as CustomerDetails } from "./CustomerDetails";
 export {default as VisitCard } from "../views/visit/component/VisitCard";
 export {default as HorizontalScrollableList} from "./HorizontalScrollableList";
+export {default as GradientBackground} from './LinearGradient';
+export {default as CustomSwitch} from './CustomCheckBox';
+export {default as Datepicker} from './Calender';
+export {default as StatusBarComponent} from './StatusBarComponent';
+export {default as KeyboardAvoidingWrapper} from "./KeyBoard";
+export {default as ShimmerPlaceholder} from "./Shimmer";
+export {default as useVoiceToText} from './VoiceToText'
 
 
 

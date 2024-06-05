@@ -23,7 +23,6 @@ import BottomDrawer from "views/moreOptions/BottomDrawer";
 import CreateVisitPlanViewModel from "viewModels/CreateVisitPlanModel";
 import CreateMetingDetailsViewModel from "viewModels/CreateMeetingDetailsViewModel";
 import ViewCustomerProfileViewModel from "viewModels/ViewCustomerProfileViewModel";
-
 import { Image, View } from "react-native";
 import OnBoardingScreenViewModel from "../viewModels/OnBoardingScreenViewModel";
 import HomeScreenViewModel from "viewModels/HomeViewModel";
@@ -32,7 +31,13 @@ import CustomerInformationViewModel from "viewModels/CustomerInformationViewMode
 import ViewCustomerListViewModel from "viewModels/CustomerProfileListViewModel";
 import ViewCustomerRepressentativeViewModel from "viewModels/ViewCustomerRepresentativeViewModel";
 import ViewCustomerCompetitorViewModel from "viewModels/ViewCustomerCompetitorViewModel";
-import CreateCustomerViewModel from "viewModels/createCustomerViewModel";
+import CreateCustomerViewModel from "viewModels/CreateCustomerViewModel";
+import { RootState } from "redux/store/Store";
+
+
+
+
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const HomeStack = createStackNavigator();
@@ -131,10 +136,10 @@ const HomeStackNavigator = () => {
 
 const RenderTabNavigation = () => {
   const isModalVisible: boolean = useSelector(
-    (state: any) => state.UIReducer.modalVisibility,
+    (state: RootState) => state.UIReducer.modalVisibility,
   );
   const isTabVisible: boolean = useSelector(
-    (state: any) => state.UIReducer.tabVisibiity,
+    (state: RootState) => state.UIReducer.tabVisibiity,
   );
   return (
     <>
@@ -150,14 +155,16 @@ const RenderTabNavigation = () => {
                 source={Glyphs.BottomTabBar}
                 style={{
                   width: "100%",
-                  resizeMode: "contain",
+                  resizeMode: 'cover',
                   bottom: 47,
                   tintColor: Colors.white,
+                  backgroundColor:Colors.transparent
                 }}
               />
             );
           },
           tabBarStyle: {
+            backgroundColor:Colors.transparent,
             height: 0,
             paddingBottom: 40,
             display: isTabVisible ? "flex" : "none",

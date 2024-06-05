@@ -1,6 +1,5 @@
 import React from "react";
 import { View } from "react-native";
-import styles from "../Style";
 import Glyphs from "assets/Glyphs";
 import StringConstants from "shared/localization";
 import { Colors } from "commonStyles/RNColor.style";
@@ -10,6 +9,8 @@ import { Header, InputTextField, RectangularBox } from "components";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
 import { SafeAreaView } from "react-native";
 import StatusBarComponent from "components/StatusBarComponent";
+import styles from "./Style";
+import { ScreenHeight } from "libs";
 
 interface ICustomerProfile {
   customerListdata: IViewCustomerBody[];
@@ -28,9 +29,11 @@ const CustomerProfile = ({
       <RectangularBox
         heading={item.company_name}
         subHeading={item.customer_code}
+        leftIconStyle={{height:24,width:24,resizeMode:'contain'}}
         leftIcon={Glyphs.Profile2userClicked}
         onPress={() => handleSelectedCustomer(index)}
-        style={{ marginBottom: 5, borderRadius: 10 }}
+        style={styles.cutomerBoxStyle}
+        rightIconStyle={{ transform: [{ rotate: "270deg" }] }}
       />
     );
   };
@@ -38,23 +41,15 @@ const CustomerProfile = ({
     <>
       <StatusBarComponent
         backgroundColor={Colors.sailBlue}
-        conentType={"dark-content"}
+        conentType={'light-content'}
       />
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={styles.customerProfileContainer}>
         <Header topheading={StringConstants.CUSTOMER_PROFILE} />
         <View
-          style={{
-            width: "100%",
-            height: 30,
-            backgroundColor: Colors.sailBlue,
-          }}
+          style={styles.emptyContainer}
         />
         <View
-          style={{
-            paddingHorizontal: 20,
-            backgroundColor: Colors.background,
-            flex: 1,
-          }}
+          style={styles.mainScreen}
         >
           <InputTextField
             onChangeText={(text: string) => handleSearchTextChange(text)}
@@ -67,7 +62,8 @@ const CustomerProfile = ({
             data={customerListdata}
             renderItem={renderCustomerList}
             showsVerticalScrollIndicator={false}
-            style={{ bottom: 26 }}
+            style={styles.customerListConatiner}
+            initialNumToRender={ScreenHeight/56}
           />
         </View>
       </SafeAreaView>

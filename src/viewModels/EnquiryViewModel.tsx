@@ -5,7 +5,7 @@ import {
   getUserEnquiry,
 } from "controllers/enquiryController";
 import { checkOnlyNumber } from "helper/ValidationRegex";
-import { logger } from "helper/helperFunctions";
+import { isDetailFilled, logger } from "helper/helperFunctions";
 import { IApiResponse } from "models/ApiResponses/IApiResponse";
 import {
   IssueEnquiryBody,
@@ -14,43 +14,80 @@ import {
   IIssueEnquiry,
   INearbyCustomerResponse,
   INearbyCustomer,
+  IButtonStatus,
 } from "models/ApiResponses/IEnquiryResponses";
+import { IGeoPosition } from "models/interface/ICreateCustomer";
+import {
+  IissueEnquiryEnteredData,
+  IuserEnquiryEnteredData,
+} from "models/interface/IEnquiry";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
-import { store } from "redux/store/Store";
+import { RootState, store } from "redux/store/Store";
+import StringConstants from "shared/localization";
 import EnquiryScreen from "views/enquiry/EnquiryScreen";
 
 const EnquiryViewModel = () => {
   const [currentScreen, setCurrentScreen] = useState<number>(1);
   const [searchresult, setsearchresult] = useState<UserEnquiryResponse>();
   const [issueSearchresult, setIssueSearchResult] = useState<IIssueEnquiry[]>();
+  const [issueEnquiryType, setIssueEnquiryType] = useState<string>(
+    StringConstants.OPEN_ISSUES,
+  );
+  const [btnStatus, setBtnStatus] = useState<IButtonStatus>({
+    enquiryBtn: false,
+    issueBtn: false,
+  });
+
   const selectedEnquiry = useSelector(
-    (state: any) => state?.UIReducer?.enquiryType,
+    (state: RootState) => state?.UIReducer?.enquiryType,
   );
   useEffect(() => {
+    nearbyCustomer();
     setCurrentScreen(selectedEnquiry);
   }, [selectedEnquiry]);
   const dispatch = useDispatch();
   const roleLocationDropDownList =
     store?.getState()?.masterData?.masterData?.data;
-  const userEnquiryEnteredDetail = {
+  const userEnquiryEnteredDetail: IuserEnquiryEnteredData = {
     name: useRef<string>(""),
     location: useRef<string>(""),
   };
-  const issueEnquiryEnteredDetail = {
+  const issueEnquiryEnteredDetail: IissueEnquiryEnteredData = {
     customerCodeName: useRef<string>(""),
     location: useRef<string>(""),
   };
+
+  // const resetIssueEnquiryDetails=()=>{
+  //   issueEnquiryEnteredDetail.customerCodeName.current="";
+  //   issueEnquiryEnteredDetail.location.current="";
+  // }
 
   const [NearByCustomerList, setNearByCustomerList] = useState<
     INearbyCustomer[] | undefined
   >();
 
+  const userEnquiryApi = async () => {
+    const body = {
+      user_name: userEnquiryEnteredDetail.name.current,
+      user_location: userEnquiryEnteredDetail.location.current,
+    };
+    try {
+      dispatch(setLoaderVisibility(true));
+      const userRes: UserEnquiryResponse = await getUserEnquiry(body);
+      setsearchresult(userRes);
+    } catch (e) {
+      logger(e, "Error in User Enquiry API Calling");
+    } finally {
+      dispatch(setLoaderVisibility(false));
+    }
+  };
+
   const issueEnquiry = async () => {
     dispatch(setLoaderVisibility(true));
     const body: IssueEnquiryBody = {
-      issue_type: 0,
+      issue_type: issueEnquiryType == StringConstants.OPEN_ISSUES ? 0 : 1,
       customer_code: checkOnlyNumber(
         issueEnquiryEnteredDetail.customerCodeName.current,
       )
@@ -66,21 +103,25 @@ const EnquiryViewModel = () => {
     try {
       const res: IApiResponse<IssueEnquiryResponse> | undefined =
         await getIssueEnquiry(body);
-
       if (res?.isSuccess) {
-        setIssueSearchResult(res?.data?.data);
+        setIssueSearchResult(
+          res?.data?.data[0]?.message ? [] : res?.data?.data,
+        );
       }
-    } catch (error) {}
+    } catch (error) {
+      logger(error, "Error in Issue Enquiry API Calling");
+    }
     dispatch(setLoaderVisibility(false));
   };
 
   const nearbyCustomer = async () => {
     Geolocation.getCurrentPosition(
-      async (pos: any) => {
+      async (pos: IGeoPosition) => {
         const body = {
-          lat: pos.coords.latitude,
-          long: pos.coords.longitude,
+          lat: Number(pos.coords.latitude),
+          long: Number(pos.coords.longitude),
         };
+       
         try {
           dispatch(setLoaderVisibility(true));
           const res: IApiResponse<INearbyCustomerResponse> | undefined =
@@ -96,30 +137,61 @@ const EnquiryViewModel = () => {
       },
       (error: Error) => logger(error, "getCurrentPosition", "error"),
       {
-        enableHighAccuracy: false,
+        enableHighAccuracy: true,
         timeout: 10000,
       },
     );
   };
 
-  useEffect(() => {
-    nearbyCustomer();
-  }, []);
+ 
 
   async function onSearch() {
-    if (currentScreen == 1) {
-      const body = {
-        user_name: userEnquiryEnteredDetail.name.current,
-        user_location: userEnquiryEnteredDetail.location.current,
-      };
-      const userRes: UserEnquiryResponse = await getUserEnquiry(body);
-      setsearchresult(userRes);
-    } else if (currentScreen == 2) {
+    if (currentScreen == 1 && btnStatus.enquiryBtn) {
+      userEnquiryApi();
+    } else if (currentScreen == 2 && btnStatus.issueBtn) {
       issueEnquiry();
     }
   }
 
+  const handleBtnStatus=(status:boolean,key:string)=>{
+    setBtnStatus((prev: IButtonStatus) => ({
+      ...prev,
+      [key]: status,
+    }));
+  }
 
+  const handleIssueEnquiry = (type: string) => {
+    setIssueEnquiryType(type);
+    setIssueSearchResult(undefined);
+    handleBtnStatus(false,'issueBtn')
+  };
+
+  const handleTextChangeofUserEnquiry = (text: string, id: number) => {
+    userEnquiryEnteredDetail[
+      Object.keys(userEnquiryEnteredDetail)[id]
+    ].current = text;
+    if (isDetailFilled(userEnquiryEnteredDetail)) {
+      !btnStatus.enquiryBtn &&
+        handleBtnStatus(true,'enquiryBtn') 
+    } else {
+      btnStatus.enquiryBtn &&
+        handleBtnStatus(false,'enquiryBtn')
+        
+    }
+  };
+
+  const handleTextChangeofIssueEnquiry = (text: string, id: number) => {
+    issueEnquiryEnteredDetail[
+      Object.keys(issueEnquiryEnteredDetail)[id]
+    ].current = text;
+    if (isDetailFilled(issueEnquiryEnteredDetail)) {
+      btnStatus.issueBtn &&
+        handleBtnStatus(true,'issueBtn')
+    } else {
+      btnStatus.issueBtn &&
+        handleBtnStatus(false,'issueBtn')
+    }
+  };
 
   return (
     <EnquiryScreen
@@ -135,7 +207,11 @@ const EnquiryViewModel = () => {
         setIssueSearchResult,
         setsearchresult,
         NearByCustomerList,
-      
+        handleIssueEnquiry,
+        issueEnquiryType,
+        handleTextChangeofUserEnquiry,
+        handleTextChangeofIssueEnquiry,
+        btnStatus,
       }}
     />
   );

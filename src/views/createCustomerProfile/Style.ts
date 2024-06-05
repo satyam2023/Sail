@@ -6,6 +6,7 @@ interface ICreateCustomerStyle {
   selectedImage: ImageStyle;
   imgContainer: ViewStyle;
   representativeListBox:ViewStyle;
+  customerDetailContainer:ViewStyle;
 }
 
 const styles = StyleSheet.create<ICreateCustomerStyle>({
@@ -25,6 +26,7 @@ const styles = StyleSheet.create<ICreateCustomerStyle>({
   imgContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
+    marginTop:10
   },
   representativeListBox:{
     width:'100%',
@@ -38,6 +40,10 @@ const styles = StyleSheet.create<ICreateCustomerStyle>({
     borderStyle:'dashed',
     marginBottom:16,
     justifyContent:'center'
+   },
+   customerDetailContainer:{ 
+    paddingHorizontal: 20, 
+    marginBottom: 16
    }
 });
 

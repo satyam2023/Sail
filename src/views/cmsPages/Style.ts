@@ -1,7 +1,18 @@
 import fonts from "@fonts";
 import { Colors } from "commonStyles/RNColor.style";
-import { StyleSheet } from "react-native";
-const styles = StyleSheet.create({
+import { ImageStyle, StyleSheet, TextStyle, ViewStyle } from "react-native";
+
+interface ICMSStyle {
+  container: ViewStyle;
+  privacytext: TextStyle;
+  privacuinnrttext: TextStyle;
+  txt: TextStyle;
+  img: ImageStyle;
+  screenConatiner: ViewStyle;
+  cmsOptionStyle:ViewStyle;
+  cmsPageDetailContainer:ViewStyle;
+}
+const styles = StyleSheet.create<ICMSStyle>({
   container: {
     height: 62,
     width: "100%",
@@ -17,19 +28,19 @@ const styles = StyleSheet.create({
   },
   privacytext: {
     lineHeight: 24,
-    fontFamily: fonts.type.regular,
+    fontFamily: fonts.Poppins.regular,
     fontSize: 12,
     color: Colors.blackPeral,
     marginTop: 24,
     marginBottom: 20,
   },
   privacuinnrttext: {
-    fontFamily: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     marginTop: 30,
   },
   txt: {
     height: 25,
-    fontWeight: fonts.type.medium,
+    fontFamily: fonts.Poppins.medium,
     fontSize: 14,
     lineHeight: 24,
     color: Colors.blackPeral,
@@ -41,6 +52,18 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     marginTop: 20,
   },
+  screenConatiner: {
+    backgroundColor: Colors.background2,
+    flex: 1,
+  },
+  cmsOptionStyle: {
+    paddingHorizontal: 20,
+    marginTop: 20,
+  },
+  cmsPageDetailContainer:{ 
+    flex: 1, 
+    paddingHorizontal: 20
+   }
 });
 
 export default styles;

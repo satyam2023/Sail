@@ -1,4 +1,3 @@
-import fonts from "@fonts";
 import { navigate } from "@navigation";
 import { SCREENS } from "@shared-constants";
 import Glyphs from "assets/Glyphs";
@@ -6,8 +5,11 @@ import commonStyles from "commonStyles/CommonStyle";
 import { Colors } from "commonStyles/RNColor.style";
 import { CustomButton, TextWrapper } from "components";
 import React from "react";
-import { Image, StyleSheet,View } from "react-native";
+import { Image, View } from "react-native";
 import StringConstants from "shared/localization";
+import styles from "../Style";
+
+
 
 const MeetingCompleted = () => {
   return (
@@ -20,24 +22,12 @@ const MeetingCompleted = () => {
       </TextWrapper>
       <CustomButton
         text={StringConstants.BACK_TO_HOME}
-        buttonStyle={{ backgroundColor: Colors.sailBlue, width: "40%" }}
+        buttonStyle={styles.meetingCreatedBtn}
         textStyle={{ color: Colors.white }}
-        onPress={()=>navigate(SCREENS.MAIN)}
+        onPress={() => navigate(SCREENS.MAIN)}
       />
     </View>
   );
 };
 export default MeetingCompleted;
 
-const styles = StyleSheet.create({
-  meetingCompletedContainer: {
-    width: 253,
-    height: 60,
-    fontFamily: fonts.type.medium,
-    fontSize: 20,
-    lineHeight: 30,
-    textAlign: "center",
-    color: Colors.sailBlue,
-    marginTop: 45,
-  },
-});

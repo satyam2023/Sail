@@ -1,37 +1,65 @@
 import { navigate } from "@navigation";
 import { SCREENS } from "@shared-constants";
-import { logOutUser} from "controllers/logoutController";
+import { logOutUser } from "controllers/logoutController";
 import { detailUpdate } from "controllers/settingController";
-import { convertToArray } from "helper/helperFunctions";
+import useForm, { FormValues } from "core/UseForm";
+import { detailUpdatevalidationRules } from "helper/ValidationRegex";
+import { convertToArray, logger } from "helper/helperFunctions";
 import { IApiResponse } from "models/ApiResponses/IApiResponse";
 import { SettingsResponse } from "models/ApiResponses/SettingResponse";
-import { IUpdatedetails } from "models/interface/ISetting";
-import React, { useRef, useState } from "react";
+import React, {useState } from "react";
 import { useDispatch } from "react-redux";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
 import { store } from "redux/store/Store";
+import { removeRememberMe } from "shared/constants/accountService";
 import SettingScreen from "views/setting/Setting";
 
 const SettingViewModel = () => {
   const dispatch = useDispatch();
   const [isDetailsUpdating, setDetailsUpdating] = useState<boolean>(false);
   let userData = store?.getState()?.userAccount?.data?.data;
-  let roleLocationDropDownList = store?.getState()?.masterData?.masterData?.data;
-  const updatedDetails:IUpdatedetails = {
-    email: useRef(userData?.user?.email),
-    Location: useRef(userData?.user?.user_location),
-    Role: useRef(userData?.user?.user_role),
+  let roleLocationDropDownList =
+    store?.getState()?.masterData?.masterData?.data;
+
+  const detailsToBeUpdated: FormValues = {
+    email: userData?.user?.email,
+    location: userData?.user?.user_location,
+    role: userData?.user?.user_role,
   };
+
+  const updateUser = () => {
+    setDetailsUpdating(false);
+    if (
+      userData?.user?.user_location !=
+        updatedEnteredValues?.current?.location ||
+      userData?.user?.user_role != updatedEnteredValues?.current?.role ||
+      userData?.user?.email != updatedEnteredValues?.current?.email
+    ) {
+      updateApiCalling();
+    }
+  };
+
+  const {
+    values: updatedEnteredValues,
+    errors: emailError,
+    handleSubmit: handleUpdate,
+    handleTextChange: handleUpdateDetailTextChange,
+  } = useForm(detailsToBeUpdated, detailUpdatevalidationRules, updateUser);
+
+
   const dataofInputField = convertToArray(userData);
+
   async function logOutApiCalling() {
     dispatch(setLoaderVisibility(true));
     const data = {};
     try {
       const res: IApiResponse<SettingsResponse> = await logOutUser(data);
-      if (res.isSuccess) {
+      if (res?.isSuccess) {
+        removeRememberMe();
         navigate(SCREENS.SIGNIN);
       }
     } catch (error) {
+      logger(error, "Error in Logout Api");
     } finally {
       dispatch(setLoaderVisibility(false));
     }
@@ -41,39 +69,32 @@ const SettingViewModel = () => {
     dispatch(setLoaderVisibility(true));
     const body = {
       id: userData?.user?.id,
-      user_location: updatedDetails?.Location.current,
-      email: updatedDetails?.email.current,
-      user_role: updatedDetails?.Role.current,
-     
+      user_location: updatedEnteredValues?.current?.location,
+      email: updatedEnteredValues?.current?.email,
+      user_role: Number(updatedEnteredValues?.current?.role),
     };
     try {
       const res: IApiResponse<SettingsResponse> = await detailUpdate(body);
-      if (res.isSuccess) {
+      if (res?.isSuccess) {
         logOutApiCalling();
       }
-    } catch (error) {}
+    } catch (error) {
+      logger(error, "Error in Update User Details Api Calling");
+    }
     dispatch(setLoaderVisibility(false));
   }
 
-  function editDetails(_: string, index: number) {
-    if (index == -1) setDetailsUpdating(true);
-    else if  (index == -2) {
-      setDetailsUpdating(false);
-    if(userData?.user?.user_location!=updatedDetails.Location.current||
-      userData?.user?.user_role!=updatedDetails.Role.current ||
-      userData?.user?.email!=updatedDetails.email.current)
-    {
-          
-      updateApiCalling();
-      
-    }
-    }
+
+  const  editDetails=(_: string, index: number)=> {
+    index==-1?setDetailsUpdating(true):handleUpdate();
   }
 
 
-  function handleOntextChange(text:string|number,id:number){
-    updatedDetails[Object.keys(updatedDetails)[id]].current=text
-
+  const handleOntextChange=(text: string | number, id: number) =>{
+    handleUpdateDetailTextChange(
+      Object.keys(detailsToBeUpdated)[id],
+      text.toString(),
+    );
   }
 
   return (
@@ -86,8 +107,8 @@ const SettingViewModel = () => {
         updateApiCalling,
         isDetailsUpdating,
         roleLocationDropDownList,
-        handleOntextChange
-        
+        handleOntextChange,
+        emailError,
       }}
     />
   );

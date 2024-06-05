@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import { FlatList, Image, View } from "react-native";
 import CustomerDetailHeader from "../CustomerDetailHeader";
 import StringConstants from "shared/localization";
@@ -15,25 +15,26 @@ import { TextWrapper } from "components";
 import Glyphs from "assets/Glyphs";
 import styles from "../Style";
 import commonStyles from "commonStyles/CommonStyle";
+import { ValidationError } from "core/UseForm";
 
 interface RepresenatativeProps {
   addDetails: Function;
   enteredCompetitorDetail: IEnteredCompetitorDetail;
   addDetailStatus: boolean;
   competitorList: ICompetitor[];
+  handleTextChangeOfCompetitor: (text: string, id: number) => void;
+  competitorErrors: MutableRefObject<ValidationError[]>;
 }
 const CustomerRepresentative = (props: RepresenatativeProps) => {
   function renderCompetitorList({ item, index }: IFlatlistCompetitorList) {
     return (
-      
-      <View style={styles.representativeListBox}
-      key={index}>
-        <TextWrapper>{item.name}</TextWrapper>
+      <View style={styles.representativeListBox} key={index}>
+        <TextWrapper>{item?.company_name}</TextWrapper>
         <Image
           source={Glyphs.Editing}
           tintColor={Colors.sailBlue}
           style={commonStyles.rightIcon}
-        ></Image>
+        />
       </View>
     );
   }
@@ -52,6 +53,8 @@ const CustomerRepresentative = (props: RepresenatativeProps) => {
             <FlatList
               data={props?.competitorList}
               renderItem={renderCompetitorList}
+              keyExtractor={(_,index)=>index.toString()}
+              scrollEnabled={false}
             />
             <CustomButton
               text={StringConstants.PLUS_COMPETITOR}
@@ -59,7 +62,7 @@ const CustomerRepresentative = (props: RepresenatativeProps) => {
                 backgroundColor: Colors.dashed,
                 justifyContent: "flex-start",
               }}
-              textStyle={{ fontFamily: fonts.type.regular }}
+              textStyle={{ fontFamily: fonts.Poppins.regular }}
               onPress={() => {
                 props?.addDetails(true);
               }}

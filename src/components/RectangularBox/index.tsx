@@ -30,6 +30,8 @@ interface IRectangularBox {
   isClosable?: boolean;
   isRightNotIconRequired?: boolean;
   cancelled?: boolean;
+  leftIconStyle?:ImageStyle;
+  rightIconStyle?:ImageStyle;
 }
 
 const RectangularBox = (props: IRectangularBox) => {
@@ -48,14 +50,14 @@ const RectangularBox = (props: IRectangularBox) => {
         ],
       ]}
     >
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <View style={{ flexDirection: "row", alignItems: "center",flex:0.8}}>
         {props.leftIcon && (
-          <Image source={props.leftIcon} style={commonStyles.leftIcon} />
+          <Image source={props.leftIcon} style={[commonStyles.detailLeftIcon,props?.leftIconStyle]} />
         )}
         <View>
           <View style={{ flexDirection: "row" }}>
             <TextWrapper
-              style={commonStyles.font14RegularDarkGray}
+              style={[commonStyles.font14RegularDarkGray,{right:3}]}
             >
             {props.heading}
             </TextWrapper>
@@ -88,6 +90,7 @@ const RectangularBox = (props: IRectangularBox) => {
                     : { transform: [{ rotate: "0deg" }] },
                   commonStyles.icon,
                   { bottom: props.isClosable ? 10 : 0 },
+                  props?.rightIconStyle
                 ]}
               />
             </PressableButton>
@@ -98,11 +101,11 @@ const RectangularBox = (props: IRectangularBox) => {
   );
 };
 
-export default RectangularBox;
+export default React.memo(RectangularBox);
 
 const styles = StyleSheet.create<IRectangulBoxStyle>({
   container: {
-    width: "100%",
+    flex:1,
     height: 70,
     backgroundColor: Colors.white,
     flexDirection: "row",

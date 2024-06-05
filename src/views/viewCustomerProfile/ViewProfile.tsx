@@ -1,36 +1,32 @@
-import React, { memo } from "react";
+import React, { MutableRefObject} from "react";
 import { SafeAreaView } from "react-native";
 import {
-  IEnteredCustomerDetails,
   ISelectedImage,
 } from "models/interface/ICreateCustomer";
 import { IdropDown } from "models/interface/ISetting";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
-import {
-  ICustomerState,
-} from "models/interface/IViewCustomerProfile";
+import { ICustomerState } from "models/interface/IViewCustomerProfile";
 import { Colors } from "commonStyles/RNColor.style";
 import StatusBarComponent from "components/StatusBarComponent";
 import First from "./CustomerDetailsScreen/First";
 import ProfileHeader from "./Component/ProfileHeader";
-import { CustomFooter } from "components";
+import { CustomFooter, KeyboardAvoidingWrapper } from "components";
 import StringConstants from "shared/localization";
+import { ValidationError } from "core/UseForm";
 
 interface IViewProfile {
   customerList: IViewCustomerBody[];
   selectedIndexValue: number;
   handleForwardClick: () => void;
-  handleBackClick:()=>void;
-  enteredCustomerDetails: IEnteredCustomerDetails;
+  handleBackClick: () => void;
   dropdownDataList: IdropDown[][];
   setIndexofSubType: Function;
   setSubTypes: Function;
-  isAllFieldHaveData: () => void;
   handleUploadDocument: () => void;
   handleLocation: () => void;
   handleUpdateCustomerCode: (text: string) => void;
   updateCustomerCode: () => void;
-  customerDetail: any[];
+  customerDetail: string[];
   customer: ICustomerState;
   traderDealerTypeDetail: (string | undefined)[];
   handleCustomerDetailChange: (text: string | number, id: number) => void;
@@ -38,8 +34,10 @@ interface IViewProfile {
     text: string | number,
     id: number,
   ) => void;
-  removeDropDownItem:(id:number,type:string)=>void;
-  removeSelectedImage:(item:ISelectedImage)=>void;
+  removeDropDownItem: (id: number, type: string) => void;
+  removeSelectedImage: (item: ISelectedImage) => void;
+  customerErrors:MutableRefObject<ValidationError[]>;
+  customerTypeErrors:MutableRefObject<ValidationError[]>;
 }
 
 const ViewProfileScreen = ({
@@ -48,10 +46,8 @@ const ViewProfileScreen = ({
   handleForwardClick,
   handleBackClick,
   setSubTypes,
-  enteredCustomerDetails,
   dropdownDataList,
   setIndexofSubType,
-  isAllFieldHaveData,
   handleUploadDocument,
   handleLocation,
   handleUpdateCustomerCode,
@@ -62,20 +58,28 @@ const ViewProfileScreen = ({
   handleCustomerDetailChange,
   handleSpecificCustomerTypeDetailChange,
   removeDropDownItem,
-  removeSelectedImage
+  removeSelectedImage,
+  customerErrors,
+  customerTypeErrors
 }: IViewProfile) => {
   return (
     <>
-    <StatusBarComponent backgroundColor={Colors.sailBlue} conentType={'dark-content'}/>
-    <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
-      <ProfileHeader CurrentScreen={1} handleUpdateCustomerCode={handleUpdateCustomerCode} updateCustomerCode={updateCustomerCode}/>
-    <First
+      <StatusBarComponent
+        backgroundColor={Colors.sailBlue}
+        conentType={'light-content'}
+      />
+      <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
+        <ProfileHeader
+          CurrentScreen={1}
+          handleUpdateCustomerCode={handleUpdateCustomerCode}
+          updateCustomerCode={updateCustomerCode}
+        />
+        <KeyboardAvoidingWrapper  >
+          <First
             {...{
               setSubTypes,
-              enteredCustomerDetails,
               dropdownDataList,
               setIndexofSubType,
-              isAllFieldHaveData,
               customerList,
               selectedIndexValue,
               customerDetail,
@@ -87,26 +91,27 @@ const ViewProfileScreen = ({
               handleUploadDocument,
               removeDropDownItem,
               removeSelectedImage,
+              customerErrors,
+              customerTypeErrors
             }}
           />
-    </SafeAreaView>
-    <CustomFooter
-            leftButtonText={
-               customer.editDetails
-                  ? StringConstants.CANCEL
-                  : StringConstants.EDT
-            }
-            rightButtonText={
-               customer.editDetails
-                ? StringConstants.SUBMIT
-                : StringConstants.PROCEED
-            }
-            leftButtonPress={handleBackClick}
-            rightButtonPress={handleForwardClick}
-            style={{ backgroundColor: Colors.white }}
-            isMovable={true}
-          />
+        </KeyboardAvoidingWrapper>
+      </SafeAreaView>
+      <CustomFooter
+        leftButtonText={
+          customer.editDetails ? StringConstants.CANCEL : StringConstants.EDT
+        }
+        rightButtonText={
+          customer.editDetails
+            ? StringConstants.SUBMIT
+            : StringConstants.PROCEED
+        }
+        leftButtonPress={handleBackClick}
+        rightButtonPress={handleForwardClick}
+        style={{ backgroundColor: Colors.white }}
+        isMovable={true}
+      />
     </>
   );
 };
-export default memo(ViewProfileScreen);
+export default ViewProfileScreen;

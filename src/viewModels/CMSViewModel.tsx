@@ -8,13 +8,17 @@ import { useDispatch } from "react-redux";
 import { IApiResponse } from "models/ApiResponses/IApiResponse";
 import { CMSPageResponse } from "models/ApiResponses/CMSPageResponse";
 import { getCMSPage } from "controllers/cmsController";
+import { logger } from "helper/helperFunctions";
+import { RootState } from "redux/store/Store";
 
 const CMSViewModel = () => {
   const [pages, setpages] = useState<string>(StringConstants.CMS);
   const dispatch = useDispatch();
-  const cmsPageData = useSelector((state: any) => state?.cmsPages?.data)?.data;
+  const cmsPageData = useSelector((state: RootState) => state?.cmsPages?.data);
 
-  function pagesRenderingController(pageType: string) {
+
+
+  const pagesRenderingController = (pageType: string) => {
     switch (pageType) {
       case StringConstants.CMS:
         setpages(StringConstants.CMS);
@@ -35,22 +39,24 @@ const CMSViewModel = () => {
         setpages(StringConstants.TERMS_AND_CONDITIONS);
         break;
     }
-  }
-  useEffect(() => {
-    const cmsPage = async () => {
-      dispatch(setLoaderVisibility(true));
-      try {
-     const res :IApiResponse<CMSPageResponse> |undefined= await getCMSPage();
-     
-   if(res?.isSuccess){
-    dispatch(saveCmsPages(res.data));
-   }
+  };
 
-      } catch (error) {
-      } finally {
-        dispatch(setLoaderVisibility(false));
+  const handleFetchCmsPages = async () => {
+    dispatch(setLoaderVisibility(true));
+    try {
+      const res: IApiResponse<CMSPageResponse> | undefined = await getCMSPage();
+      if (res?.isSuccess) {
+        dispatch(saveCmsPages(res.data));
       }
-    };
+    } catch (error) {
+      logger(error, "Error in fetching cms page data");
+    } finally {
+      dispatch(setLoaderVisibility(false));
+    }
+  };
+
+  useEffect(() => {
+    const cmsPage = () => handleFetchCmsPages();
     cmsPage();
   }, []);
 

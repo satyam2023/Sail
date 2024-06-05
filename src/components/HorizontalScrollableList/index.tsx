@@ -2,9 +2,11 @@ import commonStyles from "commonStyles/CommonStyle";
 import { Colors } from "commonStyles/RNColor.style";
 import DescriptionCard from "components/DescriptionCard";
 import TextWrapper from "components/TextWrapper";
+import { memo } from "react";
 import {
   FlatList,
   ImageStyle,
+  ImageURISource,
   StyleSheet,
   View,
   ViewStyle,
@@ -16,8 +18,14 @@ interface IHorizontalScrollableStyle {
   itemSeparator: ViewStyle;
   descImage: ImageStyle;
 }
+
+interface IFlatlist{
+  image?:ImageURISource;
+  img_url?:string;
+  name:string;
+}
 interface IHorizontalScrollableList {
-  Data: any[];
+  Data: IFlatlist[];
   onPress: (id: number, index: number) => void;
   heading: string;
   subHeading?: string;
@@ -30,7 +38,7 @@ const HorizontalScrollableList = (props: IHorizontalScrollableList) => {
     item,
     index,
   }: {
-    item: any;
+    item: IFlatlist;
     index: number;
   }) => {
     return (
@@ -78,7 +86,7 @@ const HorizontalScrollableList = (props: IHorizontalScrollableList) => {
   );
 };
 
-export default HorizontalScrollableList;
+export default memo(HorizontalScrollableList);
 
 const styles = StyleSheet.create<IHorizontalScrollableStyle>({
   horizontalListContainer: {
@@ -103,6 +111,6 @@ const styles = StyleSheet.create<IHorizontalScrollableStyle>({
     width: 50,
     borderRadius: 50,
     resizeMode: "cover",
-    backgroundColor: "red",
+   
   },
 });

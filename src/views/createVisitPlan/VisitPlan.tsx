@@ -1,63 +1,72 @@
-import React from "react";
-import { FlatList, SafeAreaView, View } from "react-native";
+import React, { MutableRefObject } from "react";
+import {
+  FlatList,
+  SafeAreaView,
+  ScrollView,
+  View,
+} from "react-native";
 import PlanCompleted from "./PlanCompleted";
 import StringConstants from "shared/localization";
 import { Colors } from "commonStyles/RNColor.style";
-import { CreateVisitPlanField } from "@shared-constants";
-import { ScrollView } from "react-native-gesture-handler";
+import { CreateVisitPlanField} from "@shared-constants";
 import Glyphs from "assets/Glyphs";
 import {
   CustomDropDown,
   CustomFooter,
+  Datepicker,
   Header,
   InputTextField,
+  KeyboardAvoidingWrapper,
+  StatusBarComponent,
 } from "components";
-import Datepicker from "components/Calender";
 import { createVisitData } from "helper/helperFunctions";
 import { IdropDown } from "models/interface/ISetting";
 import { NickNameResponse } from "models/ApiResponses/CreateVisitResponse";
-import { IvisitPlanDetail } from "models/interface/ICreateVisit";
-
+import {
+  ICreateVisitFieldFlatlist,
+} from "models/interface/ICreateVisit";
+import styles from "./Style";
+import { ValidationError } from "core/UseForm";
 interface ICreateVisitPlanScreen {
   isVisitDetailFilled: boolean;
-  visitPlanDetail: IvisitPlanDetail;
-  dropDownData: any;
+  dropDownData: IdropDown[][];
   nickNameResult: NickNameResponse | undefined;
   setNickNameResult: Function;
   footerButtonPress: (button: string) => void;
   nicknameApicalling: () => void;
-  isAllDataFilled :()=>void;
-  isAllFieldHaveData:boolean
+  isAllFieldHaveData: boolean;
+  handleTextChange: (text: string | number, id: number) => void;
+  createvisitPlanError:MutableRefObject<ValidationError[]>;
 }
 
 const CreateVisitPlanScreen = ({
   isVisitDetailFilled,
-  visitPlanDetail,
   dropDownData,
   nickNameResult,
   setNickNameResult,
   footerButtonPress,
   nicknameApicalling,
-  isAllDataFilled ,
-  isAllFieldHaveData
+  isAllFieldHaveData,
+  handleTextChange,
+  createvisitPlanError
 }: ICreateVisitPlanScreen) => {
-  const renderCreateVisitPlanField = (item: string, index: number) => {
-   
+  const renderCreateVisitPlanField = ({
+    item,
+    index,
+  }: ICreateVisitFieldFlatlist) => {
     return (
       <>
         {index < 3 ? (
           <InputTextField
             onChangeText={(text: string) => {
               if (index == 0 && nickNameResult) setNickNameResult();
-              visitPlanDetail[Object.keys(visitPlanDetail)[index]].current =
-                text;
-                isAllDataFilled();
+              handleTextChange(text, index);
             }}
-            placeholder={item}
+            placeholder={item?.placeholder}
+            maxlength={item?.maxlength}
             rightIcon={index == 2 ? Glyphs.Search : undefined}
-            onRighIconPress={() => {
-              nicknameApicalling();
-            }}
+            onRighIconPress={nicknameApicalling}
+            inputMode={item?.inputMode}
             containerStyle={{
               backgroundColor: !nickNameResult
                 ? Colors.white
@@ -65,11 +74,13 @@ const CreateVisitPlanScreen = ({
                 ? Colors.lightGray
                 : Colors.white,
             }}
+            errors={createvisitPlanError.current}
             isEditable={index == 1 ? !nickNameResult : true}
             defaultValue={
               (index == 1 ? nickNameResult?.company_name : undefined) ||
               (index == 0 ? nickNameResult?.customer_code : undefined)
             }
+            inputBoxId={item?.key}
           />
         ) : index != 5 ? (
           <CustomDropDown
@@ -78,14 +89,14 @@ const CreateVisitPlanScreen = ({
                 ? undefined
                 : createVisitData(index, dropDownData)
             }
-            topheading={CreateVisitPlanField[index]}
+            topheading={item.placeholder}
             onPress={(item: IdropDown) => {
-              visitPlanDetail[Object.keys(visitPlanDetail)[index]].current =
-                item.id;
-                isAllDataFilled ();
+              handleTextChange(item.id, index);
             }}
             defaultValue={
-             ( index ===3 && nickNameResult )? nickNameResult?.customer_region : undefined
+              index === 3 && nickNameResult
+                ? nickNameResult?.customer_region
+                : undefined
             }
             isRightDropDownVisible={nickNameResult && index == 3}
             style={{
@@ -96,61 +107,73 @@ const CreateVisitPlanScreen = ({
         ) : (
           <Datepicker
             type={"default"}
-            onDayPress={(date: any) =>
-              {visitPlanDetail[Object.keys(visitPlanDetail)[index]].current =
-                date.dateString;
-                isAllDataFilled();
-            }
-            }
+            onDayPress={(date: string) => {
+              handleTextChange(date, index);
+            }}
+           
           />
         )}
       </>
     );
   };
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      {!isVisitDetailFilled ? (
-        <>
-          <ScrollView
-            style={{ backgroundColor: Colors.background2, flex: 1 }}
-            showsVerticalScrollIndicator={false}
-            nestedScrollEnabled
-          >
-            <Header topheading={StringConstants.CREATE_VISIT_PLAN} />
-
-            <FlatList
-              data={CreateVisitPlanField}
-              renderItem={({ item, index }) =>
-                renderCreateVisitPlanField(item, index)
-              }
-              style={{ marginTop: 23, paddingHorizontal: 20, flex: 1 }}
+    <>
+      <StatusBarComponent
+        backgroundColor={Colors.sailBlue}
+        conentType={'light-content'}
+      />
+      <SafeAreaView style={styles.container}>
+        {!isVisitDetailFilled ? (
+          <>
+            
+         
+              <Header topheading={StringConstants.CREATE_VISIT_PLAN} />
+              <KeyboardAvoidingWrapper>
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                nestedScrollEnabled
+                style={{flex:1}}
+              >
+                <FlatList
+                  data={CreateVisitPlanField}
+                  renderItem={renderCreateVisitPlanField}
+                  style={styles.inputFieldFlatList}
+                  scrollEnabled={false}
+                  keyExtractor={(_, index) => index.toString()}
+                />
+                <View style={{ paddingHorizontal: 20, flex: 1}}>
+                  <InputTextField
+                    onChangeText={(text: string) => handleTextChange(text, 8)}
+                    placeholder={StringConstants.ENTER_REMARKS}
+                    containerStyle={styles.textConatiner}
+                    inputMode='text'
+                    key={'remarks'}
+                  />
+                </View>
+              </ScrollView>
+              </KeyboardAvoidingWrapper>
+            <CustomFooter
+              leftButtonText={StringConstants.CANCEL}
+              rightButtonText={StringConstants.SUBMIT}
+              leftButtonPress={() => footerButtonPress(StringConstants.LEFT)}
+              rightButtonPress={() => footerButtonPress(StringConstants.RIGHT)}
+              rightButtonStyle={{
+                backgroundColor: isAllFieldHaveData
+                  ? Colors.sailBlue
+                  : Colors.lightGrey,
+              }}
+              isMovable={isAllFieldHaveData}
             />
-            <View style={{ paddingHorizontal: 20, flex: 1 }}>
-              <InputTextField
-                onChangeText={(text: string) => {
-                  visitPlanDetail.remarks.current = text;
-                  isAllDataFilled();
-                }}
-                placeholder={StringConstants.ENTER_REMARKS}
-                containerStyle={{ backgroundColor: Colors.white, height: 90 }}
-              />
-            </View>
-          </ScrollView>
-          <CustomFooter
-            leftButtonText={StringConstants.CANCEL}
-            rightButtonText={StringConstants.SUBMIT}
-            leftButtonPress={() => footerButtonPress(StringConstants.LEFT)}
-            rightButtonPress={() => footerButtonPress(StringConstants.RIGHT)}
-            rightButtonStyle={{backgroundColor:isAllFieldHaveData?Colors.sailBlue:undefined}}
-          />
-        </>
-      ) : (
-        <>
-          <Header topheading={StringConstants.CREATE_VISIT_PLAN} />
-          <PlanCompleted />
-        </>
-      )}
-    </SafeAreaView>
+            
+          </>
+        ) : (
+          <>
+            <Header topheading={StringConstants.CREATE_VISIT_PLAN} />
+            <PlanCompleted />
+          </>
+        )}
+      </SafeAreaView>
+    </>
   );
 };
 export default CreateVisitPlanScreen;

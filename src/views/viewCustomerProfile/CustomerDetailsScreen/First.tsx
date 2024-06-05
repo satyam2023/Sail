@@ -1,15 +1,15 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import { FlatList, Image, ScrollView,View } from "react-native";
 import StringConstants from "shared/localization";
 import { Colors } from "commonStyles/RNColor.style";
 import {
-  IEnteredCustomerDetails,
+  IFlatListCustomerField,
   ISelectedImage,
 } from "models/interface/ICreateCustomer";
 import { IdropDown } from "models/interface/ISetting";
 import {
   CustomerDetailInputField,
-  customerTypeTraderDealerField,
+  CustomerTypeTraderDealer,
 } from "@shared-constants";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
 import {
@@ -21,7 +21,7 @@ import {
 } from "components";
 import {
   ICustomerState,
-  IFlatListInputField,
+  IFlatlistTrader,
 } from "models/interface/IViewCustomerProfile";
 import {
   IProcuredProduct,
@@ -29,16 +29,15 @@ import {
 } from "models/ApiResponses/CreateCustomer";
 import Glyphs from "assets/Glyphs";
 import styles from "../Style";
+import { ValidationError } from "core/UseForm";
 
 interface IFirst {
   customerList: IViewCustomerBody[];
-  enteredCustomerDetails: IEnteredCustomerDetails;
   dropdownDataList: IdropDown[][];
   setIndexofSubType: Function;
   setSubTypes: Function;
-  isAllFieldHaveData: () => void;
   selectedIndexValue: number;
-  customerDetail: any[];
+  customerDetail: string[];
   customer: ICustomerState;
   traderDealerTypeDetail: (string | undefined)[];
   handleCustomerDetailChange: (text: string | number, id: number) => void;
@@ -50,12 +49,17 @@ interface IFirst {
   handleUploadDocument: () => void;
   removeDropDownItem: (id: number, type: string) => void;
   removeSelectedImage:(item:ISelectedImage)=>void;
+  customerErrors:MutableRefObject<ValidationError[]>;
+  customerTypeErrors:MutableRefObject<ValidationError[]>;
 }
 
 const First = (props: IFirst) => {
-  const customerType = props?.customerList[props?.selectedIndexValue].type?.id;
+
+
+
+  const customerType = props?.customerList[props?.selectedIndexValue]?.type?.id;
   const isEditing = props?.customer?.editDetails;
-  const renderCustomerInputField = ({ item, index }: IFlatListInputField) => {
+  const renderCustomerInputField = ({ item, index }: IFlatListCustomerField) => {
     const notEditable: boolean = index == 0 || index == 1 || index == 4;
     return (
       <>
@@ -64,13 +68,17 @@ const First = (props: IFirst) => {
             onChangeText={(text: string) =>
               props?.handleCustomerDetailChange(text, index)
             }
-            placeholder={item}
+            placeholder={item?.placeholder}
+            maxlength={item?.maxlength}
             containerStyle={{
               backgroundColor:
                 !isEditing || notEditable ? Colors.disabledGrey : Colors.white,
             }}
+            key={item?.placeholder}
             defaultValue={props?.customerDetail[index]}
+            errors={props?.customerErrors.current}
             isEditable={notEditable || !isEditing ? false : true}
+            inputBoxId={item?.key}
           />
         ) : (
           <CustomDropDown
@@ -79,9 +87,9 @@ const First = (props: IFirst) => {
                 ? undefined
                 : props?.dropdownDataList[index - 2]
             }
-            topheading={item}
+            topheading={item?.placeholder}
             onPress={(item: IdropDown) => {
-              props?.setSubTypes(item, index, props?.enteredCustomerDetails);
+              props?.setSubTypes(item, index);
               props?.handleCustomerDetailChange(
                 index == 7 ? item.name : item.id,
                 index,
@@ -100,7 +108,8 @@ const First = (props: IFirst) => {
     );
   };
 
-  const renderTraderTypeList = ({ item, index }: IFlatListInputField) => {
+  const renderTraderTypeList = ({ item, index }: IFlatlistTrader) => {
+    const array=(index==4)?props?.customer.procuredProduct:props?.customer?.supplier;
     return (
       <>
         {index == 0 || index == 4 || index == 6 ? (
@@ -111,57 +120,53 @@ const First = (props: IFirst) => {
             onPress={(item: IdropDown) =>
               props?.handleSpecificCustomerTypeDetailChange(item.id, index)
             }
-            topheading={item}
+            defaultValue={index==0?props?.traderDealerTypeDetail[index]:''}
+            topheading={item?.placeholder}
             style={{
               backgroundColor: !isEditing ? Colors.disabledGrey : Colors.white,
             }}
+            isSelectedItemNotVisible={index==0?false:true}
           />
         ) : (
           <InputTextField
             onChangeText={(text: string) =>
               props?.handleSpecificCustomerTypeDetailChange(text, index)
             }
-            placeholder={item}
+            placeholder={item?.placeholder}
+            maxlength={item?.length}
+            inputMode={item?.inputMode}
             containerStyle={{
               backgroundColor: !isEditing ? Colors.disabledGrey : Colors.white,
             }}
+            key={item?.placeholder}
+            isEditable={!isEditing ? false : true}
+            errors={props?.customerTypeErrors?.current}
             defaultValue={props?.traderDealerTypeDetail[index]}
           />
         )}
         <>
-          {index == 4 &&
-            props?.customer?.procuredProduct?.map((item: IProcuredProduct) => {
+          {[4,6].includes(index)&&
+           array?.map((item: IProcuredProduct|ISupplier) => {
               return (
                 <InputTextField
                   onChangeText={() => {}}
                   placeholder={item.name}
                   rightIcon={Glyphs.Close}
-                  containerStyle={{ backgroundColor: Colors.white }}
+                  containerStyle={{
+                    backgroundColor: !isEditing ? Colors.disabledGrey : Colors.white,
+                  }}
+                  placeholderColor={Colors.black}
                   isEditable={false}
                   onRighIconPress={() =>
                     props?.removeDropDownItem(
                       item.id,
-                      StringConstants.PROCURED_PRODUCT,
+                      index==4?StringConstants.PROCURED_PRODUCT:StringConstants.SUPPLIER,
                     )
                   }
-                />
-              );
-            })}
-          {index == 6 &&
-            props?.customer?.supplier?.map((item: ISupplier) => {
-              return (
-                <InputTextField
-                  onChangeText={() => {}}
-                  placeholder={item.name}
-                  rightIcon={Glyphs.Close}
-                  containerStyle={{ backgroundColor: Colors.white }}
-                  isEditable={false}
-                  onRighIconPress={() =>
-                    props?.removeDropDownItem(
-                      item.id,
-                      StringConstants.SUPPLIER,
-                    )
-                  }
+                  key={item?.name}
+                  errors={props?.customerErrors?.current}
+                  inputBoxId={index==4?'procured_products':'supplier'}
+                  rightIconTintColor={!isEditing?Colors.darkGrey:Colors.sailBlue}
                 />
               );
             })}
@@ -179,7 +184,10 @@ const First = (props: IFirst) => {
         renderItem={renderCustomerInputField}
         scrollEnabled={false}
       />
-      <LocateMe onPress={props?.handleLocation} />
+      <LocateMe onPress={props?.handleLocation} 
+      errors={props?.customerErrors?.current}
+      key='latitude'
+      />
       <InputTextField
         onChangeText={(text: string) =>
           props?.handleCustomerDetailChange(text, 11)
@@ -189,21 +197,23 @@ const First = (props: IFirst) => {
           backgroundColor: !isEditing ? Colors.disabledGrey : Colors.white,
         }}
         defaultValue={
-          !isEditing ? props?.customerDetail[11] : StringConstants.EMPTY
+          props?.customerDetail[11] 
         }
+        key={"-2"}
         isEditable={isEditing}
       />
       {(customerType == 2 || customerType == 6 || customerType == 7) && (
         <FlatList
           data={
             customerType != 6
-              ? customerTypeTraderDealerField
+              ? CustomerTypeTraderDealer
               : [
-                  ...customerTypeTraderDealerField,
-                  StringConstants.PROJECT_DETAILS,
+                  ...CustomerTypeTraderDealer,
+                 { placeholder:StringConstants.PROJECT_DETAILS,key:'project_details'},
                 ]
           }
           renderItem={renderTraderTypeList}
+          scrollEnabled={false}
         />
       )}
 
@@ -213,9 +223,9 @@ const First = (props: IFirst) => {
       />
       <View style={styles.imgContainer}>
         {props?.customer?.imageSelected.map(
-          (item: ISelectedImage, _: number) => {
+          (item: ISelectedImage, index: number) => {
             return (
-              <View style={{ marginRight: 10 }}>
+              <View style={{ marginRight: 10 }} key={index.toString()}>
                 <PressableButton>
                   <Image source={item} style={styles.selectedImage} />
                 </PressableButton >

@@ -13,7 +13,7 @@ const token = () => {
 };
 const instance: AxiosInstance = axios.create({
   baseURL: APIConstants.BaseURL,
-  timeout: APIConstants.axiosCallTimeout,
+  timeout: APIConstants.AXIOS_CALL_TIMEOUT,
   headers: {
     "Content-Type": "application/json",
     Accept: "*/*",
@@ -29,8 +29,8 @@ interface RetryConfig extends AxiosRequestConfig {
 }
 
 const globalConfig: RetryConfig = {
-  retry: APIConstants.axiosCallRetryCount,
-  retryDelay: APIConstants.axiosCallRetryTimeout,
+  retry: APIConstants.AXIOS_CALL_RETRY_COUNT,
+  retryDelay: APIConstants.AXIOS_CALL_RETRY_TIMEOUT,
 };
 
 instance.interceptors.response.use(
@@ -51,13 +51,11 @@ instance.interceptors.response.use(
   },
 );
 export function sendGetRequest<T>(url: string) {
-  console.log("token====>",token())
   instance.defaults.headers.common.Authorization = token();
   const updatedUrl = baseURL() + url;
   return instance
     .get(updatedUrl, globalConfig)
     .then((response: any) => {
-      console.log("Response Details::",response);
       return handleResponse<T>(response.data);
     })
     .catch((err: any) => {
@@ -75,7 +73,6 @@ export function sendPostRequest<T>(url: string, body: any): any {
   return instance
     .post(updatedUrl, body, globalConfig)
     .then((response: any) => {
-      console.log("Post Response ::",response.data);
       return handleResponse<T>(response.data);
     })
     .catch((err: any) => {
@@ -85,7 +82,6 @@ export function sendPostRequest<T>(url: string, body: any): any {
       return handleError<T>(err.response.data);
     })
     .finally(() => {
-      console.log("Finally of Send Post")
     });
 }
 
@@ -117,7 +113,6 @@ export function sendPatchRequest<T>(url: string,body:any): any {
       return handleError<T>(err.response.data);
     })
     .finally(() => {
-      // console.log("Patching Done Succesfully");
     });
 }
 
@@ -142,7 +137,6 @@ function handleResponse<T>(data: T) {
     isSuccess: true,
     data,
   };
-  console.log("Put response ::",res);
   return res;
 }
 
@@ -180,10 +174,10 @@ export function sendPostMultipartRequest<T>(
       return handleError<T>(err.response.data);
     })
     .finally(() => {
-      // hide loader
-      //   dispatch(toggleLoader());
     });
 }
+
+
 
 
 export function sendMultipleGetRequests<T>(urls: string[]): any {
@@ -192,7 +186,6 @@ export function sendMultipleGetRequests<T>(urls: string[]): any {
     instance.defaults.headers.common.Authorization = token();
     return instance.get(updatedUrl, globalConfig)
       .then((response: any) => {
-        console.log("Get Response for", url, "::", response.data);
         return handleResponse<T>(response.data);
       })
       .catch((err: any) => {
@@ -204,8 +197,9 @@ export function sendMultipleGetRequests<T>(urls: string[]): any {
   });
 
   return axios.all(promises)
-    .then(axios.spread((...responses) => {console.log(responses)}))
+    .then(axios.spread((...responses) => {
+      return responses;
+    }))
     .finally(() => {
-      console.log("Finally of Send Get");
     });
 }

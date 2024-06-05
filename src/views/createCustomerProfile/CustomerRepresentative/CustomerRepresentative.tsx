@@ -1,36 +1,41 @@
-import React from "react";
-import { FlatList, Image, SafeAreaView, StyleSheet, View } from "react-native";
+import React, { MutableRefObject } from "react";
+import { FlatList, Image, SafeAreaView, View } from "react-native";
 import CustomerDetailHeader from "../CustomerDetailHeader";
 import StringConstants from "shared/localization";
 import { Colors } from "commonStyles/RNColor.style";
-import fonts from "@fonts";
 import RepresentativeDetails from "./RepresentativeDetails";
-import { IRepresentativeError } from "helper/ValidationRegex";
-import { IRepresentativeEnteredDetail, ISelectedImage} from "models/interface/ICreateCustomer";
+import { IRepresentativeFlatList, ISelectedImage } from "models/interface/ICreateCustomer";
 import { CustomButton, TextWrapper } from "components";
 import Glyphs from "assets/Glyphs";
 import commonStyles from "commonStyles/CommonStyle";
 import { IRepresentative } from "models/ApiResponses/CreateCustomer";
+import { ValidationError } from "core/UseForm";
+import styles from "./Style";
 interface RepresenatativeProps {
   addDetails: (addDetailStatus: boolean) => void;
-  ref?: any;
-  enteredRepresentativeDetails: IRepresentativeEnteredDetail;
   representativeList: IRepresentative[];
   competitorList: object[];
-  chooseImageVideo: () => void;
-  representativeError: IRepresentativeError;
+  handleSelectImageVideo: () => void;
   addDetailStatus: boolean;
-  selectRepresentativeImage:ISelectedImage|undefined;
+  selectRepresentativeImage: ISelectedImage | undefined;
+  handleTextChangeOfRepresentative: (text: string, id: number) => void;
+  representativeErrors: MutableRefObject<ValidationError[]>;
 }
 const CustomerRepresentative = (props: RepresenatativeProps) => {
-  const renderRepresentativeList = (item: IRepresentative, _: number) => {
-    return <View style={style.representativeListBox}>
-      <TextWrapper>
-        {item.name}
-      </TextWrapper>
-      <Image source={Glyphs.Editing}  tintColor={Colors.sailBlue} style={commonStyles.rightIcon}>
-      </Image>
-    </View>;
+  const renderRepresentativeList = ({
+    item,
+    index,
+  }: IRepresentativeFlatList) => {
+    return (
+      <View style={styles.representativeListBox} key={index.toString()}>
+        <TextWrapper>{item.name}</TextWrapper>
+        <Image
+          source={Glyphs.Editing}
+          tintColor={Colors.sailBlue}
+          style={commonStyles.rightIcon}
+        />
+      </View>
+    );
   };
   return (
     <SafeAreaView>
@@ -45,21 +50,15 @@ const CustomerRepresentative = (props: RepresenatativeProps) => {
           <View style={{ paddingHorizontal: 20 }}>
             <FlatList
               data={props?.representativeList}
-              renderItem={({ item, index }) =>
-                renderRepresentativeList(item, index)
-              }
+              renderItem={renderRepresentativeList}
               scrollEnabled={false}
+              keyExtractor={(_, index) => index.toString()}
             />
             <CustomButton
               text={StringConstants.PLUS__CUSTOMER_REP}
-              buttonStyle={{
-                backgroundColor: Colors.dashed,
-                justifyContent: "flex-start",
-              }}
-              textStyle={{ fontFamily: fonts.type.regular }}
-              onPress={() => {
-                props?.addDetails(true);
-              }}
+              buttonStyle={styles.btnStyle}
+              textStyle={styles.btnTextStyle}
+              onPress={() => props?.addDetails(true)}
             />
           </View>
         </>
@@ -71,20 +70,3 @@ const CustomerRepresentative = (props: RepresenatativeProps) => {
 };
 
 export default CustomerRepresentative;
-
-const style=StyleSheet.create({
-  representativeListBox:{
-   width:'100%',
-   paddingHorizontal:15,
-   paddingVertical:5,
-   borderRadius:33,
-   height:56,
-   borderWidth:2,
-   borderColor:Colors.sailBlue,
-   backgroundColor:Colors.lightGrey,
-   borderStyle:'dashed',
-   marginBottom:16,
-   justifyContent:'center'
-  }
-}
-)

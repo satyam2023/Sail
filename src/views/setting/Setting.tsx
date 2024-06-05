@@ -1,5 +1,10 @@
-import React from "react";
-import { FlatList, SafeAreaView, View } from "react-native";
+import React, { MutableRefObject } from "react";
+import {
+  FlatList,
+  SafeAreaView,
+  View,
+  KeyboardAvoidingView,
+} from "react-native";
 import styles from "./Style/Style";
 import Glyphs from "assets/Glyphs";
 import { ScrollView } from "react-native";
@@ -20,6 +25,8 @@ import {
 import { MasterDataResponse } from "models/ApiResponses/MasterDataResponse";
 import { TextFieldData } from "@shared-constants";
 import StatusBarComponent from "components/StatusBarComponent";
+import { isAndroid } from "libs";
+import { ValidationError } from "core/UseForm";
 
 interface ISetting {
   userData: SignInResponse;
@@ -30,6 +37,7 @@ interface ISetting {
   isDetailsUpdating: boolean;
   roleLocationDropDownList: MasterDataResponse;
   handleOntextChange: (text: string | number, id: number) => void;
+  emailError: MutableRefObject<ValidationError[]>;
 }
 
 const SettingScreen = ({
@@ -40,8 +48,9 @@ const SettingScreen = ({
   isDetailsUpdating,
   roleLocationDropDownList,
   handleOntextChange,
+  emailError,
 }: ISetting) => {
-  function renderItem({ item, index }: IFlalistSetting) {
+  const renderItem = ({ item, index }: IFlalistSetting) => {
     return (
       <>
         {
@@ -53,118 +62,119 @@ const SettingScreen = ({
                   ? Colors.white
                   : Colors.lightGray,
             }}
-            placeholder={item}
+            placeholder={item?.placeholder}
             maxlength={30}
             defaultValue={dataofInputField[index]}
             isEditable={index < 3 ? false : isDetailsUpdating}
+            inputBoxId={item?.key}
+            key={item?.key}
+            errors={emailError.current}
           />
         }
       </>
     );
-  }
+  };
   return (
     <>
       <StatusBarComponent
         backgroundColor={Colors.sailBlue}
-        conentType={"dark-content"}
+        conentType={"light-content"}
       />
       <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
         <Header
           topheading={StringConstants.SETTINGS}
           isLogoutButton={true}
-          rightButtonPress={() => logOutApiCalling()}
+          rightButtonPress={logOutApiCalling}
         />
-        <ScrollView
-          style={{ paddingHorizontal: 20, flex: 1 }}
-          showsVerticalScrollIndicator={false}
-          nestedScrollEnabled
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={isAndroid ? "height" : "padding"}
         >
-          <View style={styles.detailContainer}>
-            <View style={styles.circle}>
-              <TextWrapper
-                color={Colors.white}
-                fontFamily={fonts.type.medium}
-                style={{ fontSize: 20 }}
-              >
-                {ExtarctTwoLetterName(userData?.user?.user_name)}
-              </TextWrapper>
-            </View>
-            <View style={styles.infoContainer}>
-              <View style={{ marginLeft: 16, width: "40%" }}>
-                <TextWrapper style={commonStyles.font14RegularBlack}>
-                  {userData?.user?.user_name}
-                </TextWrapper>
-                <TextWrapper style={styles.userPost}>
-                  {userData?.user?.user_role_name}
+          <ScrollView
+            style={{ paddingHorizontal: 20, flex: 1 }}
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.detailContainer}>
+              <View style={styles.circle}>
+                <TextWrapper
+                  color={Colors.white}
+                  fontFamily={fonts.Poppins.medium}
+                  style={{ fontSize: 20 }}
+                >
+                  {ExtarctTwoLetterName(userData?.user?.user_name)}
                 </TextWrapper>
               </View>
+              <View style={styles.infoContainer}>
+                <View style={{}}>
+                  <TextWrapper style={commonStyles.font14RegularBlack}>
+                    {userData?.user?.user_name}
+                  </TextWrapper>
+                  <TextWrapper style={styles.userPost}>
+                    {userData?.user?.user_role_name}
+                  </TextWrapper>
+                </View>
+                <CustomButton
+                  image={Glyphs.Editing}
+                  text={StringConstants.EDIT_PROFILE}
+                  buttonStyle={styles.btnStyle}
+                  textStyle={styles.editTxt}
+                  imageStyle={{ width: 16, height: 16 }}
+                  onPress={() => {
+                    editDetails(StringConstants.EMPTY, -1);
+                  }}
+                />
+              </View>
+            </View>
+            <FlatList
+              data={TextFieldData}
+              renderItem={renderItem}
+              scrollEnabled={false}
+              keyExtractor={(_, index) => index.toString()}
+            />
+            <CustomDropDown
+              ArrayOfData={
+                !isDetailsUpdating ? [] : roleLocationDropDownList.LocationData
+              }
+              topheading={StringConstants.LOCATION}
+              style={{
+                backgroundColor: !isDetailsUpdating
+                  ? Colors.lightGray
+                  : Colors.white,
+              }}
+              defaultValue={dataofInputField[4]}
+              isRightDropDownVisible={!isDetailsUpdating}
+              onPress={(item: IdropDown) => handleOntextChange(item.name, 1)}
+            />
+            <CustomDropDown
+              ArrayOfData={
+                !isDetailsUpdating ? [] : roleLocationDropDownList.RolesData
+              }
+              topheading={StringConstants.ROLE}
+              style={{
+                backgroundColor: !isDetailsUpdating
+                  ? Colors.lightGray
+                  : Colors.white,
+                marginBottom: !isDetailsUpdating ? 70 : 16,
+              }}
+              defaultValue={dataofInputField[5]}
+              isRightDropDownVisible={!isDetailsUpdating}
+              onPress={(item: IdropDown) => handleOntextChange(item.id, 2)}
+            />
+            {isDetailsUpdating && (
               <CustomButton
-                image={Glyphs.Editing}
-                text={StringConstants.EDIT_PROFILE}
-                buttonStyle={{
-                  width: "50%",
-                  backgroundColor: Colors.sailBlue,
-                  height: 40,
-                }}
-                textStyle={styles.editTxt}
-                imageStyle={{ width: 16, height: 16 }}
+                text={StringConstants.UPDATE_PROFILE}
+                buttonStyle={styles.detailupdatingBtn}
+                textStyle={[
+                  commonStyles.font14MediumBlackpearl,
+                  { color: Colors.sailBlue },
+                ]}
                 onPress={() => {
-                  editDetails(StringConstants.EMPTY, -1);
+                  editDetails(StringConstants.EMPTY, -2);
                 }}
               />
-            </View>
-          </View>
-          <FlatList
-            data={TextFieldData}
-            renderItem={renderItem}
-            scrollEnabled={false}
-          />
-          <CustomDropDown
-            ArrayOfData={
-              !isDetailsUpdating ? [] : roleLocationDropDownList.LocationData
-            }
-            topheading={StringConstants.LOCATION}
-            style={{
-              backgroundColor: !isDetailsUpdating
-                ? Colors.lightGray
-                : Colors.white,
-            }}
-            defaultValue={dataofInputField[4]}
-            isRightDropDownVisible={!isDetailsUpdating}
-            onPress={(item: IdropDown) => handleOntextChange(item.id, 1)}
-          />
-          <CustomDropDown
-            ArrayOfData={
-              !isDetailsUpdating ? [] : roleLocationDropDownList.RolesData
-            }
-            topheading={StringConstants.ROLE}
-            style={{
-              backgroundColor: !isDetailsUpdating
-                ? Colors.lightGray
-                : Colors.white,
-            }}
-            defaultValue={dataofInputField[5]}
-            isRightDropDownVisible={!isDetailsUpdating}
-            onPress={(item: IdropDown) => (item.id, 2)}
-          />
-          {isDetailsUpdating && (
-            <CustomButton
-              text={StringConstants.UPDATE_PROFILE}
-              buttonStyle={{
-                backgroundColor: Colors.white,
-                borderWidth: 1,
-                borderColor: Colors.sailBlue,
-              }}
-              textStyle={[
-                commonStyles.font14MediumBlackpearl,
-                { color: Colors.sailBlue },
-              ]}
-              onPress={() => {
-                editDetails(StringConstants.EMPTY, -2);
-              }}
-            />
-          )}
-        </ScrollView>
+            )}
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </>
   );

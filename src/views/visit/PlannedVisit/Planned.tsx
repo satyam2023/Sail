@@ -1,30 +1,35 @@
-import React from "react";
-import { FlatList,View } from "react-native";
-import Data from "../UpComingVisit/mockData/DATA";
+import React, { memo } from "react";
+import { FlatList, View } from "react-native";
 import StringConstants from "shared/localization";
 import Glyphs from "assets/Glyphs";
 import { VisitResponse } from "models/ApiResponses/VisitResponse";
 import { CustomerDetails, RectangularBox } from "components";
-import { IPlannedVisitEdit } from "models/interface/IVisit";
+import {
+  IFlatListPlannedVisit,
+  IPlannedVisitEdit,
+} from "models/interface/IVisit";
 import { IdropDown } from "models/interface/ISetting";
 import commonStyles from "commonStyles/CommonStyle";
+import { PlannedVisitPlaceHolder } from "@shared-constants";
 
 interface PlannedProps {
   plannedVisitList: VisitResponse[];
   selectedIndexValue: number;
   plannedVisitFieldData: string[];
   plannedVisitEditDetails: IPlannedVisitEdit;
-  plannedVisitEdit: () => void;
   modeOfContactDropData: IdropDown[];
   isVisitEditable: boolean;
   handlePlannedVisitBoxClick: (index: number, id: number) => void;
   customerDetails: boolean;
   handleCustomerClick: () => void;
-  setPaginationPage:()=>void;
+  setPaginationPage: () => void;
+  searchResult: VisitResponse[];
+  plannedVisit:VisitResponse[];
+  searchStatus:boolean;
 }
 
 const Planned = ({
-  plannedVisitList,
+  // plannedVisitList,
   plannedVisitFieldData,
   selectedIndexValue,
   plannedVisitEditDetails,
@@ -34,12 +39,18 @@ const Planned = ({
   handleCustomerClick,
   customerDetails,
   setPaginationPage,
+  searchResult,
+  plannedVisit,
+  searchStatus
+
 }: PlannedProps) => {
-  const renderPlannedVisit = ({item,index}:{item: VisitResponse, index: number}) => {
+
+  const isSearchResult: boolean = searchStatus;
+  const renderPlannedVisit = ({ item, index }: IFlatListPlannedVisit) => {
     return (
       <RectangularBox
         onPress={() => handlePlannedVisitBoxClick(index, item.id)}
-        leftIcon={Glyphs.Profile2userClicked}
+        leftIcon={Glyphs.multiProfile}
         heading={`${StringConstants.CUSTOMER_VISIT} ${index + 1}`}
         subHeading={item?.customer_data?.company_name}
         cancelled={item.visit_status == "0" ? false : true}
@@ -49,29 +60,33 @@ const Planned = ({
   };
 
   return (
-    <View style={{ paddingHorizontal: 20,flex:1}}>
+    <View style={{ paddingHorizontal: 20, flex: 1 }}>
       {!customerDetails ? (
-        <FlatList
-          data={plannedVisitList}
-          renderItem={renderPlannedVisit}
-          onMomentumScrollEnd={setPaginationPage}
-          showsVerticalScrollIndicator={false}
-        />
+          <FlatList
+            data={isSearchResult?searchResult: plannedVisit}
+            renderItem={renderPlannedVisit}
+            onEndReachedThreshold={0.2} 
+            onEndReached={setPaginationPage}
+            showsVerticalScrollIndicator={false}
+          />
+ 
       ) : (
         <CustomerDetails
           CustomerData={plannedVisitFieldData}
           onPress={handleCustomerClick}
-          placeholderData={Data}
+          placeholderData={PlannedVisitPlaceHolder}
           indexofSelectedVisit={selectedIndexValue}
           companyName={
-            plannedVisitList[selectedIndexValue]?.customer_data?.company_name
+            (isSearchResult ? searchResult :  plannedVisit)[
+              selectedIndexValue
+            ]?.customer_data?.company_name
           }
           plannedVisitEditDetails={
             isVisitEditable ? plannedVisitEditDetails : undefined
           }
           modeOfContactDropData={modeOfContactDropData}
           cancelledStatus={
-            plannedVisitList[selectedIndexValue]?.visit_status == "0"
+            (isSearchResult ? searchResult :  plannedVisit)[selectedIndexValue]?.visit_status == "0"
               ? false
               : true
           }
@@ -81,4 +96,4 @@ const Planned = ({
   );
 };
 
-export default Planned;
+export default memo(Planned);

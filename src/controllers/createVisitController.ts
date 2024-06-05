@@ -14,8 +14,6 @@ export const checkDetailByNickName = async (data:NickNameRequest) => {
       `${APIConstants.CUS_DETAIL_BY_NICKNAME}`,
       body,
     );
-
-    console.log("CheckDetails by nickname:::", res);
     return res;
   } catch (error) {
     logger(error);

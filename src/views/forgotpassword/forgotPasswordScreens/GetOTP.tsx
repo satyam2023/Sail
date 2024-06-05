@@ -3,9 +3,12 @@ import { InputTextField, TextWrapper } from "components";
 import { View } from "react-native";
 import StringConstants from "shared/localization";
 import styles from "../Style";
+import { MutableRefObject } from "react";
+import { ValidationError } from "core/UseForm";
 
 interface IGetOTP{
   handleUpnContactEntered:(text:string,id:number)=>void;
+  forgotPasswordErrors:MutableRefObject<ValidationError[]>;
 }
 
 const GetOTP = (props:IGetOTP) => {
@@ -20,12 +23,17 @@ const GetOTP = (props:IGetOTP) => {
         leftIcon={Glyphs.Contact}
         maxlength={7}
         inputMode={'text'}
+        inputBoxId='upn'
+        errors={props?.forgotPasswordErrors?.current}
       />
       <InputTextField
          onChangeText={(text) => props?.handleUpnContactEntered(text,1)}
         placeholder={StringConstants.CONTACT_NUMBER}
         leftIcon={Glyphs.Phone}
+        maxlength={10}
         inputMode={'numeric'}
+        inputBoxId='contact'
+        errors={props?.forgotPasswordErrors?.current}
       />
     </View>
   );

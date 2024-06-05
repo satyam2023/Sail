@@ -1,10 +1,11 @@
 import React from "react";
 import { FlatList, View } from "react-native";
-import { RectangularBox } from "components";
-import commonStyles from "commonStyles/CommonStyle";
+import { RectangularBox, TextWrapper } from "components";
 import { INearbyCustomer } from "models/ApiResponses/IEnquiryResponses";
 import Glyphs from "assets/Glyphs";
 import MapComponent from "components/CustomMap";
+import styles from "./Style";
+import StringConstants from "shared/localization";
 
 interface Iuser {
   item: INearbyCustomer;
@@ -16,15 +17,16 @@ interface INearby {
 }
 
 const NearbyCustomer = (props: INearby) => {
-  function renderitem({ item, index }: Iuser) {
+  const renderitem=({ item }: Iuser) =>{
     return (
-      <View style={[commonStyles.rectangularBoxRadius,{marginBottom:16}]}>
+      <View style={styles.mapCOnatiner}>
         <RectangularBox
           heading={item?.company_name}
           subHeading={item?.address}
-          leftIcon={Glyphs.blueLocation}
+          leftIcon={Glyphs.Customer}
           isRightNotIconRequired
-          style={{marginBottom:0}}
+          style={styles.customerBox}
+          leftIconStyle={styles.leftIconStyle}
         />
         <MapComponent
           latitude={item?.location_lat}
@@ -34,13 +36,26 @@ const NearbyCustomer = (props: INearby) => {
     );
   }
 
+
   return (
-    <FlatList
-      data={props?.NearByCustomerList}
-      renderItem={renderitem}
-      style={{ paddingHorizontal: 20 ,flex:1}}
-      scrollEnabled={false}
-    />
+    <>
+      {props?.NearByCustomerList?.length ? (
+        <FlatList
+          data={props?.NearByCustomerList}
+          renderItem={renderitem}
+          style={styles.nearbyListContainer}
+          scrollEnabled={false}
+        />
+      ) : (
+        
+          <TextWrapper
+            style={styles.noCustFound}
+          >
+            {StringConstants.NO_CUSTOMER_FOUND}
+          </TextWrapper>
+        
+      )}
+    </>
   );
 };
 

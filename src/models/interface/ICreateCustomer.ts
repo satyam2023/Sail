@@ -1,8 +1,12 @@
 import {
   ICompetitor,
+  IProcuredProduct,
   IRepresentative,
+  ISupplier,
 } from "models/ApiResponses/CreateCustomer";
 import { MutableRefObject } from "react";
+import { IFlatlistIndex } from "./IMessage";
+import { InputModeOptions } from "react-native";
 
 export interface IExample {
   [key: string | number]: MutableRefObject<string | number|undefined>;
@@ -24,6 +28,24 @@ export interface IEnteredCustomerDetails {
   location: MutableRefObject<string>;
   latitude: MutableRefObject<string>;
   longitude: MutableRefObject<string>;
+}
+
+export interface CustomerDetails{
+  [key: string]: string;
+  code: string;
+  company: string;
+  cust_seg: string;
+  cust_sub_seg: string;
+  cust_type: string;
+  cust_sub_type: string;
+  cust_status: string;
+  cust_region: string;
+  pan: string;
+  gst: string;
+  website: string;
+  location: string;
+  latitude: string;
+  longitude: string;
 }
 
 export interface IrepresentativeData {
@@ -48,6 +70,17 @@ export interface IRepresentativeEnteredDetail {
   whatsApp: MutableRefObject<string>;
 }
 
+export interface RepresentativeDetails{
+  [key: string | number]:string;
+  name:string;
+  designation:string;
+  dept:string;
+  address:string;
+  email:string;
+  contact:string;
+  whatsApp:string;
+}
+
 export interface IEnteredCompetitorDetail {
   [key: string]: MutableRefObject<string>;
   company: MutableRefObject<string>;
@@ -55,14 +88,23 @@ export interface IEnteredCompetitorDetail {
   comment: MutableRefObject<string>;
 }
 
+export interface CompetitorDetail{
+  [key: string]: string;
+  company: string;
+  address: string;
+  comment: string;
+}
+
 export interface IsubType {
+  [key:number|string]:number;
   customerSegmentIndex: number;
   customerSubTypeIndex: number;
 }
 
 export interface IselecteddropDown {
-  selectedProcuredProduct: string[];
-  selectedSupplier: string[];
+  [key:number|string]:IProcuredProduct[]|ISupplier[];
+  selectedProcuredProduct: IProcuredProduct[];
+  selectedSupplier:ISupplier[];
 }
 
 export interface ISelectedImage {
@@ -79,8 +121,16 @@ export interface IadditionalList {
   competitorList: ICompetitor[];
 }
 
+export interface ICustomerTrader {
+  placeholder: string;
+  length?: number;
+  key?: string;
+  input?: InputModeOptions;
+}
+
+
 export interface IFlatListExtraItem {
-  item: string;
+  item: ICustomerTrader ;
   index: number;
 }
 
@@ -100,6 +150,22 @@ tentative_quality_procured: MutableRefObject<string>,
 supplier: MutableRefObject<number[]>,
 }
 
+export interface TraderProcuredSupplier{
+  [key:string|number]:MutableRefObject<string|number|number[]|null>
+  procured_products: MutableRefObject<number[]>,
+supplier: MutableRefObject<number[]>,
+}
+
+export interface CustomertypeTrader{
+  [key:string|number]:string
+cluster: string,
+contact_number: string,
+day_wise_stock: string,
+price_feedback_competitor: string,
+procured_products:string,
+tentative_quality_procured:string,
+supplier:string,
+}
 export interface ICustomerTypeProject {
   [key:string|number]:MutableRefObject<string|number|number[]>
   procured_products: MutableRefObject<number[]>,
@@ -107,3 +173,56 @@ export interface ICustomerTypeProject {
   supplier: MutableRefObject<number[]>,
   project_details: MutableRefObject<string>,
 };
+
+export interface CustomertypeProject{
+  [key:string|number]:string
+  procured_products: string,
+  tentative_quality_procured: string,
+  supplier: string,
+  project_details: string,
+}
+
+export interface IFlatListCustomerField extends IFlatlistIndex{
+    item: ICustomerDetailInputField;
+}
+
+export interface IRenderSelectedSupplierAndProcured{
+  item: string,
+  index: number,
+  type: string,
+}
+
+export interface ICustomerDetailInputField {
+  placeholder: string;
+  maxlength?: number;
+  key?: string;
+}
+
+export interface CompetitorDetailInputField {
+  placeholder: string;
+  length: number;
+  key: string;
+}
+
+
+export interface ICompetitorFlatList extends IFlatlistIndex{
+  item:CompetitorDetailInputField
+}
+
+export interface IRepresentativeFlatList extends IFlatlistIndex{
+ item:IRepresentative
+}
+
+export interface IGeoPosition{
+  coords: {
+    accuracy:number,
+    altitude: number,
+    altitudeAccuracy: number,
+    heading: number,
+    latitude: string,
+    longitude: string,
+    speed: number
+  },
+  mocked: boolean,
+  timestamp: number
+}

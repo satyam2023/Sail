@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import { FlatList, Image, SafeAreaView, ScrollView, View } from "react-native";
 import styles from "../Style";
 import Glyphs from "assets/Glyphs";
@@ -21,7 +21,7 @@ import { ISelectedImage } from "models/interface/ICreateCustomer";
 import ProfileHeader from "../../Component/ProfileHeader";
 import StatusBarComponent from "components/StatusBarComponent";
 import ShowRepresentative from "./ShowRepresentative";
-import { IRepresentativeError } from "helper/ValidationRegex";
+import { ValidationError } from "core/UseForm";
 
 interface SecondProps {
   customerList: IViewCustomerBody[];
@@ -31,12 +31,13 @@ interface SecondProps {
   selectRepresentativeImage: ISelectedImage | undefined;
   addDetailStatus: boolean;
   handleAddStatus: () => void;
-  representativeDetail: any;
+  representativeDetail: string[];
   handleRepresetativeSelected: (index: number) => void;
   representative: IViewCustomerRepresentative;
   setEditing: (id: number) => void;
   handleFooterButtonClick: (type: string) => void;
-  representativeError:IRepresentativeError
+  btnStatus:boolean;
+  representativeErrors:MutableRefObject<ValidationError[]>;
 }
 const ViewCustomerRepresentative = ({
   customerList,
@@ -51,15 +52,18 @@ const ViewCustomerRepresentative = ({
   representative,
   setEditing,
   handleFooterButtonClick,
-  representativeError
+  btnStatus,
+  representativeErrors
 }: SecondProps) => {
+
+  console.log("Representative Details::::::::",representativeDetail);
   const renderRepresentativeList = ({
     item,
     index,
   }: IFlatListRepresentativeList) => {
     return (
       <PressableButton style={styles.btn}>
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row"}}>
           <TextWrapper style={styles.Txt}>{item.name}</TextWrapper>
           <Image source={Glyphs.Mobile} style={styles.img} />
         </View>
@@ -104,7 +108,7 @@ const ViewCustomerRepresentative = ({
                   backgroundColor: Colors.dashed,
                   justifyContent: "center",
                 }}
-                textStyle={{ fontFamily: fonts.type.regular }}
+                textStyle={{ fontFamily: fonts.Poppins.regular }}
                 onPress={handleAddStatus}
               />
             </ScrollView>
@@ -130,6 +134,7 @@ const ViewCustomerRepresentative = ({
           )}
         </SafeAreaView>
       ) : (
+        
         <RepresentativeDetails
           {...{
             handleUploadDocument,
@@ -139,7 +144,8 @@ const ViewCustomerRepresentative = ({
             handleAddStatus,
             representative,
             representativeDetail,
-            representativeError
+            btnStatus,
+            representativeErrors
           }}
         />
       )}

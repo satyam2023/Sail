@@ -1,10 +1,13 @@
 import { useFocusEffect } from "@react-navigation/native";
 import { IApiResponse } from "models/ApiResponses/IApiResponse";
 import { IPagination } from "models/ApiResponses/IPagination";
-import { VisitResponse } from "models/ApiResponses/VisitResponse";
+import {
+  ExecutedResponse,
+  VisitResponse,
+} from "models/ApiResponses/VisitResponse";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { BottomTabVisibility, setIsVisitFocusStatus } from "redux/actions/UIAction";
+import { BottomTabVisibility } from "redux/actions/UIAction";
 import VisitScreen from "views/visit/VisitScreen";
 import { upcomingVisitDetails } from "@shared-constants";
 import {
@@ -16,12 +19,22 @@ import {
   getUpcomingVisits,
   pdfDownloadAPI,
 } from "controllers/visitController";
-import { downloadFile,logger, setExecutedFieldData, setPlannedFieldData, setUpcomingFieldData } from "helper/helperFunctions";
+import {
+  downloadFile,
+  logger,
+  setExecutedFieldData,
+  setPlannedFieldData,
+  setUpcomingFieldData,
+  tacklePagination,
+} from "helper/helperFunctions";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
-import { Platform } from "react-native";
-import { IFilterDataDetails, IVisitScreenPagination } from "models/interface/IVisit";
-import { store } from "redux/store/Store";
+import {
+  IFilterDataDetails,
+  IVisitScreenPagination,
+} from "models/interface/IVisit";
+import { RootState, store } from "redux/store/Store";
 import { Regex } from "helper/ValidationRegex";
+import { isAndroid } from "libs";
 
 const VisitScreenViewModel = () => {
   const [selectedIndexValue, setSelectedIndexValue] = useState<number>(-1);
@@ -29,61 +42,67 @@ const VisitScreenViewModel = () => {
   const [FooterVisibility, setFooterVisibility] = useState<boolean>(false);
   const [isVisitEditable, setVisitEditable] = useState<boolean>(false);
   const [customerDetails, setCustomerDetails] = useState<boolean>(false);
-  const [applyFilterSearch,setApplyFilterSearch]=useState<boolean>(false);
-  function handleCustomerClick() {
+  const [applyFilterSearch, setApplyFilterSearch] = useState<boolean>(false);
+  const [searchResult, setSearchResult] = useState<VisitResponse[]>([]);
+  const [searchStatus, setSearchStatus] = useState<boolean>(false);
+  const [plannedVisit, setPlannedVisit] = useState<VisitResponse[]>([]);
+  const handleCustomerClick = () => {
     setCustomerDetails(!customerDetails);
-  }
+    isVisitEditable && setVisitEditable(false);
+  };
 
-  const isLoadFirstTime=store?.getState()?.UIReducer?.isVisitFocusFirstTime;
   const lastPages = {
     upcomingLastPage: useRef<number>(1),
-    plannedLastPage: useRef<number>(1),
+    plannedLastPage: useRef<number>(-1),
     executedLastPage: useRef<number>(1),
   };
   const modeOfContactDropData =
     store?.getState()?.dropdown?.reasonContactData?.data?.ModeofContact;
-  const userID = store?.getState()?.userAccount?.data?.user?.id;
+  const userID = store?.getState()?.userAccount?.data?.data?.user?.id;
   const visitCount = store?.getState()?.home?.data?.data?.AllVisttsCount;
-  const upcomingVisitList = useSelector(
-    (state: any) => state?.visitDetail?.upcoming,
+  const [upcomingVisitList, setUpcomingVisitList] = useState<VisitResponse[]>(
+    [],
   );
   const plannedVisitList = useSelector(
-    (state: any) => state?.visitDetail?.planned,
+    (state:RootState) => state?.visitDetail?.planned,
   );
-  const enteredCustomerCodeToSearch=useRef<string>('');
+  const enteredCustomerCodeToSearch = useRef<string>("");
+
   const pageNumber: IVisitScreenPagination = {
     upcoming: useRef<number>(1),
     planned: useRef<number>(1),
     executed: useRef<number>(1),
   };
-  const executedVisitList = useSelector(
-    (state: any) => state?.visitDetail?.executed,
-  );
-  const visitType = useSelector((state: any) => state?.UIReducer?.visitType);
+
+  const [executedVisitList, setExecutedVisitList] = useState<
+    ExecutedResponse[]
+  >([]);
+
+  const visitType = useSelector((state:RootState) => state?.UIReducer?.visitType);
   const dispatch = useDispatch();
   useFocusEffect(() => {
     dispatch(BottomTabVisibility(false));
     return () => dispatch(BottomTabVisibility(true));
   });
 
-  useEffect(() => {
-     if(isLoadFirstTime){
+  const handleVisitApi = () => {
     callUpcomingVisit(pageNumber.upcoming.current);
     callPlannedVisitApi(pageNumber.planned.current);
     callExecutedVisit(pageNumber.executed.current);
-    dispatch(setIsVisitFocusStatus(false));
-     }
-    else{
+  };
 
-    }
-  }, []);
   useEffect(() => {
+    handleVisitApi();
     setCurrentVisit(visitType);
-  }, [visitType]);
+  }, []);
+
+  const handleVisitChange = () => {
+    searchStatus ? handleClearSearchResult() : setCustomerDetails(false);
+    currentVisit == 2 && setFooterVisibility(true);
+  };
 
   useEffect(() => {
-    setCustomerDetails(false);
-    if (currentVisit == 2) setFooterVisibility(true);
+    handleVisitChange();
   }, [currentVisit]);
 
   const visitCountArray = [
@@ -92,12 +111,25 @@ const VisitScreenViewModel = () => {
     visitCount?.executedVisitCounts,
   ];
 
+  const upcomingFieldData = [
+    ...setUpcomingFieldData(
+      upcomingVisitList,
+      selectedIndexValue,
+      searchResult,
+    ),
+  ];
 
-  const upcomingFieldData =[...setUpcomingFieldData(upcomingVisitList,selectedIndexValue)];
+  const executedVisitFieldData = [
+    ...setExecutedFieldData(
+      executedVisitList,
+      selectedIndexValue,
+      searchResult,
+    ),
+  ];
 
-  const executedVisitFieldData =[...setExecutedFieldData(executedVisitList,selectedIndexValue)]
-
-  const plannedVisitFieldData =[...setPlannedFieldData(plannedVisitList,selectedIndexValue)]
+  const plannedVisitFieldData = [
+    ...setPlannedFieldData(plannedVisit, selectedIndexValue, searchResult),
+  ];
 
   const plannedVisitEditDetails = {
     visitDate: useRef(""),
@@ -109,29 +141,41 @@ const VisitScreenViewModel = () => {
     const setUpcomingVisits = async (page: number) => {
       try {
         const res: IApiResponse<IPagination<VisitResponse>> =
-          await getUpcomingVisits(dispatch, userID, page);
+          await getUpcomingVisits(page);
         if (res?.isSuccess) {
           lastPages.executedLastPage.current = res?.data?.data
             ? res?.data?.data?.last_page
             : 1;
+          const tempData = res?.data?.data?.data ? res?.data?.data?.data : [];
+          setUpcomingVisitList(upcomingVisitList.concat(tempData));
         }
-      } catch {}
+      } catch (e) {
+        logger(e, "Error in Upcoming Visit Api Calling");
+      }
     };
 
     setUpcomingVisits(page);
   }
 
-  function callPlannedVisitApi(page: number) {
+  function callPlannedVisitApi(page: number, isVisitCancelled = false) {
     const setPlannedVisits = async (page: number) => {
       try {
+        dispatch(setLoaderVisibility(true));
         const res: IApiResponse<IPagination<VisitResponse>> =
-          await getPlannedVisits(dispatch, userID, page);
+          await getPlannedVisits(page);
         if (res?.isSuccess) {
           lastPages.plannedLastPage.current = res?.data?.data
             ? res?.data?.data?.last_page
             : 1;
+          const tempData = res?.data?.data?.data ? res?.data?.data?.data : [];
+          if (isVisitCancelled) setPlannedVisit(tempData);
+          else setPlannedVisit(plannedVisit.concat(tempData));
         }
-      } catch {}
+      } catch (e) {
+        logger(e, "Error in Planned Visit");
+      } finally {
+        dispatch(setLoaderVisibility(false));
+      }
     };
     setPlannedVisits(page);
   }
@@ -140,19 +184,23 @@ const VisitScreenViewModel = () => {
     const setExecutedVisits = async (page: number) => {
       try {
         dispatch(setLoaderVisibility(true));
-        const res: IApiResponse<IPagination<VisitResponse>> =
-          await getExecutedVisits(dispatch, userID, page);
-        if (res?.isSuccess) {
-          lastPages.executedLastPage.current = res?.data?.data
-            ? res?.data?.data?.last_page
-            : 1;
+        if (tacklePagination(page, executedVisitList)) {
+          const res: IApiResponse<IPagination<ExecutedResponse>> =
+            await getExecutedVisits(page);
+          if (res?.isSuccess) {
+            lastPages.executedLastPage.current = res?.data?.data
+              ? res?.data?.data?.last_page
+              : 1;
+            const tempData = res?.data?.data?.data ? res?.data?.data?.data : [];
+            setExecutedVisitList(executedVisitList.concat(tempData));
+          }
         }
-      } catch {
+      } catch (e) {
+        logger(e, "Error in Executed Visit");
       } finally {
         dispatch(setLoaderVisibility(false));
       }
     };
-
     setExecutedVisits(page);
   }
 
@@ -164,26 +212,27 @@ const VisitScreenViewModel = () => {
     };
     try {
       const res = await editVisitAPI(data);
+
+      if (res?.isSuccess) {
+        setVisitEditable(true);
+      }
     } catch (e) {
       logger(e);
     }
   };
 
-  function plannedVisitEdit() {
-    if (isVisitEditable) editVisitAPIHandler();
-    else {
-      setVisitEditable(true);
-    }
-  }
+  const plannedVisitEdit = () => {
+    isVisitEditable ? editVisitAPIHandler() : setVisitEditable(true);
+  };
 
-  const callDownloadPDFApi = async (id: any) => {
+  const callDownloadPDFApi = async (id: number) => {
     const sendId = {
       visit_id: id,
     };
     try {
       const res = await pdfDownloadAPI(dispatch, sendId);
       dispatch(setLoaderVisibility(true));
-      if (Platform.OS === "android") {
+      if (isAndroid) {
         await downloadFile(res?.data?.data?.executiveUrl);
       } else {
         downloadFile(res?.data?.data?.executiveUrl);
@@ -199,49 +248,76 @@ const VisitScreenViewModel = () => {
     const data = {
       visit_id: plannedVisitEditDetails?.id?.current || null,
     };
-    const res = await cancelVisitAPI(data);
-    if (res?.isSuccess) {
-      callPlannedVisitApi(pageNumber.planned.current);
+    try {
+      const res = await cancelVisitAPI(data);
+      if (res?.isSuccess) {
+        handleCleanAfterCancelVisit();
+      }
+    } catch (e) {
+      logger(e, "Error in cancelling the Planned Visit");
     }
   };
 
-  const returnVisitType=()=>{
-    if(currentVisit==1)
-     return "Upcoming";
-    else if(currentVisit==2)
-      return "Planned"
-    else if(currentVisit==3)
-      return "Executed"
-  }
+  const handleCleanAfterCancelVisit = () => {
+    if (searchResult.length > 0) setSearchResult(() => []);
+    setCustomerDetails(false);
+    pageNumber.planned.current = 1;
+    callPlannedVisitApi(1, true);
+  };
 
-  const callApplyFilter = async (filterDataDetail:IFilterDataDetails|undefined) => {
+  const returnVisitType = () => {
+    if (currentVisit == 1 || currentVisit == 2) return 0;
+    else if (currentVisit == 3) return 1;
+    else return null;
+  };
+
+  const callApplyFilter = async (
+    filterDataDetail: IFilterDataDetails | undefined,
+  ) => {
     setApplyFilterSearch(false);
-    const isName:boolean=Regex.NAME.test(enteredCustomerCodeToSearch.current);
+    const isName: boolean = Regex.NAME.test(
+      enteredCustomerCodeToSearch.current,
+    );
     const data = {
       id: userID,
       visit_type: returnVisitType(),
-      customer_executive_name:isName?enteredCustomerCodeToSearch.current:null || null,
-      customer_code: !isName?enteredCustomerCodeToSearch.current:null || null,
-      from: filterDataDetail && filterDataDetail.dayFrom.current||null,
-      to: filterDataDetail && filterDataDetail.dayTo.current||null,
-      duration: filterDataDetail && filterDataDetail.durationRange.current,
-      upcoming_check:true,
-      location:null,
+      customer_executive_name: isName
+        ? enteredCustomerCodeToSearch.current
+        : null || null,
+      customer_code: !isName
+        ? enteredCustomerCodeToSearch.current
+        : null || null,
+      from: (filterDataDetail && filterDataDetail.dayFrom.current) || null,
+      to: (filterDataDetail && filterDataDetail.dayTo.current) || null,
+      duration:
+        (filterDataDetail && filterDataDetail.durationRange.current) || "",
+      upcoming_check: currentVisit == 1 ? true : false,
+      location: null,
     };
-    const res = await applyFilterAPI(dispatch, data);
-    if(res?.isSuccess){
-
+    try {
+      dispatch(setLoaderVisibility(true));
+      const res = await applyFilterAPI(dispatch, data);
+      if (res?.isSuccess) {
+        setCustomerDetails(false);
+        setSearchStatus(true);
+        setSearchResult(res?.data?.data?.data);
+      }
+    } catch (e) {
+      logger(e, "Error in Apply Filter API");
+    } finally {
+      dispatch(setLoaderVisibility(false));
     }
   };
 
-  function handlePlannedVisitBoxClick(index: number, id: number) {
+  const handlePlannedVisitBoxClick = (index: number, id: number) => {
     handleCustomerClick();
     setSelectedIndexValue(index);
     plannedVisitEditDetails.id.current = id;
-  }
-  function cancelVisit() {
-    if (plannedVisitEditDetails?.id?.current != -1) cancelVisitAPIHandler();
-  }
+  };
+
+  const cancelVisit = () => {
+    plannedVisitEditDetails?.id?.current != -1 && cancelVisitAPIHandler();
+  };
 
   const upcomingScreenPagination = () => {
     if (pageNumber.upcoming.current < lastPages.upcomingLastPage.current) {
@@ -249,37 +325,45 @@ const VisitScreenViewModel = () => {
       callUpcomingVisit(pageNumber.upcoming.current);
     }
   };
+
   const plannedScreenPagination = () => {
     if (pageNumber.planned.current < lastPages.plannedLastPage.current) {
       pageNumber.planned.current += 1;
       callPlannedVisitApi(pageNumber.planned.current);
     }
   };
-  const executedScreenPagination = () => {
 
+  const executedScreenPagination = () => {
     if (pageNumber.executed.current < lastPages.executedLastPage.current) {
       pageNumber.executed.current += 1;
       callExecutedVisit(pageNumber.executed.current);
     }
   };
 
-  function setPaginationPage() {
-    if (currentVisit == 1) upcomingScreenPagination();
-    else if (currentVisit == 2) plannedScreenPagination();
-    else if (currentVisit == 3) executedScreenPagination();
-  }
+  const setPaginationPage = () => {
+    if (searchResult.length == 0) {
+      currentVisit == 1 && upcomingScreenPagination();
+      currentVisit == 2 && plannedScreenPagination();
+      currentVisit == 3 && executedScreenPagination();
+    }
+  };
 
-  function handleUpcomingVisitBoxClick(index: number) {
+  const handleUpcomingVisitBoxClick = (index: number) => {
     handleCustomerClick();
     setSelectedIndexValue(index);
-  }
-  function handleFilterSearch(){
-  setApplyFilterSearch(true)
-  }
+  };
 
-  function handleCustomerCodeNameEntered(text:string){
-    enteredCustomerCodeToSearch.current=text;
-  }
+  const handleFilterSearch = () => setApplyFilterSearch(true);
+
+  const handleCustomerCodeNameEntered = (text: string) =>
+    (enteredCustomerCodeToSearch.current = text);
+
+  const handleClearSearchResult = () => {
+    setSearchResult([]);
+    setSearchStatus(false);
+    setCustomerDetails(false);
+    setSelectedIndexValue(-1);
+  };
 
   return (
     <VisitScreen
@@ -312,8 +396,11 @@ const VisitScreenViewModel = () => {
         handleFilterSearch,
         applyFilterSearch,
         callApplyFilter,
-        handleCustomerCodeNameEntered
-      
+        handleCustomerCodeNameEntered,
+        searchResult,
+        handleClearSearchResult,
+        plannedVisit,
+        searchStatus,
       }}
     />
   );

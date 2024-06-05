@@ -10,10 +10,9 @@ export const getUserEnquiry = async (body: IUserEnquiryBody) => {
       APIConstants.USER_ENQUIRY,
       body,
     );
-    return res?.data?.data;
+        return res?.data?.data[0]?.message?[]:res?.data?.data;
   } catch (error) {
       logger(error);
-    
   }
   finally{
 
@@ -29,8 +28,6 @@ export const getIssueEnquiry = async (body: IssueEnquiryBody) => {
     return res;
   } catch (error) {
     logger(error);
-      
-
   }
   finally{
 

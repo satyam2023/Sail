@@ -1,67 +1,72 @@
-import React from "react";
-import { ScrollView } from "react-native";
+import React, { MutableRefObject } from "react";
+import {ScrollView } from "react-native";
 import { Colors } from "commonStyles/RNColor.style";
 import InputTextField from "components/InputTextField";
 import { FlatList } from "react-native";
 import {
-  ErrorMsgOfRepresentative,
-  RepresentativeDetailInputFieldData,
+  MeetingRepresentativeDetailInputField,
 } from "@shared-constants";
-
-import { IRepresentativeEnteredDetail } from "models/interface/ICreateCustomer";
-import { IRepresentativeError } from "helper/ValidationRegex";
-import { CustomFooter } from "components";
+import { CustomFooter, KeyboardAvoidingWrapper } from "components";
 import StringConstants from "shared/localization";
-import { IBtnStatus } from "models/interface/IMeeting";
+import {
+  IBtnStatus,
+  IFlatlistRepresentativeDetail,
+} from "models/interface/IMeeting";
+import styles from "../Style";
+import { ValidationError } from "core/UseForm";
 
 interface IRepresentative {
-  enteredRepresentativeDetails: IRepresentativeEnteredDetail;
-  representativeError: IRepresentativeError;
   handleAddRepresentative: () => void;
   handleRepresentativeOnTextChange: (text: string, id: number) => void;
   btnStatus: IBtnStatus;
+  representativeErrors:MutableRefObject<ValidationError[]>;
 }
 
 const Representative = (props: IRepresentative) => {
-  const renderCustomerRepresentativeInputField = (
-    item: string,
-    index: number,
-  ) => {
+  const renderCustomerRepresentativeInputField = ({
+    item,
+    index,
+  }: IFlatlistRepresentativeDetail) => {
     return (
       <InputTextField
         onChangeText={(text: string) =>
           props.handleRepresentativeOnTextChange(text, index)
         }
-        placeholder={item}
+        placeholder={item.placeholder}
+        inputMode={item.inputMode}
+        maxlength={item.maxlength}
         containerStyle={{ backgroundColor: Colors.white }}
-        error={
-          props?.representativeError[
-            Object.keys(props?.representativeError)[index]
-          ] == false
-            ? ErrorMsgOfRepresentative[index]
-            : undefined
-        }
-       
+        errors={props?.representativeErrors.current}
+        inputBoxId={item?.key}
       />
     );
   };
   return (
     <>
-      <ScrollView style={{ flex: 1, paddingHorizontal: 20, paddingTop: 10 }}>
+    <KeyboardAvoidingWrapper>
+      <ScrollView style={styles.addRepresentativeContainer} showsVerticalScrollIndicator={false}>
         <FlatList
-          data={RepresentativeDetailInputFieldData}
-          renderItem={({ item, index }) =>
-            renderCustomerRepresentativeInputField(item, index)
-          }
+          data={MeetingRepresentativeDetailInputField}
+          renderItem={renderCustomerRepresentativeInputField}
           scrollEnabled={false}
           style={{ marginTop: 16 }}
         />
       </ScrollView>
+      </KeyboardAvoidingWrapper>
       <CustomFooter
         leftButtonText={StringConstants.ADD_REPRE}
         leftButtonPress={props?.handleAddRepresentative}
         singleButtonOnFooter
-        isMovable={props?.btnStatus?.representativeBtn}
+        leftButtonStyle={{
+          backgroundColor: props?.btnStatus?.representativeBtn
+            ? Colors.sailBlue
+            : Colors.disabledGrey,
+        }}
+        leftButtonTextStyle={{
+          color: props?.btnStatus?.representativeBtn
+            ? Colors.white
+            : Colors.darkGrey,
+        }}
       />
     </>
   );

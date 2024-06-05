@@ -1,64 +1,89 @@
-import React from "react";
-import { ScrollView, View } from "react-native";
+import React, { MutableRefObject } from "react";
+import { FlatList, ScrollView, View } from "react-native";
 import StringConstants from "shared/localization";
-import {UnplannedMeetingInputField } from "@shared-constants";
+import { UnplannedMeetingInputField } from "@shared-constants";
 import { Colors } from "commonStyles/RNColor.style";
 import {
   CustomDropDown,
   CustomFooter,
   CustomToggleBox,
   InputTextField,
+  KeyboardAvoidingWrapper,
+  PressableButton,
   TextWrapper,
 } from "components";
-import { FlatList } from "react-native-gesture-handler";
 import Datepicker from "components/Calender";
 import IssueDetail from "./IssueDetail";
 import { IdropDown } from "models/interface/ISetting";
 import TimePicker from "components/TimeSelector/Index";
 import {
   IBtnStatus,
-  IIisueList,
   IRepresentativeList,
   IUnplannedDropDownList,
   IUnplannedMeetingField,
-  IissueDetail,
+  IssueDetails,
+  VoicDetails,
 } from "models/interface/IMeeting";
 import styles from "../Style";
+import { FormValues, ValidationError } from "core/UseForm";
 interface AddProps {
   addIssue: () => void;
-  issueList: IIisueList;
   representativeList: IRepresentativeList;
   handleAddRepresentative: () => void;
   unplannedDropDownList: IUnplannedDropDownList;
   handleUnplannedVisitDetail: (text: string | number, id: number) => void;
-  issueDetail: IissueDetail;
-  handleRepresentativeOnTextChange: (text: string | number, id: number) => void;
   handleSubmitButtonClick: () => void;
   btnStatus: IBtnStatus;
-  selectIssuesDropDown:IdropDown[][];
-  handleIssueDetailChange:(text:string|number,id:number)=>void;
+  selectIssuesDropDown: IdropDown[][];
+  handleIssueDetailChange: (
+    text: string,
+    id: number,
+    key: string,
+    issueDetails: IssueDetails,
+    IssueIndex: number,
+  ) => void;
+  recordVoice: (
+    key: string,
+    IssueDetail: IssueDetails,
+    IssueIndex: number,
+  ) => void;
+  unPlannedVisitError: MutableRefObject<ValidationError[]>;
+  handleEscalationAccompying: (index: number) => void;
+  selectedIssueIndex: number;
+  plannedissueList: IssueDetails[];
+  unplannedVisitValue: MutableRefObject<FormValues>;
+  recordDiscussionVoice: () => void;
+  voiceIndex: VoicDetails;
 }
-const AddUnplannedVisit = ({
+function AddUnplannedVisit({
   addIssue,
-  issueList,
   unplannedDropDownList,
   handleAddRepresentative,
   handleUnplannedVisitDetail,
   representativeList,
-  issueDetail,
-  handleRepresentativeOnTextChange,
+  recordVoice,
   handleSubmitButtonClick,
   btnStatus,
   selectIssuesDropDown,
-  handleIssueDetailChange
-}: AddProps) => {
+  handleIssueDetailChange,
+  unPlannedVisitError,
+  handleEscalationAccompying,
+  plannedissueList,
+  unplannedVisitValue,
+  recordDiscussionVoice,
+  voiceIndex,
+}: AddProps) {
   const renderUnplannedMeetingField = ({
     item,
     index,
   }: IUnplannedMeetingField) => {
+    const value =
+      unplannedVisitValue.current[
+        Object.keys(unplannedVisitValue.current)[index]
+      ];
     return (
       <>
-        {index == 0 || index == 1 || index == 10 || index == 9 ? (
+        {[0, 1, 9, 10].includes(index) ? (
           <InputTextField
             onChangeText={(text: string) =>
               handleUnplannedVisitDetail(text, index)
@@ -66,34 +91,51 @@ const AddUnplannedVisit = ({
             placeholder={item.placeholder}
             leftIcon={item?.leftIcon}
             rightIcon={item?.rightIcon}
+            onRighIconPress={recordDiscussionVoice}
+            maxlength={item?.length}
+            defaultValue={value}
+            rightIconTintColor={
+              index == 10
+                ? voiceIndex.type == "unplannedDiscussion"
+                  ? Colors.red
+                  : Colors.darkGrey
+                : undefined
+            }
+            errors={unPlannedVisitError.current}
+            inputBoxId={item?.key}
             containerStyle={{ backgroundColor: Colors.white }}
           />
         ) : (
           <>
-            {index == 6 || index == 7 ? (
+            {[6, 7].includes(index) ? (
               index == 6 ? (
                 <Datepicker
                   type="default"
                   onDayPress={(date: string) =>
                     handleUnplannedVisitDetail(date, index)
                   }
+                  defaultValue={value}
+                  errors={unPlannedVisitError.current}
+                  dateBoxId={item?.key}
                 />
               ) : (
                 <TimePicker
                   onTimePress={(time: string) =>
                     handleUnplannedVisitDetail(time, index)
                   }
+                  defaultValue={value}
+                  errors={unPlannedVisitError.current}
+                  timeBoxId={item?.key}
+                  style={{ backgroundColor: Colors.white }}
                 />
               )
             ) : (
               <CustomDropDown
                 ArrayOfData={unplannedDropDownList[index]}
                 topheading={item.placeholder}
+                defaultValue={value}
                 onPress={(item: IdropDown) =>
-                  handleUnplannedVisitDetail(
-                    index != 4 ? item.id : item.name,
-                    index,
-                  )
+                  handleUnplannedVisitDetail(item.name, index)
                 }
               />
             )}
@@ -102,14 +144,22 @@ const AddUnplannedVisit = ({
       </>
     );
   };
-  function renderIssueList({ item, index }: { item: any; index: number }) {
+  const renderIssueList=({ index }: {index: number }) =>{
     return (
       <CustomToggleBox
         heading={`${StringConstants.SELECT_ISSUE} ${index + 1}`}
-        toggleContent={<IssueDetail
-          selectIssuesDropDown={selectIssuesDropDown}
-          handleIssueDetailChange={handleIssueDetailChange}
-        />}
+        toggleContent={
+          <IssueDetail
+            selectIssuesDropDown={selectIssuesDropDown}
+            handleIssueDetailChange={handleIssueDetailChange}
+            handleEscalationAccompying={handleEscalationAccompying}
+            index={index}
+            issueDetail={plannedissueList[index]}
+            recordVoice={recordVoice}
+            voiceIndex={voiceIndex}
+          />
+        }
+        visibleContent={true}
         style={styles.issueToggleBox}
         toggleContentStyle={{ padding: 0 }}
       />
@@ -118,43 +168,41 @@ const AddUnplannedVisit = ({
 
   return (
     <>
-      <ScrollView
-        style={{ padding: 20, flex: 1 }}
-        showsVerticalScrollIndicator={false}
-      >
-        <FlatList
-          data={UnplannedMeetingInputField}
-          renderItem={renderUnplannedMeetingField}
-          scrollEnabled={false}
-        />
-        <FlatList data={issueList?.issueList} renderItem={renderIssueList} />
-
-        <TextWrapper
-          onPress={addIssue}
-          style={{ marginVertical: 20, textAlign: "center" }}
+      <KeyboardAvoidingWrapper>
+        <ScrollView
+          style={{ padding: 20, flex: 1 }}
+          showsVerticalScrollIndicator={false}
         >
-          {StringConstants.ADD_ANOTHER}
-        </TextWrapper>
-        <View>
-          <CustomDropDown
-            ArrayOfData={
-              representativeList?.representativeDropDown.length > 0
-                ? representativeList?.representativeDropDown
-                : undefined
-            }
-            topheading={StringConstants.SELECT_REPRE}
-            onPress={(item: IdropDown) =>
-              handleRepresentativeOnTextChange(item.id, 7)
-            }
+          <FlatList
+            data={UnplannedMeetingInputField}
+            renderItem={renderUnplannedMeetingField}
+            scrollEnabled={false}
           />
-          <TextWrapper
-            style={{ marginBottom: 20, textAlign: "center" }}
-            onPress={handleAddRepresentative}
-          >
-            {StringConstants.PLUS__CUSTOMER_REP}
+          <FlatList data={plannedissueList} renderItem={renderIssueList} scrollEnabled={false} />
+
+          <TextWrapper onPress={addIssue} style={styles.text}>
+            {StringConstants.ADD_ANOTHER}
           </TextWrapper>
-        </View>
-      </ScrollView>
+          <View>
+            <CustomDropDown
+              ArrayOfData={
+                representativeList?.representativeDropDown.length > 0
+                  ? representativeList?.representativeDropDown
+                  : undefined
+              }
+              topheading={StringConstants.SELECT_REPRE}
+              onPress={(item: IdropDown) =>
+                handleUnplannedVisitDetail(item.id, 12)
+              }
+            />
+            <PressableButton onPress={handleAddRepresentative}>
+              <TextWrapper style={styles.text}>
+                {StringConstants.PLUS__CUSTOMER_REP}
+              </TextWrapper>
+            </PressableButton>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingWrapper>
       <CustomFooter
         leftButtonText={StringConstants.CANCEL}
         rightButtonText={StringConstants.SUBMIT}
@@ -164,5 +212,5 @@ const AddUnplannedVisit = ({
       />
     </>
   );
-};
+}
 export default AddUnplannedVisit;

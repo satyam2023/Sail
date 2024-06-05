@@ -1,10 +1,16 @@
 import fonts from '@fonts';
 import { Colors } from 'commonStyles/RNColor.style';
-import { ScreenHeight } from 'libs';
-import {StyleSheet} from 'react-native';
+import {ImageStyle, StyleSheet, TextStyle, ViewStyle} from 'react-native';
 
-const styles = StyleSheet.create({
+interface IOnBoardingStyle{
+  imghand:ViewStyle;
+  toptxt: TextStyle;
+  imgsail:ImageStyle;
+  lowertxt:TextStyle;
+  toptxtcontainer:ViewStyle;
+}
 
+const styles = StyleSheet.create<IOnBoardingStyle>({
   imghand: {
     alignSelf: 'center',
     flex:0.3,
@@ -14,7 +20,7 @@ const styles = StyleSheet.create({
     color: Colors.sailBlue,
     textAlign: 'center',
     fontSize: 24,
-    fontFamily:fonts.type.semiBold,
+    fontFamily:fonts.Poppins.semiBold,
     letterSpacing: 0.24,
   },
   imgsail: {
@@ -27,7 +33,7 @@ const styles = StyleSheet.create({
     color: Colors.jetGray,
     textAlign: 'center',
     fontSize: 12,
-    fontFamily: fonts.type.regular,
+    fontFamily: fonts.Poppins.regular,
   },
   toptxtcontainer: {
     marginTop: 16,

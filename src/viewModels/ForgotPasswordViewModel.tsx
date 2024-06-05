@@ -1,9 +1,27 @@
-import { requestOTP } from "controllers/forgotpasswordController";
+import { replace } from "@navigation";
+import { SCREENS } from "@shared-constants";
+import {
+  requestOTP,
+  submitNewPassword,
+  verifyOTP,
+} from "controllers/forgotpasswordController";
+import useForm from "core/UseForm";
+import {
+  forgotValidationRules,
+  passwordValidationRules,
+} from "helper/ValidationRegex";
 import { logger } from "helper/helperFunctions";
 import { IApiResponse } from "models/ApiResponses/IApiResponse";
-import { RequestOtpResponse } from "models/ApiResponses/IForgotPassword";
-import { IForgotPasswordEnteredDetail } from "models/interface/IForgotPassword";
-import { useEffect, useRef, useState } from "react";
+import {
+  IRequestOTP,
+  ResetOtpResponse,
+  VerifyOtpResponse,
+} from "models/ApiResponses/IForgotPassword";
+import {
+  IForgotPasswordEnteredDetail,
+  IOTPFields,
+} from "models/interface/IForgotPassword";
+import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
 import StringConstants from "shared/localization";
@@ -11,51 +29,153 @@ import ForgotPasswordScreen from "views/forgotpassword/ForgotPasswordScreen";
 
 const ForgotPasswordViewModel = () => {
   const [currentScreen, setCurrentScreen] = useState<number>(1);
+  const [timerEnd, setTimerstatus] = useState<boolean>(false);
+  const [token, setToken] = useState<string>();
   const dispatch = useDispatch();
   const buttonText = [
     StringConstants.GET_OTP,
     StringConstants.CONTINUE,
     StringConstants.RESET_PASSWORD,
   ];
-  useEffect(() => {
-    if (currentScreen == 2) {
 
-    }
-  }, [currentScreen]);
+  const enteredOTP = useRef(new Array(5));
 
-  const forgotPasswordEnteredDetail: IForgotPasswordEnteredDetail = {
-    upn: useRef<string>(""),
-    contact: useRef<string>(""),
+  const inputFieldRef: IOTPFields = {
+    first: useRef(null),
+    second: useRef(null),
+    third: useRef(null),
+    forth: useRef(null),
+    fifth: useRef(null),
   };
 
   const getOTP = async () => {
-    dispatch(setLoaderVisibility(true));
     try {
+      dispatch(setLoaderVisibility(true));
       const body = {
-        user_upn: forgotPasswordEnteredDetail?.upn?.current,
-        user_number: forgotPasswordEnteredDetail?.contact?.current,
+        user_upn: forgotPasswordValues?.current?.upn,
+        user_number: forgotPasswordValues?.current?.contact,
       };
-      const res: IApiResponse<RequestOtpResponse> = await requestOTP(body);
-      dispatch(setLoaderVisibility(false));
+      const res: IApiResponse<IRequestOTP> = await requestOTP(body);
+      if (res?.isSuccess) {
+        setToken(res?.data?.data?.token);
+        setCurrentScreen(2);
+      }
     } catch (error) {
-      logger(error, "ForgotPasswordViewModel: requestOTPFun", "error");
+      logger(error, "Error in GetOTP");
     } finally {
       dispatch(setLoaderVisibility(false));
     }
   };
 
-  function handleUpnContactEntered(text: string, id: number) {
-    forgotPasswordEnteredDetail[
-      Object.keys(forgotPasswordEnteredDetail)[id]
-    ].current = text;
+  const OtpVerifier = async () => {
+    
+    const body = {
+      token: token,
+      otp: enteredOTP.current.join(""),
+    };
+    try {
+      dispatch(setLoaderVisibility(true));
+      const res: any = await verifyOTP(body);
+      dispatch(setLoaderVisibility(false));
+      if (res.isSuccess) {
+
+      } else {
+        
+      }
+    } catch (error) {
+      logger(error, "ForgotPasswordViewModel: OTPButtonHandler", "error");
+    }
+    finally{
+      dispatch(setLoaderVisibility(false));
+    }
+  };
+
+  const resetPassword = async () => {
+    dispatch(setLoaderVisibility(true));
+    if (
+      passwordsValue.current.Password !==
+      passwordsValue.current.Confirm_Password
+    ) {
+      dispatch(setLoaderVisibility(false));
+    } else {
+      const body = {
+        token: token,
+        password: passwordsValue.current.Password,
+        c_password: passwordsValue.current.Confirm_Password,
+      };
+      try {
+        const res: IApiResponse<ResetOtpResponse> = await submitNewPassword(
+          body,
+        );
+        dispatch(setLoaderVisibility(false));
+        if (res.isSuccess) {
+          replace(SCREENS.SIGNIN);
+        } else {
+        }
+      } catch (error) {
+        logger(error, "ForgotPasswordViewModel: onResetPassword", "error");
+      } finally {
+        dispatch(setLoaderVisibility(false));
+      }
+    }
+  };
+
+  const forgotPasswordEnteredDetails: IForgotPasswordEnteredDetail = {
+    upn: "",
+    contact: "",
+  };
+
+  const {
+    values: forgotPasswordValues,
+    errors: forgotPasswordErrors,
+    handleSubmit: handleSubmitOfGetOTP,
+    handleTextChange: handleTextChangeOfSendOTP,
+  } = useForm(forgotPasswordEnteredDetails, forgotValidationRules, getOTP);
+
+  const passwordEntered = {
+    Password: "",
+    Confirm_Password: "",
+  };
+
+  const {
+    values: passwordsValue,
+    errors: createPasswordError,
+    handleSubmit: handleSubmitPassword,
+    handleTextChange: handleTextChangeOfPassword,
+  } = useForm(passwordEntered, passwordValidationRules, resetPassword);
+
+  const handleUpnContactEntered = (text: string, id: number) =>
+    handleTextChangeOfSendOTP(
+      Object.keys(forgotPasswordEnteredDetails)[id],
+      text,
+    );
+
+  const handleVerifyOtp = () => {
+    enteredOTP.current.join("").length == 5 && OtpVerifier();
+  };
+
+  const handleButtonClicked = () => {
+    currentScreen == 1 && handleSubmitOfGetOTP();
+    currentScreen == 2 && handleVerifyOtp();
+    currentScreen == 3 && handleSubmitPassword();
+  };
+
+  const handleOtpEntered = (text: string, id: number) => {
+    if (!text) return;
+    enteredOTP.current[id] = text;
+    id < 4 && inputFieldRef[Object.keys(inputFieldRef)[id + 1]].current.focus();
+  };
+
+  const handleResendOTP=()=>{
+    setTimerstatus(false);
+    getOTP();
   }
 
-  function handleButtonClicked() {
-    if (currentScreen == 1) {
-      getOTP();
-      setCurrentScreen(2);
-    }
-  }
+  const handleTimer = () => setTimerstatus(true);
+
+  const handleEnteredPassword = (text: string, id: number) => {
+    handleTextChangeOfPassword(Object.keys(passwordEntered)[id], text);
+  };
 
   return (
     <ForgotPasswordScreen
@@ -64,6 +184,14 @@ const ForgotPasswordViewModel = () => {
         buttonText,
         handleUpnContactEntered,
         handleButtonClicked,
+        handleTimer,
+        timerEnd,
+        handleResendOTP,
+        forgotPasswordErrors,
+        handleOtpEntered,
+        handleEnteredPassword,
+        createPasswordError,
+        inputFieldRef,
       }}
     />
   );

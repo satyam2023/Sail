@@ -7,18 +7,18 @@ import {
 } from "components";
 import {
   IFlatListCompetitor,
-  IFlatListInputField,
   IViewCustomerCompetitor,
 } from "models/interface/IViewCustomerProfile";
 import { FlatList, Image, ScrollView, View } from "react-native";
 import StringConstants from "shared/localization";
 
-import { CompetitorDetailData } from "@shared-constants";
+import { CompetitorDetailData} from "@shared-constants";
 import fonts from "@fonts";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
 import { Colors } from "commonStyles/RNColor.style";
 import ProfileHeader from "views/viewCustomerProfile/Component/ProfileHeader";
 import styles from "./Style";
+import { ICompetitorFlatList } from "models/interface/ICreateCustomer";
 
 interface IShowCompetitorListing {
   selectedCompetitorDetail: string[];
@@ -31,10 +31,10 @@ interface IShowCompetitorListing {
 }
 
 const ShowCompetitorListing = (props: IShowCompetitorListing) => {
-  function renderCompetitorList({ item, index }: IFlatListCompetitor) {
+  const renderCompetitorList=({ item, index }: IFlatListCompetitor) =>{
     return (
       <PressableButton style={styles.btn}>
-        <TextWrapper style={styles.Txt}>{item?.company_name}</TextWrapper>
+        <TextWrapper style={styles.text}>{item?.company_name}</TextWrapper>
         <View style={{ flexDirection: "row" }}>
           <PressableButton onPress={() => props?.setEditing(index)}>
             <Image
@@ -54,13 +54,14 @@ const ShowCompetitorListing = (props: IShowCompetitorListing) => {
     );
   }
 
-  const showCompetitorDetail = ({ item, index }: IFlatListInputField) => {
+  const showCompetitorDetail = ({ item, index }:ICompetitorFlatList) => {
     return (
       <InputTextField
         onChangeText={() => {}}
         defaultValue={props?.selectedCompetitorDetail[index]}
-        placeholder={item}
+        placeholder={item?.placeholder}
         containerStyle={{ backgroundColor: Colors.disabledGrey }}
+        isEditable={false}
       />
     );
   };
@@ -84,7 +85,7 @@ const ShowCompetitorListing = (props: IShowCompetitorListing) => {
                 justifyContent: "center",
               }}
               textStyle={{
-                fontFamily: fonts.type.regular,
+                fontFamily: fonts.Poppins.regular,
                 color: Colors.sailBlue,
               }}
               onPress={props?.handleAddStatus}

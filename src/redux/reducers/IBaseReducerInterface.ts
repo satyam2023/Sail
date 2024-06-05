@@ -1,4 +1,4 @@
-export interface IBaseReducerInterface<Data> {
+export interface IBaseReducerInterface<Data,type=string> {
   payload: Data;
-  type: string;
+  type: type;
 }

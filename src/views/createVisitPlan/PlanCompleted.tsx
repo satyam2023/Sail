@@ -23,12 +23,8 @@ const PlanCompleted = () => {
           navigate(SCREENS.MAIN);
         }}
         text={StringConstants.BACK_TO_HOME}
-        buttonStyle={{ backgroundColor: Colors.sailBlue, width: "40%" }}
-        textStyle={{
-          color: Colors.white,
-          fontFamily: fonts.type.regular,
-          fontSize: 16,
-        }}
+        buttonStyle={styles.btnStyle}
+        textStyle={styles.btnTextStyle}
       />
     </View>
   );
@@ -38,10 +34,19 @@ export default PlanCompleted;
 const styles=StyleSheet.create({
   text:{
     width: 253,
-    fontFamily:fonts.type.medium,
+    fontFamily:fonts.Poppins.medium,
     fontSize: 20,
     textAlign: "center",
     color: Colors.sailBlue,
     marginTop: 24,
-  }
+  },
+  btnStyle:{
+     backgroundColor: Colors.sailBlue,
+      width: "40%"
+     },
+     btnTextStyle:{
+      color: Colors.white,
+      fontFamily: fonts.Poppins.regular,
+      fontSize: 16,
+    }
 })

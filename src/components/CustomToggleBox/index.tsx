@@ -8,11 +8,18 @@ import {
   ViewStyle,
 } from "react-native";
 import TextWrapper from "../TextWrapper";
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { Colors } from "commonStyles/RNColor.style";
 import { Image } from "react-native";
 import Glyphs from "assets/Glyphs";
 import { PressableButton } from "components";
+
+interface CustomToggleStyle {
+  toggleContainer: ViewStyle;
+  img: ImageStyle;
+  leftIcon: ImageStyle;
+  toggleView: ViewStyle;
+}
 
 interface ICustomToggleBox {
   heading: string;
@@ -23,19 +30,29 @@ interface ICustomToggleBox {
   iconStyle?: StyleProp<ImageStyle>;
   isNotificationDate?: string;
   toggleContentStyle?: ViewStyle;
+  visibleContent?: boolean;
 }
 
 const CustomToggleBox = (props: ICustomToggleBox) => {
-  const [isToggleContentVisible, setIsToggleCOntentVisible] =
-    useState<boolean>(false);
+  const [isToggleContentVisible, setIsToggleCOntentVisible] = useState<boolean>(
+    props?.visibleContent ? true : false,
+  );
   return (
     <View style={{ marginBottom: 16 }}>
       <PressableButton
         style={[
           styles.toggleContainer,
           props?.style,
-          { borderBottomEndRadius: isToggleContentVisible ? 0 : props?.style?.borderRadius },
-          { borderwidth: isToggleContentVisible ? 0 : props?.style?.borderWidth },
+          {
+            borderRadius: isToggleContentVisible
+              ? 0
+              : props?.style?.borderRadius,
+          },
+          {
+            borderBottomWidth: isToggleContentVisible
+              ? 0
+              : props?.style?.borderWidth,
+          },
         ]}
         onPress={() => {
           setIsToggleCOntentVisible(!isToggleContentVisible);
@@ -79,12 +96,7 @@ const CustomToggleBox = (props: ICustomToggleBox) => {
         />
       </PressableButton>
       {isToggleContentVisible && (
-        <View
-          style={[
-            { backgroundColor: Colors.white, padding: 16, paddingTop: 0 },
-            props?.toggleContentStyle,
-          ]}
-        >
+        <View style={[styles.toggleView, props?.toggleContentStyle]}>
           {props.toggleContent}
         </View>
       )}
@@ -92,9 +104,9 @@ const CustomToggleBox = (props: ICustomToggleBox) => {
   );
 };
 
-export default CustomToggleBox;
+export default memo(CustomToggleBox);
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create<CustomToggleStyle>({
   toggleContainer: {
     width: "100%",
     backgroundColor: Colors.white,
@@ -113,5 +125,10 @@ const styles = StyleSheet.create({
     width: 40,
     resizeMode: "contain",
     marginRight: 16,
+  },
+  toggleView: {
+    backgroundColor: Colors.white,
+    padding: 16,
+    paddingTop: 0,
   },
 });

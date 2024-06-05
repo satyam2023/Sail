@@ -1,69 +1,4 @@
-import {
-  ICustomertypeTrader,
-  IEnteredCompetitorDetail,
-  IEnteredCustomerDetails,
-  IRepresentativeEnteredDetail,
-} from "models/interface/ICreateCustomer";
-import { ICompetitorError, ICustomerDetailError } from "models/interface/IViewCustomerProfile";
-import { MutableRefObject } from "react";
-
-export interface Ierror {
-  [key:string|number]:boolean|null;
-  upn: boolean|null;
-  Contact: boolean|null;
-  Name: boolean|null;
-  Email: boolean|null;
-  Location: boolean|null;
-  Role: boolean|null;
-  Password: boolean|null;
-  Confirm_Password: boolean|null;
-}
-
-export interface IrepresentativeError {
-  name: boolean | null;
-  designation: boolean | null;
-  departement: boolean | null;
-  address: boolean | null;
-  email: boolean | null;
-  contact: boolean | null;
-  whatsApp: boolean | null;
-}
-
-export interface ICreateCustomerError {
-  [key: string]: boolean | null;
-  cust_code: boolean | null;
-  company: boolean | null;
-  cust_seg: boolean | null;
-  cust_sub_seg: boolean | null;
-  cust_type: boolean | null;
-  cust_sub_type: boolean | null;
-  cust_status: boolean | null;
-  cust_region: boolean | null;
-  pan: boolean | null;
-  gst: boolean | null;
-}
-
-export interface IRepresentativeError {
-  [key: string|number]: boolean | null;
-  name: boolean | null;
-  designation: boolean | null;
-  departement: boolean | null;
-  address: boolean | null;
-  email: boolean | null;
-  contact: boolean | null;
-  whatsApp: boolean | null;
-}
-
-interface IUserDetails {
-  Upn: MutableRefObject<string>;
-  Contact: MutableRefObject<string>;
-  Name: MutableRefObject<string>;
-  Email: MutableRefObject<string>;
-  Location: MutableRefObject<string>;
-  Role: MutableRefObject<string>;
-  Password: MutableRefObject<string>;
-  Confirm_Password: MutableRefObject<string>;
-}
+import StringConstants from "shared/localization";
 
 export const Regex = {
   INITIALS_REPLACE: /[^a-zA-Z- ]/g,
@@ -82,103 +17,526 @@ export const Regex = {
   GST: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
   NUMBER_MAX: /^\d{10}$/,
   SLASHNAME: /^[A-Za-z.&/() ]+(?:[ -']+[A-Za-z.&/() ]+)*$/,
-  ADDRESS:/^[#.0-9a-zA-Z\s,-]+$/,
+  ADDRESS: /^[#.0-9a-zA-Z\s,-]+$/,
+  OTP:/^\d{6}$/,
 };
 
-const validateUpnNumber = (uniqueNumber: string) => {
-  if (uniqueNumber.length == 0) {
-    return false;
-  } else {
-    return Regex.UPN.test(uniqueNumber) ? true : false;
-  }
-};
-const validateContactNumber = (contactNumber: string) => {
-  if (contactNumber.length == 0) {
-    return false;
-  } else {
-    return Regex.CONTACT.test(contactNumber);
-  }
-};
-
-const validateName = (name: string) => {
-  if (name.length == 0) {
-    return false;
-  } else {
-    return Regex.NAME.test(name);
-  }
+export const personalValidationRules = {
+  Upn: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+    {
+      regex: Regex.UPN,
+      message: StringConstants.INVALID,
+    },
+  ],
+  Contact:[
+   { regex:Regex.CONTACT,
+     message:StringConstants.INVALID_CONTACT
+   }
+  ]
 };
 
-const validateEmail = (email: string) => {
-  if (email.length == 0) {
-    return false;
-  } else {
-    return Regex.EMAIL.test(email);
-  }
+export const updatedPlannedVisitValidationRule={
+  visitTime:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+  ],
+  discussionPoint:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+    {
+      regex: Regex.NAME,
+      message: StringConstants.INVALID,
+    },
+  ]
+}
+
+export const representativeValidationRules = {
+  name: [
+    {
+      regex: Regex.NAME,
+      message: StringConstants.INVALID_NAME,
+    },
+  ],
+  email: [
+    {
+      regex: Regex.EMAIL,
+      message: StringConstants.INVALID_EMAIL,
+    },
+  ],
+  designation: [
+    {
+      regex: Regex.NAME,
+      message: `${StringConstants.INVALID} ${StringConstants.DESIGNATION}`,
+    },
+  ],
+  dept: [
+    {
+      regex: Regex.NAME,
+      message: `${StringConstants.INVALID} ${StringConstants.DEPARTMENT}`,
+    },
+  ],
+  contact: [
+    {
+      regex: Regex.CONTACT,
+      message: StringConstants.INVALID_CONTACT,
+    },
+  ],
+  whatsApp: [
+    {
+      regex: Regex.CONTACT,
+      message: `${StringConstants.INVALID} ${StringConstants.WHATSAPPNO}`,
+    },
+  ],
 };
 
-const validateDropDown = (selectedValue: string) => {
-  if (selectedValue.length == 0) {
-    return false;
-  } else {
-    return true;
-  }
+export const competitorValidationRules={
+  company:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+  ],
+ address:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+    {
+      regex: Regex.NAME,
+      message: StringConstants.INVALID,
+    },
+  ],
+  comment:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+  ]
+}
+
+export const traderDealerTypeValidationRule={
+  contact_number:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+    {
+      regex: Regex.CONTACT,
+      message: StringConstants.INVALID_CONTACT
+    }
+  ],
+  day_wise_stock:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+    {
+      regex: Regex.NAME,
+      message: StringConstants.INVALID,
+    },
+  ],
+  price_feedback_competitor:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+  ],
+  tentative_quality_procured:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+  ],
+
+}
+
+export const projectTypeValidationRule={
+  project_details:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+  ],
+  tentative_quality_procured:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+  ],
+
+}
+
+
+export const customerValidationRules={
+  code: [
+    {
+      regex: Regex.ONLY_NUMBER,
+      message: `${StringConstants.INVALID} ${StringConstants.CUS_CODE}`,
+    },
+    {
+      regex: Regex.NUMBER_MAX,
+      message: StringConstants.ENTER_TEN_DIGIT,
+    },
+  ],
+  company:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+  ],
+pan:[
+  {
+    regex: Regex.REQUIRED,
+    message: StringConstants.REQUIRED
+  },
+  {
+    regex: Regex.PAN,
+    message: StringConstants.INVALID_PAN,
+  },
+],
+gst:[
+  {
+    regex: Regex.REQUIRED,
+    message: StringConstants.REQUIRED
+  },
+  {
+    regex: Regex.GST,
+    message: StringConstants.INVALID_GST,
+  },
+],
+website:[
+  {
+    regex: Regex.REQUIRED,
+    message: StringConstants.REQUIRED
+  },
+  {
+    regex: Regex.WEBSITE,
+     message: StringConstants.INVALID_WEBSITE,
+  },
+],
+location:[
+  {
+    regex: Regex.REQUIRED,
+    message: StringConstants.REQUIRED
+  },
+  {
+    regex: Regex.ADDRESS,
+     message: StringConstants.INVALID_ADDRESS,
+  },
+],
+latitude:[{
+  regex: Regex.REQUIRED,
+  message: StringConstants.REQUIRED
+}],
+longitude:[{
+  regex: Regex.REQUIRED,
+  message: StringConstants.REQUIRED
+}],
+
+}
+
+export const updatedCustomerValidationRules={
+pan:[
+  {
+    regex: Regex.REQUIRED,
+    message: StringConstants.REQUIRED
+  },
+  {
+    regex: Regex.PAN,
+    message: StringConstants.INVALID_PAN,
+  },
+],
+gst:[
+  {
+    regex: Regex.REQUIRED,
+    message: StringConstants.REQUIRED
+  },
+  {
+    regex: Regex.GST,
+    message: StringConstants.INVALID_GST,
+  },
+],
+website:[
+  {
+    regex: Regex.REQUIRED,
+    message: StringConstants.REQUIRED
+  },
+  {
+    regex: Regex.WEBSITE,
+     message: StringConstants.INVALID_WEBSITE,
+  },
+],
+latitude:[{
+  regex: Regex.REQUIRED,
+  message: StringConstants.REQUIRED
+}],
+longitude:[{
+  regex: Regex.REQUIRED,
+  message: StringConstants.REQUIRED
+}],
+cust_seg:[{
+  regex: Regex.REQUIRED,
+  message: StringConstants.REQUIRED
+}],
+cust_sub_seg:[{
+  regex: Regex.REQUIRED,
+  message: StringConstants.REQUIRED
+}],
+cust_sub_type:[{
+  regex: Regex.REQUIRED,
+  message: StringConstants.REQUIRED
+}]
+
+
+}
+
+export const forgotValidationRules = {
+  upn: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+    {
+      regex: Regex.UPN,
+      message: StringConstants.INVALID,
+    },
+  ],
+  contact:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+   { regex:Regex.CONTACT,
+     message:StringConstants.INVALID_CONTACT
+   }
+  ]
 };
 
-const validatePassword = (password: string) => {
-  if (Regex.PASSWORD.test(password)) {
-    return true;
-  }
-  return false;
+export const otpValidationRules = {
+  otp: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED
+    },
+    {
+      regex: Regex.OTP,
+      message: StringConstants.INVALID,
+    },
+  ]
 };
 
-export const validateUpnAndContact = (
-  userDetail: IUserDetails,
-  setError: Function,
-) => {
-  setError((prev: Ierror) => ({
-    ...prev,
-    upn: !validateUpnNumber(userDetail.Upn.current),
-  }));
-  setError((error: Ierror) => ({
-    ...error,
-    Contact: !validateContactNumber(userDetail.Contact.current),
-  }));
+
+
+
+export const customerTypeValidationRules={
+  cluster:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    
+  ],
+  contact_number:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    
+  ],
+  day_wise_stock:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    
+  ],
+  price_feedback_competitor:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    
+  ],
+  procured_products:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    
+  ],
+  tentative_quality_procured:[
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    
+  ],
+  supplier:[
+    {
+      regex: Regex.ONLY_NUMBER,
+      message: StringConstants.REQUIRED,
+    },
+    
+  ],
+
+}
+
+
+
+export const passwordValidationRules = {
+  Password: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    {
+      regex: Regex.PASSWORD,
+      message: StringConstants.ERROR_MESSAGE,
+    },
+  ],
+  Confirm_Password: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    {
+      regex: Regex.PASSWORD,
+      message:StringConstants.ERROR_MESSAGE,
+    },
+  ],
 };
 
-export const validateNameEmailLocation = (
-  userDetail: IUserDetails,
-  setError: Function,
-) => {
-  setError((prev: Ierror) => ({
-    ...prev,
-    Name: !validateName(userDetail.Name.current),
-  }));
-  setError((prev: Ierror) => ({
-    ...prev,
-    Email: !validateEmail(userDetail.Email.current),
-  }));
-  setError((prev: Ierror) => ({
-    ...prev,
-    Location: !validateDropDown(userDetail.Location.current),
-  }));
-  setError((prev: Ierror) => ({
-    ...prev,
-    Role: !validateDropDown(userDetail.Role.current),
-  }));
+export const issueListValidationRule={};
+
+export const unplannedVisitValidationRule = {
+ code: [
+    {
+      regex: Regex.ONLY_NUMBER,
+      message: `${StringConstants.INVALID} ${StringConstants.CUS_CODE}`,
+    },
+    {
+      regex: Regex.NUMBER_MAX,
+      message: StringConstants.ENTER_TEN_DIGIT,
+    },
+  ],
+  name: [
+    {
+      regex: Regex.NAME,
+      message: `${StringConstants.INVALID} ${StringConstants.CUST_NAME}`,
+    },
+  ],
+  discussion_point: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+  ],
+  visit_date: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+  ],
+  visit_time: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+  ],
 };
 
-export const validatePasswordAndCpassword = (
-  userDetail: IUserDetails,
-  setError: Function,
-) => {
-  setError((prev: Ierror) => ({
-    ...prev,
-    Password: !validatePassword(userDetail.Password.current),
-  }));
-  setError((prev: Ierror) => ({
-    ...prev,
-    Confirm_Password: !validatePassword(userDetail.Confirm_Password.current),
-  }));
+export const roleValidationRules = {
+  Name: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    {
+      regex: Regex.NAME,
+      message: StringConstants.INVALID_NAME,
+    },
+  ],
+  Email: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    {
+      regex: Regex.EMAIL,
+      message: StringConstants.INVALID_EMAIL,
+    },
+  ],
+};
+
+export const detailUpdatevalidationRules = {
+  email: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    {
+      regex: Regex.EMAIL,
+      message: StringConstants.INVALID_EMAIL,
+    },
+  ],
+};
+
+export const signInValidationRules = {
+  upn: [
+    {
+      regex: Regex.REQUIRED,
+      message: StringConstants.REQUIRED,
+    },
+    {
+      regex: Regex.UPN,
+      message: StringConstants.INVALID_UPN,
+    },
+  ],
+
+  password: [
+    {
+      regex: Regex.REQUIRED,
+      message:StringConstants.REQUIRED,
+    },
+    {
+      regex: Regex.PASSWORD,
+      message:StringConstants.ERROR_MESSAGE,
+    },
+  ],
+};
+
+export const createVisitValidation= {
+  customerCode: [
+    {
+      regex: Regex.ONLY_NUMBER,
+      message: `${StringConstants.INVALID} ${StringConstants.CUS_CODE}`,
+    },
+    {
+      regex: Regex.NUMBER_MAX,
+      message: StringConstants.ENTER_TEN_DIGIT,
+    },
+  ],
+  name: [
+    {
+      regex: Regex.SLASHNAME,
+      message: StringConstants.INVALID_NAME,
+    },
+  ],
+  nickName: [
+    {
+      regex: Regex.NAME,
+      message: `${StringConstants.INVALID} ${StringConstants.NICK_NAME}`,
+    },
+  ],
+ 
 };
 
 export const checkOnlyNumber = (text: string) => {
@@ -189,76 +547,4 @@ export const checkCustomerCode = (text: string) => {
   return Regex.CUSTOMER_CODE.test(text);
 };
 
-export const checkPAN = (text: string) => {
-  return Regex.PAN.test(text);
-};
-
-export const checkGST = (text: string) => {
-  return Regex.GST.test(text);
-};
-
-export const checkCustomerDetails = (
-  code: string,
-  pan: string,
-  gst: string,
-  setError: Function,
-) => {
-  setError((prev: Ierror) => ({
-    ...prev,
-    cust_code: checkCustomerCode(code),
-    pan: checkPAN(pan),
-    gst: checkGST(gst),
-  }));
-};
-
-export const checkRepresentativeDetail = (
-  details: any,
-  setRepresentativeError: Function,
-) => {
-  setRepresentativeError((prev: IrepresentativeError) => ({
-    ...prev,
-    email: validateEmail(details?.email?.current),
-    contact: validateContactNumber(details?.contact?.current),
-    whatsApp: validateContactNumber(details?.whatsApp?.current),
-  }));
-};
-
-export const checkCustomerRegion = (
-  custDetail: IEnteredCustomerDetails,
-  traderTypeDetail: ICustomertypeTrader,
-  setCustomerError: Function,
-) => {
-  setCustomerError((prev: ICustomerDetailError) => ({
-    ...prev,
-  }));
-};
-
-export const checkCustomerViewRepresentativeDetail = (
-  details: IRepresentativeEnteredDetail,
-  setRepresentativeError: Function,
-) => {
-  setRepresentativeError((prev: IrepresentativeError) => ({
-    ...prev,
-    name: Regex.NAME.test(details?.name.current),
-    designation: Regex.NAME.test(details?.designation.current),
-    departement: Regex.NAME.test(details?.dept.current),
-    address: Regex.NAME.test(details?.address.current),
-    email: Regex.EMAIL.test(details?.email?.current),
-    contact:Regex.CONTACT.test(details?.contact?.current),
-    whatsApp:Regex.CONTACT.test(details?.whatsApp?.current),
-  }));
-};
-
-
-export const checkCompetitorDetail=( 
-  enteredCompetitorDetail: IEnteredCompetitorDetail,
-  setCompetitorError: Function)=>{
-    setCompetitorError((prev: ICompetitorError) => ({
-      ...prev,
-      name: Regex.NAME.test(enteredCompetitorDetail?.company.current),
-      address: Regex.ADDRESS.test(enteredCompetitorDetail?.address.current),
-      comment:Regex.NAME.test(enteredCompetitorDetail?.comment.current),
-    }));
-
-  }
 

@@ -1,26 +1,35 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import { FlatList, SafeAreaView, View } from "react-native";
 import StringConstants from "shared/localization";
 import commonStyles from "commonStyles/CommonStyle";
 import { CompetitorDetailData } from "@shared-constants";
 import { InputTextField, TextWrapper } from "components";
 import { Colors } from "commonStyles/RNColor.style";
-import { IEnteredCompetitorDetail } from "models/interface/ICreateCustomer";
+import { ICompetitorFlatList, IEnteredCompetitorDetail } from "models/interface/ICreateCustomer";
+import { ValidationError } from "core/UseForm";
+
 
 interface ICompetitorDetail {
   enteredCompetitorDetail: IEnteredCompetitorDetail;
+  handleTextChangeOfCompetitor: (text: string, id: number) => void;
+  competitorErrors:MutableRefObject<ValidationError[]>;
 }
 
 const CompetitorDetail = (props: ICompetitorDetail) => {
-  const renderCompettorInputField = (item: string, index: number) => {
+  const renderCompettorInputField = ({
+    item,
+    index,
+  }:ICompetitorFlatList) => {
     return (
       <InputTextField
         onChangeText={(text: string) =>
-          (props.enteredCompetitorDetail[
-            Object.keys(props?.enteredCompetitorDetail)[index]
-          ].current = text)
+          props?.handleTextChangeOfCompetitor(text,index)
         }
-        placeholder={item}
+        key={item?.key}
+        placeholder={item?.placeholder}
+        maxlength={item?.length}
+        inputBoxId={item?.key}
+        errors={props?.competitorErrors?.current}
         containerStyle={{ backgroundColor: Colors.white }}
       />
     );
@@ -35,9 +44,9 @@ const CompetitorDetail = (props: ICompetitorDetail) => {
       <View style={{ paddingHorizontal: 20 }}>
         <FlatList
           data={CompetitorDetailData}
-          renderItem={({ item, index }) =>
-            renderCompettorInputField(item, index)
-          }
+          renderItem={renderCompettorInputField}
+          scrollEnabled={false}
+          keyExtractor={(_,index)=>index.toString()}
         />
       </View>
     </SafeAreaView>

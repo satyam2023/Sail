@@ -1,72 +1,26 @@
 import React from "react";
-import { Image, View } from "react-native";
-import Glyphs from "assets/Glyphs";
-import { ScrollView } from "react-native-gesture-handler";
-import CustomToggleBox from "components/CustomToggleBox";
+import { ScrollView, View } from "react-native";
 import StringConstants from "shared/localization";
-import commonStyles from "commonStyles/CommonStyle";
-import styles from "../Style";
-import { Colors } from "commonStyles/RNColor.style";
-import fonts from "@fonts";
-import { Header, TextWrapper } from "components";
+import { Header } from "components";
 import { ICmsProps } from "./FAQs";
-import { FilterContent } from "helper/DataFilteration";
+import RenderHtml from "react-native-render-html";
+import { ScreenWidth } from "libs";
+import styles from "../Style";
 
+const About = ({ cmsPageData, pagesRenderingController }: ICmsProps) => {
+  const source = {
+    html: cmsPageData && cmsPageData[0].content,
+  };
 
-
-const About = ({ cmsPageData,pagesRenderingController }: ICmsProps) => {
-  const filterData=FilterContent(cmsPageData as [],1);
   return (
     <ScrollView>
       <Header
         topheading={StringConstants.ABOUT_US}
         onPress={() => pagesRenderingController(StringConstants.CMS)}
       />
-      {filterData!=null?
-      <View style={{ paddingHorizontal: 20 }}>
-        <Image source={Glyphs.Sail} style={styles.img} />
-        <TextWrapper
-          style={[commonStyles.font14RegularBlack, { marginVertical: 20 }]}
-        >
-          {StringConstants.LOREM_LARGE}
-        </TextWrapper>
-        <CustomToggleBox
-          heading={StringConstants.OPERATIONS}
-          toggleContent={StringConstants.LOREM_LARGE}
-          rightIconisPlus={true}
-        />
-        <CustomToggleBox
-          heading={StringConstants.PRODUCT_MIX_MARKETING}
-          toggleContent={StringConstants.LOREM_LARGE}
-          rightIconisPlus={true}
-        />
-        <CustomToggleBox
-          heading={StringConstants.MANAGEMENT_TEAM}
-          toggleContent={StringConstants.LOREM_LARGE}
-          rightIconisPlus={true}
-        />
-        <TextWrapper color={Colors.sailBlue} fontFamily={fonts.type.medium}>
-          {StringConstants.CONTACT}
-        </TextWrapper>
-        <TextWrapper style={commonStyles.font14RegularBlack}>
-          {StringConstants.LOREM_LARGE}
-        </TextWrapper>
-        <TextWrapper
-          color={Colors.sailBlue}
-          fontFamily={fonts.type.medium}
-          style={{ marginTop: 20 }}
-        >
-          {StringConstants.WEBSITE}
-        </TextWrapper>
-        <TextWrapper style={[commonStyles.font14RegularBlack]}>
-          {StringConstants.SAIL_WEBSITE_LINK}
-        </TextWrapper>
+      <View style={styles.cmsPageDetailContainer}>
+        <RenderHtml source={source} contentWidth={ScreenWidth} />
       </View>
-      :
-      <TextWrapper>
-        {StringConstants.NOT_AVAILABLE}
-      </TextWrapper>
-      }
     </ScrollView>
   );
 };

@@ -8,19 +8,16 @@ import { saveNotificationData } from "redux/actions/NotificationAction";
 import { sendGetRequest } from "services/network/Network";
 
 export const fetchNotificationData = async (dispatch: Dispatch<AnyAction>) => {
-    try{
+  try {
     const res: IApiResponse<NotificationResponse> =
-     await sendGetRequest<NotificationResponse>(APIConstants.NOTIFICATION);
+      await sendGetRequest<NotificationResponse>(APIConstants.NOTIFICATION);
     dispatch(saveNotificationData(res.data));
     return res;
-    }
-    catch(error){
-      logger(error);
-   
-      
-    }
-    finally{
+  } catch (error) {
+    logger(error);
+    return;
+  }
+};
 
-    }
-  };
-  
+
+

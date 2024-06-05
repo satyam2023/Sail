@@ -8,8 +8,6 @@ const viewCustomerProfileReducer = (state = INITIAL_STATE, action: any) => {
   switch (action.type) {
     case GET_CUSTOMER_LIST: {
       const  {data}  = action.payload;
-
-      console.log("Data in reduce:::::::::::::::::::::::::",data);
       return {
         ...state,
         customerListData: data?.data,

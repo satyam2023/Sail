@@ -1,29 +1,29 @@
 import { goBack, navigate } from "@navigation";
-import { useFocusEffect } from "@react-navigation/native";
+import { NavigationAction, NavigationProp, useFocusEffect } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { SCREENS } from "@shared-constants";
 import {
   addCustomerRepresentativeAPI,
   getcustomerlist,
   updateRepresentativeAPIHandler,
 } from "controllers/viewCustomerController";
-import {
-  IRepresentativeError,
-  checkCustomerViewRepresentativeDetail,
-} from "helper/ValidationRegex";
+import useForm from "core/UseForm";
+import { representativeValidationRules } from "helper/ValidationRegex";
 import {
   chooseImageVideo,
-  isAllFieldTrue,
+  isAllInputFieldHaveData,
+  isAnyFieldUpdated,
   logger,
   representativeDetailsofViewCustomerProfile,
   setUpdateRepresentativeBody,
 } from "helper/helperFunctions";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
 import {
-  IRepresentativeEnteredDetail,
   ISelectedImage,
+  RepresentativeDetails,
 } from "models/interface/ICreateCustomer";
 import { IViewCustomerRepresentative } from "models/interface/IViewCustomerProfile";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
 import { BottomTabVisibility } from "redux/actions/UIAction";
@@ -31,35 +31,62 @@ import { RootState } from "redux/store/Store";
 import StringConstants from "shared/localization";
 import ViewCustomerRepresentative from "views/viewCustomerProfile/CustomerDetailsScreen/RepresentativeDetails/ViewCustomerRepresentativeScreen";
 
-const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
+const ViewCustomerRepressentativeViewModel = ({ route, navigation }:any) => {
   const [selectRepresentativeImage, setRepresentativeImage] = useState<
     ISelectedImage | undefined
   >();
+  const [btnStatus, setBtnStatus] = useState<boolean>(false);
   const [addDetailStatus, setAddDetailsStatus] = useState<boolean>(false);
   const customerList = route.params?.customerList;
   const selectedIndexValue = route.params?.selectedIndexValue;
   const dispatch = useDispatch();
-  const enteredRepresentativeDetails: IRepresentativeEnteredDetail = {
-    name: useRef(""),
-    designation: useRef(""),
-    dept: useRef(""),
-    address: useRef(""),
-    email: useRef(""),
-    contact: useRef(""),
-    whatsApp: useRef(""),
-    id: useRef(-1),
-  };
-  const [representativeError, setRepresentativeError] =
-    useState<IRepresentativeError>({
-      name: null,
-      designation: null,
-      departement: null,
-      address: null,
-      email: null,
-      contact: null,
-      whatsApp: null,
+  const [representative, setRepresentativeDetail] =
+    useState<IViewCustomerRepresentative>({
+      selectedRepresentativeIndex: -1,
+      addedRepresentativeDetail: [],
+      showRepresentativeDetail: false,
+      editDetails: false,
     });
 
+  const representativeDetail: string[] = [
+    ...representativeDetailsofViewCustomerProfile(
+      customerList,
+      selectedIndexValue,
+      representative,
+    ),
+  ];
+
+  const representativeDetails: RepresentativeDetails = {
+    name: representative?.editDetails ? representativeDetail[0] : "",
+    designation: representative?.editDetails ? representativeDetail[1] : "",
+    dept: representative?.editDetails ? representativeDetail[2] : "",
+    address: representative?.editDetails ? representativeDetail[3] : "",
+    email: representative?.editDetails ? representativeDetail[4] : "",
+    contact: representative?.editDetails ? representativeDetail[5] : "",
+    whatsApp: representative?.editDetails ? representativeDetail[6] : "",
+    id: "-1",
+  };
+
+  const {
+    values: representativeValue,
+    errors: representativeErrors,
+    handleSubmit: handleRepresentativeSubmit,
+    handleTextChange: handleTextOfRepresentative,
+  } = useForm(
+    representativeDetails,
+    representativeValidationRules,
+    representative.editDetails ? handleEditRepresentative : addRepresentative,
+    representative?.editDetails,
+  );
+
+  const resetRepresentativeDetail = () => {
+    for (let i = 0; i < 7; i++) {
+      handleTextOfRepresentative(
+        Object.keys(representativeDetails)[i],
+        StringConstants.EMPTY,
+      );
+    }
+  };
   const customerListdata: IViewCustomerBody[] = useSelector(
     (state: RootState) => state?.viewCustomerProfile?.customerListData,
   );
@@ -73,38 +100,31 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
 
   useFocusEffect(() => {
     dispatch(BottomTabVisibility(false));
-   
   });
 
-  const [representative, setRepresentativeDetail] =
-    useState<IViewCustomerRepresentative>({
-      selectedRepresentativeIndex: -1,
-      addedRepresentativeDetail: [],
-      showRepresentativeDetail: false,
-      editDetails: false,
-    });
-  async function handleUploadDocument() {
+  const handleUploadDocument = async () => {
     const res: ISelectedImage = await chooseImageVideo();
     setRepresentativeImage(res);
-  }
-  async function handleTextChangeOfRepresentative(text: string, id: number) {
-    enteredRepresentativeDetails[
-      Object.keys(enteredRepresentativeDetails)[id]
-    ].current = text;
-  }
+  };
 
-  async function handleAddStatus() {
-    if (addDetailStatus) await add_edit_Representative();
-    else if (!addDetailStatus) setAddDetailsStatus(!addDetailStatus);
-  }
+  const handleTextChangeOfRepresentative = (text: string, id: number) => {
+    handleTextOfRepresentative(Object.keys(representativeDetails)[id], text);
+    handleIsAllInputFieldHaveData();
+  };
 
-  const representativeDetail: string[] = [
-    ...representativeDetailsofViewCustomerProfile(
-      customerList,
-      selectedIndexValue,
-      representative,
-    ),
-  ];
+  const handleIsAllInputFieldHaveData = () => {
+    if (isAllInputFieldHaveData(representativeValue)) {
+      if (!btnStatus) setBtnStatus(true);
+    } else {
+      if (btnStatus) setBtnStatus(false);
+    }
+  };
+
+  const handleAddStatus = () => {
+    addDetailStatus
+      ? add_edit_Representative()
+      : setAddDetailsStatus(!addDetailStatus);
+  };
 
   const updateRepresentativeAPI = async (active: string) => {
     const value = active ? "1" : "0";
@@ -113,7 +133,7 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
       customerList,
       selectedIndexValue,
       representative,
-      enteredRepresentativeDetails,
+      representativeValue,
       representativeDetail,
       value,
     );
@@ -129,7 +149,7 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
     }
   };
 
-  const addRepresentativeAPICaliing = async () => {
+  async function addRepresentativeAPICaliing() {
     dispatch(setLoaderVisibility(true));
     const appendFormData = new FormData();
     const imageData = {
@@ -138,16 +158,17 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
       name: selectRepresentativeImage?.fileName || null,
     };
     appendFormData.append("repre1", JSON.stringify(imageData));
+    const representativeValues = representativeValue.current;
     const body = {
       customer_id: customerList[selectedIndexValue]?.id,
-      name: enteredRepresentativeDetails?.name?.current || null,
-      designation: enteredRepresentativeDetails?.designation?.current || null,
-      department: enteredRepresentativeDetails?.dept?.current || null,
+      name: representativeValues?.name || null,
+      designation: representativeValues?.designation || null,
+      department: representativeValues?.dept || null,
       file_name: "repre1" ?? null,
-      address: enteredRepresentativeDetails?.address?.current || null,
-      email: enteredRepresentativeDetails?.email?.current || null,
-      contact_number: enteredRepresentativeDetails?.contact?.current || null,
-      whatsapp_number: enteredRepresentativeDetails?.whatsApp?.current || null,
+      address: representativeValues?.address || null,
+      email: representativeValues?.email || null,
+      contact_number: representativeValues?.contact || null,
+      whatsapp_number: representativeValues?.whatsApp || null,
     };
     appendFormData.append("data", JSON.stringify(body));
     try {
@@ -158,55 +179,58 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
     } finally {
       dispatch(setLoaderVisibility(false));
     }
+  }
+
+  async function addRepresentative() {
+    await addRepresentativeAPICaliing();
+    setAddDetailsStatus(!addDetailStatus);
+    setBtnStatus(false);
+    resetRepresentativeDetail();
+  }
+
+  async function handleEditRepresentative() {
+    if (isAnyFieldUpdated(representativeValue, representativeDetails)) {
+      await updateRepresentativeAPI("Active");
+    }
+    setRepresentativeDetail((prev: IViewCustomerRepresentative) => ({
+      ...prev,
+      selectedRepresentativeIndex: -1,
+      editDetails: false,
+    }));
+    setAddDetailsStatus(!addDetailStatus);
+  }
+
+  const add_edit_Representative = () => {
+    btnStatus && handleRepresentativeSubmit();
   };
 
-  async function add_edit_Representative() {
-    if (representative.editDetails) {
-      await updateRepresentativeAPI("Active");
-      setRepresentativeDetail((prev: IViewCustomerRepresentative) => ({
-        ...prev,
-        selectedRepresentativeIndex: -1,
-        editDetails: false,
-      }));
-      setAddDetailsStatus(!addDetailStatus);
-    } else {
-      checkCustomerViewRepresentativeDetail(
-        enteredRepresentativeDetails,
-        setRepresentativeError,
-      );
-      if (isAllFieldTrue(representativeError)) {
-        addRepresentativeAPICaliing();
-        setAddDetailsStatus(!addDetailStatus);
-      }
-    }
-  }
-  function handleRepresetativeSelected(id: number) {
+  const handleRepresetativeSelected = (id: number) => {
     setRepresentativeDetail((prev: IViewCustomerRepresentative) => ({
       ...prev,
       selectedRepresentativeIndex: id,
       showRepresentativeDetail: !representative.showRepresentativeDetail,
     }));
-  }
+  };
 
-  function handleFooterButtonClick(type: string) {
-    if (type == StringConstants.BACKWARD) goBack();
-    else if (type == StringConstants.FORWARD) {
-      navigate(SCREENS.SHOW_VIEW_CUSTOMER_COMPETITOR, {
-        customerList: route.params.customerList,
-        selectedIndexValue: route.params.selectedIndexValue,
-        fetchCustomerList: route.params.fetchCustomerList,
-      });
-    }
-  }
+  const handleFooterButtonClick = (type: string) => {
+    type == StringConstants.BACKWARD
+      ? goBack()
+      : navigate(SCREENS.SHOW_VIEW_CUSTOMER_COMPETITOR, {
+          customerList: route.params.customerList,
+          selectedIndexValue: route.params.selectedIndexValue,
+          fetchCustomerList: route.params.fetchCustomerList,
+        });
+  };
 
-  function setEditing(id: number) {
+  const setEditing = (id: number) => {
     setRepresentativeDetail((prev: IViewCustomerRepresentative) => ({
       ...prev,
       editDetails: true,
       selectedRepresentativeIndex: id,
     }));
+    setBtnStatus(true);
     setAddDetailsStatus(true);
-  }
+  };
 
   return (
     <ViewCustomerRepresentative
@@ -223,7 +247,8 @@ const ViewCustomerRepressentativeViewModel = ({ route, navigation }: any) => {
         representative,
         setEditing,
         handleFooterButtonClick,
-        representativeError,
+        btnStatus,
+        representativeErrors,
       }}
     />
   );

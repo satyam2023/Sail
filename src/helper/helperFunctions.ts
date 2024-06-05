@@ -2,13 +2,17 @@ import {
   ICustomerSegment,
   ICustomerType,
   IProcuredProduct,
+  IRootCustomerCreate,
   ISubSegment,
   ISubType,
   ISupplier,
 } from "models/ApiResponses/CreateCustomer";
 import { AccompRoot } from "models/ApiResponses/IdropDown";
 import { SignInResponse } from "models/ApiResponses/SignInResponse";
-import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
+import {
+  IViewCustomerBody,
+  Supplier_Data,
+} from "models/ApiResponses/ViewCustomerProfile";
 import { IdropDown } from "models/interface/ISetting";
 import { Platform } from "react-native";
 import RNFS from "react-native-fs";
@@ -17,28 +21,24 @@ import { launchImageLibrary } from "react-native-image-picker";
 import Geolocation from "@react-native-community/geolocation";
 import {
   ICustomerState,
-  IUpdateTrader_Project_Dealer_Type,
   IViewCustomerCompetitor,
   IViewCustomerRepresentative,
+  Procured_Product_Data,
 } from "models/interface/IViewCustomerProfile";
 import {
-  IEnteredCompetitorDetail,
-  IEnteredCustomerDetails,
-  IExample,
-  IRepresentativeEnteredDetail,
+  CompetitorDetail,
   ISelectedImage,
   IsubType,
+  RepresentativeDetails,
 } from "models/interface/ICreateCustomer";
-import Voice from "@react-native-voice/voice";
-import {
-  IRepresentativeList,
-  IUnplannedMeetingEnteredDetail,
-  IissueDetail,
-} from "models/interface/IMeeting";
+import { IRepresentativeList } from "models/interface/IMeeting";
 import StringConstants from "shared/localization";
 import { IProductCatalogue } from "models/ApiResponses/ProductCatalogue";
-import { IRepresentativeError } from "./ValidationRegex";
-import { VisitResponse } from "models/ApiResponses/VisitResponse";
+import { MutableRefObject } from "react";
+import { EscalatedList } from "models/interface/IMessage";
+import { FormValues } from "core/UseForm";
+import Notification from "views/notification/Notification";
+import { InformationDetails } from "models/interface/ICustomerInformation";
 
 export function ExtarctTwoLetterName(name: string) {
   let ans = name[0];
@@ -63,23 +63,57 @@ export const convertToArray = (userData: SignInResponse) => {
   return arr;
 };
 
+const returnMonth = (a: string) => {
+  switch (a) {
+    case "01":
+      return "January";
+    case "02":
+      return "February";
+    case "03":
+      return "March";
+    case "04":
+      return "April";
+    case "05":
+      return "May";
+    case "06":
+      return "June";
+    case "07":
+      return "July";
+    case "08":
+      return "August";
+    case "09":
+      return "September";
+    case "10":
+      return "October";
+    case "11":
+      return "November";
+    case "12":
+      return "December";
+    default:
+      return null;
+  }
+};
+
 export const extractOnlyDate = (data: string) => {
-  return data ? data.slice(0, 10) : "";
+  const wholeDate = data ? data.slice(0, 10) : "";
+  const month = returnMonth(wholeDate.slice(5, 7));
+  const date = wholeDate.slice(8, 10);
+  return date + " " + month;
 };
 
 export const getCurrentDate1 = () => {
   const date = new Date().getDate();
   const month = new Date().getMonth() + 1;
   const year = new Date().getFullYear();
-  return year + "-" + month + "-" + date; //format: d-m-y;
+  return year + "-" + month + "-" + date;
 };
 
 export const convertAccomToDropData = (data: AccompRoot) => {
   let ans: IdropDown[] = [];
-  for (let i = 0; i < data.length; i++) {
-    let temp = { name: "", id: -1 };
-    temp.name = data[i].user_name;
-    temp.id = data[i].id;
+  for (let i = 0; i < data?.length; i++) {
+    let temp = { name: StringConstants.EMPTY, id: -1 };
+    temp.name = data[i]?.user_name;
+    temp.id = data[i]?.id;
     ans.push(temp);
   }
   return ans;
@@ -87,7 +121,7 @@ export const convertAccomToDropData = (data: AccompRoot) => {
 
 export const convertCustomerToDropData = (data: ICustomerType[]) => {
   let ans: IdropDown[] = [];
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 0; i < data?.length; i++) {
     let temp = { name: "", id: -1 };
     temp.name = data[i].type_name;
     temp.id = data[i].id;
@@ -98,7 +132,7 @@ export const convertCustomerToDropData = (data: ICustomerType[]) => {
 
 export const convertSegemntToDropData = (data: ICustomerSegment[]) => {
   let ans: IdropDown[] = [];
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 0; i < data?.length; i++) {
     let temp = { name: "", id: -1 };
     temp.name = data[i].segment_name;
     temp.id = data[i].id;
@@ -109,7 +143,7 @@ export const convertSegemntToDropData = (data: ICustomerSegment[]) => {
 
 export const convertSubSegemntToDropData = (data: ISubSegment[]) => {
   let ans: IdropDown[] = [];
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 0; i < data?.length; i++) {
     let temp = { name: "", id: -1 };
     temp.name = data[i].sub_segment_name;
     temp.id = data[i].id;
@@ -142,6 +176,12 @@ export const returnOnlyIndex = (data: any) => {
   return ans;
 };
 
+export const returnCustomerTypeIndex = (data: IdropDown[], id: number) => {
+  const ans = data.findIndex((item: IdropDown) => item.id == id);
+
+  return ans - 1;
+};
+
 export function logger(
   log: any,
   invoker?: string,
@@ -157,7 +197,6 @@ export function logger(
 }
 
 export const downloadFile = async (url: string) => {
-  console.log("url recieved in download>>>>>>", url);
   if (!url) {
     return null;
   }
@@ -319,126 +358,137 @@ export const setUpdateRepresentativeBody = (
   customerList: IViewCustomerBody[],
   selectedIndexValue: number,
   representative: IViewCustomerRepresentative,
-  enteredRepresentativeDetails: IRepresentativeEnteredDetail,
+  representativeValue: MutableRefObject<FormValues>,
   representativeDetail: string[],
   value: string,
 ) => {
+  const updatedValues = representativeValue?.current;
   const data = {
     represenatative_id:
       customerList[selectedIndexValue]?.representatives[
         representative.selectedRepresentativeIndex
       ]?.id,
-    designation:
-      enteredRepresentativeDetails?.designation?.current?.length > 0
-        ? enteredRepresentativeDetails?.designation?.current
-        : representativeDetail[1],
-    department:
-      enteredRepresentativeDetails?.dept?.current?.length > 0
-        ? enteredRepresentativeDetails?.dept?.current
-        : representativeDetail[2],
-    address:
-      enteredRepresentativeDetails?.address?.current?.length > 0
-        ? enteredRepresentativeDetails?.address?.current
-        : representativeDetail[3],
-    email_id:
-      enteredRepresentativeDetails?.email?.current?.length > 0
-        ? enteredRepresentativeDetails?.email?.current
-        : representativeDetail[4],
-    contact_number:
-      enteredRepresentativeDetails?.contact?.current?.length > 0
-        ? enteredRepresentativeDetails?.contact?.current
-        : representativeDetail[5],
-    whatsapp_number:
-      enteredRepresentativeDetails?.whatsApp?.current?.length > 0
-        ? enteredRepresentativeDetails?.whatsApp?.current
-        : representativeDetail[6],
+    designation: updatedValues?.designation,
+
+    department: updatedValues?.dept,
+
+    address: updatedValues?.address,
+
+    email_id: updatedValues?.email,
+
+    contact_number: updatedValues?.contact,
+
+    whatsapp_number: updatedValues?.whatsApp,
+
     active: value,
   };
 
   return data;
 };
 
+export const isAnyFieldUpdated = (
+  Value: MutableRefObject<FormValues>,
+  Oldvalue: RepresentativeDetails | CompetitorDetail,
+) => {
+  const value = Value.current;
+  for (let i in value) {
+    if (value[i] != Oldvalue[i]) {
+      return true;
+    }
+  }
+  return false;
+};
 export const setUpdateCompetitorBody = (
   customerList: IViewCustomerBody[],
   selectedIndexValue: number,
   competitor: IViewCustomerCompetitor,
-  enteredCompetitorDetail: IEnteredCompetitorDetail,
-  selectedCompetitorDetail: string[],
+  competitorValue: MutableRefObject<FormValues>,
 ) => {
   const data = {
     competitor_id:
       customerList[selectedIndexValue]?.competitor[
         competitor.selectedCompetitorIndex
       ]?.id,
-    company_name:
-      enteredCompetitorDetail?.company.current.length > 0
-        ? enteredCompetitorDetail?.company.current
-        : selectedCompetitorDetail[0],
-    address:
-      enteredCompetitorDetail?.address.current.length > 0
-        ? enteredCompetitorDetail?.address.current
-        : selectedCompetitorDetail[1],
-    comment:
-      enteredCompetitorDetail?.comment.current.length > 0
-        ? enteredCompetitorDetail?.comment.current
-        : selectedCompetitorDetail[2],
+    company_name: competitorValue?.current?.company,
+
+    address: competitorValue?.current?.address,
+
+    comment: competitorValue?.current?.comment,
   };
 
   return data;
 };
 
+export const getdropDownsId = (arr: IdropDown[], value: string) => {
+  const ans = arr.filter((item) => item.name == value);
+  return Number(ans[0].id);
+};
+
+export const getEscalationId = (arr: EscalatedList[], value: string) => {
+  const ans = arr.filter((item) => item.user_name == value);
+  return Number(ans[0].id);
+};
+
 export const unplannedVisitMeeting = (
-  unPlannedVisitDetail: IUnplannedMeetingEnteredDetail,
-  enteredRepresentativeDetails: IRepresentativeEnteredDetail,
+  unplannedVisitValue: any,
   representativeList: IRepresentativeList,
   selectedIssueArr: any[],
+  unplannedDropDownList: any,
 ) => {
+  const selectedIndex = Number(
+    unplannedVisitValue?.current?.selectedRepresentative,
+  );
   const body = {
-    customer_code: unPlannedVisitDetail?.code?.current || null,
-    company_name: unPlannedVisitDetail?.name?.current || null,
-    customer_status: unPlannedVisitDetail?.customer_status?.current || null,
-    customer_type: unPlannedVisitDetail?.customer_type?.current || null,
-    customer_region: unPlannedVisitDetail?.customer_region?.current || null,
+    customer_code: unplannedVisitValue?.current?.code || null,
+    company_name: unplannedVisitValue?.current?.name || null,
+    customer_status:
+      getdropDownsId(
+        unplannedDropDownList[2],
+        unplannedVisitValue?.current?.customer_status,
+      ) || null,
+    customer_type:
+      getdropDownsId(
+        unplannedDropDownList[3],
+        unplannedVisitValue?.current?.customer_type,
+      ) || null,
+    customer_region: unplannedVisitValue?.current?.customer_region || null,
     visit_mode_of_contact:
-      unPlannedVisitDetail?.mode_of_meeting?.current || null,
-    visit_date: unPlannedVisitDetail?.visit_date?.current || null,
-    visit_time: unPlannedVisitDetail?.visit_time?.current || null,
-    visit_reason: unPlannedVisitDetail?.visit_reason?.current || null,
-    visit_other_reason: unPlannedVisitDetail?.other_issue?.current || null,
+      getdropDownsId(
+        unplannedDropDownList[5],
+        unplannedVisitValue?.current?.mode_of_meeting,
+      ) || null,
+    visit_date: unplannedVisitValue?.current?.visit_date || null,
+    visit_time: unplannedVisitValue?.current?.visit_time || null,
+    visit_reason:
+      getdropDownsId(
+        unplannedDropDownList[8],
+        unplannedVisitValue?.current?.visit_reason,
+      ) || null,
+    visit_other_reason: unplannedVisitValue?.current?.other_issue || null,
     visit_discussion_points:
-      unPlannedVisitDetail?.discussion_point?.current || null,
+      unplannedVisitValue?.current?.discussion_point || null,
     visit_accompanying_executive:
-      unPlannedVisitDetail?.accompying_executive?.current || null,
-    visit_representative_id: enteredRepresentativeDetails?.id?.current || null,
+      unplannedVisitValue?.current?.accompying_executive || null,
+    visit_representative_id: selectedIndex || null,
     visit_issues: selectedIssueArr.length > 0 ? selectedIssueArr : null,
     representative_name:
-      representativeList.representativeListDetail[
-        enteredRepresentativeDetails.id.current as number
-      ]?.name?.current || null,
+      representativeList.representativeListDetail[selectedIndex]?.name || null,
     representative_designation:
-      representativeList.representativeListDetail[
-        enteredRepresentativeDetails.id.current as number
-      ]?.designation?.current || null,
+      representativeList.representativeListDetail[selectedIndex]?.designation ||
+      null,
     representative_department:
-      representativeList.representativeListDetail[
-        enteredRepresentativeDetails.id.current as number
-      ]?.dept?.current || null,
+      representativeList.representativeListDetail[selectedIndex]?.dept || null,
     representative_address:
-      representativeList.representativeListDetail[
-        enteredRepresentativeDetails.id.current as number
-      ]?.address?.current || null,
+      representativeList.representativeListDetail[selectedIndex]?.address ||
+      null,
     representative_email:
-      representativeList.representativeListDetail[
-        enteredRepresentativeDetails.id.current as number
-      ]?.email?.current || null,
+      representativeList.representativeListDetail[selectedIndex]?.email || null,
     representative_contact_number:
-      representativeList.representativeListDetail[
-        enteredRepresentativeDetails.id.current as number
-      ]?.contact?.current || null,
+      representativeList.representativeListDetail[selectedIndex]?.contact ||
+      null,
     representative_whatsapp_number:
-      representativeList.representativeListDetail[
-        enteredRepresentativeDetails.id.current as number
-      ]?.whatsApp?.current || null,
+      representativeList.representativeListDetail[selectedIndex]?.whatsApp ||
+      null,
   };
 
   return body;
@@ -449,17 +499,15 @@ export const plannedMeeting = (
   selectedIndexValue: number,
 ) => {
   const temp = [
-    plannedMeetingList?.data[selectedIndexValue]?.customer_data?.customer_code,
-    plannedMeetingList?.data[selectedIndexValue]?.customer_data?.company_name,
-    plannedMeetingList?.data[selectedIndexValue]?.customer_data?.type,
-    plannedMeetingList?.data[selectedIndexValue]?.customer_data?.status,
-    plannedMeetingList?.data[selectedIndexValue]?.mode_of_contact?.name,
-    extractOnlyDate(
-      plannedMeetingList?.data[selectedIndexValue]?.visit_date_time,
-    ),
+    plannedMeetingList[selectedIndexValue]?.customer_data?.customer_code,
+    plannedMeetingList[selectedIndexValue]?.customer_data?.company_name,
+    plannedMeetingList[selectedIndexValue]?.customer_data?.type?.type_name,
+    plannedMeetingList[selectedIndexValue]?.customer_data?.status?.name,
+    plannedMeetingList[selectedIndexValue]?.mode_of_contact?.name,
+    extractOnlyDate(plannedMeetingList[selectedIndexValue]?.visit_date_time),
     StringConstants.EMPTY,
-    plannedMeetingList?.data[selectedIndexValue]?.reason?.name,
-    plannedMeetingList?.data[selectedIndexValue]?.others_reason,
+    plannedMeetingList[selectedIndexValue]?.reason?.name,
+    plannedMeetingList[selectedIndexValue]?.others_reason,
   ];
 
   return temp;
@@ -469,6 +517,64 @@ export const setInputFieldToIntialValue = (fields: any) => {
   for (let i = 0; i < Object.keys(fields).length; i++) {
     fields[Object.keys(fields)[i]].current = undefined;
   }
+};
+
+export const setErrorToIntialValue = <T>(fields: T) => {
+  Object.keys(fields as Record<string, boolean | null>).forEach(
+    (key) => ((fields as Record<string, boolean | null>)[key] = null),
+  );
+};
+
+export const setInputToIntialStringvalue = <T>(fields: T) => {
+  Object.keys(fields as Record<string, MutableRefObject<string>>).forEach(
+    (key) =>
+      ((fields as Record<string, MutableRefObject<string>>)[key].current = ""),
+  );
+};
+
+export const isDetailFilled = (fields: any) => {
+  for (let i = 0; i < Object.keys(fields).length; i++) {
+    if (fields[Object?.keys(fields)[i]]?.current?.length > 0) {
+      return true;
+    }
+  }
+  return false;
+};
+
+export const checkAllInputField = (fields: any) => {
+  for (let i = 0; i < Object.keys(fields).length; i++) {
+    if (
+      fields[Object.keys(fields)[i]].current?.length == 0 ||
+      fields[Object.keys(fields)[i]].current == undefined
+    ) {
+      return false;
+    }
+  }
+  return true;
+};
+
+export const isAllInputFieldHaveData = (
+  fields: MutableRefObject<FormValues>,
+) => {
+  for (let i = 0; i < Object.keys(fields.current)?.length; i++) {
+    if (fields.current[Object.keys(fields.current)[i]].length == 0) {
+      return false;
+    }
+  }
+  return true;
+};
+
+export const checkAllInputFieldOfRepresentative = (fields: any) => {
+  for (let i = 0; i < 7; i++) {
+    if (
+      fields[Object.keys(fields)[i]].current?.length == 0 ||
+      fields[Object.keys(fields)[i]].current == undefined
+    ) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 export const isAllFieldTrue = (fields: any) => {
@@ -484,130 +590,187 @@ export const isAllFieldTrue = (fields: any) => {
   return true;
 };
 
+export const checkIsAllTrue = (fields: any) => {
+  for (let i = 0; i < Object.keys(fields).length; i++) {
+    if (
+      fields[Object.keys(fields)[i]].current == false ||
+      fields[Object.keys(fields)[i]].current == null
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+export const setToIntialValue = (fields: any) => {
+  for (let i = 0; i < Object.keys(fields).length; i++) {
+    if (fields[Object.keys(fields)[i]].current == null) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+export const setIntialValue = (fields: any) => {
+  for (let i = 0; i < Object.keys(fields).length; i++) {
+    if (fields[Object.keys(fields)[i]].current == null) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
 export const getRoleId = (detail: IdropDown[], value: string) => {
   const id = detail.filter((item) => {
-    if(item.name == value)
-     return item.id;
+    if (item.name == value) return item.id;
     else return null;
   });
   return Number(id[0].id);
 };
 
-export const convertIdToIndex=(customerList:IViewCustomerBody[],id:number)=>{
-  
-  const selectedIndex=customerList.filter((item,index)=>{
-    if(item.id==id)
-      return index;
-    else 
-     return null;
+export const convertIdToIndex = (
+  customerList: IViewCustomerBody[],
+  id: number,
+) => {
+  const selectedIndex = customerList.filter((item, index) => {
+    if (item.id == id) return index;
+    else return null;
   });
   return selectedIndex[0];
-}
-
-export const setUpcomingFieldData=(upcomingVisitList:any,selectedIndexValue:number)=>{
-  const ans =
-  selectedIndexValue >= 0
-    ? [
-        upcomingVisitList[selectedIndexValue]?.customer_data?.customer_code,
-        extractOnlyDate(
-          upcomingVisitList[selectedIndexValue]?.visit_date_time,
-        ),
-        upcomingVisitList[selectedIndexValue]?.visiting_executive
-          ?.user_number,
-        upcomingVisitList[selectedIndexValue]?.reason?.name,
-        upcomingVisitList[selectedIndexValue]?.mode_of_contact?.name,
-        upcomingVisitList[selectedIndexValue]?.visiting_executive?.user_name,
-        upcomingVisitList[selectedIndexValue]?.visiting_executive
-          ?.user_location,
-        upcomingVisitList[selectedIndexValue]?.visiting_executive?.email,
-        upcomingVisitList[selectedIndexValue]?.addedy_by?.user_name,
-      ]
-    : [];
-
-    return ans;
 };
-export const setExecutedFieldData=(executedVisitList:any,selectedIndexValue:number)=>{
+
+export const tacklePagination = (n: number, arr: any[]) => {
+  let l = arr.length;
+  const end = (n - 1) * 15;
+  if (l >= 0 && l <= end) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+export const setFormDataToIntialValue = (data: any) => {
+  for (let i = 0; i < data?.length; i++) {
+    Object.keys(data)[i] = "";
+  }
+};
+
+export const setUpcomingFieldData = (
+  upcomingVisitList: any,
+  selectedIndexValue: number,
+  searchResult: any,
+) => {
+  const tempData = searchResult?.length > 0 ? searchResult : upcomingVisitList;
   const ans =
     selectedIndexValue >= 0
       ? [
-          executedVisitList[selectedIndexValue]?.customer_data?.customer_code,
-          executedVisitList[selectedIndexValue]?.customer_data?.type?.type_name,
-          executedVisitList[selectedIndexValue]?.customer_data?.status?.name,
-          executedVisitList[selectedIndexValue]?.visiting_executive?.user_name,
-          executedVisitList[selectedIndexValue]?.visiting_executive
-            ?.user_location,
-          executedVisitList[selectedIndexValue]?.visiting_executive
-            ?.user_number,
-          executedVisitList[selectedIndexValue]?.visiting_executive?.email,
-          executedVisitList[selectedIndexValue]?.discussion_points,
-          `${executedVisitList[selectedIndexValue]?.visit_date_time}  ${executedVisitList[selectedIndexValue]?.visit_time}`,
-          executedVisitList[selectedIndexValue]?.reason?.name,
-          executedVisitList[selectedIndexValue]?.mode_of_contact?.name,
-          StringConstants.EMPTY,
-          executedVisitList[selectedIndexValue]?.addedy_by?.user_name,
+          tempData[selectedIndexValue]?.customer_data?.customer_code,
+          extractOnlyDate(tempData[selectedIndexValue]?.visit_date_time),
+          tempData[selectedIndexValue]?.visiting_executive?.user_number,
+          tempData[selectedIndexValue]?.reason?.name,
+          tempData[selectedIndexValue]?.mode_of_contact?.name,
+          tempData[selectedIndexValue]?.visiting_executive?.user_name,
+          tempData[selectedIndexValue]?.visiting_executive?.user_location,
+          tempData[selectedIndexValue]?.visiting_executive?.email,
+          tempData[selectedIndexValue]?.addedy_by?.user_name,
         ]
       : [];
 
-      return ans;
-}
-
-export const setPlannedFieldData=(plannedVisitList:any,selectedIndexValue:number)=>{
+  return ans;
+};
+export const setExecutedFieldData = (
+  executedVisitList: any,
+  selectedIndexValue: number,
+  searchResult: any,
+) => {
+  const tempData = searchResult?.length > 0 ? searchResult : executedVisitList;
   const ans =
-  selectedIndexValue >= 0
-    ? [
-        plannedVisitList[selectedIndexValue]?.customer_data?.customer_code,
-        extractOnlyDate(
-          plannedVisitList[selectedIndexValue]?.visit_date_time,
-        ),
-        plannedVisitList[selectedIndexValue]?.reason?.name,
-        plannedVisitList[selectedIndexValue]?.mode_of_contact?.name,
-        plannedVisitList[selectedIndexValue]?.remarks,
-        plannedVisitList[selectedIndexValue]?.visiting_executive?.user_name,
-        plannedVisitList[selectedIndexValue]?.visiting_executive
-          ?.user_location,
-        plannedVisitList[selectedIndexValue]?.visiting_executive
-          ?.user_number,
-        plannedVisitList[selectedIndexValue]?.visiting_executive?.email,
-        plannedVisitList[selectedIndexValue]?.addedy_by?.user_name,
-      ]
-    : [];
+    selectedIndexValue >= 0
+      ? [
+          tempData[selectedIndexValue]?.customer_data?.customer_code,
+          tempData[selectedIndexValue]?.customer_data?.type?.type_name,
+          tempData[selectedIndexValue]?.customer_data?.status?.name,
+          tempData[selectedIndexValue]?.visiting_executive?.user_name,
+          tempData[selectedIndexValue]?.visiting_executive?.user_location,
+          tempData[selectedIndexValue]?.visiting_executive?.user_number,
+          tempData[selectedIndexValue]?.visiting_executive?.email,
+          tempData[selectedIndexValue]?.discussion_points,
+          `${tempData[selectedIndexValue]?.visit_date_time}  ${tempData[selectedIndexValue]?.visit_time}`,
+          tempData[selectedIndexValue]?.reason?.name,
+          tempData[selectedIndexValue]?.mode_of_contact?.name,
+          StringConstants.EMPTY,
+          tempData[selectedIndexValue]?.addedy_by?.user_name,
+        ]
+      : [];
 
-    return ans;
-}
+  return ans;
+};
+
+export const setPlannedFieldData = (
+  plannedVisitList: any,
+  selectedIndexValue: number,
+  searchResult: any,
+) => {
+  const tempData = searchResult.length > 0 ? searchResult : plannedVisitList;
+  const ans =
+    selectedIndexValue >= 0
+      ? [
+          tempData[selectedIndexValue]?.customer_data?.customer_code,
+          extractOnlyDate(tempData[selectedIndexValue]?.visit_date_time),
+          tempData[selectedIndexValue]?.reason?.name,
+          tempData[selectedIndexValue]?.mode_of_contact?.name,
+          tempData[selectedIndexValue]?.remarks,
+          tempData[selectedIndexValue]?.visiting_executive?.user_name,
+          tempData[selectedIndexValue]?.visiting_executive?.user_location,
+          tempData[selectedIndexValue]?.visiting_executive?.user_number,
+          tempData[selectedIndexValue]?.visiting_executive?.email,
+          tempData[selectedIndexValue]?.addedy_by?.user_name,
+        ]
+      : [];
+
+  return ans;
+};
 
 export const updateCustomerBody = (
   customerList: IViewCustomerBody[],
   selectedIndexValue: number,
-  enteredCustomerDetails: IEnteredCustomerDetails,
-  customerTypeTraderDealer: IUpdateTrader_Project_Dealer_Type,
+  customerValue: MutableRefObject<FormValues>,
+  customerTypeValue: MutableRefObject<FormValues>,
   customer: ICustomerState,
   custImageVideoData: any[],
 ) => {
+  const customerDetails = customerValue.current;
   const body = {
     customer_id: customerList[selectedIndexValue]?.id,
     custFile: custImageVideoData || [],
-    customer_region: enteredCustomerDetails?.cust_region?.current || null,
-    segment: enteredCustomerDetails?.cust_seg?.current || null,
-    sub_segment: enteredCustomerDetails?.cust_sub_seg?.current || null,
+    customer_region: customerDetails?.cust_region,
+    segment: Number(customerDetails?.cust_seg),
+    sub_segment: Number(customerDetails?.cust_sub_seg),
     type: customerList[selectedIndexValue]?.type?.id || null,
-    sub_type: enteredCustomerDetails?.cust_sub_type?.current || null,
-    status: enteredCustomerDetails?.cust_status?.current || null,
-    panCard: enteredCustomerDetails?.pan?.current || null,
-    gst_details: enteredCustomerDetails?.gst?.current || null,
-    website_link: enteredCustomerDetails?.website?.current || null,
-    latitude: enteredCustomerDetails?.latitude?.current || null,
-    longitude: enteredCustomerDetails?.longitude?.current || null,
-    address: enteredCustomerDetails?.location?.current || null,
-    cluster: customerTypeTraderDealer?.cluster?.current || null,
-    contact_number: customerTypeTraderDealer?.contact_number?.current || null,
-    day_wise_stock: customerTypeTraderDealer?.day_wise_stock?.current || null,
+    sub_type: Number(customerDetails?.cust_sub_type),
+    status: Number(customerDetails?.cust_status),
+    panCard: customerDetails?.pan,
+    gst_details: customerDetails?.gst,
+    website_link: customerDetails?.website,
+    latitude: customerDetails?.latitude,
+    longitude: customerDetails?.longitude,
+    address: customerDetails?.location,
+    cluster: customerTypeValue?.current?.cluster || null,
+    contact_number: customerTypeValue?.current?.contact_number || null,
+    day_wise_stock: customerTypeValue?.current?.day_wise_stock || null,
     price_feedback_competitor:
-      customerTypeTraderDealer?.price_feedback_competitor?.current || null,
+      customerTypeValue?.current?.procured_products || null,
     procured_products: returnOnlyIndex(customer?.procuredProduct) || null,
     tentative_quality_procured:
-      customerTypeTraderDealer?.tentative_quality_procured?.current || null,
+      customerTypeValue?.current?.tentative_quality_procured || null,
     supplier: returnOnlyIndex(customer?.supplier) || null,
-    project_details: customerTypeTraderDealer?.projectDetail?.current || null,
+    project_details:
+      customerList[selectedIndexValue]?.type?.id == 6
+        ? customerTypeValue?.current?.project_details || null
+        : null,
   };
 
   return body;
@@ -626,7 +789,7 @@ export const representativeDetailsofViewCustomerProfile = (
   selectedIndexValue: number,
   representative: IViewCustomerRepresentative,
 ) => {
-  const data = [
+  const data:Array<string> = [
     customerList[selectedIndexValue]?.representatives[
       representative.selectedRepresentativeIndex
     ]?.name,
@@ -648,6 +811,7 @@ export const representativeDetailsofViewCustomerProfile = (
     customerList[selectedIndexValue]?.representatives[
       representative.selectedRepresentativeIndex
     ]?.whatsapp_number,
+    "-1",
   ];
 
   return data;
@@ -657,7 +821,7 @@ export const customerDetailOfViewModel = (
   customerList: IViewCustomerBody[],
   selectedIndexValue: number,
 ) => {
-  const data = [
+  const data:string[]= [
     customerList[selectedIndexValue]?.customer_code,
     customerList[selectedIndexValue]?.company_name,
     customerList[selectedIndexValue]?.segment?.segment_name,
@@ -670,6 +834,8 @@ export const customerDetailOfViewModel = (
     customerList[selectedIndexValue]?.gst_details,
     customerList[selectedIndexValue]?.website_link,
     customerList[selectedIndexValue]?.address,
+    customerList[selectedIndexValue]?.location_lat,
+    customerList[selectedIndexValue]?.location_long,
   ];
 
   return data;
@@ -699,18 +865,26 @@ export const traderDealerselectedCustomerDetail = (
   customerList: IViewCustomerBody[],
   selectedIndexValue: number,
 ) => {
-  const data =
-    customerList[selectedIndexValue].type.id == (2 || 4)
-      ? [
-          customerList[selectedIndexValue]?.cluster?.name,
-          customerList[selectedIndexValue]?.contact_number,
-          customerList[selectedIndexValue]?.day_wise_stock,
-          customerList[selectedIndexValue]?.price_feedback_competitor,
-          customerList[selectedIndexValue]?.procured_products?.name,
-          customerList[selectedIndexValue]?.tentative_quality_procured,
-          customerList[selectedIndexValue]?.supplier?.name,
-        ]
-      : [];
+  const index = customerList[selectedIndexValue]?.type?.id;
+  const isSpecialType: boolean = [2, 6, 7].includes(index);
+  const data = isSpecialType
+    ? [
+        customerList[selectedIndexValue]?.cluster?.name,
+        customerList[selectedIndexValue]?.contact_number,
+        customerList[selectedIndexValue]?.day_wise_stock,
+        customerList[selectedIndexValue]?.price_feedback_competitor,
+        customerList[selectedIndexValue]?.procured_product_data.length > 0
+          ? customerList[
+              selectedIndexValue
+            ]?.procured_product_data.length.toString()
+          : "",
+        customerList[selectedIndexValue]?.tentative_quality_procured,
+        customerList[selectedIndexValue]?.supplier_data.length > 0
+          ? customerList[selectedIndexValue]?.supplier_data.length.toString()
+          : "",
+        customerList[selectedIndexValue]?.project_details,
+      ]
+    : [];
   return data;
 };
 
@@ -725,8 +899,9 @@ export const getDropDownData = (
     convertSegemntToDropData(getDropDownListData?.segmentData),
     indexofSubtype.customerSegmentIndex >= 0
       ? convertSubSegemntToDropData(
-          getDropDownListData?.segmentData[indexofSubtype.customerSegmentIndex]
-            ?.sub_segment,
+          getDropDownListData?.segmentData[
+            indexofSubtype.customerSegmentIndex - 1
+          ]?.sub_segment,
         )
       : undefined,
     convertCustomerToDropData(getDropDownListData?.customerType),
@@ -748,3 +923,175 @@ export const getDropDownData = (
 
   return data;
 };
+
+export const addRepresentativeOfCreateCustomer = (
+  selectRepresentativeImage: ISelectedImage | undefined,
+  enteredRepresentativeDetails: MutableRefObject<Record<string, string>>,
+) => {
+  const representativeData = {
+    file_name: selectRepresentativeImage?.fileName,
+    name: enteredRepresentativeDetails?.current.name,
+    designation: enteredRepresentativeDetails?.current.designation,
+    department: enteredRepresentativeDetails?.current.dept,
+    address: enteredRepresentativeDetails?.current.address,
+    email: enteredRepresentativeDetails?.current.email,
+    contact_number: enteredRepresentativeDetails?.current.contact,
+    whatsapp_number: enteredRepresentativeDetails?.current.whatsApp,
+  };
+
+  return representativeData;
+};
+
+export const dropDownListOfCreateCustomer = (
+  getDropDownListData: IRootCustomerCreate,
+  indexofSubtype: IsubType,
+  getRegionData: IdropDown[],
+) => {
+  const ans = [
+    convertSegemntToDropData(getDropDownListData?.segmentData),
+    indexofSubtype.customerSegmentIndex >= 0
+      ? convertSubSegemntToDropData(
+          getDropDownListData?.segmentData[indexofSubtype.customerSegmentIndex]
+            ?.sub_segment,
+        )
+      : undefined,
+    convertCustomerToDropData(getDropDownListData?.customerType),
+    indexofSubtype.customerSubTypeIndex >= 0
+      ? convertSubCustomerToDropData(
+          getDropDownListData?.customerType[indexofSubtype.customerSegmentIndex]
+            ?.sub_type,
+        )
+      : undefined,
+    getDropDownListData?.customerStatus,
+    getRegionData,
+    getDropDownListData?.clusterData,
+    StringConstants.EMPTY,
+    StringConstants.EMPTY,
+    StringConstants.EMPTY,
+    getDropDownListData?.procuredData,
+    StringConstants.EMPTY,
+    getDropDownListData?.supplierData,
+  ];
+
+  return ans;
+};
+
+export const getEscalatedId = (
+  data: EscalatedList[],
+  value: string | undefined,
+) => {
+  const ans = data.filter((item: EscalatedList) => item?.user_name == value);
+  return Number(ans[0]?.id);
+};
+
+export const formatProcuder_Product_list = (data: Procured_Product_Data[]) => {
+  let ans: IProcuredProduct[] = [];
+  for (let i = 0; i < data?.length; i++) {
+    ans.push(data[i].procured_product_name);
+  }
+  return ans;
+};
+
+export const formatSupplier_list = (data: Supplier_Data[]) => {
+  let ans: ISupplier[] = [];
+  for (let i = 0; i < data?.length; i++) {
+    ans.push(data[i].supplier_name);
+  }
+  return ans;
+};
+
+export const filterAccompyingExecutive = (id: number, data: any) => {
+  const ans = data.filter((item: IdropDown) => {
+    return item?.id == Number(id);
+  });
+
+  return ans[0];
+};
+
+type Notification = {
+  details: {
+    customerCode: string;
+    modeOfContact: string;
+    reason: string;
+    remarks: string;
+    visitingExecutive: string;
+  };
+  notificationDate: string;
+  notificationTitle: string;
+};
+
+type GroupedNotifications = {
+  [date: string]: Notification[];
+};
+
+export const groupNotificationsByDate = (
+  notifications: any,
+): GroupedNotifications => {
+  return notifications.reduce(
+    (acc: GroupedNotifications, notification: Notification) => {
+      const date = notification.notificationDate.split("T")[0];
+      if (!acc[date]) {
+        acc[date] = [];
+      }
+      acc[date].push(notification);
+      return acc;
+    },
+    {},
+  );
+};
+
+export const getPdfurl = (
+  details: InformationDetails,
+  currentScreen: number,
+) => {
+  switch (currentScreen) {
+    case 0:
+      return details?.salesOrder?.LCBGReportUrl || "";
+    case 1:
+      return details?.ddReport?.DDorderReportUrl || "";
+    case 2:
+      return details?.mou?.MouReportUrl || "";
+    case 3:
+      return details?.outstanding?.OutStandingReportUrl || "";
+    case 5:
+      return details?.offTakeStatus?.OfftakeReportUrl || "";
+    case 6:
+      return details?.lcbgReport?.LCBGReportUrl || "";
+    case 7:
+      return details?.qcStatus?.QCReportUrl || "";
+    default:
+      return "";
+  }
+};
+
+export const getCustomername = (
+  details: InformationDetails,
+  currentScreen: number,
+) => {
+  switch (currentScreen) {
+    case 0:
+      return details?.salesOrder?.data[0]?.CustomerName || "";
+    case 1:
+      return details?.ddReport?.data[0]?.CustomerName || "";
+    case 2:
+      return details?.mou?.data[0]?.CustomerName || "";
+    case 3:
+      return details?.outstanding?.data[0]?.customerName || "";
+    case 5:
+      return details?.offTakeStatus?.data[0]?.Customer || "";
+    case 6:
+      return details?.lcbgReport?.data[0]?.customer || "";
+    case 7:
+      return details?.qcStatus?.data[0]?.CustomerName || "";
+    default:
+      return "";
+  }
+};
+
+export const isAnyInformationHaveData = (details: InformationDetails) => {
+  for (let i in details) {
+    if (details[i] != null) return true;
+  }
+  return false;
+};
+

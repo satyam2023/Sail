@@ -75,6 +75,12 @@ export interface INearbyCustomerBody {
     id: number;
   }
   
+
+  export interface IButtonStatus{
+    [key:string]:boolean;
+    enquiryBtn:boolean,
+    issueBtn:boolean
+  }
   export interface VisitData {
     id: number;
     user_id: string;
@@ -118,6 +124,7 @@ export interface INearbyCustomerBody {
     created_at: string;
     updated_at: string;
     issue_name: IssueName;
+    escalation_byme:AllsEscalation[];
     alls_escalation: AllsEscalation[];
     alls_escalation_oldest: AllsEscalation[];
   }
