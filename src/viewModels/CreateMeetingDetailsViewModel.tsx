@@ -12,11 +12,15 @@ import {
   getUnplannedVisitExecution,
 } from "controllers/meetingController";
 import {
+  checkAllInputField,
   convertAccomToDropData,
   convertCustomerToDropData,
+  isAllFieldTrue,
   logger,
   plannedMeeting,
+  setErrorToIntialValue,
   setInputFieldToIntialValue,
+  setInputToIntialStringvalue,
   unplannedVisitMeeting,
 } from "helper/helperFunctions";
 import { IRootCustomerCreate } from "models/ApiResponses/CreateCustomer";
@@ -38,6 +42,13 @@ import { BottomTabVisibility } from "redux/actions/UIAction";
 import { RootState, store } from "redux/store/Store";
 import StringConstants from "shared/localization";
 import MeetingScreen from "views/createMeetingDetail/MeetingScreen";
+import {
+  IMeetingRepresentativeError,
+  checkMeetingRepresentativeDetail,
+  checkRepresentativeDetail,
+} from "helper/ValidationRegex";
+import Voice from '@react-native-voice/voice'
+import { Alert } from "react-native";
 
 const CreateMetingDetailsViewModel = () => {
   const [currentScreen, setCurrentScreen] = useState<number>(1);
@@ -68,18 +79,14 @@ const CreateMetingDetailsViewModel = () => {
     accompying_executive: useRef<string>(),
   };
   const issueDetail: IissueDetail = {
-    issueName: useRef<string>(),
-    comment: useRef<string>(),
-    escalatedTo: useRef<number>(),
-    escalated_comment: useRef<string>(),
+    issueName: useRef<string>(""),
+    comment: useRef<string>(""),
+    escalatedTo: useRef<string>(""),
+    escalated_comment: useRef<string>(""),
     resolved_status: useRef<number>(0),
   };
 
-  const [representativeError, _] = useState({
-    name: null,
-    designation: null,
-    departement: null,
-    address: null,
+  const [representativeError, setRepresentativeError] = useState({
     email: null,
     contact: null,
     whatsApp: null,
@@ -91,6 +98,7 @@ const CreateMetingDetailsViewModel = () => {
       getReasonContact(dispatch),
       getAccompanying(dispatch);
   }, []);
+
 
   useEffect(() => {
     setInputFieldToIntialValue(issueDetail);
@@ -136,8 +144,9 @@ const CreateMetingDetailsViewModel = () => {
     email: useRef(""),
     contact: useRef(""),
     whatsApp: useRef(""),
-    id: useRef(-1),
   };
+
+  const selectedRepresentativeIndex = useRef<number>(-1);
 
   const plannedMeetingList: IPlannedMeetingData = useSelector(
     (state: RootState) => state?.craeteMeeting,
@@ -158,6 +167,18 @@ const CreateMetingDetailsViewModel = () => {
     if (plannedMeetingList.data.length == 0)
       fetchPlannedVisitData(paginationPage.current);
   }, []);
+  
+
+  const recordVoice= async ()=>{
+    try{
+      Alert.alert("");
+   const recorderAudio= await Voice.start('en-US');
+   console.log("REcoderd Voice:::::",recorderAudio);;
+    }
+    catch(e){
+       logger(e,'Error in Voice Recognization')
+    }
+  }
 
   const fetchPlannedVisitData = async (pagenumber: number) => {
     try {
@@ -165,6 +186,7 @@ const CreateMetingDetailsViewModel = () => {
       if (res) {
       }
     } catch (error) {
+      logger(error, "Error in Fetching Planned Visit data");
     } finally {
     }
   };
@@ -196,7 +218,9 @@ const CreateMetingDetailsViewModel = () => {
       enteredRepresentativeDetails,
       representativeList,
       selectedIssueArr,
+      selectedRepresentativeIndex,
     );
+
     try {
       const res = await getUnplannedVisitExecution(body);
       if (res?.isSuccess) {
@@ -224,13 +248,16 @@ const CreateMetingDetailsViewModel = () => {
       resolved_status: issueDetail?.resolved_status?.current,
     };
     if (currentScreen == 1) {
-      setPlannedIssueList((prev: any) => ({
+      setPlannedIssueList((prev: IIisueList) => ({
         ...prev,
         issueList: [...plannedissueList?.issueList, {}],
-        issueListDetail: [...plannedissueList?.issueListDetail, issueDetail],
+        issueListDetail: [
+          ...plannedissueList?.issueListDetail,
+          issueDetail as unknown as Iissue,
+        ],
       }));
     } else if (currentScreen == 2) {
-      setIssueList((prev: any) => ({
+      setIssueList((prev: IIisueList) => ({
         ...prev,
         issueList: [...issueList?.issueList, {}],
         issueListDetail: [...issueList?.issueListDetail, temp],
@@ -249,54 +276,86 @@ const CreateMetingDetailsViewModel = () => {
 
   const selectIssuesDropDown: IdropDown[][] = [issueDropDownList, undefined];
 
-  const handleAddRepresentative = () => {
-    console.log(
-      "Representative Btn Status::::",
-      btnStatus.representativeBtn,
-      "Unplanned Representative:::",
-      addUnPlannedRepresentative,
-    );
-
-    if (btnStatus.representativeBtn) {
-      setAddUnplannedRepresentative(false);
-      btnStatus.representativeBtn = false;
-    }
-
+  const handleAddRepresentative = async () => {
     if (!addUnPlannedRepresentative) {
       setAddUnplannedRepresentative(true);
     } else if (addUnPlannedRepresentative) {
-      if (currentScreen == 1) {
-        plannedrepresentativeList.representativeListDetail.push(
-          enteredRepresentativeDetails,
-        );
-        plannedrepresentativeList.representativeDropDown.push({
-          name: enteredRepresentativeDetails?.name?.current,
-          id: plannedrepresentativeList.representativeDropDown.length,
-        });
-      } else {
-        representativeList.representativeListDetail.push(
-          enteredRepresentativeDetails,
-        );
-        representativeList.representativeDropDown.push({
-          name: enteredRepresentativeDetails?.name?.current,
-          id: representativeList.representativeDropDown.length,
-        });
+      checkMeetingRepresentativeDetail(
+        enteredRepresentativeDetails,
+        setRepresentativeError,
+      );
+      if (currentScreen == 1 && btnStatus.representativeBtn) {
+        storeDetailsOfPlannedRepresentative();
+      } else if (currentScreen == 2 && btnStatus.representativeBtn) {
+        storeDetailsOfUnplannedRepresentative();
       }
-      setAddUnplannedRepresentative(false);
     }
   };
 
+  function storeDetailsOfPlannedRepresentative() {
+    if (isAllFieldTrue(representativeError)) {
+      setAddUnplannedRepresentative(false);
+      btnStatus.representativeBtn = false;
+      plannedrepresentativeList.representativeListDetail.push(
+        {
+          address: enteredRepresentativeDetails?.address?.current,
+          contact: enteredRepresentativeDetails?.contact?.current,
+          dept: enteredRepresentativeDetails?.dept?.current,
+          designation:enteredRepresentativeDetails?.designation?.current,
+          email:enteredRepresentativeDetails?.email?.current,
+          name: enteredRepresentativeDetails?.name?.current,
+          whatsApp: enteredRepresentativeDetails?.whatsApp?.current,
+        }
+      );
+      plannedrepresentativeList.representativeDropDown.push({
+        name: enteredRepresentativeDetails?.name?.current,
+        id: plannedrepresentativeList.representativeDropDown.length,
+      });
+    }
+  }
+
+  function storeDetailsOfUnplannedRepresentative() {
+    if (isAllFieldTrue(representativeError)) {
+      representativeList.representativeListDetail.push({
+        address: enteredRepresentativeDetails?.address?.current,
+        contact: enteredRepresentativeDetails?.contact?.current,
+        dept: enteredRepresentativeDetails?.dept?.current,
+        designation:enteredRepresentativeDetails?.designation?.current,
+        email:enteredRepresentativeDetails?.email?.current,
+        name: enteredRepresentativeDetails?.name?.current,
+        whatsApp: enteredRepresentativeDetails?.whatsApp?.current,
+      });
+      representativeList.representativeDropDown.push({
+        name: enteredRepresentativeDetails?.name?.current,
+        id: representativeList.representativeDropDown.length,
+      });
+      setAddUnplannedRepresentative(false);
+      btnStatus.representativeBtn = false;
+      setInputToIntialStringvalue<IRepresentativeEnteredDetail>(
+        enteredRepresentativeDetails,
+      );
+      setErrorToIntialValue<IMeetingRepresentativeError>(representativeError);
+    }
+  }
+
   function handleRepresentativeOnTextChange(text: string | number, id: number) {
-    enteredRepresentativeDetails[
-      Object.keys(enteredRepresentativeDetails)[id]
-    ].current = text;
-    handleSubmitButtonStatus();
+    if (id != 7) {
+      enteredRepresentativeDetails[
+        Object.keys(enteredRepresentativeDetails)[id]
+      ].current = text;
+    } else if (id == 7) {
+      handleSubmitButtonStatus();
+      selectedRepresentativeIndex.current = Number(text);
+    }
     handleRepresentativeButtonStatus();
   }
+
+
 
   function handleUnplannedVisitDetail(text: string | number, id: number) {
     unPlannedVisitDetail[Object.keys(unPlannedVisitDetail)[id]].current = text;
     handleSubmitButtonStatus();
+  
   }
 
   function handleSubmitButtonStatus() {
@@ -306,15 +365,15 @@ const CreateMetingDetailsViewModel = () => {
         unPlannedVisitDetail[i].current?.toString()?.length == undefined
       ) {
         if (btnStatus.submitBtn == true)
-          setBtnStatus((prev: any) => ({
+          setBtnStatus((prev: IBtnStatus) => ({
             ...prev,
             submitBtn: false,
           }));
         return;
       }
     }
-    if (enteredRepresentativeDetails.id.current != undefined) {
-      setBtnStatus((prev: any) => ({
+    if (selectedRepresentativeIndex?.current != undefined) {
+      setBtnStatus((prev: IBtnStatus) => ({
         ...prev,
         submitBtn: true,
       }));
@@ -322,27 +381,25 @@ const CreateMetingDetailsViewModel = () => {
   }
 
   function handleRepresentativeButtonStatus() {
-    for (let i in enteredRepresentativeDetails) {
-      if (
-        enteredRepresentativeDetails[i].current?.toString()?.length == 0 ||
-        enteredRepresentativeDetails[i].current?.toString()?.length == undefined
-      ) {
-        if (btnStatus.representativeBtn == true)
-          setBtnStatus((prev: any) => ({
-            ...prev,
-            representativeBtn: false,
-          }));
-
-        return;
+    if (checkAllInputField(enteredRepresentativeDetails)) {
+      if (!btnStatus.representativeBtn) {
+        setBtnStatus((prev: IBtnStatus) => ({
+          ...prev,
+          representativeBtn: true,
+        }));
+      }
+    } else {
+      if (btnStatus.representativeBtn) {
+        setBtnStatus((prev: any) => ({
+          ...prev,
+          representativeBtn: false,
+        }));
       }
     }
-    setBtnStatus((prev: any) => ({
-      ...prev,
-      representativeBtn: true,
-    }));
   }
 
   function handleSubmitButtonClick() {
+   
     if (btnStatus.submitBtn) {
       callunplannedVisitExecution();
       setSuccessStatus(true);
@@ -381,6 +438,8 @@ const CreateMetingDetailsViewModel = () => {
         plannedrepresentativeList,
         selectIssuesDropDown,
         handleIssueDetailChange,
+        unPlannedVisitDetail,
+        recordVoice,
       }}
     />
   );

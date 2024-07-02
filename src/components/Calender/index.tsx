@@ -20,6 +20,7 @@ toCalender:ViewStyle;
 
 const Datepicker = ({
   isDateVisibleModal,
+  error,
   type,
   setselectedDate,
   fromSelectedDate,
@@ -133,14 +134,13 @@ const Datepicker = ({
         );
     }
 
-    //
   };
 
   return (
     <>
 
       <PressableButton
-        style={[styles.dateSelector,style]}
+        style={[styles.dateSelector,style,{borderColor:error?Colors.red:Colors.transparent}]}
         onPress={() => setCalenderVisibility(!isCalenderVisible)}
       >
         <Image source={Glyphs.Calender} style={commonStyles.leftIcon} />
@@ -162,6 +162,7 @@ const Datepicker = ({
         }
         </View>
       </PressableButton>
+      { error && <TextWrapper style={commonStyles.errorText}>{error}</TextWrapper>}
       {isCalenderVisible && renderCalender()}
     </>
   );
@@ -184,6 +185,7 @@ const styles = StyleSheet.create<ICalenderStyle>({
     paddingHorizontal: 16,
     marginBottom: 16,
     flexDirection: "row",
+    borderWidth:1,
   },
   fromToCalender: {
     borderWidth: 0.5,

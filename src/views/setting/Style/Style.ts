@@ -1,7 +1,19 @@
 import fonts from "@fonts";
 import { Colors } from "commonStyles/RNColor.style";
-import { StyleSheet } from "react-native";
-const styles = StyleSheet.create({
+import { StyleSheet, TextStyle, ViewStyle } from "react-native";
+
+interface ISettingStyle {
+  circle: ViewStyle;
+  editContainer: ViewStyle;
+  editTxt: TextStyle;
+  circleContent: TextStyle;
+  userPost: TextStyle;
+  detailContainer: ViewStyle;
+  infoContainer: ViewStyle;
+  btnStyle: ViewStyle;
+  detailupdatingBtn:ViewStyle;
+}
+const styles = StyleSheet.create<ISettingStyle>({
   circle: {
     width: 54,
     height: 54,
@@ -13,7 +25,7 @@ const styles = StyleSheet.create({
   editContainer: {
     height: 36,
     paddingHorizontal: 16,
-    backgroundColor: "#233972",
+    backgroundColor: Colors.sailBlue,
     borderRadius: 100,
     gap: 10,
     flexDirection: "row",
@@ -25,11 +37,11 @@ const styles = StyleSheet.create({
     fontFamily: fonts.type.medium,
     fontSize: 16,
     color: Colors.white,
-    marginLeft:30
+    marginLeft: 30,
   },
   circleContent: {
     color: Colors.white,
-    fontWeight: "500",
+    fontFamily: fonts.type.bold,
     fontSize: 20,
   },
   userPost: {
@@ -45,8 +57,18 @@ const styles = StyleSheet.create({
   infoContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: "88%",
     alignItems: "center",
   },
+  btnStyle: {
+    width: "50%",
+    backgroundColor: Colors.sailBlue,
+    height: 40,
+  },
+  detailupdatingBtn:{
+    backgroundColor: Colors.white,
+    borderWidth: 1,
+    borderColor: Colors.sailBlue,
+    marginBottom:70,
+  }
 });
 export default styles;

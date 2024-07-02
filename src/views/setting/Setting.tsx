@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, SafeAreaView, View } from "react-native";
+import { FlatList, SafeAreaView, View,KeyboardAvoidingView} from "react-native";
 import styles from "./Style/Style";
 import Glyphs from "assets/Glyphs";
 import { ScrollView } from "react-native";
@@ -20,6 +20,7 @@ import {
 import { MasterDataResponse } from "models/ApiResponses/MasterDataResponse";
 import { TextFieldData } from "@shared-constants";
 import StatusBarComponent from "components/StatusBarComponent";
+import { isAndroid } from "libs";
 
 interface ISetting {
   userData: SignInResponse;
@@ -74,8 +75,9 @@ const SettingScreen = ({
           isLogoutButton={true}
           rightButtonPress={() => logOutApiCalling()}
         />
+        <KeyboardAvoidingView style={{flex:1}} behavior={isAndroid?'height':'padding'} >
         <ScrollView
-          style={{ paddingHorizontal: 20, flex: 1 }}
+          style={{ paddingHorizontal: 20}}
           showsVerticalScrollIndicator={false}
           nestedScrollEnabled
         >
@@ -90,7 +92,7 @@ const SettingScreen = ({
               </TextWrapper>
             </View>
             <View style={styles.infoContainer}>
-              <View style={{ marginLeft: 16, width: "40%" }}>
+              <View style={{ marginLeft: 16,}}>
                 <TextWrapper style={commonStyles.font14RegularBlack}>
                   {userData?.user?.user_name}
                 </TextWrapper>
@@ -101,11 +103,7 @@ const SettingScreen = ({
               <CustomButton
                 image={Glyphs.Editing}
                 text={StringConstants.EDIT_PROFILE}
-                buttonStyle={{
-                  width: "50%",
-                  backgroundColor: Colors.sailBlue,
-                  height: 40,
-                }}
+                buttonStyle={styles.btnStyle}
                 textStyle={styles.editTxt}
                 imageStyle={{ width: 16, height: 16 }}
                 onPress={() => {
@@ -150,11 +148,7 @@ const SettingScreen = ({
           {isDetailsUpdating && (
             <CustomButton
               text={StringConstants.UPDATE_PROFILE}
-              buttonStyle={{
-                backgroundColor: Colors.white,
-                borderWidth: 1,
-                borderColor: Colors.sailBlue,
-              }}
+              buttonStyle={styles.detailupdatingBtn}
               textStyle={[
                 commonStyles.font14MediumBlackpearl,
                 { color: Colors.sailBlue },
@@ -165,6 +159,7 @@ const SettingScreen = ({
             />
           )}
         </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </>
   );

@@ -1,5 +1,11 @@
 import { Colors } from "commonStyles/RNColor.style";
-import { DimensionValue, StyleSheet, TextStyle, View, ViewStyle } from "react-native";
+import {
+  DimensionValue,
+  StyleSheet,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native";
 import CustomButton from "../CustomButton";
 import fonts from "@fonts";
 
@@ -11,35 +17,37 @@ interface ICustomFooter {
   rightButtonPress?: () => void;
   isMovable?: boolean;
   isTracker?: DimensionValue;
-  style?:ViewStyle,
-  rightButtonStyle?:ViewStyle,
-  leftButtonStyle?:ViewStyle,
+  style?: ViewStyle;
+  rightButtonStyle?: ViewStyle;
+  leftButtonStyle?: ViewStyle;
+  leftButtonTextStyle?:TextStyle;
 }
 
-interface IFooterStyle{
-  customFooterContainer:ViewStyle;
-  singleButtonFooter:ViewStyle;
-  trackerContainer:ViewStyle;
-  footer:ViewStyle
-  firstButtonStyle:ViewStyle;
-  buttonText:TextStyle;
-  singleButtononFooter:ViewStyle
+interface IFooterStyle {
+  customFooterContainer: ViewStyle;
+  singleButtonFooter: ViewStyle;
+  trackerContainer: ViewStyle;
+  footer: ViewStyle;
+  firstButtonStyle: ViewStyle;
+  buttonText: TextStyle;
+  singleButtononFooter: ViewStyle;
 }
 
 const CustomFooter = (props: ICustomFooter) => {
   return (
-    <View style={[styles.customFooterContainer,props?.style]}>
+    <View style={[styles.customFooterContainer, props?.style]}>
       {props.isTracker && (
         <View style={styles.trackerContainer}>
           <View
-            style={{ width:props.isTracker, backgroundColor: Colors.orange ,height:5}}
+            style={{
+              width: props.isTracker,
+              backgroundColor: Colors.orange,
+              height: 5,
+            }}
           />
         </View>
       )}
-
-      <View
-        style={styles.footer}
-      >
+      <View style={styles.footer}>
         <CustomButton
           text={props.leftButtonText}
           buttonStyle={[
@@ -47,13 +55,16 @@ const CustomFooter = (props: ICustomFooter) => {
             props.singleButtonOnFooter
               ? styles.singleButtononFooter
               : { width: "45%" },
-              props?.leftButtonStyle,
-  
+            props?.leftButtonStyle,
           ]}
           textStyle={[
             styles.buttonText,
-            { color : props.singleButtonOnFooter && Colors.darkGrey },
-            {color:(props?.isMovable && props.singleButtonOnFooter) && Colors.white},
+            {
+              color: props?.singleButtonOnFooter
+                ? Colors.darkGrey
+                : Colors.sailBlue,
+            },
+            props?.leftButtonTextStyle
           ]}
           onPress={props.leftButtonPress}
         />
@@ -63,10 +74,12 @@ const CustomFooter = (props: ICustomFooter) => {
               text={props.rightButtonText}
               buttonStyle={[
                 {
-                  backgroundColor: props.isMovable ? Colors.sailBlue : Colors.background2,
+                  backgroundColor: props.isMovable
+                    ? Colors.sailBlue
+                    : Colors.background2,
                 },
                 { width: "45%" },
-                props?.rightButtonStyle
+                props?.rightButtonStyle,
               ]}
               onPress={props.rightButtonPress}
               textStyle={[
@@ -89,8 +102,8 @@ const styles = StyleSheet.create<IFooterStyle>({
     backgroundColor: Colors.white,
     width: "100%",
     bottom: 0,
-    right:0,
-    left:0,
+    right: 0,
+    left: 0,
   },
   singleButtonFooter: {
     justifyContent: "center",
@@ -103,7 +116,6 @@ const styles = StyleSheet.create<IFooterStyle>({
   buttonText: {
     fontFamily: fonts.type.medium,
     fontSize: 16,
-    color: Colors.sailBlue,
   },
   firstButtonStyle: {
     borderWidth: 1,
@@ -115,11 +127,10 @@ const styles = StyleSheet.create<IFooterStyle>({
     backgroundColor: Colors.background2,
     borderWidth: 0,
   },
-  footer:{
+  footer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
   },
-
 });

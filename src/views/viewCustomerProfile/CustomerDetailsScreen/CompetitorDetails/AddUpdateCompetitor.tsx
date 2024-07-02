@@ -15,6 +15,7 @@ interface IAddUpdateCompetitor {
   selectedCompetitorDetail: string[];
   handleCompetiotorTextChange: (text: string, id: number) => void;
   competitorError: ICompetitorError;
+  showError:boolean;
 }
 
 const AddUpdateCompetitor = (props: IAddUpdateCompetitor) => {
@@ -34,7 +35,7 @@ const AddUpdateCompetitor = (props: IAddUpdateCompetitor) => {
         }
         error={
           props?.competitorError[Object.keys(props?.competitorError)[index]] ==
-          false
+          false && props?.showError==true
             ? CompetitorErrorMsg[index]
             : StringConstants.EMPTY
         }

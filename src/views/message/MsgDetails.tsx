@@ -1,20 +1,34 @@
 import React from "react";
-import { ScrollView, View } from "react-native";
+import { FlatList, ScrollView, View } from "react-native";
 import ForwardCard from "./component/ForwarnCard";
 import styles from "views/message/Style/Style";
 import StringConstants from "shared/localization";
-import { Header, RectangularBox, SafeAreaContainer } from "components";
+import {
+  CustomButton,
+  CustomDropDown,
+  Header,
+  InputTextField,
+  RectangularBox,
+  SafeAreaContainer,
+} from "components";
 import { MessageDetailField } from "@shared-constants";
-import { FlatList } from "react-native-gesture-handler";
-import { IFlatlistEscalationCard, IFlatlistMessageDetail } from "models/interface/IMessage";
+import {
+  IFlatlistEscalationCard,
+  IFlatlistMessageDetail,
+} from "models/interface/IMessage";
 import { Root } from "models/ApiResponses/MessageResponse";
+import { Colors } from "commonStyles/RNColor.style";
+import { IdropDown } from "models/interface/ISetting";
 
 interface IMsg {
   msgData: Root;
+  handleTextChange: (text: string, id: number) => void;
+  escalatedDropDown: IdropDown[];
+  escalalteToAnotherApiCalling:()=>void;
 }
 
 const MsgDetails = (props: IMsg) => {
-  const renderMessageDetail = ({item,index}:IFlatlistMessageDetail) => {
+  const renderMessageDetail = ({ item, index }: IFlatlistMessageDetail) => {
     return (
       <RectangularBox
         heading={MessageDetailField[index]}
@@ -25,7 +39,7 @@ const MsgDetails = (props: IMsg) => {
     );
   };
 
-  const renderEscalatedCard = ({item}:IFlatlistEscalationCard) => {
+  const renderEscalatedCard = ({ item }: IFlatlistEscalationCard) => {
     return (
       <ForwardCard
         escalated_by={item?.escalated_by?.user_name}
@@ -36,7 +50,6 @@ const MsgDetails = (props: IMsg) => {
     );
   };
 
-  
   return (
     <>
       <Header topheading={StringConstants.MESSAGE_DETAILS} />
@@ -57,13 +70,42 @@ const MsgDetails = (props: IMsg) => {
             renderItem={renderMessageDetail}
             scrollEnabled={false}
           />
-          <View style={{ paddingHorizontal: 20 }}>
-            <FlatList
-              data={props?.msgData?.allEscalations}
-              renderItem={renderEscalatedCard}
-              scrollEnabled={false}
-            />
-          </View>
+
+          <FlatList
+            data={props?.msgData?.allEscalations}
+            renderItem={renderEscalatedCard}
+            scrollEnabled={false}
+            style={{ paddingHorizontal: 20 }}
+          />
+          {props?.msgData?.escalated_to != null ? (
+            <View style={styles.escalaltedInputContainer}>
+              <CustomDropDown
+                ArrayOfData={
+                  props?.escalatedDropDown.length > 0
+                    ? props?.escalatedDropDown
+                    : undefined
+                }
+                topheading={StringConstants.ESCALATED_TO}
+                style={{ backgroundColor: Colors.inputBG }}
+                onPress={(item: IdropDown) =>
+                  props?.handleTextChange(item.name, 0)
+                }
+              />
+              <InputTextField
+                onChangeText={(text: string) =>
+                  props?.handleTextChange(text, 1)
+                }
+                placeholder={StringConstants.ADD_COMMENT}
+                containerStyle={styles.inputField}
+              />
+              <CustomButton
+                buttonStyle={{ backgroundColor: Colors.sailBlue }}
+                textStyle={{ color: Colors.white }}
+                text={StringConstants.SUBMIT}
+                onPress={props?.escalalteToAnotherApiCalling}
+              />
+            </View>
+          ) : null}
         </ScrollView>
       </SafeAreaContainer>
     </>

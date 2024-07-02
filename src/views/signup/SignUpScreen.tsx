@@ -1,4 +1,4 @@
-import { SafeAreaContainer } from "components";
+import { KeyboardAvoidingWrapper, SafeAreaContainer } from "components";
 import CustomFooter from "./Component/CustomFooter/CustomFooter";
 import First from "./FirstSignUpPage/First";
 import Second from "./SecondSignUpPage/Second";
@@ -35,7 +35,8 @@ const SignUpScreen = ({
   return (
     <GradientBackground>
     <SafeAreaContainer>
-      <ScrollView style={{ marginBottom: "35%" }}>
+      <KeyboardAvoidingWrapper>
+      <ScrollView >
         {CurrentScreen == 1 && (
           <First
           {...{
@@ -65,6 +66,7 @@ const SignUpScreen = ({
           />
         )}
       </ScrollView>
+      </KeyboardAvoidingWrapper>
       <CustomFooter {...{ setScreen, CurrentScreen, Submit,buttonStatus }} />
     </SafeAreaContainer>
     </GradientBackground>

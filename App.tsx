@@ -1,17 +1,17 @@
 import "react-native-gesture-handler";
 import React from "react";
-import {
-  useColorScheme,
-  LogBox,
-} from "react-native";
+import { useColorScheme, LogBox} from "react-native";
 import SplashScreen from "react-native-splash-screen";
-import { Provider } from "react-redux";
+import { Provider} from "react-redux";
 import Navigation from "./src/route";
 import { useNetInfo } from "@react-native-community/netinfo";
 import { persistor, store } from "redux/store/Store";
 import { PersistGate } from "redux-persist/integration/react";
 import StatusCode from "core/StatusCode";
 import PleaseWaitLoader from "views/emptyState/PleaseWaitLoader";
+import { getRememberMe } from "shared/constants/accountService";
+import { SCREENS } from "@shared-constants";
+import { navigate } from "@navigation";
 LogBox.ignoreAllLogs();
 
 if (__DEV__) {
@@ -33,25 +33,24 @@ const App = () => {
     useNativeReachability: false,
   });
   console.log(netInfo);
-
   React.useEffect(() => {
-    setTimeout(() => {
+    setTimeout(async () => {
       SplashScreen.hide();
+      const isRemember = getRememberMe();
+      if (isRemember == "1") {
+        navigate(SCREENS.TAB);
+      } else {
+        navigate(SCREENS.ONBOARDING);
+      }
     }, 2000);
-  }, [scheme, isDarkMode]); 
+  }, [scheme, isDarkMode]);
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
         <PleaseWaitLoader />
         <Navigation />
       </PersistGate>
-    </Provider> 
-
-    // <FilterData/>
-   
-
-
- 
+    </Provider>
   );
 };
 

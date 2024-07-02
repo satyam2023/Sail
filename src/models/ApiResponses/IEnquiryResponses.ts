@@ -75,6 +75,11 @@ export interface INearbyCustomerBody {
     id: number;
   }
   
+
+  export interface IButtonStatus{
+    enquiryBtn:boolean,
+    issueBtn:boolean
+  }
   export interface VisitData {
     id: number;
     user_id: string;

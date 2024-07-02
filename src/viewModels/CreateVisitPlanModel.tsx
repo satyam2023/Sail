@@ -5,11 +5,23 @@ import {
   checkDetailByNickName,
   createVisitPlan,
 } from "controllers/createVisitController";
-import { convertAccomToDropData } from "helper/helperFunctions";
-import { CreateVisitRequest, NickNameResponse } from "models/ApiResponses/CreateVisitResponse";
-import { IvisitPlanDetail } from "models/interface/ICreateVisit";
-import React, {useRef, useState } from "react";
+import { checkCreateVisit } from "helper/ValidationRegex";
+import {
+  checkAllInputField,
+  convertAccomToDropData,
+  isAllFieldTrue,
+} from "helper/helperFunctions";
+import {
+  CreateVisitRequest,
+  NickNameResponse,
+} from "models/ApiResponses/CreateVisitResponse";
+import {
+  ICreateVisitError,
+  IvisitPlanDetail,
+} from "models/interface/ICreateVisit";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
+import { setLoaderVisibility } from "redux/actions/LoaderAction";
 import { BottomTabVisibility } from "redux/actions/UIAction";
 import { store } from "redux/store/Store";
 import StringConstants from "shared/localization";
@@ -20,25 +32,40 @@ const CreateVisitPlanViewModel = () => {
     useState<boolean>(false);
   const [nickNameResult, setNickNameResult] = useState<NickNameResponse>();
   const [isAllFieldHaveData, setAllFieldData] = useState<boolean>(false);
+  const [showError, setError] = useState<boolean>(false);
   const dropData = store?.getState()?.dropdown;
   const regionDropdownList =
     store?.getState()?.home?.data?.data?.CustomerRegion;
   const dispatch = useDispatch();
+
+  const [visitPlanError, setVisitPlanError] = useState<ICreateVisitError>({
+    code: null,
+    name: null,
+    nick: true,
+    region: null,
+    executive: null,
+    date: null,
+    reason: null,
+    mode: null,
+    remarks: null,
+  });
   useFocusEffect(() => {
     dispatch(BottomTabVisibility(false));
     return () => dispatch(BottomTabVisibility(true));
   });
+
   const dropDownData = [
     regionDropdownList,
     convertAccomToDropData(dropData?.accompyingData?.data),
     dropData?.reasonContactData?.data?.Reason,
     dropData?.reasonContactData?.data?.ModeofContact,
   ];
-  const visitPlanDetail:IvisitPlanDetail = {
-    customerCode: useRef(nickNameResult?.customer_code),
-    name: useRef(nickNameResult?.company_name),
+
+  const visitPlanDetail: IvisitPlanDetail = {
+    customerCode: useRef(nickNameResult?.customer_code || ""),
+    name: useRef(nickNameResult?.company_name || ""),
     nickName: useRef(""),
-    customerRegion: useRef(nickNameResult?.customer_region),
+    customerRegion: useRef(nickNameResult?.customer_region || ""),
     visitingExecutive: useRef(""),
     visitDate: useRef(""),
     reason: useRef(""),
@@ -48,23 +75,39 @@ const CreateVisitPlanViewModel = () => {
 
   async function nicknameApicalling() {
     try {
+      dispatch(setLoaderVisibility(true));
       const res = await checkDetailByNickName({ customer_nickname: " " });
       if (res?.isSuccess) {
-        setNickNameResult(res?.data?.data);
+        if (res?.data?.data?.message) {
+        } else setNickNameResult(res?.data?.data);
       }
-    } catch {}
+    } catch {
+    } finally {
+      dispatch(setLoaderVisibility(false));
+    }
   }
 
   function footerButtonPress(button: string) {
     if (button == StringConstants.RIGHT) {
-      createVisitApiCalling();
+      if (isAllFieldHaveData) handleAddVisitPlan();
     } else if (button == StringConstants.LEFT) {
       navigate(SCREENS.MAIN);
     }
   }
 
+  const handleAddVisitPlan = () => {
+    checkCreateVisit(visitPlanDetail, setVisitPlanError);
+    setError(true);
+  };
+
+  useEffect(() => {
+    if (isAllFieldTrue(visitPlanError)) {
+      createVisitApiCalling();
+    }
+  }, [visitPlanError]);
+
   async function createVisitApiCalling() {
-    const body :CreateVisitRequest= {
+    const body: CreateVisitRequest = {
       customer_code: visitPlanDetail?.customerCode.current || null,
       company_name: visitPlanDetail?.name.current || null,
       customer_nickname: visitPlanDetail?.nickName.current || null,
@@ -76,37 +119,46 @@ const CreateVisitPlanViewModel = () => {
       visit_remarks: visitPlanDetail?.remarks?.current || null,
       others_reason: null,
     };
-
     try {
+      dispatch(setLoaderVisibility(true));
       const res = await createVisitPlan(body);
 
       if (res?.isSuccess) {
         setIsVisitDetailFilled(true);
       }
-    } catch {}
+    } catch {
+    } finally {
+      dispatch(setLoaderVisibility(false));
+    }
   }
 
   const isAllDataFilled = () => {
-    for (const key in visitPlanDetail) {
-      if (!visitPlanDetail[key].current) {
-        return ;
-      }
+    if (checkAllInputField(visitPlanDetail)) {
+      if (!isAllFieldHaveData) setAllFieldData(true);
+    } else {
+      if (isAllFieldHaveData) setAllFieldData(false);
     }
-    setAllFieldData(true);
+  };
+
+  const handleTextChange = (text: string | number, index: number) => {
+    visitPlanDetail[Object.keys(visitPlanDetail)[index]].current = text;
+    isAllDataFilled();
+    if (showError) setError(false);
   };
 
   return (
     <CreateVisitPlan
       {...{
         isVisitDetailFilled,
-        visitPlanDetail,
         dropDownData,
         nickNameResult,
         setNickNameResult,
         footerButtonPress,
         nicknameApicalling,
-        isAllDataFilled,
         isAllFieldHaveData,
+        visitPlanError,
+        handleTextChange,
+        showError,
       }}
     />
   );

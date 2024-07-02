@@ -19,6 +19,7 @@ import { navigate } from "@navigation";
 import { SCREENS } from "@shared-constants";
 import { EnquiryType, setCustomerInformationTab } from "redux/actions/UIAction";
 
+
 const HomeScreenViewModel = () => {
   const dispatch = useDispatch();
   const userData = useSelector(
@@ -85,7 +86,7 @@ const HomeScreenViewModel = () => {
   }
 
   return (
-    <SafeAreaView style={{ backgroundColor: Colors.sailBlue, flex: 1 }}>
+ 
       <HomeScreen
         {...{
           userData,
@@ -95,7 +96,7 @@ const HomeScreenViewModel = () => {
           onClickEventOnUpperTextOfHorizontalList,
         }}
       />
-    </SafeAreaView>
+
   );
 };
 

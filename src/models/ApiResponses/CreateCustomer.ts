@@ -1,4 +1,5 @@
 import { Reason_ContactRoot } from "./IdropDown";
+import { IViewCustomerBody } from "./ViewCustomerProfile";
 
 
 export interface ICreateCustomerBody {
@@ -30,6 +31,18 @@ export interface ICreateCustomerBody {
   competitor: ICompetitor[];
 }
 
+export interface CheckCustomerExistBody{
+  customer_code:string;
+}
+
+export interface ExistResponse extends IViewCustomerBody{
+  Status?:string
+}
+
+export interface CheckCustomerExistResponse{
+  data:IViewCustomerBody|undefined
+}
+
 // export interface ICustomerType{
 //   type_name:string,
 //   id:number
@@ -38,16 +51,16 @@ export interface IRepresentative {
   name: string;
   designation: string;
   department: string;
-  file_name: string;
+  file_name: string|undefined;
   address: string;
   email: string;
   contact_number: string;
   whatsapp_number: string;
-  id:number;
+  id?:number;
 }
 
 export interface ICompetitor {
-  name: string;
+  name?: string;
   company_name: string;
   address: string;
   comment: string;

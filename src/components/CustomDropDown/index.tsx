@@ -17,20 +17,21 @@ import fonts from "@fonts";
 import { PressableButton } from "components";
 import { IdropDown } from "models/interface/ISetting";
 import { ScreenWidth } from "libs";
+import StringConstants from "shared/localization";
 
-interface IDropDownStyle{
-  dropContainer:ViewStyle;
-  listContainer:ViewStyle;
-  lable:TextStyle;
-  errorMsg:TextStyle;
-  errorBox:ViewStyle;
-  rightIcon:ImageStyle;
-  rightIconContainer:ViewStyle;
-  itemSeparator:ViewStyle;
+interface IDropDownStyle {
+  dropContainer: ViewStyle;
+  listContainer: ViewStyle;
+  lable: TextStyle;
+  errorMsg: TextStyle;
+  errorBox: ViewStyle;
+  rightIcon: ImageStyle;
+  rightIconContainer: ViewStyle;
+  itemSeparator: ViewStyle;
 }
 
 interface ICustomDropDown {
-  ArrayOfData: Array<IdropDown> | IdropDown[]|undefined;
+  ArrayOfData: Array<IdropDown> | IdropDown[] | undefined;
   leftIcon?: ImageURISource;
   getData?: (value: string) => void;
   topheading: string;
@@ -41,23 +42,23 @@ interface ICustomDropDown {
   isRightDropDownVisible?: boolean;
   rightIcon?: ImageURISource;
   onRightIconPress?: () => void;
-  dropDownTintColor?:string
+  dropDownTintColor?: string;
+  isSelectedItemNotVisible?: boolean;
 }
 
 const CustomDropDown = (props: ICustomDropDown) => {
-
+  const isSelectedNotVisible: boolean = props?.isSelectedItemNotVisible == true;
   const [selectedListItem, setSelectedListItem] = useState<string>(
-    props.defaultValue ? props.defaultValue : "",
+    props.defaultValue ? props.defaultValue : StringConstants.EMPTY,
   );
   const [isListVisible, setIsListVisible] = useState<boolean>(false);
   const handleItemClick = (data: string) => {
     setIsListVisible(false);
-    setSelectedListItem(data);
+    setSelectedListItem(isSelectedNotVisible ? StringConstants.EMPTY : data);
   };
 
   const renderItem = (item: IdropDown, _: number) => {
     return (
-      
       <PressableButton
         style={styles.listContainer}
         onPress={() => {
@@ -71,7 +72,6 @@ const CustomDropDown = (props: ICustomDropDown) => {
           {item.name}
         </TextWrapper>
       </PressableButton>
-      
     );
   };
 
@@ -81,7 +81,7 @@ const CustomDropDown = (props: ICustomDropDown) => {
         style={[
           styles.dropContainer,
           props?.style,
-          props?.error ? styles.errorBox :null,
+          props?.error ? styles.errorBox : null,
         ]}
         onPress={() => {
           setIsListVisible(!isListVisible);
@@ -92,25 +92,37 @@ const CustomDropDown = (props: ICustomDropDown) => {
             <Image source={props.leftIcon} style={commonStyles.leftIcon} />
           )}
           <View>
-            {(selectedListItem||props?.defaultValue) && (
-              <TextWrapper style={styles.lable}>{props?.topheading}</TextWrapper>
+            {(selectedListItem || props?.defaultValue) && (
+              <TextWrapper style={styles.lable}>
+                {props?.topheading}
+              </TextWrapper>
             )}
             <TextWrapper
-              color={(selectedListItem ||props?.defaultValue) ? Colors.black : Colors.jetGray}
+              color={
+                selectedListItem || props?.defaultValue
+                  ? Colors.black
+                  : Colors.jetGray
+              }
             >
-              {(selectedListItem ||props?.defaultValue)? selectedListItem||props.defaultValue : props?.topheading}
+              {selectedListItem || props?.defaultValue
+                ? selectedListItem || props.defaultValue
+                : props?.topheading}
             </TextWrapper>
           </View>
         </View>
         {!props.isRightDropDownVisible ? (
           <Image
             source={Glyphs.Arrow}
-            tintColor={props?.dropDownTintColor?props.dropDownTintColor:Colors.jetGray}
+            tintColor={
+              props?.dropDownTintColor
+                ? props.dropDownTintColor
+                : Colors.jetGray
+            }
             style={commonStyles.icon}
           />
         ) : (
           <PressableButton
-           style={styles.rightIconContainer}
+            style={styles.rightIconContainer}
             onPress={() => {
               if (props.onRightIconPress) {
                 props.onRightIconPress();
@@ -132,15 +144,9 @@ const CustomDropDown = (props: ICustomDropDown) => {
         <FlatList
           data={props.ArrayOfData}
           renderItem={({ item, index }) => renderItem(item, index)}
-          style={
-            {marginBottom:props?.ArrayOfData?10:undefined}
-          }
+          style={{ marginBottom: props?.ArrayOfData ? 10 : undefined }}
           showsVerticalScrollIndicator={false}
-          ItemSeparatorComponent={() => (
-            <View
-              style={styles.itemSeparator}
-            />
-          )}
+          ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
         />
       )}
     </>
@@ -166,7 +172,7 @@ const styles = StyleSheet.create<IDropDownStyle>({
     backgroundColor: Colors.white,
     paddingLeft: 24,
     justifyContent: "center",
-    width:ScreenWidth
+    width: ScreenWidth,
   },
   itemSeparator: {
     height: 1,

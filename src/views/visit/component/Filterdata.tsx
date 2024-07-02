@@ -1,7 +1,12 @@
 import React, { useRef, useState } from "react";
-import { Modal, StyleSheet, View, ViewStyle } from "react-native";
+import {
+  Modal,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from "react-native";
 import { Colors } from "commonStyles/RNColor.style";
-import { CustomButton, CustomDropDown } from "components";
+import { CustomButton, CustomDropDown} from "components";
 import StringConstants from "shared/localization";
 import { IdropDown } from "models/interface/ISetting";
 import Datepicker from "components/Calender";
@@ -17,15 +22,17 @@ interface IFilterDataStyle {
 
 interface FilterProps {
   isVisible: boolean;
-  onPress:(data:any)=>void;
+  onPress: (data: IFilterDataDetails) => void;
 }
 
-const FilterData = ({ isVisible,onPress }: FilterProps) => {
+const FilterData = ({ isVisible, onPress }: FilterProps) => {
+  const [modalVisibility, setModalVisibility] = useState<boolean>(isVisible as boolean);
   const [currentScreen, setCurrentScreen] = useState<string>(
     StringConstants.SEARCH_BY,
   );
-  const [selectedDropDownSearch, setSelectedDropDownSearch] =useState<string>("");
-  const enteredFilterationData:IFilterDataDetails = {
+  const [selectedDropDownSearch, setSelectedDropDownSearch] =
+    useState<string>("");
+  const enteredFilterationData: IFilterDataDetails = {
     dayFrom: useRef<string>(),
     dayTo: useRef<string>(),
     durationRange: useRef<string>(),
@@ -99,17 +106,19 @@ const FilterData = ({ isVisible,onPress }: FilterProps) => {
   }
 
   return (
-    <Modal transparent={true} visible={isVisible}>
-      <View style={styles.container}>
-        {renderScreen()}
-        <CustomButton
-          text={StringConstants.APPLY_FILTERS}
-          buttonStyle={styles.btnStyle}
-          textStyle={{ color: Colors.white }}
-          onPress={onApplyFilterButtonPress}
-        />
-      </View>
-    </Modal>
+   
+      <Modal transparent={true} visible={modalVisibility} style={{backgroundColor:'red',flex:1}}>
+        <View style={styles.container}>
+          {renderScreen()}
+          <CustomButton
+            text={StringConstants.APPLY_FILTERS}
+            buttonStyle={styles.btnStyle}
+            textStyle={{ color: Colors.white }}
+            onPress={onApplyFilterButtonPress}
+          />
+        </View>
+      </Modal>
+  
   );
 };
 
@@ -124,6 +133,7 @@ const styles = StyleSheet.create<IFilterDataStyle>({
     paddingHorizontal: 20,
     top: "22%",
     paddingVertical: 20,
+    
   },
   btnStyle: {
     width: "50%",

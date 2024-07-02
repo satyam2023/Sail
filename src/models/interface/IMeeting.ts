@@ -3,7 +3,11 @@ import { MutableRefObject } from "react";
 import { IdropDown } from "./ISetting";
 import { IRepresentativeEnteredDetail } from "./ICreateCustomer";
 import { IFlatlistIndex } from "./IMessage";
-import { IInput } from "@shared-constants";
+import { IInput, IMeetingRepresentativeDetailInputField } from "@shared-constants";
+import { ImageURISource } from "react-native";
+import StringConstants from "shared/localization";
+import { Colors } from "commonStyles/RNColor.style";
+import Glyphs from "assets/Glyphs";
 
 export interface IPlannedMeetingData{
     last_page: number;
@@ -59,7 +63,7 @@ export interface IissueDetail{
     [key:string|number]:MutableRefObject<number|string|boolean|undefined>,
     issueName:MutableRefObject<string|undefined>,
     comment:MutableRefObject<string|undefined>,
-    escalatedTo:MutableRefObject<number|undefined>,
+    escalatedTo:MutableRefObject<string|undefined>,
     escalated_comment:MutableRefObject<string|undefined>,
     resolved_status:MutableRefObject<number|undefined>,
     
@@ -76,20 +80,29 @@ export interface IissueDetail{
   }
 
   export interface Iissue{
-    issueName:string
-    comment:string,
-    escalatedTo:number,
-    escalated_comment:string,
-    resolved_status:number,
+    issueName:string|undefined,
+    comment:string|undefined
+    escalatedTo:string|undefined,
+    escalated_comment:string|undefined,
+    resolved_status:number|undefined,
   }
 
 
 export interface IRepresentativeList{
     representativeList: string[];
-    representativeListDetail: IRepresentativeEnteredDetail[];
+    representativeListDetail: IDetail[];
     representativeDropDown: IdropDown[];
   }
 
+  export interface IDetail{
+    name: string;
+    designation: string;
+    dept: string;
+    address: string;
+    email: string;
+    contact: string;
+    whatsApp: string;
+  }
   export interface IFlatlistRectangularBox extends IFlatlistIndex{
   item:RootData
   }
@@ -103,5 +116,41 @@ export interface IRepresentativeList{
       
     }
 
+
+
+    export interface IssueDetailInputField {
+      placeholder: string;
+      rightIcon?: ImageURISource;
+      dropDownTintColor?: string;
+      rightIconTintColor?: string;
+    }
+    export const IssueDetailInputField: IssueDetailInputField[] = [
+      {
+        placeholder: StringConstants.SELECT_ISSUE,
+        dropDownTintColor: Colors.sailRed,
+      },
+      {
+        placeholder: StringConstants.COMMENT,
+        rightIcon: Glyphs.Mic,
+        rightIconTintColor: Colors.darkGrey,
+      },
+      {
+        placeholder: StringConstants.ESCALATED_TO,
+      },
+      {
+        placeholder: StringConstants.ESCALATED_COMMENT,
+        rightIcon: Glyphs.Mic,
+        rightIconTintColor: Colors.darkGrey,
+      },
+    ];
+
+    export interface IFlatlistIssueField extends IFlatlistIndex{
+      item:IssueDetailInputField
+    }
+
+
+    export interface IFlatlistRepresentativeDetail extends IFlatlistIndex{
+      item:IMeetingRepresentativeDetailInputField
+    }
   
   

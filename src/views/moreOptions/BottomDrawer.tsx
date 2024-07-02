@@ -42,7 +42,7 @@ const MoreOptionScreen = forwardRef(() => {
     );
   };
   return (
-    <Modal animationType="slide" transparent={true} visible={modalVisible}>
+    <Modal animationType="slide" transparent={true} visible={modalVisible} >
       <Animated.View style={[styles.modalContainer]}>
         <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
           <TextWrapper style={commonStyles.font16MediumBlackpearl}>
@@ -63,6 +63,7 @@ const MoreOptionScreen = forwardRef(() => {
           ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
           columnWrapperStyle={{ justifyContent: "space-between" }}
           style={{ marginTop: 10 }}
+          scrollEnabled={false}
         />
       </Animated.View>
     </Modal>

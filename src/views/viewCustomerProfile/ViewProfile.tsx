@@ -1,26 +1,25 @@
 import React, { memo } from "react";
-import { SafeAreaView } from "react-native";
+import { KeyboardAvoidingView, SafeAreaView } from "react-native";
 import {
   IEnteredCustomerDetails,
   ISelectedImage,
 } from "models/interface/ICreateCustomer";
 import { IdropDown } from "models/interface/ISetting";
 import { IViewCustomerBody } from "models/ApiResponses/ViewCustomerProfile";
-import {
-  ICustomerState,
-} from "models/interface/IViewCustomerProfile";
+import { ICustomerState } from "models/interface/IViewCustomerProfile";
 import { Colors } from "commonStyles/RNColor.style";
 import StatusBarComponent from "components/StatusBarComponent";
 import First from "./CustomerDetailsScreen/First";
 import ProfileHeader from "./Component/ProfileHeader";
-import { CustomFooter } from "components";
+import { CustomFooter, KeyboardAvoidingWrapper } from "components";
 import StringConstants from "shared/localization";
+import { isAndroid } from "libs";
 
 interface IViewProfile {
   customerList: IViewCustomerBody[];
   selectedIndexValue: number;
   handleForwardClick: () => void;
-  handleBackClick:()=>void;
+  handleBackClick: () => void;
   enteredCustomerDetails: IEnteredCustomerDetails;
   dropdownDataList: IdropDown[][];
   setIndexofSubType: Function;
@@ -38,8 +37,8 @@ interface IViewProfile {
     text: string | number,
     id: number,
   ) => void;
-  removeDropDownItem:(id:number,type:string)=>void;
-  removeSelectedImage:(item:ISelectedImage)=>void;
+  removeDropDownItem: (id: number, type: string) => void;
+  removeSelectedImage: (item: ISelectedImage) => void;
 }
 
 const ViewProfileScreen = ({
@@ -62,14 +61,22 @@ const ViewProfileScreen = ({
   handleCustomerDetailChange,
   handleSpecificCustomerTypeDetailChange,
   removeDropDownItem,
-  removeSelectedImage
+  removeSelectedImage,
 }: IViewProfile) => {
   return (
     <>
-    <StatusBarComponent backgroundColor={Colors.sailBlue} conentType={'dark-content'}/>
-    <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
-      <ProfileHeader CurrentScreen={1} handleUpdateCustomerCode={handleUpdateCustomerCode} updateCustomerCode={updateCustomerCode}/>
-    <First
+      <StatusBarComponent
+        backgroundColor={Colors.sailBlue}
+        conentType={"dark-content"}
+      />
+      <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
+        <ProfileHeader
+          CurrentScreen={1}
+          handleUpdateCustomerCode={handleUpdateCustomerCode}
+          updateCustomerCode={updateCustomerCode}
+        />
+        <KeyboardAvoidingWrapper  >
+          <First
             {...{
               setSubTypes,
               enteredCustomerDetails,
@@ -89,23 +96,22 @@ const ViewProfileScreen = ({
               removeSelectedImage,
             }}
           />
-    </SafeAreaView>
-    <CustomFooter
-            leftButtonText={
-               customer.editDetails
-                  ? StringConstants.CANCEL
-                  : StringConstants.EDT
-            }
-            rightButtonText={
-               customer.editDetails
-                ? StringConstants.SUBMIT
-                : StringConstants.PROCEED
-            }
-            leftButtonPress={handleBackClick}
-            rightButtonPress={handleForwardClick}
-            style={{ backgroundColor: Colors.white }}
-            isMovable={true}
-          />
+        </KeyboardAvoidingWrapper>
+      </SafeAreaView>
+      <CustomFooter
+        leftButtonText={
+          customer.editDetails ? StringConstants.CANCEL : StringConstants.EDT
+        }
+        rightButtonText={
+          customer.editDetails
+            ? StringConstants.SUBMIT
+            : StringConstants.PROCEED
+        }
+        leftButtonPress={handleBackClick}
+        rightButtonPress={handleForwardClick}
+        style={{ backgroundColor: Colors.white }}
+        isMovable={true}
+      />
     </>
   );
 };

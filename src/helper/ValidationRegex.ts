@@ -4,19 +4,26 @@ import {
   IEnteredCustomerDetails,
   IRepresentativeEnteredDetail,
 } from "models/interface/ICreateCustomer";
-import { ICompetitorError, ICustomerDetailError } from "models/interface/IViewCustomerProfile";
+import {
+  ICreateVisitError,
+  IvisitPlanDetail,
+} from "models/interface/ICreateVisit";
+import {
+  ICompetitorError,
+  ICustomerDetailError,
+} from "models/interface/IViewCustomerProfile";
 import { MutableRefObject } from "react";
 
 export interface Ierror {
-  [key:string|number]:boolean|null;
-  upn: boolean|null;
-  Contact: boolean|null;
-  Name: boolean|null;
-  Email: boolean|null;
-  Location: boolean|null;
-  Role: boolean|null;
-  Password: boolean|null;
-  Confirm_Password: boolean|null;
+  [key: string | number]: boolean | null;
+  upn: boolean | null;
+  Contact: boolean | null;
+  Name: boolean | null;
+  Email: boolean | null;
+  Location: boolean | null;
+  Role: boolean | null;
+  Password: boolean | null;
+  Confirm_Password: boolean | null;
 }
 
 export interface IrepresentativeError {
@@ -44,11 +51,18 @@ export interface ICreateCustomerError {
 }
 
 export interface IRepresentativeError {
-  [key: string|number]: boolean | null;
+  [key: string | number]: boolean | null;
   name: boolean | null;
   designation: boolean | null;
   departement: boolean | null;
   address: boolean | null;
+  email: boolean | null;
+  contact: boolean | null;
+  whatsApp: boolean | null;
+}
+
+export interface IMeetingRepresentativeError{
+  [key: string|number]: boolean | null;
   email: boolean | null;
   contact: boolean | null;
   whatsApp: boolean | null;
@@ -82,7 +96,7 @@ export const Regex = {
   GST: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
   NUMBER_MAX: /^\d{10}$/,
   SLASHNAME: /^[A-Za-z.&/() ]+(?:[ -']+[A-Za-z.&/() ]+)*$/,
-  ADDRESS:/^[#.0-9a-zA-Z\s,-]+$/,
+  ADDRESS: /^[#.0-9a-zA-Z\s,-]+$/,
 };
 
 const validateUpnNumber = (uniqueNumber: string) => {
@@ -109,7 +123,7 @@ const validateName = (name: string) => {
 };
 
 const validateEmail = (email: string) => {
-  if (email.length == 0) {
+  if (email?.length == 0) {
     return false;
   } else {
     return Regex.EMAIL.test(email);
@@ -198,21 +212,19 @@ export const checkGST = (text: string) => {
 };
 
 export const checkCustomerDetails = (
-  code: string,
-  pan: string,
-  gst: string,
+  detail:IEnteredCustomerDetails,
   setError: Function,
 ) => {
   setError((prev: Ierror) => ({
     ...prev,
-    cust_code: checkCustomerCode(code),
-    pan: checkPAN(pan),
-    gst: checkGST(gst),
+    cust_code: checkCustomerCode(detail?.code?.current),
+    pan: checkPAN(detail?.pan?.current),
+    gst: checkGST(detail?.gst?.current),
   }));
 };
 
 export const checkRepresentativeDetail = (
-  details: any,
+  details: IRepresentativeEnteredDetail,
   setRepresentativeError: Function,
 ) => {
   setRepresentativeError((prev: IrepresentativeError) => ({
@@ -237,28 +249,55 @@ export const checkCustomerViewRepresentativeDetail = (
   details: IRepresentativeEnteredDetail,
   setRepresentativeError: Function,
 ) => {
-  setRepresentativeError((prev: IrepresentativeError) => ({
-    ...prev,
-    name: Regex.NAME.test(details?.name.current),
-    designation: Regex.NAME.test(details?.designation.current),
-    departement: Regex.NAME.test(details?.dept.current),
+  setRepresentativeError( ({
+    name: Regex.NAME.test(details?.name?.current),
+    designation: Regex.NAME.test(details?.designation?.current),
+    departement: Regex.NAME.test(details?.dept?.current),
     address: Regex.NAME.test(details?.address.current),
     email: Regex.EMAIL.test(details?.email?.current),
-    contact:Regex.CONTACT.test(details?.contact?.current),
-    whatsApp:Regex.CONTACT.test(details?.whatsApp?.current),
+    contact: Regex.CONTACT.test(details?.contact?.current),
+    whatsApp: Regex.CONTACT.test(details?.whatsApp?.current),
+  }));
+};
+
+export const checkCompetitorDetail = (
+  enteredCompetitorDetail: IEnteredCompetitorDetail,
+  setCompetitorError: Function,
+) => {
+  setCompetitorError((prev: ICompetitorError) => ({
+    ...prev,
+    name: Regex.NAME.test(enteredCompetitorDetail?.company.current),
+    address: Regex.ADDRESS.test(enteredCompetitorDetail?.address.current),
+    comment: Regex.NAME.test(enteredCompetitorDetail?.comment.current),
+  }));
+};
+
+export const checkCreateVisit = (
+  visitPlanDetail: IvisitPlanDetail,
+  setVisitPlanError: Function,
+) => {
+  setVisitPlanError((prev: ICreateVisitError) => ({
+    ...prev,
+    code: Regex.CUSTOMER_CODE.test(visitPlanDetail.customerCode.current),
+    name: Regex.NAME.test(visitPlanDetail.name.current),
+    region: validateDropDown(visitPlanDetail.customerRegion.current),
+    executive: validateDropDown(visitPlanDetail.visitingExecutive.current),
+    date: validateDropDown(visitPlanDetail.visitDate.current),
+    reason: validateDropDown(visitPlanDetail.reason.current),
+    mode: validateDropDown(visitPlanDetail.modeOfContact.current),
+    remarks: Regex.NAME.test(visitPlanDetail.remarks.current),
   }));
 };
 
 
-export const checkCompetitorDetail=( 
-  enteredCompetitorDetail: IEnteredCompetitorDetail,
-  setCompetitorError: Function)=>{
-    setCompetitorError((prev: ICompetitorError) => ({
-      ...prev,
-      name: Regex.NAME.test(enteredCompetitorDetail?.company.current),
-      address: Regex.ADDRESS.test(enteredCompetitorDetail?.address.current),
-      comment:Regex.NAME.test(enteredCompetitorDetail?.comment.current),
-    }));
-
-  }
-
+export const checkMeetingRepresentativeDetail = (
+  details: IRepresentativeEnteredDetail,
+  setRepresentativeError: Function,
+) => {
+  setRepresentativeError((prev: IrepresentativeError) => ({
+    ...prev,
+    email: Regex.EMAIL.test(details?.email?.current),
+    contact: Regex.CONTACT.test(details?.contact?.current),
+    whatsApp: Regex.CONTACT.test(details?.whatsApp?.current),
+  }));
+};

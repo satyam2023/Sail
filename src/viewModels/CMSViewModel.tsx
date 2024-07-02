@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { IApiResponse } from "models/ApiResponses/IApiResponse";
 import { CMSPageResponse } from "models/ApiResponses/CMSPageResponse";
 import { getCMSPage } from "controllers/cmsController";
+import { logger } from "helper/helperFunctions";
 
 const CMSViewModel = () => {
   const [pages, setpages] = useState<string>(StringConstants.CMS);
@@ -36,17 +37,19 @@ const CMSViewModel = () => {
         break;
     }
   }
+
   useEffect(() => {
     const cmsPage = async () => {
       dispatch(setLoaderVisibility(true));
       try {
-     const res :IApiResponse<CMSPageResponse> |undefined= await getCMSPage();
-     
-   if(res?.isSuccess){
-    dispatch(saveCmsPages(res.data));
-   }
+        const res: IApiResponse<CMSPageResponse> | undefined =
+          await getCMSPage();
 
+        if (res?.isSuccess) {
+          dispatch(saveCmsPages(res.data));
+        }
       } catch (error) {
+        logger(error,"Error in fetching cms page data")
       } finally {
         dispatch(setLoaderVisibility(false));
       }

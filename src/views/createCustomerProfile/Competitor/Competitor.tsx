@@ -21,6 +21,7 @@ interface RepresenatativeProps {
   enteredCompetitorDetail: IEnteredCompetitorDetail;
   addDetailStatus: boolean;
   competitorList: ICompetitor[];
+  handleTextChangeOfCompetitor:(text: string, id: number) => void;
 }
 const CustomerRepresentative = (props: RepresenatativeProps) => {
   function renderCompetitorList({ item, index }: IFlatlistCompetitorList) {
@@ -28,7 +29,7 @@ const CustomerRepresentative = (props: RepresenatativeProps) => {
       
       <View style={styles.representativeListBox}
       key={index}>
-        <TextWrapper>{item.name}</TextWrapper>
+        <TextWrapper>{item?.company_name}</TextWrapper>
         <Image
           source={Glyphs.Editing}
           tintColor={Colors.sailBlue}

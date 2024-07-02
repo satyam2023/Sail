@@ -1,6 +1,6 @@
 import APIConstants from "core/ApiConstants";
 import { logger } from "helper/helperFunctions";
-import { ICreateCustomerBody, ICustomerCluster, ICustomerSegment, ICustomerStatus, ICustomerType, IProcuredProduct, ISupplier } from "models/ApiResponses/CreateCustomer";
+import { CheckCustomerExistBody, CheckCustomerExistResponse, ICreateCustomerBody, ICustomerCluster, ICustomerSegment, ICustomerStatus, ICustomerType, IProcuredProduct, ISupplier } from "models/ApiResponses/CreateCustomer";
 import { IApiResponse } from "models/ApiResponses/IApiResponse";
 import { Dispatch } from "react";
 import { AnyAction } from "redux";
@@ -12,8 +12,7 @@ import {
   getSegmentReducer,
   getSupplierdData,
 } from "redux/actions/CreateCustomerAction";
-import { sendGetRequest, sendPostMultipartRequest} from "services/network/Network";
-
+import { sendGetRequest, sendPostMultipartRequest, sendPostRequest} from "services/network/Network";
 
 
 export const getCustomerSegmenList = async (dispatch: Dispatch<AnyAction>) => {
@@ -83,6 +82,20 @@ export const getCreateCustomerProfile = async (body: FormData) => {
       APIConstants.CREATE_CUSTOMER,
       body,
     );
+  return res;
+};
+
+
+export const checkSAPCustomer = async (
+  body: CheckCustomerExistBody,
+) => {
+
+  const res: IApiResponse<CheckCustomerExistResponse> =
+    await sendPostRequest<CheckCustomerExistResponse>(
+      APIConstants.CUS_DETAIL_EXISTING,
+      body,
+    );
+
   return res;
 };
 

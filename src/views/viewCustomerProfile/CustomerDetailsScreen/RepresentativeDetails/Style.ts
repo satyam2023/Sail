@@ -3,7 +3,7 @@ import { Colors } from "commonStyles/RNColor.style";
 import { ImageStyle, StyleSheet, TextStyle, ViewStyle } from "react-native";
 
 interface IStyle{
-  selectedImageStyle:ViewStyle;
+  selectedImageStyle:ImageStyle;
   img:ImageStyle;
   showRepresentativeBox:ViewStyle;
   showRepresentativeName:ViewStyle;

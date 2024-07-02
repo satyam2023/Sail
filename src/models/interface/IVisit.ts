@@ -1,6 +1,6 @@
 import { MutableRefObject } from "react";
 import { IFlatlistIndex } from "./IMessage";
-import { ExecutedResponse } from "models/ApiResponses/VisitResponse";
+import { ExecutedResponse, VisitResponse } from "models/ApiResponses/VisitResponse";
 
 export interface IPlannedVisitEdit {
   visitDate: MutableRefObject<string>;
@@ -15,7 +15,7 @@ export interface IList {
 }
 
 export interface IFlatlistExecuted extends IFlatlistIndex {
-  item: ExecutedResponse;
+  item: ExecutedResponse|VisitResponse;
 }
 
 export interface IVisitDetail {
@@ -43,4 +43,9 @@ export interface IFilterDataDetails{
   dayTo: MutableRefObject<string|undefined>,
   durationRange: MutableRefObject<string|undefined>,
   filterType: MutableRefObject<string|undefined>,
+}
+
+export interface IFlatListPlannedVisit extends IFlatlistIndex{
+  item: VisitResponse;
+ 
 }

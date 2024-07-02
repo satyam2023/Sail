@@ -11,7 +11,8 @@ interface IStyle {
   qrText: TextStyle;
   headingText: TextStyle;
   qrImg: ImageStyle;
-  productList:ViewStyle;
+  productList: ViewStyle;
+  productDescriptionLine: ViewStyle;
 }
 
 const styles = StyleSheet.create<IStyle>({
@@ -27,7 +28,6 @@ const styles = StyleSheet.create<IStyle>({
     borderRadius: 15,
     backgroundColor: Colors.white,
     marginBottom: 16,
-    paddingHorizontal: 17,
   },
   txt: {
     fontFamily: fonts.type.medium,
@@ -35,18 +35,18 @@ const styles = StyleSheet.create<IStyle>({
     lineHeight: 20,
     color: Colors.blackPeral,
     marginTop: 10,
-    marginBottom:16
+    marginBottom: 16,
   },
   dwd: {
     color: Colors.orange,
     fontFamily: fonts.type.medium,
     fontSize: 12,
-    lineHeight:20,
+    lineHeight: 20,
     textDecorationLine: "underline",
   },
   productImage: {
     alignSelf: "center",
-    height: 140,
+    height: 160,
     width: 120,
     resizeMode: "cover",
   },
@@ -69,10 +69,16 @@ const styles = StyleSheet.create<IStyle>({
     width: "50%",
     height: "50%",
   },
-  productList:{
-      marginBottom: 15,
-      flex: 1,
-      backgroundColor: Colors.transparent,
-  }
+  productList: {
+    marginBottom: 15,
+    flex: 1,
+    backgroundColor: Colors.transparent,
+  },
+  productDescriptionLine: {
+    width: "100%",
+    height: 0.5,
+    backgroundColor: Colors.lightGray,
+    marginTop: 16,
+  },
 });
 export default styles;

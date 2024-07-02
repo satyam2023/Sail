@@ -5,7 +5,7 @@ import {
   getUserEnquiry,
 } from "controllers/enquiryController";
 import { checkOnlyNumber } from "helper/ValidationRegex";
-import { logger } from "helper/helperFunctions";
+import { isDetailFilled, logger } from "helper/helperFunctions";
 import { IApiResponse } from "models/ApiResponses/IApiResponse";
 import {
   IssueEnquiryBody,
@@ -14,17 +14,26 @@ import {
   IIssueEnquiry,
   INearbyCustomerResponse,
   INearbyCustomer,
+  IButtonStatus,
 } from "models/ApiResponses/IEnquiryResponses";
+import { IissueEnquiryEnteredData, IuserEnquiryEnteredData } from "models/interface/IEnquiry";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoaderVisibility } from "redux/actions/LoaderAction";
 import { store } from "redux/store/Store";
+import StringConstants from "shared/localization";
 import EnquiryScreen from "views/enquiry/EnquiryScreen";
 
 const EnquiryViewModel = () => {
   const [currentScreen, setCurrentScreen] = useState<number>(1);
   const [searchresult, setsearchresult] = useState<UserEnquiryResponse>();
   const [issueSearchresult, setIssueSearchResult] = useState<IIssueEnquiry[]>();
+  const [issueEnquiryType,setIssueEnquiryType]=useState<string>(StringConstants.OPEN_ISSUES);
+  const [btnStatus,setBtnStatus]=useState<IButtonStatus>({
+    enquiryBtn:false,
+    issueBtn:false
+  })
+
   const selectedEnquiry = useSelector(
     (state: any) => state?.UIReducer?.enquiryType,
   );
@@ -34,11 +43,11 @@ const EnquiryViewModel = () => {
   const dispatch = useDispatch();
   const roleLocationDropDownList =
     store?.getState()?.masterData?.masterData?.data;
-  const userEnquiryEnteredDetail = {
+  const userEnquiryEnteredDetail:IuserEnquiryEnteredData = {
     name: useRef<string>(""),
     location: useRef<string>(""),
   };
-  const issueEnquiryEnteredDetail = {
+  const issueEnquiryEnteredDetail:IissueEnquiryEnteredData = {
     customerCodeName: useRef<string>(""),
     location: useRef<string>(""),
   };
@@ -47,10 +56,27 @@ const EnquiryViewModel = () => {
     INearbyCustomer[] | undefined
   >();
 
+  const userEnquiryApi=async()=>{
+    const body = {
+      user_name: userEnquiryEnteredDetail.name.current,
+      user_location: userEnquiryEnteredDetail.location.current,
+    };
+    try{
+    const userRes: UserEnquiryResponse = await getUserEnquiry(body);
+    setsearchresult(userRes);
+    }
+    catch(e){
+     logger(e,"Error in User Enquiry API Calling")
+    }
+    finally{
+
+    }
+  }
+
   const issueEnquiry = async () => {
     dispatch(setLoaderVisibility(true));
     const body: IssueEnquiryBody = {
-      issue_type: 0,
+      issue_type: issueEnquiryType==StringConstants.OPEN_ISSUES?0:1,
       customer_code: checkOnlyNumber(
         issueEnquiryEnteredDetail.customerCodeName.current,
       )
@@ -68,9 +94,11 @@ const EnquiryViewModel = () => {
         await getIssueEnquiry(body);
 
       if (res?.isSuccess) {
-        setIssueSearchResult(res?.data?.data);
+        setIssueSearchResult(res?.data?.data[0]?.message?[]:res?.data?.data);
       }
-    } catch (error) {}
+    } catch (error) {
+      logger(error,"Error in Issue Enquiry API Calling")
+    }
     dispatch(setLoaderVisibility(false));
   };
 
@@ -103,23 +131,62 @@ const EnquiryViewModel = () => {
   };
 
   useEffect(() => {
+    if(currentScreen==3)
     nearbyCustomer();
-  }, []);
+  }, [currentScreen]);
 
   async function onSearch() {
-    if (currentScreen == 1) {
-      const body = {
-        user_name: userEnquiryEnteredDetail.name.current,
-        user_location: userEnquiryEnteredDetail.location.current,
-      };
-      const userRes: UserEnquiryResponse = await getUserEnquiry(body);
-      setsearchresult(userRes);
-    } else if (currentScreen == 2) {
+    if (currentScreen == 1 && btnStatus.enquiryBtn) {
+       userEnquiryApi();
+    } else if (currentScreen == 2 && btnStatus.issueBtn) {
       issueEnquiry();
     }
   }
 
+  function handleIssueEnquiry(type:string){
+    setIssueEnquiryType(type);
 
+  }
+
+  function handleTextChangeofUserEnquiry(text:string,id:number){
+  
+   userEnquiryEnteredDetail[Object.keys(userEnquiryEnteredDetail)[id]].current=text;
+    if(isDetailFilled(userEnquiryEnteredDetail)){
+      if(!btnStatus.enquiryBtn){
+        setBtnStatus((prev:IButtonStatus)=>({
+        ...prev,
+        enquiryBtn:true
+        }))
+      }
+    }
+    else {
+      if(btnStatus.enquiryBtn){
+        setBtnStatus((prev:IButtonStatus)=>({
+        ...prev,
+        enquiryBtn:false
+        }))
+      }
+    }
+  }
+  function handleTextChangeofIssueEnquiry(text:string,id:number){
+   issueEnquiryEnteredDetail[Object.keys(issueEnquiryEnteredDetail)[id]].current=text;
+   if(isDetailFilled(issueEnquiryEnteredDetail)){
+    if(!btnStatus.issueBtn){
+      setBtnStatus((prev:IButtonStatus)=>({
+      ...prev,
+      issueBtn:true
+      }))
+    }
+  }
+  else {
+    if(btnStatus.issueBtn){
+      setBtnStatus((prev:IButtonStatus)=>({
+      ...prev,
+      issueBtn:false
+      }))
+    }
+  }
+   }
 
   return (
     <EnquiryScreen
@@ -135,7 +202,12 @@ const EnquiryViewModel = () => {
         setIssueSearchResult,
         setsearchresult,
         NearByCustomerList,
-      
+        handleIssueEnquiry,
+        issueEnquiryType,
+        handleTextChangeofUserEnquiry,
+        handleTextChangeofIssueEnquiry,
+        btnStatus
+
       }}
     />
   );

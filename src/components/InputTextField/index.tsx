@@ -1,6 +1,7 @@
 import { Colors } from "commonStyles/RNColor.style";
 import React, { useEffect, useRef, useState } from "react";
 import {
+  Animated,
   Image,
   ImageStyle,
   ImageURISource,
@@ -52,12 +53,31 @@ export interface ITextField {
   ref?: any;
   leftIconActive?: boolean;
   value?:string|undefined;
+  placeholderColor?:string
 }
 
 const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
   const [secureText, setSecuretext] = useState<boolean>(false);
   const [textFocusStatus, setTextFocusStatus] = useState<boolean>(false);
   const inputRef = useRef<TextInput>(null);
+  const translateY = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if(textFocusStatus)
+      Animated.timing(translateY, {
+        toValue: Platform.OS == "ios" ? -5 : 10, 
+        duration: 100, 
+        useNativeDriver: true,
+      }).start();
+      else
+      Animated.timing(translateY, {
+        toValue:  0 ,
+        duration: 100, 
+        useNativeDriver: true,
+      }).start();
+
+  }, [textFocusStatus]);
+
 
   useEffect(() => {
     if (props.defaultValue) setTextFocusStatus(true);
@@ -86,7 +106,7 @@ const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
 
         <PressableButton>
           {(textFocusStatus || props.defaultValue) && (
-            <Text style={styles.lable}>{props.placeholder}</Text>
+            <Animated.Text style={[styles.lable,{transform:[{translateY}]}]}>{props.placeholder}</Animated.Text>
           )}
           <TextInput
             ref={inputRef}
@@ -97,7 +117,7 @@ const InputTextField = ({ maxlength = 20, ...props }: ITextField) => {
             onChangeText={(text: string) => {
               props.onChangeText(text);
             }}
-            placeholderTextColor={Colors.darkGrey}
+            placeholderTextColor={ props?.placeholderColor?props?.placeholderColor:Colors.darkGrey}
             onFocus={() => {
               setTextFocusStatus(true);
             }}
@@ -189,7 +209,6 @@ const styles = StyleSheet.create<ITextInputStyle>({
   },
   lable: {
     color: Colors.darkGrey,
-    bottom: Platform.OS == "ios" ? 5 : -10,
     fontFamily: fonts.type.regular,
     fontSize: 12,
   },

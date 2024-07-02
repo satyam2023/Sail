@@ -5,10 +5,10 @@ import { useState } from "react";
 import { Image, ImageStyle, ViewStyle } from "react-native";
 import { StyleSheet, View } from "react-native";
 
-interface ICheckBoxStyle{
-  switchContainer:ViewStyle;
-  circular:ViewStyle;
-  img:ImageStyle;
+interface ICheckBoxStyle {
+  switchContainer: ViewStyle;
+  circular: ViewStyle;
+  img: ImageStyle;
 }
 
 interface ICustomSwitch {
@@ -19,34 +19,30 @@ interface ICustomSwitch {
 }
 
 const CustomCheckBox = (props: ICustomSwitch) => {
-  const [status, setStatus] = useState<boolean>(false);
-  const handlePress = () => {
-    setStatus(!status);
-    props.onPress(status);
+  const [status, setStatus] = useState<boolean>(props?.status);
+  const handlePress = (value: boolean) => {
+    props.onPress(value);
+    setStatus(value);
   };
 
   return (
     <PressableButton
-      onPress={handlePress}
+      onPress={() => handlePress(!status)}
       style={[
         styles.switchContainer,
         props.style,
         { borderRadius: props.isRectangular ? 3 : 10 },
       ]}
     >
-      <PressableButton onPress={handlePress}>
-        {!props.isRectangular ? (
-          <View
-            style={
-              !status
-                ? styles.circular
-                : { backgroundColor: Colors.transparent }
-            }
-          />
-        ) : (
-          <Image style={styles.img} source={!status ? Glyphs.Tick : null} />
-        )}
-      </PressableButton>
+      {!props.isRectangular ? (
+        <View
+          style={
+            !status ? styles.circular : { backgroundColor: Colors.transparent }
+          }
+        />
+      ) : status ? (
+        <Image style={styles.img} source={Glyphs.Tick} />
+      ) : null}
     </PressableButton>
   );
 };
@@ -70,6 +66,6 @@ const styles = StyleSheet.create<ICheckBoxStyle>({
   img: {
     height: 10,
     width: 10,
-    resizeMode: 'contain',
+    resizeMode: "contain",
   },
 });

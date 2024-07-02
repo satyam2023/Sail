@@ -9,23 +9,26 @@ import {
   CustomButton,
   CustomDropDown,
   InputTextField,
-  SafeAreaContainer,
+  TextWrapper,
 } from "components";
 import {
+  IButtonStatus,
   IUserEnquiry,
   UserEnquiryResponse,
 } from "models/ApiResponses/IEnquiryResponses";
 import { FlatList } from "react-native-gesture-handler";
 import Glyphs from "assets/Glyphs";
 import { View } from "react-native";
-import SearchResult from "./component/Searchresult";
+import SearchResult from "./Searchresult";
 
 interface IEnquiryScreen {
   roleLocationDropDownList: MasterDataResponse;
   userEnquiryEnteredDetail: IuserEnquiryEnteredData;
   searchresult: UserEnquiryResponse | undefined;
   onSearch: () => void;
-  setsearchresult:Function;
+  setsearchresult: Function;
+  handleTextChangeofUserEnquiry: (text: string, id: number) => void;
+  btnStatus:IButtonStatus
 }
 
 const UserEnquiry = ({
@@ -34,60 +37,70 @@ const UserEnquiry = ({
   searchresult,
   onSearch,
   setsearchresult,
+  handleTextChangeofUserEnquiry,
+  btnStatus
 }: IEnquiryScreen) => {
   const renderSearchResult = (item: IUserEnquiry, _: number) => {
     return (
       <SearchResult
-        name={item.user_name}
-        place={item.user_location}
-        phone={item.user_number}
+        name={item?.user_name}
+        place={item?.user_location}
+        phone={item?.user_number}
       />
     );
   };
   return (
-    <View style={{paddingHorizontal:20}}>
+    <View style={{ paddingHorizontal: 20 }}>
       <InputTextField
-        onChangeText={(text: string) => {
-          userEnquiryEnteredDetail.name.current = text;
-        }}
+        onChangeText={(text: string) => handleTextChangeofUserEnquiry(text, 0)}
         placeholder={StringConstants.ENTER_NAME}
         maxlength={20}
-        containerStyle={{ backgroundColor: !searchresult? Colors.white :Colors.lightGray }}
-        rightIcon={searchresult?Glyphs.Close:undefined}
+        containerStyle={{
+          backgroundColor: !searchresult ? Colors.white : Colors.lightGray,
+        }}
+        rightIcon={searchresult ? Glyphs.Close : undefined}
         isEditable={!searchresult}
-        onRighIconPress={()=>{setsearchresult()}}
+        onRighIconPress={() => {
+          setsearchresult();
+        }}
         defaultValue={userEnquiryEnteredDetail.name.current}
       />
       <CustomDropDown
-        ArrayOfData={!searchresult?roleLocationDropDownList.LocationData:undefined}
+        ArrayOfData={
+          !searchresult ? roleLocationDropDownList.LocationData : undefined
+        }
         topheading={StringConstants.LOCATION}
         onPress={(item: IdropDown) =>
-          (userEnquiryEnteredDetail.location.current = item.name)
+          handleTextChangeofUserEnquiry(item.name, 1)
         }
-        isRightDropDownVisible={!(!searchresult)}
-        style={{backgroundColor:!searchresult? Colors.white :Colors.lightGray}}
+        isRightDropDownVisible={!!searchresult}
+        style={{
+          backgroundColor: !searchresult ? Colors.white : Colors.lightGray,
+        }}
         defaultValue={userEnquiryEnteredDetail.location.current}
         rightIcon={Glyphs.Close}
-        onRightIconPress={()=>{setsearchresult()}}
+        onRightIconPress={() => setsearchresult()}
       />
       {!searchresult ? (
         <CustomButton
           onPress={onSearch}
           text={StringConstants.SEARCH}
           buttonStyle={
-            userEnquiryEnteredDetail.name.current.length > 2
+           btnStatus.enquiryBtn
               ? commonStyles.searchButtonStyle
               : { backgroundColor: lightgrey }
           }
           textStyle={
-            userEnquiryEnteredDetail.name.current.length > 2
+           btnStatus.enquiryBtn
               ? commonStyles.seachButtonTextStyle
               : { color: darkgrey }
           }
         />
+      ) : searchresult.length == 0 ? (
+        <TextWrapper>{StringConstants.NO_RECORDS_FOUND}</TextWrapper>
       ) : (
         <FlatList
-          data={searchresult.length>0?searchresult:undefined}
+          data={searchresult.length > 0 ? searchresult : undefined}
           renderItem={({ item, index }) => renderSearchResult(item, index)}
           scrollEnabled={false}
         />
